@@ -358,3 +358,137 @@ fn generated_iam_list_users_matches_golden() {
     let got = sign_request("iam", "POST", "/", &body, &query_headers("iam", &body));
     assert_eq!(got, read("tests/expected/iam_list_users.http"));
 }
+
+// --- #426: nested structures, lists of structures, and maps ----------------
+//
+// A synthetic awsQuery model exercising every collection body shape #426 adds:
+// a nested structure (Nested.Id / Nested.Count), a WRAPPED list of structures
+// (Tags.member.N.Key/Value), a WRAPPED map (Attrs.entry.N.key/value, keys
+// emitted sorted for determinism), and a FLATTENED list of structures
+// (Flat.N.Key). Proven end to end through the real generator + an independently
+// reconstructed, SigV4-signed form body (same posture as the synthetic rest-xml
+// coverage), since no small real query service carries all of these at once.
+
+fn generate_str(model: &str) -> String {
+    aws_codegen::generate_from_json(model)
+        .expect("synthetic model generates")
+        .0
+}
+
+const QSYNTH: &str = r#"{
+  "metadata":{"protocol":"query","apiVersion":"2021-01-01","endpointPrefix":"svc","serviceId":"QSynth"},
+  "operations":{"DoThing":{"name":"DoThing","input":{"shape":"DoThingRequest"}}},
+  "shapes":{
+    "S":{"type":"string"},"I":{"type":"integer"},
+    "Inner":{"type":"structure","required":["Id"],"members":{"Id":{"shape":"S"},"Count":{"shape":"I"}}},
+    "Tag":{"type":"structure","required":["Key"],"members":{"Key":{"shape":"S"},"Value":{"shape":"S"}}},
+    "TagList":{"type":"list","member":{"shape":"Tag"}},
+    "FlatTagList":{"type":"list","member":{"shape":"Tag"},"flattened":true},
+    "StrMap":{"type":"map","key":{"shape":"S"},"value":{"shape":"S"}},
+    "DoThingRequest":{"type":"structure","required":["Name","Nested","Tags","Attrs","Flat"],"members":{
+      "Name":{"shape":"S"},"Nested":{"shape":"Inner"},"Tags":{"shape":"TagList"},
+      "Attrs":{"shape":"StrMap"},"Flat":{"shape":"FlatTagList"}}}}}"#;
+
+#[test]
+fn generated_query_synthetic_collections_match_golden() {
+    let src = generate_str(QSYNTH);
+
+    // The nested-structure serializer keys members under the caller's prefix.
+    assert!(src.contains(
+        "def inner_to_query(list[query.QueryPair] p, str prefix, Inner v) -> list[query.QueryPair]:"
+    ));
+    assert!(src.contains("p = query.query_scalar(p, query.query_key(prefix, \"Id\"), v.Id)"));
+    assert!(src.contains(
+        "def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:"
+    ));
+
+    let mb = method_body(&src, "def do_thing(self, DoThingRequest input) -> str:");
+    // Nested struct: Nested.Id / Nested.Count.
+    assert!(
+        mb.contains("p = inner_to_query(p, \"Nested\", input.Nested)"),
+        "{mb}"
+    );
+    // Wrapped list of structs: Tags.member.N.<field>.
+    assert!(mb.contains("for qe1 in input.Tags:"), "{mb}");
+    assert!(
+        mb.contains("p = tag_to_query(p, \"Tags.member.\" + str(qi0), qe1)"),
+        "{mb}"
+    );
+    // Wrapped map: Attrs.entry.N.key/value via the codec helper, keys sorted.
+    assert!(
+        mb.contains("for qk2 in sorted(input.Attrs.keys()):"),
+        "{mb}"
+    );
+    assert!(
+        mb.contains("p = query.query_map(p, \"Attrs\", \"key\", \"value\", qks3, qvs4)"),
+        "{mb}"
+    );
+    // Flattened list of structs: Flat.N.<field> (no member segment).
+    assert!(
+        mb.contains("p = tag_to_query(p, \"Flat.\" + str(qi5), qe6)"),
+        "{mb}"
+    );
+
+    // Reconstruct the wire body for a representative input, in model member
+    // order (the SigV4 signature covers the body verbatim). Tag 2 omits the
+    // optional Value; the map keys "a"/"b" are already sorted.
+    let body = form_body(
+        "DoThing",
+        "2021-01-01",
+        &[
+            ("Name", "widget"),
+            ("Nested.Id", "id-1"),
+            ("Nested.Count", "3"),
+            ("Tags.member.1.Key", "env"),
+            ("Tags.member.1.Value", "prod"),
+            ("Tags.member.2.Key", "team"),
+            ("Attrs.entry.1.key", "a"),
+            ("Attrs.entry.1.value", "1"),
+            ("Attrs.entry.2.key", "b"),
+            ("Attrs.entry.2.value", "2"),
+            ("Flat.1.Key", "f1"),
+            ("Flat.2.Key", "f2"),
+        ],
+    );
+    let got = sign_request("svc", "POST", "/", &body, &query_headers("svc", &body));
+    assert_eq!(got, read("tests/expected/query_synth_do_thing.http"));
+}
+
+// Real-service call-sequence locks (no golden): the exact wire keys the #426
+// emitter produces for representative newly-unlocked ops, asserted straight out
+// of the generated source.
+
+#[test]
+fn generated_autoscaling_create_group_nested_and_struct_list() {
+    let src = generate("models/autoscaling/2011-01-01/service-2.json");
+    let mb = method_body(
+        &src,
+        "def create_auto_scaling_group(self, CreateAutoScalingGroupType input) -> str:",
+    );
+    // A nested struct member serialized by its function under its member key.
+    assert!(
+        mb.contains("p = launch_template_specification_to_query(p, \"LaunchTemplate\", t")
+            || mb.contains("p = launch_template_specification_to_query(p, \"LaunchTemplate\", input.LaunchTemplate"),
+        "{mb}"
+    );
+    // The Tags list of structures is a wrapped list (Tags.member.N.<field>).
+    assert!(mb.contains("for qe"), "{mb}");
+    assert!(
+        mb.contains("tag_to_query(p, \"Tags.member.\" + str("),
+        "{mb}"
+    );
+}
+
+#[test]
+fn generated_sns_create_platform_application_map() {
+    let src = generate("models/sns/2010-03-31/service-2.json");
+    let mb = method_body(
+        &src,
+        "def create_platform_application(self, CreatePlatformApplicationInput input) -> str:",
+    );
+    assert!(mb.contains("for qk"), "{mb}");
+    assert!(
+        mb.contains("p = query.query_map(p, \"Attributes\", \"key\", \"value\","),
+        "{mb}"
+    );
+}

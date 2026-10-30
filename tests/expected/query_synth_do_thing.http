@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: svc.us-east-1.amazonaws.com
+x-amz-content-sha256: 617f04d95e45e3faac4c6b948031365297c1c08c6e9e2866a67b2f425b653f52
+x-amz-date: 20150830T123600Z
+content-length: 257
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/svc/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=d39b0b4551015f550b4bb47ce92ba9de893f7950aa7565b934f662f82233ee93
+Connection: close
+
+Action=DoThing&Version=2021-01-01&Name=widget&Nested.Id=id-1&Nested.Count=3&Tags.member.1.Key=env&Tags.member.1.Value=prod&Tags.member.2.Key=team&Attrs.entry.1.key=a&Attrs.entry.1.value=1&Attrs.entry.2.key=b&Attrs.entry.2.value=2&Flat.1.Key=f1&Flat.2.Key=f2

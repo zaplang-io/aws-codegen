@@ -163,3 +163,114 @@ fn generated_synthetic_restxml_matches_golden() {
     let got = binding_sign("svc", &host("svc"), "PUT", &path, body, "application/xml");
     assert_eq!(got, read("tests/expected/restxml_synth_put_thing.http"));
 }
+
+// --- #426: bool, nested collections, maps in a rest-xml document body --------
+//
+// A synthetic rest-xml model exercising every body shape #426 adds: a boolean
+// (via the per-file `_xml_bool` helper), a nested structure, a WRAPPED list of
+// structures (`<Items><Item>…`), a WRAPPED map (`<Tags><entry><key/><value/>`,
+// keys sorted), and a FLATTENED list of structures (repeated `<Flat>…`). Proven
+// end to end through the real generator + an independently reconstructed,
+// SigV4-signed XML document body, like the earlier synthetic rest-xml coverage.
+
+const XSYNTH: &str = r#"{
+  "metadata":{"protocol":"rest-xml","endpointPrefix":"svc","serviceId":"XSynth","apiVersion":"2021-01-01"},
+  "operations":{"PutThing":{"name":"PutThing","http":{"method":"PUT","requestUri":"/thing/{Id}"},"input":{"shape":"PutThingRequest"}}},
+  "shapes":{
+    "S":{"type":"string"},"B":{"type":"boolean"},
+    "Owner":{"type":"structure","required":["Id"],"members":{"Id":{"shape":"S"}}},
+    "Item":{"type":"structure","required":["Name"],"members":{"Name":{"shape":"S"}}},
+    "ItemList":{"type":"list","member":{"shape":"Item","locationName":"Item"}},
+    "Thing":{"type":"structure","required":["V"],"members":{"V":{"shape":"S"}}},
+    "FlatThings":{"type":"list","member":{"shape":"Thing"},"flattened":true},
+    "StrMap":{"type":"map","key":{"shape":"S"},"value":{"shape":"S"}},
+    "Config":{"type":"structure","required":["Enabled","Owner","Items","Tags","Flat"],
+      "xmlNamespace":{"uri":"urn:xsynth"},
+      "members":{"Enabled":{"shape":"B"},"Owner":{"shape":"Owner"},"Items":{"shape":"ItemList"},
+        "Tags":{"shape":"StrMap"},"Flat":{"shape":"FlatThings"}}},
+    "PutThingRequest":{"type":"structure","required":["Id","Config"],
+      "members":{"Id":{"shape":"S","location":"uri","locationName":"Id"},
+        "Config":{"shape":"Config","locationName":"Config"}},"payload":"Config"}}}"#;
+
+#[test]
+fn generated_restxml_synthetic_collections_match_golden() {
+    let src = generate_model(XSYNTH);
+    let mb = method_body(&src, "def put_thing(self, PutThingRequest input) -> str:");
+
+    // Boolean via the per-file helper.
+    assert!(src.contains("def svc_xml_bool(bool b) -> str:"), "{src}");
+    assert!(
+        mb.contains(
+            "restxml.rest_xml_scalar(root, \"Enabled\", svc_xml_bool(input.Config.Enabled))"
+        ),
+        "{mb}"
+    );
+    // Nested struct.
+    assert!(
+        mb.contains("auto n0 = restxml.rest_xml_struct(root, \"Owner\")"),
+        "{mb}"
+    );
+    // Wrapped list of structs: <Items> wrapper, each item <Item>.
+    assert!(
+        mb.contains("auto n1 = restxml.rest_xml_struct(root, \"Items\")"),
+        "{mb}"
+    );
+    assert!(mb.contains("for t2 in input.Config.Items:"), "{mb}");
+    assert!(
+        mb.contains("auto n3 = restxml.rest_xml_struct(n1, \"Item\")"),
+        "{mb}"
+    );
+    // Wrapped map: <Tags><entry><key/><value/></entry>, keys sorted.
+    assert!(
+        mb.contains("auto n4 = restxml.rest_xml_struct(root, \"Tags\")"),
+        "{mb}"
+    );
+    assert!(
+        mb.contains("for t5 in sorted(input.Config.Tags.keys()):"),
+        "{mb}"
+    );
+    assert!(
+        mb.contains("auto n6 = restxml.rest_xml_struct(n4, \"entry\")"),
+        "{mb}"
+    );
+    assert!(
+        mb.contains("restxml.rest_xml_scalar(n6, \"key\", t5)"),
+        "{mb}"
+    );
+    // Flattened list of structs: repeated <Flat>.
+    assert!(
+        mb.contains("auto n8 = restxml.rest_xml_struct(root, \"Flat\")"),
+        "{mb}"
+    );
+
+    let body = "<Config xmlns=\"urn:xsynth\"><Enabled>true</Enabled>\
+                <Owner><Id>o1</Id></Owner>\
+                <Items><Item><Name>a</Name></Item><Item><Name>b</Name></Item></Items>\
+                <Tags><entry><key>k1</key><value>v1</value></entry>\
+                <entry><key>k2</key><value>v2</value></entry></Tags>\
+                <Flat><V>f1</V></Flat><Flat><V>f2</V></Flat></Config>";
+    let path = expand_path("/thing/{Id}", &[("Id", "t 1".to_string())]);
+    let got = binding_sign("svc", &host("svc"), "PUT", &path, body, "application/xml");
+    assert_eq!(got, read("tests/expected/restxml_synth_collections.http"));
+}
+
+// Real-service call-sequence lock (no golden): Route53's implicit XML document
+// body (no httpPayload) is rooted at the operation input ref's name + namespace
+// and built from the top-level members.
+#[test]
+fn generated_route53_change_rrsets_implicit_document_body() {
+    let src = generate_model(&read("models/route53/2013-04-01/service-2.json"));
+    let mb = method_body(
+        &src,
+        "def change_resource_record_sets(self, ChangeResourceRecordSetsRequest input) -> str:",
+    );
+    assert!(
+        mb.contains("auto root = restxml.rest_xml_root_ns(\"ChangeResourceRecordSetsRequest\", \"https://route53.amazonaws.com/doc/2013-04-01/\")"),
+        "{mb}"
+    );
+    assert!(
+        mb.contains("restxml.rest_xml_struct(root, \"ChangeBatch\")"),
+        "{mb}"
+    );
+    assert!(mb.contains("restxml.rest_xml_document(b, body)"), "{mb}");
+}

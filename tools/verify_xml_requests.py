@@ -294,6 +294,27 @@ def synth_put_thing():
         {"Id": "t 1"}, {}, body, "application/xml")
 
 
+def restxml_synth_collections():
+    # #426 synthetic rest-xml: a bool, a nested struct, a wrapped list of structs
+    # (<Items><Item>…), a wrapped map (<Tags><entry><key/><value/>…, keys
+    # sorted), and a flattened list of structs (repeated <Flat>…).
+    root = Elem("Config").attr("xmlns", "urn:xsynth")
+    root.scalar("Enabled", "true")
+    root.child("Owner").scalar("Id", "o1")
+    items = root.child("Items")
+    items.child("Item").scalar("Name", "a")
+    items.child("Item").scalar("Name", "b")
+    tags = root.child("Tags")
+    e1 = tags.child("entry"); e1.scalar("key", "k1"); e1.scalar("value", "v1")
+    e2 = tags.child("entry"); e2.scalar("key", "k2"); e2.scalar("value", "v2")
+    root.child("Flat").scalar("V", "f1")
+    root.child("Flat").scalar("V", "f2")
+    body = dumps(root)
+    return binding_sign(
+        "svc", regional_host("svc"), "PUT", "/thing/{Id}",
+        {"Id": "t 1"}, {}, body, "application/xml")
+
+
 def sdb_get_attributes():
     body = form_body("GetAttributes", "2009-04-15", [
         ("DomainName", "My Domain"),
@@ -441,10 +462,32 @@ def s3_upload_part():
         {}, "hello part contents", "application/octet-stream")
 
 
+def query_synth_do_thing():
+    # #426 synthetic awsQuery: a nested struct, a wrapped list of structs, a
+    # wrapped map (keys sorted), and a flattened list of structs, in model order.
+    body = form_body("DoThing", "2021-01-01", [
+        ("Name", "widget"),
+        ("Nested.Id", "id-1"),
+        ("Nested.Count", "3"),
+        ("Tags.member.1.Key", "env"),
+        ("Tags.member.1.Value", "prod"),
+        ("Tags.member.2.Key", "team"),
+        ("Attrs.entry.1.key", "a"),
+        ("Attrs.entry.1.value", "1"),
+        ("Attrs.entry.2.key", "b"),
+        ("Attrs.entry.2.value", "2"),
+        ("Flat.1.Key", "f1"),
+        ("Flat.2.Key", "f2"),
+    ])
+    return query_sign("svc", regional_host("svc"), body)
+
+
 FIXTURES = {
     "cloudfront_create_invalidation": cf_create_invalidation,
     "cloudfront_create_oai": cf_create_oai,
     "restxml_synth_put_thing": synth_put_thing,
+    "restxml_synth_collections": restxml_synth_collections,
+    "query_synth_do_thing": query_synth_do_thing,
     "sdb_get_attributes": sdb_get_attributes,
     "ec2_monitor_instances": ec2_monitor_instances,
     "ec2_get_console_output": ec2_get_console_output,

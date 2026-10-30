@@ -403,12 +403,13 @@ fn s3_generation_is_deterministic() {
 fn restxml_contract_shape() {
     let (src, cov) = generate_with_sidecar("cloudfront", "2015-09-17");
     assert_eq!(cov.operations_total, 22);
-    assert!(
-        cov.operations_methods >= 15,
+    // #426: every CloudFront op now serializes (bool + nested collection bodies).
+    assert_eq!(
+        cov.operations_methods, 22,
         "methods: {}",
         cov.operations_methods
     );
-    assert!(cov.operations_skipped > 0, "complex payloads skip");
+    assert_eq!(cov.operations_skipped, 0);
     // Protocol seam: a service-name function, plain structs (no @derive(Json)).
     assert!(src.contains("# Protocol: rest-xml"));
     assert!(src.contains("def cloudfront_service() -> str:"));
@@ -422,6 +423,9 @@ fn restxml_contract_shape() {
     assert!(src.contains("restxml.rest_xml_struct(root, \"Paths\")"));
     assert!(src.contains("restxml.rest_xml_wrapped_list(n0, \"Items\", \"Path\","));
     assert!(src.contains("restxml.rest_xml_document(b, body)"));
+    // #426: a boolean body member routes through the per-file _xml_bool helper.
+    assert!(src.contains("def cloudfront_xml_bool(bool b) -> str:"));
+    assert!(src.contains("cloudfront_xml_bool("));
     // Error dispatch from the rest-xml <Error><Code>.
     assert!(src.contains("enum CloudFrontError:"));
     assert!(src.contains("def cloudfront_error_from_code(str code) -> CloudFrontError:"));
@@ -454,12 +458,13 @@ fn ec2_contract_shape() {
     // can move the exact total — update it here and keep the floor as the contract.
     let (src, cov) = generate_with_sidecar("ec2", "2016-11-15");
     assert_eq!(cov.operations_total, 811);
-    assert!(
-        cov.operations_methods >= 400,
+    // #426: every ec2 op now serializes (Filters list-of-struct, nested structs).
+    assert_eq!(
+        cov.operations_methods, 811,
         "methods: {}",
         cov.operations_methods
     );
-    assert!(cov.operations_skipped > 0, "list-of-struct inputs skip");
+    assert_eq!(cov.operations_skipped, 0);
     assert!(src.contains("# Protocol: ec2"));
     assert!(src.contains("def ec2_service() -> str:"));
     assert!(src.contains("    return \"ec2\""));
@@ -467,23 +472,25 @@ fn ec2_contract_shape() {
     // ec2 capitalizes the key and always flattens the list.
     assert!(src.contains("query.query_flat_list(p, \"InstanceId\", input.InstanceIds)"));
     assert!(src.contains("query.query_scalar(p, \"DryRun\","));
-    // The two byte-diffed ops (tests/query_byte_diff.rs) generate; the ticket's
-    // DescribeInstances / DescribeRegions are v0-skipped (Filters list-of-struct).
+    // #426: the list-of-struct Filters ops (DescribeInstances / DescribeRegions)
+    // now generate via a per-shape serializer function.
     assert!(src.contains("def get_console_output(self, GetConsoleOutputRequest input) -> str:"));
-    assert!(!src.contains("def describe_instances("));
-    assert!(!src.contains("def describe_regions("));
+    assert!(src.contains("def describe_instances("));
+    assert!(src.contains("def describe_regions("));
+    assert!(src.contains("_to_query(list[query.QueryPair] p, str prefix,"));
 }
 
 #[test]
 fn sns_contract_shape() {
     let (src, cov) = generate_with_sidecar("sns", "2010-03-31");
     assert_eq!(cov.operations_total, 42);
-    assert!(
-        cov.operations_methods >= 25,
+    // #426: every SNS op now serializes (map + list-of-struct bodies covered).
+    assert_eq!(
+        cov.operations_methods, 42,
         "methods: {}",
         cov.operations_methods
     );
-    assert!(cov.operations_skipped > 0, "map/list-of-struct inputs skip");
+    assert_eq!(cov.operations_skipped, 0);
     assert!(cov.error_variants >= 15, "errors: {}", cov.error_variants);
     assert!(src.contains("# Protocol: query"));
     assert!(src.contains("def sns_service() -> str:"));
@@ -491,9 +498,11 @@ fn sns_contract_shape() {
     assert!(src.contains("auto p = query.query_params(\"GetTopicAttributes\", \"2010-03-31\")"));
     assert!(src.contains("p = query.query_scalar(p, \"TopicArn\", input.TopicArn)"));
     assert!(src.contains("def set_topic_attributes(self, SetTopicAttributesInput input) -> str:"));
-    // The ticket's Publish / CreateTopic are v0-skipped (map / list-of-struct).
-    assert!(!src.contains("def publish("));
-    assert!(!src.contains("def create_topic("));
+    // #426: Publish (map body) and CreateTopic (list-of-struct) now generate; the
+    // map goes through the codec's query_map helper.
+    assert!(src.contains("def publish("));
+    assert!(src.contains("def create_topic("));
+    assert!(src.contains("p = query.query_map(p, \"Attributes\", \"key\", \"value\","));
     assert!(src.contains("enum SNSError:") || src.contains("enum SnsError:"));
 }
 
@@ -501,12 +510,13 @@ fn sns_contract_shape() {
 fn iam_contract_shape() {
     let (src, cov) = generate_with_sidecar("iam", "2010-05-08");
     assert_eq!(cov.operations_total, 180);
-    assert!(
-        cov.operations_methods >= 120,
+    // #426: every IAM op now serializes (list-of-struct Tags, nested structs).
+    assert_eq!(
+        cov.operations_methods, 180,
         "methods: {}",
         cov.operations_methods
     );
-    assert!(cov.operations_skipped > 0, "list-of-struct inputs skip");
+    assert_eq!(cov.operations_skipped, 0);
     assert!(cov.error_variants >= 15, "errors: {}", cov.error_variants);
     assert!(src.contains("# Protocol: query"));
     assert!(src.contains("def iam_service() -> str:"));
@@ -516,8 +526,8 @@ fn iam_contract_shape() {
     assert!(src.contains("def list_users(self, ListUsersRequest input) -> str:"));
     assert!(src.contains("auto p = query.query_params(\"ListUsers\", \"2010-05-08\")"));
     assert!(src.contains("p = query.query_scalar(p, \"MaxItems\", str(input.MaxItems.unwrap()))"));
-    // CreateUser is v0-skipped (Tags list-of-struct).
-    assert!(!src.contains("def create_user("));
+    // #426: CreateUser (Tags list-of-struct) now generates.
+    assert!(src.contains("def create_user("));
 }
 
 #[test]
