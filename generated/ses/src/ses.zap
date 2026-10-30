@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 71 operations — 55 with a generated method,
-#   16 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 71 operations — 71 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   206 structs (plain carriers), 15 enums, 34 error variants.
 #   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -1151,25 +1151,6 @@ def email_error_from_code(str code) -> SESError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   CreateConfigurationSet (member `ConfigurationSet` is a nested structure (query nesting is a v0 follow-up))
-#   CreateConfigurationSetEventDestination (member `EventDestination` is a nested structure (query nesting is a v0 follow-up))
-#   CreateConfigurationSetTrackingOptions (member `TrackingOptions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateReceiptFilter (member `Filter` is a nested structure (query nesting is a v0 follow-up))
-#   CreateReceiptRule (member `Rule` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTemplate (member `Template` is a nested structure (query nesting is a v0 follow-up))
-#   PutConfigurationSetDeliveryOptions (member `DeliveryOptions` is a nested structure (query nesting is a v0 follow-up))
-#   SendBounce (member `MessageDsn` is a nested structure (query nesting is a v0 follow-up))
-#   SendBulkTemplatedEmail (member `DefaultTags` is a list of MessageTag (only scalar lists in v0))
-#   SendEmail (member `Destination` is a nested structure (query nesting is a v0 follow-up))
-#   SendRawEmail (member `RawMessage` is a nested structure (query nesting is a v0 follow-up))
-#   SendTemplatedEmail (member `Destination` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateConfigurationSetEventDestination (member `EventDestination` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateConfigurationSetTrackingOptions (member `TrackingOptions` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateReceiptRule (member `Rule` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateTemplate (member `Template` is a nested structure (query nesting is a v0 follow-up))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   ListConfigurationSets
@@ -1177,6 +1158,342 @@ def email_error_from_code(str code) -> SESError:
 #   ListIdentities
 #   ListReceiptRuleSets
 #   ListTemplates
+
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AddHeaderAction into the query form parameters under `prefix`.
+def add_header_action_to_query(list[query.QueryPair] p, str prefix, AddHeaderAction v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "HeaderName"), v.HeaderName)
+    p = query.query_scalar(p, query.query_key(prefix, "HeaderValue"), v.HeaderValue)
+    return p
+
+# Serialize Body into the query form parameters under `prefix`.
+def body_to_query(list[query.QueryPair] p, str prefix, Body v) -> list[query.QueryPair]:
+    if v.Text.is_some():
+        p = content_to_query(p, query.query_key(prefix, "Text"), v.Text.unwrap())
+    if v.Html.is_some():
+        p = content_to_query(p, query.query_key(prefix, "Html"), v.Html.unwrap())
+    return p
+
+# Serialize BounceAction into the query form parameters under `prefix`.
+def bounce_action_to_query(list[query.QueryPair] p, str prefix, BounceAction v) -> list[query.QueryPair]:
+    if v.TopicArn.is_some():
+        auto t0 = v.TopicArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TopicArn"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "SmtpReplyCode"), v.SmtpReplyCode)
+    if v.StatusCode.is_some():
+        auto t1 = v.StatusCode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StatusCode"), t1)
+    p = query.query_scalar(p, query.query_key(prefix, "Message"), v.Message)
+    p = query.query_scalar(p, query.query_key(prefix, "Sender"), v.Sender)
+    return p
+
+# Serialize BouncedRecipientInfo into the query form parameters under `prefix`.
+def bounced_recipient_info_to_query(list[query.QueryPair] p, str prefix, BouncedRecipientInfo v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Recipient"), v.Recipient)
+    if v.RecipientArn.is_some():
+        auto t0 = v.RecipientArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RecipientArn"), t0)
+    if v.BounceType.is_some():
+        auto t1 = v.BounceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BounceType"), t1)
+    if v.RecipientDsnFields.is_some():
+        auto t2 = v.RecipientDsnFields.unwrap()
+        p = recipient_dsn_fields_to_query(p, query.query_key(prefix, "RecipientDsnFields"), t2)
+    return p
+
+# Serialize BulkEmailDestination into the query form parameters under `prefix`.
+def bulk_email_destination_to_query(list[query.QueryPair] p, str prefix, BulkEmailDestination v) -> list[query.QueryPair]:
+    p = destination_to_query(p, query.query_key(prefix, "Destination"), v.Destination)
+    auto qi0 = 1
+    for qe1 in v.ReplacementTags.unwrap_or([]):
+        auto t2 = qe1
+        p = message_tag_to_query(p, query.query_key(prefix, "ReplacementTags") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    if v.ReplacementTemplateData.is_some():
+        auto t3 = v.ReplacementTemplateData.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ReplacementTemplateData"), t3)
+    return p
+
+# Serialize CloudWatchDestination into the query form parameters under `prefix`.
+def cloud_watch_destination_to_query(list[query.QueryPair] p, str prefix, CloudWatchDestination v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.DimensionConfigurations:
+        auto t2 = qe1
+        p = cloud_watch_dimension_configuration_to_query(p, query.query_key(prefix, "DimensionConfigurations") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize CloudWatchDimensionConfiguration into the query form parameters under `prefix`.
+def cloud_watch_dimension_configuration_to_query(list[query.QueryPair] p, str prefix, CloudWatchDimensionConfiguration v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "DimensionName"), v.DimensionName)
+    auto t0 = v.DimensionValueSource
+    p = query.query_scalar(p, query.query_key(prefix, "DimensionValueSource"), t0)
+    auto t1 = v.DefaultDimensionValue
+    p = query.query_scalar(p, query.query_key(prefix, "DefaultDimensionValue"), t1)
+    return p
+
+# Serialize ConfigurationSet into the query form parameters under `prefix`.
+def configuration_set_to_query(list[query.QueryPair] p, str prefix, ConfigurationSet v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    return p
+
+# Serialize ConnectAction into the query form parameters under `prefix`.
+def connect_action_to_query(list[query.QueryPair] p, str prefix, ConnectAction v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "InstanceARN"), v.InstanceARN)
+    p = query.query_scalar(p, query.query_key(prefix, "IAMRoleARN"), v.IAMRoleARN)
+    return p
+
+# Serialize Content into the query form parameters under `prefix`.
+def content_to_query(list[query.QueryPair] p, str prefix, Content v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Data"), v.Data)
+    if v.Charset.is_some():
+        auto t0 = v.Charset.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Charset"), t0)
+    return p
+
+# Serialize DeliveryOptions into the query form parameters under `prefix`.
+def delivery_options_to_query(list[query.QueryPair] p, str prefix, DeliveryOptions v) -> list[query.QueryPair]:
+    if v.TlsPolicy.is_some():
+        auto t0 = v.TlsPolicy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TlsPolicy"), t0)
+    return p
+
+# Serialize Destination into the query form parameters under `prefix`.
+def destination_to_query(list[query.QueryPair] p, str prefix, Destination v) -> list[query.QueryPair]:
+    auto t0 = v.ToAddresses.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "ToAddresses"), "member", t0)
+    auto t1 = v.CcAddresses.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "CcAddresses"), "member", t1)
+    auto t2 = v.BccAddresses.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "BccAddresses"), "member", t2)
+    return p
+
+# Serialize EventDestination into the query form parameters under `prefix`.
+def event_destination_to_query(list[query.QueryPair] p, str prefix, EventDestination v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    auto t1 = v.MatchingEventTypes
+    p = query.query_list(p, query.query_key(prefix, "MatchingEventTypes"), "member", t1)
+    if v.KinesisFirehoseDestination.is_some():
+        auto t2 = v.KinesisFirehoseDestination.unwrap()
+        p = kinesis_firehose_destination_to_query(p, query.query_key(prefix, "KinesisFirehoseDestination"), t2)
+    if v.CloudWatchDestination.is_some():
+        auto t3 = v.CloudWatchDestination.unwrap()
+        p = cloud_watch_destination_to_query(p, query.query_key(prefix, "CloudWatchDestination"), t3)
+    if v.SNSDestination.is_some():
+        auto t4 = v.SNSDestination.unwrap()
+        p = sns_destination_to_query(p, query.query_key(prefix, "SNSDestination"), t4)
+    return p
+
+# Serialize ExtensionField into the query form parameters under `prefix`.
+def extension_field_to_query(list[query.QueryPair] p, str prefix, ExtensionField v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    return p
+
+# Serialize KinesisFirehoseDestination into the query form parameters under `prefix`.
+def kinesis_firehose_destination_to_query(list[query.QueryPair] p, str prefix, KinesisFirehoseDestination v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "IAMRoleARN"), v.IAMRoleARN)
+    auto t0 = v.DeliveryStreamARN
+    p = query.query_scalar(p, query.query_key(prefix, "DeliveryStreamARN"), t0)
+    return p
+
+# Serialize LambdaAction into the query form parameters under `prefix`.
+def lambda_action_to_query(list[query.QueryPair] p, str prefix, LambdaAction v) -> list[query.QueryPair]:
+    if v.TopicArn.is_some():
+        auto t0 = v.TopicArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TopicArn"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "FunctionArn"), v.FunctionArn)
+    if v.InvocationType.is_some():
+        auto t1 = v.InvocationType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InvocationType"), t1)
+    return p
+
+# Serialize Message into the query form parameters under `prefix`.
+def message_to_query(list[query.QueryPair] p, str prefix, Message v) -> list[query.QueryPair]:
+    p = content_to_query(p, query.query_key(prefix, "Subject"), v.Subject)
+    p = body_to_query(p, query.query_key(prefix, "Body"), v.Body)
+    return p
+
+# Serialize MessageDsn into the query form parameters under `prefix`.
+def message_dsn_to_query(list[query.QueryPair] p, str prefix, MessageDsn v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ReportingMta"), v.ReportingMta)
+    if v.ArrivalDate.is_some():
+        auto t0 = query.query_timestamp_iso8601(v.ArrivalDate.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ArrivalDate"), t0)
+    auto qi1 = 1
+    for qe2 in v.ExtensionFields.unwrap_or([]):
+        auto t3 = qe2
+        p = extension_field_to_query(p, query.query_key(prefix, "ExtensionFields") + ".member" + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize MessageTag into the query form parameters under `prefix`.
+def message_tag_to_query(list[query.QueryPair] p, str prefix, MessageTag v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    return p
+
+# Serialize RawMessage into the query form parameters under `prefix`.
+def raw_message_to_query(list[query.QueryPair] p, str prefix, RawMessage v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Data"), query.query_blob(v.Data))
+    return p
+
+# Serialize ReceiptAction into the query form parameters under `prefix`.
+def receipt_action_to_query(list[query.QueryPair] p, str prefix, ReceiptAction v) -> list[query.QueryPair]:
+    if v.S3Action.is_some():
+        auto t0 = v.S3Action.unwrap()
+        p = s3_action_to_query(p, query.query_key(prefix, "S3Action"), t0)
+    if v.BounceAction.is_some():
+        auto t1 = v.BounceAction.unwrap()
+        p = bounce_action_to_query(p, query.query_key(prefix, "BounceAction"), t1)
+    if v.WorkmailAction.is_some():
+        auto t2 = v.WorkmailAction.unwrap()
+        p = workmail_action_to_query(p, query.query_key(prefix, "WorkmailAction"), t2)
+    if v.LambdaAction.is_some():
+        auto t3 = v.LambdaAction.unwrap()
+        p = lambda_action_to_query(p, query.query_key(prefix, "LambdaAction"), t3)
+    if v.StopAction.is_some():
+        auto t4 = v.StopAction.unwrap()
+        p = stop_action_to_query(p, query.query_key(prefix, "StopAction"), t4)
+    if v.AddHeaderAction.is_some():
+        auto t5 = v.AddHeaderAction.unwrap()
+        p = add_header_action_to_query(p, query.query_key(prefix, "AddHeaderAction"), t5)
+    if v.SNSAction.is_some():
+        auto t6 = v.SNSAction.unwrap()
+        p = sns_action_to_query(p, query.query_key(prefix, "SNSAction"), t6)
+    if v.ConnectAction.is_some():
+        auto t7 = v.ConnectAction.unwrap()
+        p = connect_action_to_query(p, query.query_key(prefix, "ConnectAction"), t7)
+    return p
+
+# Serialize ReceiptFilter into the query form parameters under `prefix`.
+def receipt_filter_to_query(list[query.QueryPair] p, str prefix, ReceiptFilter v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = receipt_ip_filter_to_query(p, query.query_key(prefix, "IpFilter"), v.IpFilter)
+    return p
+
+# Serialize ReceiptIpFilter into the query form parameters under `prefix`.
+def receipt_ip_filter_to_query(list[query.QueryPair] p, str prefix, ReceiptIpFilter v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Policy"), v.Policy)
+    p = query.query_scalar(p, query.query_key(prefix, "Cidr"), v.Cidr)
+    return p
+
+# Serialize ReceiptRule into the query form parameters under `prefix`.
+def receipt_rule_to_query(list[query.QueryPair] p, str prefix, ReceiptRule v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.TlsPolicy.is_some():
+        auto t1 = v.TlsPolicy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TlsPolicy"), t1)
+    auto t2 = v.Recipients.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Recipients"), "member", t2)
+    auto qi3 = 1
+    for qe4 in v.Actions.unwrap_or([]):
+        auto t5 = qe4
+        p = receipt_action_to_query(p, query.query_key(prefix, "Actions") + ".member" + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    if v.ScanEnabled.is_some():
+        auto t6 = query.query_bool(v.ScanEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ScanEnabled"), t6)
+    return p
+
+# Serialize RecipientDsnFields into the query form parameters under `prefix`.
+def recipient_dsn_fields_to_query(list[query.QueryPair] p, str prefix, RecipientDsnFields v) -> list[query.QueryPair]:
+    if v.FinalRecipient.is_some():
+        auto t0 = v.FinalRecipient.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "FinalRecipient"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "Action"), v.Action)
+    if v.RemoteMta.is_some():
+        auto t1 = v.RemoteMta.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RemoteMta"), t1)
+    p = query.query_scalar(p, query.query_key(prefix, "Status"), v.Status)
+    if v.DiagnosticCode.is_some():
+        auto t2 = v.DiagnosticCode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DiagnosticCode"), t2)
+    if v.LastAttemptDate.is_some():
+        auto t3 = query.query_timestamp_iso8601(v.LastAttemptDate.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "LastAttemptDate"), t3)
+    auto qi4 = 1
+    for qe5 in v.ExtensionFields.unwrap_or([]):
+        auto t6 = qe5
+        p = extension_field_to_query(p, query.query_key(prefix, "ExtensionFields") + ".member" + "." + str(qi4), t6)
+        qi4 = qi4 + 1
+    return p
+
+# Serialize S3Action into the query form parameters under `prefix`.
+def s3_action_to_query(list[query.QueryPair] p, str prefix, S3Action v) -> list[query.QueryPair]:
+    if v.TopicArn.is_some():
+        auto t0 = v.TopicArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TopicArn"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "BucketName"), v.BucketName)
+    if v.ObjectKeyPrefix.is_some():
+        auto t1 = v.ObjectKeyPrefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ObjectKeyPrefix"), t1)
+    if v.KmsKeyArn.is_some():
+        auto t2 = v.KmsKeyArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KmsKeyArn"), t2)
+    if v.IamRoleArn.is_some():
+        auto t3 = v.IamRoleArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IamRoleArn"), t3)
+    return p
+
+# Serialize SNSAction into the query form parameters under `prefix`.
+def sns_action_to_query(list[query.QueryPair] p, str prefix, SNSAction v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "TopicArn"), v.TopicArn)
+    if v.Encoding.is_some():
+        auto t0 = v.Encoding.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Encoding"), t0)
+    return p
+
+# Serialize SNSDestination into the query form parameters under `prefix`.
+def sns_destination_to_query(list[query.QueryPair] p, str prefix, SNSDestination v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "TopicARN"), v.TopicARN)
+    return p
+
+# Serialize StopAction into the query form parameters under `prefix`.
+def stop_action_to_query(list[query.QueryPair] p, str prefix, StopAction v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope)
+    if v.TopicArn.is_some():
+        auto t0 = v.TopicArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TopicArn"), t0)
+    return p
+
+# Serialize Template into the query form parameters under `prefix`.
+def template_to_query(list[query.QueryPair] p, str prefix, Template v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "TemplateName"), v.TemplateName)
+    if v.SubjectPart.is_some():
+        auto t0 = v.SubjectPart.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubjectPart"), t0)
+    if v.TextPart.is_some():
+        auto t1 = v.TextPart.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TextPart"), t1)
+    if v.HtmlPart.is_some():
+        auto t2 = v.HtmlPart.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HtmlPart"), t2)
+    return p
+
+# Serialize TrackingOptions into the query form parameters under `prefix`.
+def tracking_options_to_query(list[query.QueryPair] p, str prefix, TrackingOptions v) -> list[query.QueryPair]:
+    if v.CustomRedirectDomain.is_some():
+        auto t0 = v.CustomRedirectDomain.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CustomRedirectDomain"), t0)
+    return p
+
+# Serialize WorkmailAction into the query form parameters under `prefix`.
+def workmail_action_to_query(list[query.QueryPair] p, str prefix, WorkmailAction v) -> list[query.QueryPair]:
+    if v.TopicArn.is_some():
+        auto t0 = v.TopicArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TopicArn"), t0)
+    auto t1 = v.OrganizationArn
+    p = query.query_scalar(p, query.query_key(prefix, "OrganizationArn"), t1)
+    return p
 
 # A bound SES client: credentials + region, threaded into every operation.
 struct SESClient:
@@ -1191,6 +1508,29 @@ struct SESClient:
         p = query.query_scalar(p, "OriginalRuleSetName", input.OriginalRuleSetName)
         return query.query_request(self.creds, email_service(), self.region, p)
 
+    # CreateConfigurationSet
+    # errors: ConfigurationSetAlreadyExistsException, InvalidConfigurationSetException, LimitExceededException
+    def create_configuration_set(self, CreateConfigurationSetRequest input) -> str:
+        auto p = query.query_params("CreateConfigurationSet", "2010-12-01")
+        p = configuration_set_to_query(p, "ConfigurationSet", input.ConfigurationSet)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # CreateConfigurationSetEventDestination
+    # errors: ConfigurationSetDoesNotExistException, EventDestinationAlreadyExistsException, InvalidCloudWatchDestinationException, InvalidFirehoseDestinationException, InvalidSNSDestinationException, LimitExceededException
+    def create_configuration_set_event_destination(self, CreateConfigurationSetEventDestinationRequest input) -> str:
+        auto p = query.query_params("CreateConfigurationSetEventDestination", "2010-12-01")
+        p = query.query_scalar(p, "ConfigurationSetName", input.ConfigurationSetName)
+        p = event_destination_to_query(p, "EventDestination", input.EventDestination)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # CreateConfigurationSetTrackingOptions
+    # errors: ConfigurationSetDoesNotExistException, InvalidTrackingOptionsException, TrackingOptionsAlreadyExistsException
+    def create_configuration_set_tracking_options(self, CreateConfigurationSetTrackingOptionsRequest input) -> str:
+        auto p = query.query_params("CreateConfigurationSetTrackingOptions", "2010-12-01")
+        p = query.query_scalar(p, "ConfigurationSetName", input.ConfigurationSetName)
+        p = tracking_options_to_query(p, "TrackingOptions", input.TrackingOptions)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
     # CreateCustomVerificationEmailTemplate
     # errors: CustomVerificationEmailInvalidContentException, CustomVerificationEmailTemplateAlreadyExistsException, FromEmailAddressNotVerifiedException, LimitExceededException
     def create_custom_verification_email_template(self, CreateCustomVerificationEmailTemplateRequest input) -> str:
@@ -1203,11 +1543,35 @@ struct SESClient:
         p = query.query_scalar(p, "FailureRedirectionURL", input.FailureRedirectionURL)
         return query.query_request(self.creds, email_service(), self.region, p)
 
+    # CreateReceiptFilter
+    # errors: AlreadyExistsException, LimitExceededException
+    def create_receipt_filter(self, CreateReceiptFilterRequest input) -> str:
+        auto p = query.query_params("CreateReceiptFilter", "2010-12-01")
+        p = receipt_filter_to_query(p, "Filter", input.Filter)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # CreateReceiptRule
+    # errors: AlreadyExistsException, InvalidLambdaFunctionException, InvalidS3ConfigurationException, InvalidSnsTopicException, LimitExceededException, RuleDoesNotExistException, RuleSetDoesNotExistException
+    def create_receipt_rule(self, CreateReceiptRuleRequest input) -> str:
+        auto p = query.query_params("CreateReceiptRule", "2010-12-01")
+        p = query.query_scalar(p, "RuleSetName", input.RuleSetName)
+        if input.After.is_some():
+            p = query.query_scalar(p, "After", input.After.unwrap())
+        p = receipt_rule_to_query(p, "Rule", input.Rule)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
     # CreateReceiptRuleSet
     # errors: AlreadyExistsException, LimitExceededException
     def create_receipt_rule_set(self, CreateReceiptRuleSetRequest input) -> str:
         auto p = query.query_params("CreateReceiptRuleSet", "2010-12-01")
         p = query.query_scalar(p, "RuleSetName", input.RuleSetName)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # CreateTemplate
+    # errors: AlreadyExistsException, InvalidTemplateException, LimitExceededException
+    def create_template(self, CreateTemplateRequest input) -> str:
+        auto p = query.query_params("CreateTemplate", "2010-12-01")
+        p = template_to_query(p, "Template", input.Template)
         return query.query_request(self.creds, email_service(), self.region, p)
 
     # DeleteConfigurationSet
@@ -1434,6 +1798,16 @@ struct SESClient:
         auto p = query.query_params("ListVerifiedEmailAddresses", "2010-12-01")
         return query.query_request(self.creds, email_service(), self.region, p)
 
+    # PutConfigurationSetDeliveryOptions
+    # errors: ConfigurationSetDoesNotExistException, InvalidDeliveryOptionsException
+    def put_configuration_set_delivery_options(self, PutConfigurationSetDeliveryOptionsRequest input) -> str:
+        auto p = query.query_params("PutConfigurationSetDeliveryOptions", "2010-12-01")
+        p = query.query_scalar(p, "ConfigurationSetName", input.ConfigurationSetName)
+        if input.DeliveryOptions.is_some():
+            auto t0 = input.DeliveryOptions.unwrap()
+            p = delivery_options_to_query(p, "DeliveryOptions", t0)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
     # PutIdentityPolicy
     # errors: InvalidPolicyException
     def put_identity_policy(self, PutIdentityPolicyRequest input) -> str:
@@ -1451,6 +1825,56 @@ struct SESClient:
         p = query.query_list(p, "RuleNames", "member", input.RuleNames)
         return query.query_request(self.creds, email_service(), self.region, p)
 
+    # SendBounce
+    # errors: MessageRejected
+    def send_bounce(self, SendBounceRequest input) -> str:
+        auto p = query.query_params("SendBounce", "2010-12-01")
+        p = query.query_scalar(p, "OriginalMessageId", input.OriginalMessageId)
+        p = query.query_scalar(p, "BounceSender", input.BounceSender)
+        if input.Explanation.is_some():
+            p = query.query_scalar(p, "Explanation", input.Explanation.unwrap())
+        if input.MessageDsn.is_some():
+            p = message_dsn_to_query(p, "MessageDsn", input.MessageDsn.unwrap())
+        auto qi0 = 1
+        for qe1 in input.BouncedRecipientInfoList:
+            auto t2 = qe1
+            p = bounced_recipient_info_to_query(p, "BouncedRecipientInfoList.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.BounceSenderArn.is_some():
+            p = query.query_scalar(p, "BounceSenderArn", input.BounceSenderArn.unwrap())
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # SendBulkTemplatedEmail
+    # errors: AccountSendingPausedException, ConfigurationSetDoesNotExistException, ConfigurationSetSendingPausedException, MailFromDomainNotVerifiedException, MessageRejected, TemplateDoesNotExistException
+    def send_bulk_templated_email(self, SendBulkTemplatedEmailRequest input) -> str:
+        auto p = query.query_params("SendBulkTemplatedEmail", "2010-12-01")
+        p = query.query_scalar(p, "Source", input.Source)
+        if input.SourceArn.is_some():
+            p = query.query_scalar(p, "SourceArn", input.SourceArn.unwrap())
+        auto t0 = input.ReplyToAddresses.unwrap_or([])
+        p = query.query_list(p, "ReplyToAddresses", "member", t0)
+        if input.ReturnPath.is_some():
+            p = query.query_scalar(p, "ReturnPath", input.ReturnPath.unwrap())
+        if input.ReturnPathArn.is_some():
+            p = query.query_scalar(p, "ReturnPathArn", input.ReturnPathArn.unwrap())
+        if input.ConfigurationSetName.is_some():
+            auto t1 = input.ConfigurationSetName.unwrap()
+            p = query.query_scalar(p, "ConfigurationSetName", t1)
+        auto qi2 = 1
+        for qe3 in input.DefaultTags.unwrap_or([]):
+            p = message_tag_to_query(p, "DefaultTags.member." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        p = query.query_scalar(p, "Template", input.Template)
+        if input.TemplateArn.is_some():
+            p = query.query_scalar(p, "TemplateArn", input.TemplateArn.unwrap())
+        p = query.query_scalar(p, "DefaultTemplateData", input.DefaultTemplateData)
+        auto qi4 = 1
+        for qe5 in input.Destinations:
+            auto t6 = qe5
+            p = bulk_email_destination_to_query(p, "Destinations.member." + str(qi4), t6)
+            qi4 = qi4 + 1
+        return query.query_request(self.creds, email_service(), self.region, p)
+
     # SendCustomVerificationEmail
     # errors: ConfigurationSetDoesNotExistException, CustomVerificationEmailTemplateDoesNotExistException, FromEmailAddressNotVerifiedException, MessageRejected, ProductionAccessNotGrantedException
     def send_custom_verification_email(self, SendCustomVerificationEmailRequest input) -> str:
@@ -1460,6 +1884,81 @@ struct SESClient:
         if input.ConfigurationSetName.is_some():
             auto t0 = input.ConfigurationSetName.unwrap()
             p = query.query_scalar(p, "ConfigurationSetName", t0)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # SendEmail
+    # errors: AccountSendingPausedException, ConfigurationSetDoesNotExistException, ConfigurationSetSendingPausedException, MailFromDomainNotVerifiedException, MessageRejected
+    def send_email(self, SendEmailRequest input) -> str:
+        auto p = query.query_params("SendEmail", "2010-12-01")
+        p = query.query_scalar(p, "Source", input.Source)
+        p = destination_to_query(p, "Destination", input.Destination)
+        p = message_to_query(p, "Message", input.Message)
+        auto t0 = input.ReplyToAddresses.unwrap_or([])
+        p = query.query_list(p, "ReplyToAddresses", "member", t0)
+        if input.ReturnPath.is_some():
+            p = query.query_scalar(p, "ReturnPath", input.ReturnPath.unwrap())
+        if input.SourceArn.is_some():
+            p = query.query_scalar(p, "SourceArn", input.SourceArn.unwrap())
+        if input.ReturnPathArn.is_some():
+            p = query.query_scalar(p, "ReturnPathArn", input.ReturnPathArn.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = message_tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.ConfigurationSetName.is_some():
+            auto t3 = input.ConfigurationSetName.unwrap()
+            p = query.query_scalar(p, "ConfigurationSetName", t3)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # SendRawEmail
+    # errors: AccountSendingPausedException, ConfigurationSetDoesNotExistException, ConfigurationSetSendingPausedException, MailFromDomainNotVerifiedException, MessageRejected
+    def send_raw_email(self, SendRawEmailRequest input) -> str:
+        auto p = query.query_params("SendRawEmail", "2010-12-01")
+        if input.Source.is_some():
+            p = query.query_scalar(p, "Source", input.Source.unwrap())
+        auto t0 = input.Destinations.unwrap_or([])
+        p = query.query_list(p, "Destinations", "member", t0)
+        p = raw_message_to_query(p, "RawMessage", input.RawMessage)
+        if input.FromArn.is_some():
+            p = query.query_scalar(p, "FromArn", input.FromArn.unwrap())
+        if input.SourceArn.is_some():
+            p = query.query_scalar(p, "SourceArn", input.SourceArn.unwrap())
+        if input.ReturnPathArn.is_some():
+            p = query.query_scalar(p, "ReturnPathArn", input.ReturnPathArn.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = message_tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.ConfigurationSetName.is_some():
+            auto t3 = input.ConfigurationSetName.unwrap()
+            p = query.query_scalar(p, "ConfigurationSetName", t3)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # SendTemplatedEmail
+    # errors: AccountSendingPausedException, ConfigurationSetDoesNotExistException, ConfigurationSetSendingPausedException, MailFromDomainNotVerifiedException, MessageRejected, TemplateDoesNotExistException
+    def send_templated_email(self, SendTemplatedEmailRequest input) -> str:
+        auto p = query.query_params("SendTemplatedEmail", "2010-12-01")
+        p = query.query_scalar(p, "Source", input.Source)
+        p = destination_to_query(p, "Destination", input.Destination)
+        auto t0 = input.ReplyToAddresses.unwrap_or([])
+        p = query.query_list(p, "ReplyToAddresses", "member", t0)
+        if input.ReturnPath.is_some():
+            p = query.query_scalar(p, "ReturnPath", input.ReturnPath.unwrap())
+        if input.SourceArn.is_some():
+            p = query.query_scalar(p, "SourceArn", input.SourceArn.unwrap())
+        if input.ReturnPathArn.is_some():
+            p = query.query_scalar(p, "ReturnPathArn", input.ReturnPathArn.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = message_tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.ConfigurationSetName.is_some():
+            auto t3 = input.ConfigurationSetName.unwrap()
+            p = query.query_scalar(p, "ConfigurationSetName", t3)
+        p = query.query_scalar(p, "Template", input.Template)
+        if input.TemplateArn.is_some():
+            p = query.query_scalar(p, "TemplateArn", input.TemplateArn.unwrap())
+        p = query.query_scalar(p, "TemplateData", input.TemplateData)
         return query.query_request(self.creds, email_service(), self.region, p)
 
     # SetActiveReceiptRuleSet
@@ -1539,6 +2038,14 @@ struct SESClient:
             p = query.query_scalar(p, "Enabled", t0)
         return query.query_request(self.creds, email_service(), self.region, p)
 
+    # UpdateConfigurationSetEventDestination
+    # errors: ConfigurationSetDoesNotExistException, EventDestinationDoesNotExistException, InvalidCloudWatchDestinationException, InvalidFirehoseDestinationException, InvalidSNSDestinationException
+    def update_configuration_set_event_destination(self, UpdateConfigurationSetEventDestinationRequest input) -> str:
+        auto p = query.query_params("UpdateConfigurationSetEventDestination", "2010-12-01")
+        p = query.query_scalar(p, "ConfigurationSetName", input.ConfigurationSetName)
+        p = event_destination_to_query(p, "EventDestination", input.EventDestination)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
     # UpdateConfigurationSetReputationMetricsEnabled
     # errors: ConfigurationSetDoesNotExistException
     def update_configuration_set_reputation_metrics_enabled(self, UpdateConfigurationSetReputationMetricsEnabledRequest input) -> str:
@@ -1553,6 +2060,14 @@ struct SESClient:
         auto p = query.query_params("UpdateConfigurationSetSendingEnabled", "2010-12-01")
         p = query.query_scalar(p, "ConfigurationSetName", input.ConfigurationSetName)
         p = query.query_scalar(p, "Enabled", query.query_bool(input.Enabled))
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # UpdateConfigurationSetTrackingOptions
+    # errors: ConfigurationSetDoesNotExistException, InvalidTrackingOptionsException, TrackingOptionsDoesNotExistException
+    def update_configuration_set_tracking_options(self, UpdateConfigurationSetTrackingOptionsRequest input) -> str:
+        auto p = query.query_params("UpdateConfigurationSetTrackingOptions", "2010-12-01")
+        p = query.query_scalar(p, "ConfigurationSetName", input.ConfigurationSetName)
+        p = tracking_options_to_query(p, "TrackingOptions", input.TrackingOptions)
         return query.query_request(self.creds, email_service(), self.region, p)
 
     # UpdateCustomVerificationEmailTemplate
@@ -1573,6 +2088,21 @@ struct SESClient:
         if input.FailureRedirectionURL.is_some():
             auto t2 = input.FailureRedirectionURL.unwrap()
             p = query.query_scalar(p, "FailureRedirectionURL", t2)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # UpdateReceiptRule
+    # errors: InvalidLambdaFunctionException, InvalidS3ConfigurationException, InvalidSnsTopicException, LimitExceededException, RuleDoesNotExistException, RuleSetDoesNotExistException
+    def update_receipt_rule(self, UpdateReceiptRuleRequest input) -> str:
+        auto p = query.query_params("UpdateReceiptRule", "2010-12-01")
+        p = query.query_scalar(p, "RuleSetName", input.RuleSetName)
+        p = receipt_rule_to_query(p, "Rule", input.Rule)
+        return query.query_request(self.creds, email_service(), self.region, p)
+
+    # UpdateTemplate
+    # errors: InvalidTemplateException, TemplateDoesNotExistException
+    def update_template(self, UpdateTemplateRequest input) -> str:
+        auto p = query.query_params("UpdateTemplate", "2010-12-01")
+        p = template_to_query(p, "Template", input.Template)
         return query.query_request(self.creds, email_service(), self.region, p)
 
     # VerifyDomainDkim

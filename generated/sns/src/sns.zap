@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 42 operations — 32 with a generated method,
-#   10 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 42 operations — 42 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   118 structs (plain carriers), 4 enums, 34 error variants.
 #   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -636,19 +636,6 @@ def sns_error_from_code(str code) -> SNSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   CreatePlatformApplication (member `Attributes` is a map (query maps are a v0 follow-up))
-#   CreatePlatformEndpoint (member `Attributes` is a map (query maps are a v0 follow-up))
-#   CreateTopic (member `Attributes` is a map (query maps are a v0 follow-up))
-#   Publish (member `MessageAttributes` is a map (query maps are a v0 follow-up))
-#   PublishBatch (member `PublishBatchRequestEntries` is a list of PublishBatchRequestEntry (only scalar lists in v0))
-#   SetEndpointAttributes (member `Attributes` is a map (query maps are a v0 follow-up))
-#   SetPlatformApplicationAttributes (member `Attributes` is a map (query maps are a v0 follow-up))
-#   SetSMSAttributes (member `attributes` is a map (query maps are a v0 follow-up))
-#   Subscribe (member `Attributes` is a map (query maps are a v0 follow-up))
-#   TagResource (member `Tags` is a list of Tag (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   ListEndpointsByPlatformApplication
@@ -659,6 +646,51 @@ def sns_error_from_code(str code) -> SNSError:
 #   ListSubscriptions
 #   ListSubscriptionsByTopic
 #   ListTopics
+
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize MessageAttributeValue into the query form parameters under `prefix`.
+def message_attribute_value_to_query(list[query.QueryPair] p, str prefix, MessageAttributeValue v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "DataType"), v.DataType)
+    if v.StringValue.is_some():
+        auto t0 = v.StringValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StringValue"), t0)
+    if v.BinaryValue.is_some():
+        auto t1 = query.query_blob(v.BinaryValue.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "BinaryValue"), t1)
+    return p
+
+# Serialize PublishBatchRequestEntry into the query form parameters under `prefix`.
+def publish_batch_request_entry_to_query(list[query.QueryPair] p, str prefix, PublishBatchRequestEntry v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Id"), v.Id)
+    p = query.query_scalar(p, query.query_key(prefix, "Message"), v.Message)
+    if v.Subject.is_some():
+        auto t0 = v.Subject.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Subject"), t0)
+    if v.MessageStructure.is_some():
+        auto t1 = v.MessageStructure.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MessageStructure"), t1)
+    auto qi2 = 1
+    for qk3 in sorted(v.MessageAttributes.unwrap_or({}).keys()):
+        auto t4 = qk3
+        p = query.query_scalar(p, query.query_key(prefix, "MessageAttributes") + ".entry" + "." + str(qi2) + ".Name", t4)
+        auto t5 = v.MessageAttributes.unwrap_or({})[qk3]
+        p = message_attribute_value_to_query(p, query.query_key(prefix, "MessageAttributes") + ".entry" + "." + str(qi2) + ".Value", t5)
+        qi2 = qi2 + 1
+    if v.MessageDeduplicationId.is_some():
+        auto t6 = v.MessageDeduplicationId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MessageDeduplicationId"), t6)
+    if v.MessageGroupId.is_some():
+        auto t7 = v.MessageGroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MessageGroupId"), t7)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    return p
 
 # A bound SNS client: credentials + region, threaded into every operation.
 struct SNSClient:
@@ -693,6 +725,37 @@ struct SNSClient:
             p = query.query_scalar(p, "AuthenticateOnUnsubscribe", t0)
         return query.query_request(self.creds, sns_service(), self.region, p)
 
+    # CreatePlatformApplication
+    # errors: AuthorizationErrorException, InternalErrorException, InvalidParameterException
+    def create_platform_application(self, CreatePlatformApplicationInput input) -> str:
+        auto p = query.query_params("CreatePlatformApplication", "2010-03-31")
+        p = query.query_scalar(p, "Name", input.Name)
+        p = query.query_scalar(p, "Platform", input.Platform)
+        list[str] qks1 = []
+        list[str] qvs2 = []
+        for qk0 in sorted(input.Attributes.keys()):
+            qks1.append(qk0)
+            qvs2.append(input.Attributes[qk0])
+        p = query.query_map(p, "Attributes", "key", "value", qks1, qvs2)
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # CreatePlatformEndpoint
+    # errors: AuthorizationErrorException, InternalErrorException, InvalidParameterException, NotFoundException
+    def create_platform_endpoint(self, CreatePlatformEndpointInput input) -> str:
+        auto p = query.query_params("CreatePlatformEndpoint", "2010-03-31")
+        auto t0 = input.PlatformApplicationArn
+        p = query.query_scalar(p, "PlatformApplicationArn", t0)
+        p = query.query_scalar(p, "Token", input.Token)
+        if input.CustomUserData.is_some():
+            p = query.query_scalar(p, "CustomUserData", input.CustomUserData.unwrap())
+        list[str] qks2 = []
+        list[str] qvs3 = []
+        for qk1 in sorted(input.Attributes.unwrap_or({}).keys()):
+            qks2.append(qk1)
+            qvs3.append(input.Attributes.unwrap_or({})[qk1])
+        p = query.query_map(p, "Attributes", "key", "value", qks2, qvs3)
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
     # CreateSMSSandboxPhoneNumber
     # errors: AuthorizationErrorException, InternalErrorException, InvalidParameterException, OptedOutException, ThrottledException, UserErrorException
     def create_sms_sandbox_phone_number(self, CreateSMSSandboxPhoneNumberInput input) -> str:
@@ -700,6 +763,26 @@ struct SNSClient:
         p = query.query_scalar(p, "PhoneNumber", input.PhoneNumber)
         if input.LanguageCode.is_some():
             p = query.query_scalar(p, "LanguageCode", input.LanguageCode.unwrap())
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # CreateTopic
+    # errors: AuthorizationErrorException, ConcurrentAccessException, InternalErrorException, InvalidParameterException, InvalidSecurityException, StaleTagException, TagLimitExceededException, TagPolicyException, TopicLimitExceededException
+    def create_topic(self, CreateTopicInput input) -> str:
+        auto p = query.query_params("CreateTopic", "2010-03-31")
+        p = query.query_scalar(p, "Name", input.Name)
+        list[str] qks1 = []
+        list[str] qvs2 = []
+        for qk0 in sorted(input.Attributes.unwrap_or({}).keys()):
+            qks1.append(qk0)
+            qvs2.append(input.Attributes.unwrap_or({})[qk0])
+        p = query.query_map(p, "Attributes", "key", "value", qks1, qvs2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.DataProtectionPolicy.is_some():
+            auto t5 = input.DataProtectionPolicy.unwrap()
+            p = query.query_scalar(p, "DataProtectionPolicy", t5)
         return query.query_request(self.creds, sns_service(), self.region, p)
 
     # DeleteEndpoint
@@ -865,6 +948,48 @@ struct SNSClient:
         p = query.query_scalar(p, "phoneNumber", input.phoneNumber)
         return query.query_request(self.creds, sns_service(), self.region, p)
 
+    # Publish
+    # errors: AuthorizationErrorException, EndpointDisabledException, InternalErrorException, InvalidParameterException, InvalidParameterValueException, InvalidSecurityException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, KMSOptInRequired, KMSThrottlingException, NotFoundException, PlatformApplicationDisabledException, ValidationException
+    def publish(self, PublishInput input) -> str:
+        auto p = query.query_params("Publish", "2010-03-31")
+        if input.TopicArn.is_some():
+            p = query.query_scalar(p, "TopicArn", input.TopicArn.unwrap())
+        if input.TargetArn.is_some():
+            p = query.query_scalar(p, "TargetArn", input.TargetArn.unwrap())
+        if input.PhoneNumber.is_some():
+            p = query.query_scalar(p, "PhoneNumber", input.PhoneNumber.unwrap())
+        p = query.query_scalar(p, "Message", input.Message)
+        if input.Subject.is_some():
+            p = query.query_scalar(p, "Subject", input.Subject.unwrap())
+        if input.MessageStructure.is_some():
+            auto t0 = input.MessageStructure.unwrap()
+            p = query.query_scalar(p, "MessageStructure", t0)
+        auto qi1 = 1
+        for qk2 in sorted(input.MessageAttributes.unwrap_or({}).keys()):
+            auto t3 = qk2
+            p = query.query_scalar(p, "MessageAttributes.entry." + str(qi1) + ".Name", t3)
+            auto t4 = input.MessageAttributes.unwrap_or({})[qk2]
+            p = message_attribute_value_to_query(p, "MessageAttributes.entry." + str(qi1) + ".Value", t4)
+            qi1 = qi1 + 1
+        if input.MessageDeduplicationId.is_some():
+            auto t5 = input.MessageDeduplicationId.unwrap()
+            p = query.query_scalar(p, "MessageDeduplicationId", t5)
+        if input.MessageGroupId.is_some():
+            p = query.query_scalar(p, "MessageGroupId", input.MessageGroupId.unwrap())
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # PublishBatch
+    # errors: AuthorizationErrorException, BatchEntryIdsNotDistinctException, BatchRequestTooLongException, EmptyBatchRequestException, EndpointDisabledException, InternalErrorException, InvalidBatchEntryIdException, InvalidParameterException, InvalidParameterValueException, InvalidSecurityException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, KMSOptInRequired, KMSThrottlingException, NotFoundException, PlatformApplicationDisabledException, TooManyEntriesInBatchRequestException, ValidationException
+    def publish_batch(self, PublishBatchInput input) -> str:
+        auto p = query.query_params("PublishBatch", "2010-03-31")
+        p = query.query_scalar(p, "TopicArn", input.TopicArn)
+        auto qi0 = 1
+        for qe1 in input.PublishBatchRequestEntries:
+            auto t2 = qe1
+            p = publish_batch_request_entry_to_query(p, "PublishBatchRequestEntries.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
     # PutDataProtectionPolicy
     # errors: AuthorizationErrorException, InternalErrorException, InvalidParameterException, InvalidSecurityException, NotFoundException
     def put_data_protection_policy(self, PutDataProtectionPolicyInput input) -> str:
@@ -879,6 +1004,45 @@ struct SNSClient:
         auto p = query.query_params("RemovePermission", "2010-03-31")
         p = query.query_scalar(p, "TopicArn", input.TopicArn)
         p = query.query_scalar(p, "Label", input.Label)
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # SetEndpointAttributes
+    # errors: AuthorizationErrorException, InternalErrorException, InvalidParameterException, NotFoundException
+    def set_endpoint_attributes(self, SetEndpointAttributesInput input) -> str:
+        auto p = query.query_params("SetEndpointAttributes", "2010-03-31")
+        p = query.query_scalar(p, "EndpointArn", input.EndpointArn)
+        list[str] qks1 = []
+        list[str] qvs2 = []
+        for qk0 in sorted(input.Attributes.keys()):
+            qks1.append(qk0)
+            qvs2.append(input.Attributes[qk0])
+        p = query.query_map(p, "Attributes", "key", "value", qks1, qvs2)
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # SetPlatformApplicationAttributes
+    # errors: AuthorizationErrorException, InternalErrorException, InvalidParameterException, NotFoundException
+    def set_platform_application_attributes(self, SetPlatformApplicationAttributesInput input) -> str:
+        auto p = query.query_params("SetPlatformApplicationAttributes", "2010-03-31")
+        auto t0 = input.PlatformApplicationArn
+        p = query.query_scalar(p, "PlatformApplicationArn", t0)
+        list[str] qks2 = []
+        list[str] qvs3 = []
+        for qk1 in sorted(input.Attributes.keys()):
+            qks2.append(qk1)
+            qvs3.append(input.Attributes[qk1])
+        p = query.query_map(p, "Attributes", "key", "value", qks2, qvs3)
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # SetSMSAttributes
+    # errors: AuthorizationErrorException, InternalErrorException, InvalidParameterException, ThrottledException
+    def set_sms_attributes(self, SetSMSAttributesInput input) -> str:
+        auto p = query.query_params("SetSMSAttributes", "2010-03-31")
+        list[str] qks1 = []
+        list[str] qvs2 = []
+        for qk0 in sorted(input.attributes.keys()):
+            qks1.append(qk0)
+            qvs2.append(input.attributes[qk0])
+        p = query.query_map(p, "attributes", "key", "value", qks1, qvs2)
         return query.query_request(self.creds, sns_service(), self.region, p)
 
     # SetSubscriptionAttributes
@@ -899,6 +1063,36 @@ struct SNSClient:
         p = query.query_scalar(p, "AttributeName", input.AttributeName)
         if input.AttributeValue.is_some():
             p = query.query_scalar(p, "AttributeValue", input.AttributeValue.unwrap())
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # Subscribe
+    # errors: AuthorizationErrorException, FilterPolicyLimitExceededException, InternalErrorException, InvalidParameterException, InvalidSecurityException, NotFoundException, ReplayLimitExceededException, SubscriptionLimitExceededException
+    def subscribe(self, SubscribeInput input) -> str:
+        auto p = query.query_params("Subscribe", "2010-03-31")
+        p = query.query_scalar(p, "TopicArn", input.TopicArn)
+        p = query.query_scalar(p, "Protocol", input.Protocol)
+        if input.Endpoint.is_some():
+            p = query.query_scalar(p, "Endpoint", input.Endpoint.unwrap())
+        list[str] qks1 = []
+        list[str] qvs2 = []
+        for qk0 in sorted(input.Attributes.unwrap_or({}).keys()):
+            qks1.append(qk0)
+            qvs2.append(input.Attributes.unwrap_or({})[qk0])
+        p = query.query_map(p, "Attributes", "key", "value", qks1, qvs2)
+        if input.ReturnSubscriptionArn.is_some():
+            auto t3 = query.query_bool(input.ReturnSubscriptionArn.unwrap())
+            p = query.query_scalar(p, "ReturnSubscriptionArn", t3)
+        return query.query_request(self.creds, sns_service(), self.region, p)
+
+    # TagResource
+    # errors: AuthorizationErrorException, ConcurrentAccessException, InvalidParameterException, ResourceNotFoundException, StaleTagException, TagLimitExceededException, TagPolicyException
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto p = query.query_params("TagResource", "2010-03-31")
+        p = query.query_scalar(p, "ResourceArn", input.ResourceArn)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, sns_service(), self.region, p)
 
     # Unsubscribe

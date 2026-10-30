@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 51 operations — 27 with a generated method,
-#   24 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 51 operations — 51 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   214 structs (plain carriers), 27 enums, 56 error variants.
 #   0 paginators generated (10 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -1459,33 +1459,6 @@ def elasticloadbalancing_error_from_code(str code) -> Elastic_Load_Balancing_v2E
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AddListenerCertificates (member `Certificates` is a list of Certificate (only scalar lists in v0))
-#   AddTags (member `Tags` is a list of Tag (only scalar lists in v0))
-#   AddTrustStoreRevocations (member `RevocationContents` is a list of RevocationContent (only scalar lists in v0))
-#   CreateListener (member `Certificates` is a list of Certificate (only scalar lists in v0))
-#   CreateLoadBalancer (member `SubnetMappings` is a list of SubnetMapping (only scalar lists in v0))
-#   CreateRule (member `Conditions` is a list of RuleCondition (only scalar lists in v0))
-#   CreateTargetGroup (member `Matcher` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTrustStore (member `Tags` is a list of Tag (only scalar lists in v0))
-#   DeregisterTargets (member `Targets` is a list of TargetDescription (only scalar lists in v0))
-#   DescribeTargetHealth (member `Targets` is a list of TargetDescription (only scalar lists in v0))
-#   DescribeTrustStoreRevocations (member `RevocationIds` is a list of int64 (only scalar lists in v0))
-#   ModifyCapacityReservation (member `MinimumLoadBalancerCapacity` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyIpPools (member `IpamPools` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyListener (member `Certificates` is a list of Certificate (only scalar lists in v0))
-#   ModifyListenerAttributes (member `Attributes` is a list of ListenerAttribute (only scalar lists in v0))
-#   ModifyLoadBalancerAttributes (member `Attributes` is a list of LoadBalancerAttribute (only scalar lists in v0))
-#   ModifyRule (member `Conditions` is a list of RuleCondition (only scalar lists in v0))
-#   ModifyTargetGroup (member `Matcher` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyTargetGroupAttributes (member `Attributes` is a list of TargetGroupAttribute (only scalar lists in v0))
-#   RegisterTargets (member `Targets` is a list of TargetDescription (only scalar lists in v0))
-#   RemoveListenerCertificates (member `Certificates` is a list of Certificate (only scalar lists in v0))
-#   RemoveTrustStoreRevocations (member `RevocationIds` is a list of int64 (only scalar lists in v0))
-#   SetRulePriorities (member `RulePriorities` is a list of RulePriorityPair (only scalar lists in v0))
-#   SetSubnets (member `SubnetMappings` is a list of SubnetMapping (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeAccountLimits
@@ -1499,10 +1472,630 @@ def elasticloadbalancing_error_from_code(str code) -> Elastic_Load_Balancing_v2E
 #   DescribeTrustStoreRevocations
 #   DescribeTrustStores
 
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize Action into the query form parameters under `prefix`.
+def action_to_query(list[query.QueryPair] p, str prefix, Action v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type)
+    if v.TargetGroupArn.is_some():
+        auto t0 = v.TargetGroupArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TargetGroupArn"), t0)
+    if v.AuthenticateOidcConfig.is_some():
+        auto t1 = v.AuthenticateOidcConfig.unwrap()
+        p = authenticate_oidc_action_config_to_query(p, query.query_key(prefix, "AuthenticateOidcConfig"), t1)
+    if v.AuthenticateCognitoConfig.is_some():
+        auto t2 = v.AuthenticateCognitoConfig.unwrap()
+        p = authenticate_cognito_action_config_to_query(p, query.query_key(prefix, "AuthenticateCognitoConfig"), t2)
+    if v.Order.is_some():
+        auto t3 = str(v.Order.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Order"), t3)
+    if v.RedirectConfig.is_some():
+        auto t4 = v.RedirectConfig.unwrap()
+        p = redirect_action_config_to_query(p, query.query_key(prefix, "RedirectConfig"), t4)
+    if v.FixedResponseConfig.is_some():
+        auto t5 = v.FixedResponseConfig.unwrap()
+        p = fixed_response_action_config_to_query(p, query.query_key(prefix, "FixedResponseConfig"), t5)
+    if v.ForwardConfig.is_some():
+        auto t6 = v.ForwardConfig.unwrap()
+        p = forward_action_config_to_query(p, query.query_key(prefix, "ForwardConfig"), t6)
+    if v.JwtValidationConfig.is_some():
+        auto t7 = v.JwtValidationConfig.unwrap()
+        p = jwt_validation_action_config_to_query(p, query.query_key(prefix, "JwtValidationConfig"), t7)
+    return p
+
+# Serialize AuthenticateCognitoActionConfig into the query form parameters under `prefix`.
+def authenticate_cognito_action_config_to_query(list[query.QueryPair] p, str prefix, AuthenticateCognitoActionConfig v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "UserPoolArn"), v.UserPoolArn)
+    auto t0 = v.UserPoolClientId
+    p = query.query_scalar(p, query.query_key(prefix, "UserPoolClientId"), t0)
+    auto t1 = v.UserPoolDomain
+    p = query.query_scalar(p, query.query_key(prefix, "UserPoolDomain"), t1)
+    if v.SessionCookieName.is_some():
+        auto t2 = v.SessionCookieName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SessionCookieName"), t2)
+    if v.Scope.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope.unwrap())
+    if v.SessionTimeout.is_some():
+        auto t3 = str(v.SessionTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SessionTimeout"), t3)
+    list[str] qks5 = []
+    list[str] qvs6 = []
+    for qk4 in sorted(v.AuthenticationRequestExtraParams.unwrap_or({}).keys()):
+        qks5.append(qk4)
+        qvs6.append(v.AuthenticationRequestExtraParams.unwrap_or({})[qk4])
+    auto t7 = qvs6
+    p = query.query_map(p, query.query_key(prefix, "AuthenticationRequestExtraParams"), "key", "value", qks5, t7)
+    if v.OnUnauthenticatedRequest.is_some():
+        auto t8 = v.OnUnauthenticatedRequest.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OnUnauthenticatedRequest"), t8)
+    return p
+
+# Serialize AuthenticateOidcActionConfig into the query form parameters under `prefix`.
+def authenticate_oidc_action_config_to_query(list[query.QueryPair] p, str prefix, AuthenticateOidcActionConfig v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Issuer"), v.Issuer)
+    auto t0 = v.AuthorizationEndpoint
+    p = query.query_scalar(p, query.query_key(prefix, "AuthorizationEndpoint"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "TokenEndpoint"), v.TokenEndpoint)
+    auto t1 = v.UserInfoEndpoint
+    p = query.query_scalar(p, query.query_key(prefix, "UserInfoEndpoint"), t1)
+    p = query.query_scalar(p, query.query_key(prefix, "ClientId"), v.ClientId)
+    if v.ClientSecret.is_some():
+        auto t2 = v.ClientSecret.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientSecret"), t2)
+    if v.SessionCookieName.is_some():
+        auto t3 = v.SessionCookieName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SessionCookieName"), t3)
+    if v.Scope.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope.unwrap())
+    if v.SessionTimeout.is_some():
+        auto t4 = str(v.SessionTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SessionTimeout"), t4)
+    list[str] qks6 = []
+    list[str] qvs7 = []
+    for qk5 in sorted(v.AuthenticationRequestExtraParams.unwrap_or({}).keys()):
+        qks6.append(qk5)
+        qvs7.append(v.AuthenticationRequestExtraParams.unwrap_or({})[qk5])
+    auto t8 = qvs7
+    p = query.query_map(p, query.query_key(prefix, "AuthenticationRequestExtraParams"), "key", "value", qks6, t8)
+    if v.OnUnauthenticatedRequest.is_some():
+        auto t9 = v.OnUnauthenticatedRequest.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OnUnauthenticatedRequest"), t9)
+    if v.UseExistingClientSecret.is_some():
+        auto t10 = query.query_bool(v.UseExistingClientSecret.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UseExistingClientSecret"), t10)
+    return p
+
+# Serialize Certificate into the query form parameters under `prefix`.
+def certificate_to_query(list[query.QueryPair] p, str prefix, Certificate v) -> list[query.QueryPair]:
+    if v.CertificateArn.is_some():
+        auto t0 = v.CertificateArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CertificateArn"), t0)
+    if v.IsDefault.is_some():
+        auto t1 = query.query_bool(v.IsDefault.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IsDefault"), t1)
+    return p
+
+# Serialize FixedResponseActionConfig into the query form parameters under `prefix`.
+def fixed_response_action_config_to_query(list[query.QueryPair] p, str prefix, FixedResponseActionConfig v) -> list[query.QueryPair]:
+    if v.MessageBody.is_some():
+        auto t0 = v.MessageBody.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MessageBody"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "StatusCode"), v.StatusCode)
+    if v.ContentType.is_some():
+        auto t1 = v.ContentType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ContentType"), t1)
+    return p
+
+# Serialize ForwardActionConfig into the query form parameters under `prefix`.
+def forward_action_config_to_query(list[query.QueryPair] p, str prefix, ForwardActionConfig v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.TargetGroups.unwrap_or([]):
+        auto t2 = qe1
+        p = target_group_tuple_to_query(p, query.query_key(prefix, "TargetGroups") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    if v.TargetGroupStickinessConfig.is_some():
+        auto t3 = v.TargetGroupStickinessConfig.unwrap()
+        p = target_group_stickiness_config_to_query(p, query.query_key(prefix, "TargetGroupStickinessConfig"), t3)
+    return p
+
+# Serialize HostHeaderConditionConfig into the query form parameters under `prefix`.
+def host_header_condition_config_to_query(list[query.QueryPair] p, str prefix, HostHeaderConditionConfig v) -> list[query.QueryPair]:
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t0)
+    auto t1 = v.RegexValues.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "RegexValues"), "member", t1)
+    return p
+
+# Serialize HostHeaderRewriteConfig into the query form parameters under `prefix`.
+def host_header_rewrite_config_to_query(list[query.QueryPair] p, str prefix, HostHeaderRewriteConfig v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.Rewrites.unwrap_or([]):
+        auto t2 = qe1
+        p = rewrite_config_to_query(p, query.query_key(prefix, "Rewrites") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize HttpHeaderConditionConfig into the query form parameters under `prefix`.
+def http_header_condition_config_to_query(list[query.QueryPair] p, str prefix, HttpHeaderConditionConfig v) -> list[query.QueryPair]:
+    if v.HttpHeaderName.is_some():
+        auto t0 = v.HttpHeaderName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpHeaderName"), t0)
+    auto t1 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t1)
+    auto t2 = v.RegexValues.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "RegexValues"), "member", t2)
+    return p
+
+# Serialize HttpRequestMethodConditionConfig into the query form parameters under `prefix`.
+def http_request_method_condition_config_to_query(list[query.QueryPair] p, str prefix, HttpRequestMethodConditionConfig v) -> list[query.QueryPair]:
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t0)
+    return p
+
+# Serialize IpamPools into the query form parameters under `prefix`.
+def ipam_pools_to_query(list[query.QueryPair] p, str prefix, IpamPools v) -> list[query.QueryPair]:
+    if v.Ipv4IpamPoolId.is_some():
+        auto t0 = v.Ipv4IpamPoolId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv4IpamPoolId"), t0)
+    return p
+
+# Serialize JwtValidationActionAdditionalClaim into the query form parameters under `prefix`.
+def jwt_validation_action_additional_claim_to_query(list[query.QueryPair] p, str prefix, JwtValidationActionAdditionalClaim v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Format"), v.Format)
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", v.Values)
+    return p
+
+# Serialize JwtValidationActionConfig into the query form parameters under `prefix`.
+def jwt_validation_action_config_to_query(list[query.QueryPair] p, str prefix, JwtValidationActionConfig v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "JwksEndpoint"), v.JwksEndpoint)
+    p = query.query_scalar(p, query.query_key(prefix, "Issuer"), v.Issuer)
+    auto qi0 = 1
+    for qe1 in v.AdditionalClaims.unwrap_or([]):
+        auto t2 = qe1
+        p = jwt_validation_action_additional_claim_to_query(p, query.query_key(prefix, "AdditionalClaims") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize ListenerAttribute into the query form parameters under `prefix`.
+def listener_attribute_to_query(list[query.QueryPair] p, str prefix, ListenerAttribute v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize LoadBalancerAttribute into the query form parameters under `prefix`.
+def load_balancer_attribute_to_query(list[query.QueryPair] p, str prefix, LoadBalancerAttribute v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize Matcher into the query form parameters under `prefix`.
+def matcher_to_query(list[query.QueryPair] p, str prefix, Matcher v) -> list[query.QueryPair]:
+    if v.HttpCode.is_some():
+        auto t0 = v.HttpCode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpCode"), t0)
+    if v.GrpcCode.is_some():
+        auto t1 = v.GrpcCode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GrpcCode"), t1)
+    return p
+
+# Serialize MinimumLoadBalancerCapacity into the query form parameters under `prefix`.
+def minimum_load_balancer_capacity_to_query(list[query.QueryPair] p, str prefix, MinimumLoadBalancerCapacity v) -> list[query.QueryPair]:
+    if v.CapacityUnits.is_some():
+        auto t0 = str(v.CapacityUnits.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "CapacityUnits"), t0)
+    return p
+
+# Serialize MutualAuthenticationAttributes into the query form parameters under `prefix`.
+def mutual_authentication_attributes_to_query(list[query.QueryPair] p, str prefix, MutualAuthenticationAttributes v) -> list[query.QueryPair]:
+    if v.Mode.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Mode"), v.Mode.unwrap())
+    if v.TrustStoreArn.is_some():
+        auto t0 = v.TrustStoreArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TrustStoreArn"), t0)
+    if v.IgnoreClientCertificateExpiry.is_some():
+        auto t1 = query.query_bool(v.IgnoreClientCertificateExpiry.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IgnoreClientCertificateExpiry"), t1)
+    if v.TrustStoreAssociationStatus.is_some():
+        auto t2 = v.TrustStoreAssociationStatus.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TrustStoreAssociationStatus"), t2)
+    if v.AdvertiseTrustStoreCaNames.is_some():
+        auto t3 = v.AdvertiseTrustStoreCaNames.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AdvertiseTrustStoreCaNames"), t3)
+    return p
+
+# Serialize PathPatternConditionConfig into the query form parameters under `prefix`.
+def path_pattern_condition_config_to_query(list[query.QueryPair] p, str prefix, PathPatternConditionConfig v) -> list[query.QueryPair]:
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t0)
+    auto t1 = v.RegexValues.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "RegexValues"), "member", t1)
+    return p
+
+# Serialize QueryStringConditionConfig into the query form parameters under `prefix`.
+def query_string_condition_config_to_query(list[query.QueryPair] p, str prefix, QueryStringConditionConfig v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.Values.unwrap_or([]):
+        auto t2 = qe1
+        p = query_string_key_value_pair_to_query(p, query.query_key(prefix, "Values") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize QueryStringKeyValuePair into the query form parameters under `prefix`.
+def query_string_key_value_pair_to_query(list[query.QueryPair] p, str prefix, QueryStringKeyValuePair v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize RedirectActionConfig into the query form parameters under `prefix`.
+def redirect_action_config_to_query(list[query.QueryPair] p, str prefix, RedirectActionConfig v) -> list[query.QueryPair]:
+    if v.Protocol.is_some():
+        auto t0 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t0)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), v.Port.unwrap())
+    if v.Host.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Host"), v.Host.unwrap())
+    if v.Path.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Path"), v.Path.unwrap())
+    if v.Query.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Query"), v.Query.unwrap())
+    p = query.query_scalar(p, query.query_key(prefix, "StatusCode"), v.StatusCode)
+    return p
+
+# Serialize RevocationContent into the query form parameters under `prefix`.
+def revocation_content_to_query(list[query.QueryPair] p, str prefix, RevocationContent v) -> list[query.QueryPair]:
+    if v.S3Bucket.is_some():
+        auto t0 = v.S3Bucket.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3Bucket"), t0)
+    if v.S3Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "S3Key"), v.S3Key.unwrap())
+    if v.S3ObjectVersion.is_some():
+        auto t1 = v.S3ObjectVersion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3ObjectVersion"), t1)
+    if v.RevocationType.is_some():
+        auto t2 = v.RevocationType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RevocationType"), t2)
+    return p
+
+# Serialize RewriteConfig into the query form parameters under `prefix`.
+def rewrite_config_to_query(list[query.QueryPair] p, str prefix, RewriteConfig v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Regex"), v.Regex)
+    p = query.query_scalar(p, query.query_key(prefix, "Replace"), v.Replace)
+    return p
+
+# Serialize RuleCondition into the query form parameters under `prefix`.
+def rule_condition_to_query(list[query.QueryPair] p, str prefix, RuleCondition v) -> list[query.QueryPair]:
+    if v.Field.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Field"), v.Field.unwrap())
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t0)
+    if v.HostHeaderConfig.is_some():
+        auto t1 = v.HostHeaderConfig.unwrap()
+        p = host_header_condition_config_to_query(p, query.query_key(prefix, "HostHeaderConfig"), t1)
+    if v.PathPatternConfig.is_some():
+        auto t2 = v.PathPatternConfig.unwrap()
+        p = path_pattern_condition_config_to_query(p, query.query_key(prefix, "PathPatternConfig"), t2)
+    if v.HttpHeaderConfig.is_some():
+        auto t3 = v.HttpHeaderConfig.unwrap()
+        p = http_header_condition_config_to_query(p, query.query_key(prefix, "HttpHeaderConfig"), t3)
+    if v.QueryStringConfig.is_some():
+        auto t4 = v.QueryStringConfig.unwrap()
+        p = query_string_condition_config_to_query(p, query.query_key(prefix, "QueryStringConfig"), t4)
+    if v.HttpRequestMethodConfig.is_some():
+        auto t5 = v.HttpRequestMethodConfig.unwrap()
+        p = http_request_method_condition_config_to_query(p, query.query_key(prefix, "HttpRequestMethodConfig"), t5)
+    if v.SourceIpConfig.is_some():
+        auto t6 = v.SourceIpConfig.unwrap()
+        p = source_ip_condition_config_to_query(p, query.query_key(prefix, "SourceIpConfig"), t6)
+    auto t7 = v.RegexValues.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "RegexValues"), "member", t7)
+    return p
+
+# Serialize RulePriorityPair into the query form parameters under `prefix`.
+def rule_priority_pair_to_query(list[query.QueryPair] p, str prefix, RulePriorityPair v) -> list[query.QueryPair]:
+    if v.RuleArn.is_some():
+        auto t0 = v.RuleArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RuleArn"), t0)
+    if v.Priority.is_some():
+        auto t1 = str(v.Priority.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Priority"), t1)
+    return p
+
+# Serialize RuleTransform into the query form parameters under `prefix`.
+def rule_transform_to_query(list[query.QueryPair] p, str prefix, RuleTransform v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type)
+    if v.HostHeaderRewriteConfig.is_some():
+        auto t0 = v.HostHeaderRewriteConfig.unwrap()
+        p = host_header_rewrite_config_to_query(p, query.query_key(prefix, "HostHeaderRewriteConfig"), t0)
+    if v.UrlRewriteConfig.is_some():
+        auto t1 = v.UrlRewriteConfig.unwrap()
+        p = url_rewrite_config_to_query(p, query.query_key(prefix, "UrlRewriteConfig"), t1)
+    return p
+
+# Serialize SourceIpConditionConfig into the query form parameters under `prefix`.
+def source_ip_condition_config_to_query(list[query.QueryPair] p, str prefix, SourceIpConditionConfig v) -> list[query.QueryPair]:
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t0)
+    if v.IpAddressType.is_some():
+        auto t1 = v.IpAddressType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IpAddressType"), t1)
+    return p
+
+# Serialize SubnetMapping into the query form parameters under `prefix`.
+def subnet_mapping_to_query(list[query.QueryPair] p, str prefix, SubnetMapping v) -> list[query.QueryPair]:
+    if v.SubnetId.is_some():
+        auto t0 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t0)
+    if v.AllocationId.is_some():
+        auto t1 = v.AllocationId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllocationId"), t1)
+    if v.PrivateIPv4Address.is_some():
+        auto t2 = v.PrivateIPv4Address.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIPv4Address"), t2)
+    if v.IPv6Address.is_some():
+        auto t3 = v.IPv6Address.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IPv6Address"), t3)
+    if v.SourceNatIpv6Prefix.is_some():
+        auto t4 = v.SourceNatIpv6Prefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceNatIpv6Prefix"), t4)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key)
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize TargetDescription into the query form parameters under `prefix`.
+def target_description_to_query(list[query.QueryPair] p, str prefix, TargetDescription v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Id"), v.Id)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    if v.AvailabilityZone.is_some():
+        auto t0 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t0)
+    if v.QuicServerId.is_some():
+        auto t1 = v.QuicServerId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "QuicServerId"), t1)
+    return p
+
+# Serialize TargetGroupAttribute into the query form parameters under `prefix`.
+def target_group_attribute_to_query(list[query.QueryPair] p, str prefix, TargetGroupAttribute v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize TargetGroupStickinessConfig into the query form parameters under `prefix`.
+def target_group_stickiness_config_to_query(list[query.QueryPair] p, str prefix, TargetGroupStickinessConfig v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.DurationSeconds.is_some():
+        auto t1 = str(v.DurationSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DurationSeconds"), t1)
+    return p
+
+# Serialize TargetGroupTuple into the query form parameters under `prefix`.
+def target_group_tuple_to_query(list[query.QueryPair] p, str prefix, TargetGroupTuple v) -> list[query.QueryPair]:
+    if v.TargetGroupArn.is_some():
+        auto t0 = v.TargetGroupArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TargetGroupArn"), t0)
+    if v.Weight.is_some():
+        auto t1 = str(v.Weight.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Weight"), t1)
+    return p
+
+# Serialize UrlRewriteConfig into the query form parameters under `prefix`.
+def url_rewrite_config_to_query(list[query.QueryPair] p, str prefix, UrlRewriteConfig v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.Rewrites.unwrap_or([]):
+        auto t2 = qe1
+        p = rewrite_config_to_query(p, query.query_key(prefix, "Rewrites") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
 # A bound Elastic_Load_Balancing_v2 client: credentials + region, threaded into every operation.
 struct Elastic_Load_Balancing_v2Client:
     core.Credentials creds
     str region
+
+    # AddListenerCertificates
+    # errors: CertificateNotFoundException, ListenerNotFoundException, TooManyCertificatesException
+    def add_listener_certificates(self, AddListenerCertificatesInput input) -> str:
+        auto p = query.query_params("AddListenerCertificates", "2015-12-01")
+        p = query.query_scalar(p, "ListenerArn", input.ListenerArn)
+        auto qi0 = 1
+        for qe1 in input.Certificates:
+            p = certificate_to_query(p, "Certificates.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # AddTags
+    # errors: DuplicateTagKeysException, ListenerNotFoundException, LoadBalancerNotFoundException, RuleNotFoundException, TargetGroupNotFoundException, TooManyTagsException, TrustStoreNotFoundException
+    def add_tags(self, AddTagsInput input) -> str:
+        auto p = query.query_params("AddTags", "2015-12-01")
+        p = query.query_list(p, "ResourceArns", "member", input.ResourceArns)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # AddTrustStoreRevocations
+    # errors: InvalidRevocationContentException, RevocationContentNotFoundException, TooManyTrustStoreRevocationEntriesException, TrustStoreNotFoundException
+    def add_trust_store_revocations(self, AddTrustStoreRevocationsInput input) -> str:
+        auto p = query.query_params("AddTrustStoreRevocations", "2015-12-01")
+        p = query.query_scalar(p, "TrustStoreArn", input.TrustStoreArn)
+        auto qi0 = 1
+        for qe1 in input.RevocationContents.unwrap_or([]):
+            auto t2 = qe1
+            p = revocation_content_to_query(p, "RevocationContents.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # CreateListener
+    # errors: ALPNPolicyNotSupportedException, CertificateNotFoundException, DuplicateListenerException, IncompatibleProtocolsException, InvalidConfigurationRequestException, InvalidLoadBalancerActionException, LoadBalancerNotFoundException, SSLPolicyNotFoundException, TargetGroupAssociationLimitException, TargetGroupNotFoundException, TooManyActionsException, TooManyCertificatesException, TooManyListenersException, TooManyRegistrationsForTargetIdException, TooManyTagsException, TooManyTargetsException, TooManyUniqueTargetGroupsPerLoadBalancerException, TrustStoreNotFoundException, TrustStoreNotReadyException, UnsupportedProtocolException
+    def create_listener(self, CreateListenerInput input) -> str:
+        auto p = query.query_params("CreateListener", "2015-12-01")
+        p = query.query_scalar(p, "LoadBalancerArn", input.LoadBalancerArn)
+        if input.Protocol.is_some():
+            p = query.query_scalar(p, "Protocol", input.Protocol.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.SslPolicy.is_some():
+            p = query.query_scalar(p, "SslPolicy", input.SslPolicy.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Certificates.unwrap_or([]):
+            p = certificate_to_query(p, "Certificates.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto qi2 = 1
+        for qe3 in input.DefaultActions:
+            p = action_to_query(p, "DefaultActions.member." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        p = query.query_list(p, "AlpnPolicy", "member", input.AlpnPolicy.unwrap_or([]))
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.MutualAuthentication.is_some():
+            auto t6 = input.MutualAuthentication.unwrap()
+            p = mutual_authentication_attributes_to_query(p, "MutualAuthentication", t6)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # CreateLoadBalancer
+    # errors: AllocationIdNotFoundException, AvailabilityZoneNotSupportedException, DuplicateLoadBalancerNameException, DuplicateTagKeysException, InvalidConfigurationRequestException, InvalidSchemeException, InvalidSecurityGroupException, InvalidSubnetException, OperationNotPermittedException, ResourceInUseException, SubnetNotFoundException, TooManyLoadBalancersException, TooManyTagsException
+    def create_load_balancer(self, CreateLoadBalancerInput input) -> str:
+        auto p = query.query_params("CreateLoadBalancer", "2015-12-01")
+        p = query.query_scalar(p, "Name", input.Name)
+        p = query.query_list(p, "Subnets", "member", input.Subnets.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.SubnetMappings.unwrap_or([]):
+            p = subnet_mapping_to_query(p, "SubnetMappings.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.SecurityGroups.unwrap_or([])
+        p = query.query_list(p, "SecurityGroups", "member", t2)
+        if input.Scheme.is_some():
+            p = query.query_scalar(p, "Scheme", input.Scheme.unwrap())
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.Type.is_some():
+            p = query.query_scalar(p, "Type", input.Type.unwrap())
+        if input.IpAddressType.is_some():
+            p = query.query_scalar(p, "IpAddressType", input.IpAddressType.unwrap())
+        if input.CustomerOwnedIpv4Pool.is_some():
+            auto t5 = input.CustomerOwnedIpv4Pool.unwrap()
+            p = query.query_scalar(p, "CustomerOwnedIpv4Pool", t5)
+        if input.EnablePrefixForIpv6SourceNat.is_some():
+            auto t6 = input.EnablePrefixForIpv6SourceNat.unwrap()
+            p = query.query_scalar(p, "EnablePrefixForIpv6SourceNat", t6)
+        if input.IpamPools.is_some():
+            p = ipam_pools_to_query(p, "IpamPools", input.IpamPools.unwrap())
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # CreateRule
+    # errors: IncompatibleProtocolsException, InvalidConfigurationRequestException, InvalidLoadBalancerActionException, ListenerNotFoundException, PriorityInUseException, TargetGroupAssociationLimitException, TargetGroupNotFoundException, TooManyActionsException, TooManyRegistrationsForTargetIdException, TooManyRulesException, TooManyTagsException, TooManyTargetGroupsException, TooManyTargetsException, TooManyUniqueTargetGroupsPerLoadBalancerException, UnsupportedProtocolException
+    def create_rule(self, CreateRuleInput input) -> str:
+        auto p = query.query_params("CreateRule", "2015-12-01")
+        p = query.query_scalar(p, "ListenerArn", input.ListenerArn)
+        auto qi0 = 1
+        for qe1 in input.Conditions:
+            p = rule_condition_to_query(p, "Conditions.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_scalar(p, "Priority", str(input.Priority))
+        auto qi2 = 1
+        for qe3 in input.Actions:
+            p = action_to_query(p, "Actions.member." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        auto qi6 = 1
+        for qe7 in input.Transforms.unwrap_or([]):
+            p = rule_transform_to_query(p, "Transforms.member." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # CreateTargetGroup
+    # errors: DuplicateTargetGroupNameException, InvalidConfigurationRequestException, TooManyTagsException, TooManyTargetGroupsException
+    def create_target_group(self, CreateTargetGroupInput input) -> str:
+        auto p = query.query_params("CreateTargetGroup", "2015-12-01")
+        p = query.query_scalar(p, "Name", input.Name)
+        if input.Protocol.is_some():
+            p = query.query_scalar(p, "Protocol", input.Protocol.unwrap())
+        if input.ProtocolVersion.is_some():
+            p = query.query_scalar(p, "ProtocolVersion", input.ProtocolVersion.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.VpcId.is_some():
+            p = query.query_scalar(p, "VpcId", input.VpcId.unwrap())
+        if input.HealthCheckProtocol.is_some():
+            auto t0 = input.HealthCheckProtocol.unwrap()
+            p = query.query_scalar(p, "HealthCheckProtocol", t0)
+        if input.HealthCheckPort.is_some():
+            p = query.query_scalar(p, "HealthCheckPort", input.HealthCheckPort.unwrap())
+        if input.HealthCheckEnabled.is_some():
+            auto t1 = query.query_bool(input.HealthCheckEnabled.unwrap())
+            p = query.query_scalar(p, "HealthCheckEnabled", t1)
+        if input.HealthCheckPath.is_some():
+            p = query.query_scalar(p, "HealthCheckPath", input.HealthCheckPath.unwrap())
+        if input.HealthCheckIntervalSeconds.is_some():
+            auto t2 = str(input.HealthCheckIntervalSeconds.unwrap())
+            p = query.query_scalar(p, "HealthCheckIntervalSeconds", t2)
+        if input.HealthCheckTimeoutSeconds.is_some():
+            auto t3 = str(input.HealthCheckTimeoutSeconds.unwrap())
+            p = query.query_scalar(p, "HealthCheckTimeoutSeconds", t3)
+        if input.HealthyThresholdCount.is_some():
+            auto t4 = str(input.HealthyThresholdCount.unwrap())
+            p = query.query_scalar(p, "HealthyThresholdCount", t4)
+        if input.UnhealthyThresholdCount.is_some():
+            auto t5 = str(input.UnhealthyThresholdCount.unwrap())
+            p = query.query_scalar(p, "UnhealthyThresholdCount", t5)
+        if input.Matcher.is_some():
+            p = matcher_to_query(p, "Matcher", input.Matcher.unwrap())
+        if input.TargetType.is_some():
+            p = query.query_scalar(p, "TargetType", input.TargetType.unwrap())
+        auto qi6 = 1
+        for qe7 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        if input.IpAddressType.is_some():
+            p = query.query_scalar(p, "IpAddressType", input.IpAddressType.unwrap())
+        if input.TargetControlPort.is_some():
+            auto t8 = str(input.TargetControlPort.unwrap())
+            p = query.query_scalar(p, "TargetControlPort", t8)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # CreateTrustStore
+    # errors: CaCertificatesBundleNotFoundException, DuplicateTagKeysException, DuplicateTrustStoreNameException, InvalidCaCertificatesBundleException, TooManyTagsException, TooManyTrustStoresException
+    def create_trust_store(self, CreateTrustStoreInput input) -> str:
+        auto p = query.query_params("CreateTrustStore", "2015-12-01")
+        p = query.query_scalar(p, "Name", input.Name)
+        auto t0 = input.CaCertificatesBundleS3Bucket
+        p = query.query_scalar(p, "CaCertificatesBundleS3Bucket", t0)
+        auto t1 = input.CaCertificatesBundleS3Key
+        p = query.query_scalar(p, "CaCertificatesBundleS3Key", t1)
+        if input.CaCertificatesBundleS3ObjectVersion.is_some():
+            auto t2 = input.CaCertificatesBundleS3ObjectVersion.unwrap()
+            p = query.query_scalar(p, "CaCertificatesBundleS3ObjectVersion", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # DeleteListener
     # errors: ListenerNotFoundException, ResourceInUseException
@@ -1545,6 +2138,17 @@ struct Elastic_Load_Balancing_v2Client:
     def delete_trust_store(self, DeleteTrustStoreInput input) -> str:
         auto p = query.query_params("DeleteTrustStore", "2015-12-01")
         p = query.query_scalar(p, "TrustStoreArn", input.TrustStoreArn)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # DeregisterTargets
+    # errors: InvalidTargetException, TargetGroupNotFoundException
+    def deregister_targets(self, DeregisterTargetsInput input) -> str:
+        auto p = query.query_params("DeregisterTargets", "2015-12-01")
+        p = query.query_scalar(p, "TargetGroupArn", input.TargetGroupArn)
+        auto qi0 = 1
+        for qe1 in input.Targets:
+            p = target_description_to_query(p, "Targets.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # DescribeAccountLimits
@@ -1671,11 +2275,38 @@ struct Elastic_Load_Balancing_v2Client:
             p = query.query_scalar(p, "PageSize", str(input.PageSize.unwrap()))
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
+    # DescribeTargetHealth
+    # errors: HealthUnavailableException, InvalidTargetException, TargetGroupNotFoundException
+    def describe_target_health(self, DescribeTargetHealthInput input) -> str:
+        auto p = query.query_params("DescribeTargetHealth", "2015-12-01")
+        p = query.query_scalar(p, "TargetGroupArn", input.TargetGroupArn)
+        auto qi0 = 1
+        for qe1 in input.Targets.unwrap_or([]):
+            p = target_description_to_query(p, "Targets.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_list(p, "Include", "member", input.Include.unwrap_or([]))
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
     # DescribeTrustStoreAssociations
     # errors: TrustStoreNotFoundException
     def describe_trust_store_associations(self, DescribeTrustStoreAssociationsInput input) -> str:
         auto p = query.query_params("DescribeTrustStoreAssociations", "2015-12-01")
         p = query.query_scalar(p, "TrustStoreArn", input.TrustStoreArn)
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.PageSize.is_some():
+            p = query.query_scalar(p, "PageSize", str(input.PageSize.unwrap()))
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # DescribeTrustStoreRevocations
+    # errors: RevocationIdNotFoundException, TrustStoreNotFoundException
+    def describe_trust_store_revocations(self, DescribeTrustStoreRevocationsInput input) -> str:
+        auto p = query.query_params("DescribeTrustStoreRevocations", "2015-12-01")
+        p = query.query_scalar(p, "TrustStoreArn", input.TrustStoreArn)
+        auto qi0 = 1
+        for qe1 in input.RevocationIds.unwrap_or([]):
+            p = query.query_scalar(p, "RevocationIds.member." + str(qi0), str(qe1))
+            qi0 = qi0 + 1
         if input.Marker.is_some():
             p = query.query_scalar(p, "Marker", input.Marker.unwrap())
         if input.PageSize.is_some():
@@ -1717,6 +2348,142 @@ struct Elastic_Load_Balancing_v2Client:
         p = query.query_scalar(p, "RevocationId", str(input.RevocationId))
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
+    # ModifyCapacityReservation
+    # errors: CapacityDecreaseRequestsLimitExceededException, CapacityReservationPendingException, CapacityUnitsLimitExceededException, InsufficientCapacityException, InvalidConfigurationRequestException, LoadBalancerNotFoundException, OperationNotPermittedException, PriorRequestNotCompleteException
+    def modify_capacity_reservation(self, ModifyCapacityReservationInput input) -> str:
+        auto p = query.query_params("ModifyCapacityReservation", "2015-12-01")
+        p = query.query_scalar(p, "LoadBalancerArn", input.LoadBalancerArn)
+        if input.MinimumLoadBalancerCapacity.is_some():
+            auto t0 = input.MinimumLoadBalancerCapacity.unwrap()
+            p = minimum_load_balancer_capacity_to_query(p, "MinimumLoadBalancerCapacity", t0)
+        if input.ResetCapacityReservation.is_some():
+            auto t1 = query.query_bool(input.ResetCapacityReservation.unwrap())
+            p = query.query_scalar(p, "ResetCapacityReservation", t1)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyIpPools
+    # errors: LoadBalancerNotFoundException
+    def modify_ip_pools(self, ModifyIpPoolsInput input) -> str:
+        auto p = query.query_params("ModifyIpPools", "2015-12-01")
+        p = query.query_scalar(p, "LoadBalancerArn", input.LoadBalancerArn)
+        if input.IpamPools.is_some():
+            p = ipam_pools_to_query(p, "IpamPools", input.IpamPools.unwrap())
+        auto t0 = input.RemoveIpamPools.unwrap_or([])
+        p = query.query_list(p, "RemoveIpamPools", "member", t0)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyListener
+    # errors: ALPNPolicyNotSupportedException, CertificateNotFoundException, DuplicateListenerException, IncompatibleProtocolsException, InvalidConfigurationRequestException, InvalidLoadBalancerActionException, ListenerNotFoundException, SSLPolicyNotFoundException, TargetGroupAssociationLimitException, TargetGroupNotFoundException, TooManyActionsException, TooManyCertificatesException, TooManyListenersException, TooManyRegistrationsForTargetIdException, TooManyTargetsException, TooManyUniqueTargetGroupsPerLoadBalancerException, TrustStoreNotFoundException, TrustStoreNotReadyException, UnsupportedProtocolException
+    def modify_listener(self, ModifyListenerInput input) -> str:
+        auto p = query.query_params("ModifyListener", "2015-12-01")
+        p = query.query_scalar(p, "ListenerArn", input.ListenerArn)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.Protocol.is_some():
+            p = query.query_scalar(p, "Protocol", input.Protocol.unwrap())
+        if input.SslPolicy.is_some():
+            p = query.query_scalar(p, "SslPolicy", input.SslPolicy.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Certificates.unwrap_or([]):
+            p = certificate_to_query(p, "Certificates.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto qi2 = 1
+        for qe3 in input.DefaultActions.unwrap_or([]):
+            p = action_to_query(p, "DefaultActions.member." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        p = query.query_list(p, "AlpnPolicy", "member", input.AlpnPolicy.unwrap_or([]))
+        if input.MutualAuthentication.is_some():
+            auto t4 = input.MutualAuthentication.unwrap()
+            p = mutual_authentication_attributes_to_query(p, "MutualAuthentication", t4)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyListenerAttributes
+    # errors: InvalidConfigurationRequestException, ListenerNotFoundException
+    def modify_listener_attributes(self, ModifyListenerAttributesInput input) -> str:
+        auto p = query.query_params("ModifyListenerAttributes", "2015-12-01")
+        p = query.query_scalar(p, "ListenerArn", input.ListenerArn)
+        auto qi0 = 1
+        for qe1 in input.Attributes:
+            p = listener_attribute_to_query(p, "Attributes.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyLoadBalancerAttributes
+    # errors: InvalidConfigurationRequestException, LoadBalancerNotFoundException
+    def modify_load_balancer_attributes(self, ModifyLoadBalancerAttributesInput input) -> str:
+        auto p = query.query_params("ModifyLoadBalancerAttributes", "2015-12-01")
+        p = query.query_scalar(p, "LoadBalancerArn", input.LoadBalancerArn)
+        auto qi0 = 1
+        for qe1 in input.Attributes:
+            auto t2 = qe1
+            p = load_balancer_attribute_to_query(p, "Attributes.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyRule
+    # errors: IncompatibleProtocolsException, InvalidLoadBalancerActionException, OperationNotPermittedException, RuleNotFoundException, TargetGroupAssociationLimitException, TargetGroupNotFoundException, TooManyActionsException, TooManyRegistrationsForTargetIdException, TooManyTargetsException, TooManyUniqueTargetGroupsPerLoadBalancerException, UnsupportedProtocolException
+    def modify_rule(self, ModifyRuleInput input) -> str:
+        auto p = query.query_params("ModifyRule", "2015-12-01")
+        p = query.query_scalar(p, "RuleArn", input.RuleArn)
+        auto qi0 = 1
+        for qe1 in input.Conditions.unwrap_or([]):
+            p = rule_condition_to_query(p, "Conditions.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto qi2 = 1
+        for qe3 in input.Actions.unwrap_or([]):
+            p = action_to_query(p, "Actions.member." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        auto qi4 = 1
+        for qe5 in input.Transforms.unwrap_or([]):
+            p = rule_transform_to_query(p, "Transforms.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.ResetTransforms.is_some():
+            auto t6 = query.query_bool(input.ResetTransforms.unwrap())
+            p = query.query_scalar(p, "ResetTransforms", t6)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyTargetGroup
+    # errors: InvalidConfigurationRequestException, TargetGroupNotFoundException
+    def modify_target_group(self, ModifyTargetGroupInput input) -> str:
+        auto p = query.query_params("ModifyTargetGroup", "2015-12-01")
+        p = query.query_scalar(p, "TargetGroupArn", input.TargetGroupArn)
+        if input.HealthCheckProtocol.is_some():
+            auto t0 = input.HealthCheckProtocol.unwrap()
+            p = query.query_scalar(p, "HealthCheckProtocol", t0)
+        if input.HealthCheckPort.is_some():
+            p = query.query_scalar(p, "HealthCheckPort", input.HealthCheckPort.unwrap())
+        if input.HealthCheckPath.is_some():
+            p = query.query_scalar(p, "HealthCheckPath", input.HealthCheckPath.unwrap())
+        if input.HealthCheckEnabled.is_some():
+            auto t1 = query.query_bool(input.HealthCheckEnabled.unwrap())
+            p = query.query_scalar(p, "HealthCheckEnabled", t1)
+        if input.HealthCheckIntervalSeconds.is_some():
+            auto t2 = str(input.HealthCheckIntervalSeconds.unwrap())
+            p = query.query_scalar(p, "HealthCheckIntervalSeconds", t2)
+        if input.HealthCheckTimeoutSeconds.is_some():
+            auto t3 = str(input.HealthCheckTimeoutSeconds.unwrap())
+            p = query.query_scalar(p, "HealthCheckTimeoutSeconds", t3)
+        if input.HealthyThresholdCount.is_some():
+            auto t4 = str(input.HealthyThresholdCount.unwrap())
+            p = query.query_scalar(p, "HealthyThresholdCount", t4)
+        if input.UnhealthyThresholdCount.is_some():
+            auto t5 = str(input.UnhealthyThresholdCount.unwrap())
+            p = query.query_scalar(p, "UnhealthyThresholdCount", t5)
+        if input.Matcher.is_some():
+            p = matcher_to_query(p, "Matcher", input.Matcher.unwrap())
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyTargetGroupAttributes
+    # errors: InvalidConfigurationRequestException, TargetGroupNotFoundException
+    def modify_target_group_attributes(self, ModifyTargetGroupAttributesInput input) -> str:
+        auto p = query.query_params("ModifyTargetGroupAttributes", "2015-12-01")
+        p = query.query_scalar(p, "TargetGroupArn", input.TargetGroupArn)
+        auto qi0 = 1
+        for qe1 in input.Attributes:
+            p = target_group_attribute_to_query(p, "Attributes.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
     # ModifyTrustStore
     # errors: CaCertificatesBundleNotFoundException, InvalidCaCertificatesBundleException, TrustStoreNotFoundException
     def modify_trust_store(self, ModifyTrustStoreInput input) -> str:
@@ -1731,6 +2498,28 @@ struct Elastic_Load_Balancing_v2Client:
             p = query.query_scalar(p, "CaCertificatesBundleS3ObjectVersion", t2)
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
+    # RegisterTargets
+    # errors: InvalidTargetException, TargetGroupNotFoundException, TooManyRegistrationsForTargetIdException, TooManyTargetsException
+    def register_targets(self, RegisterTargetsInput input) -> str:
+        auto p = query.query_params("RegisterTargets", "2015-12-01")
+        p = query.query_scalar(p, "TargetGroupArn", input.TargetGroupArn)
+        auto qi0 = 1
+        for qe1 in input.Targets:
+            p = target_description_to_query(p, "Targets.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # RemoveListenerCertificates
+    # errors: ListenerNotFoundException, OperationNotPermittedException
+    def remove_listener_certificates(self, RemoveListenerCertificatesInput input) -> str:
+        auto p = query.query_params("RemoveListenerCertificates", "2015-12-01")
+        p = query.query_scalar(p, "ListenerArn", input.ListenerArn)
+        auto qi0 = 1
+        for qe1 in input.Certificates:
+            p = certificate_to_query(p, "Certificates.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
     # RemoveTags
     # errors: ListenerNotFoundException, LoadBalancerNotFoundException, RuleNotFoundException, TargetGroupNotFoundException, TooManyTagsException, TrustStoreNotFoundException
     def remove_tags(self, RemoveTagsInput input) -> str:
@@ -1739,12 +2528,33 @@ struct Elastic_Load_Balancing_v2Client:
         p = query.query_list(p, "TagKeys", "member", input.TagKeys)
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
+    # RemoveTrustStoreRevocations
+    # errors: RevocationIdNotFoundException, TrustStoreNotFoundException
+    def remove_trust_store_revocations(self, RemoveTrustStoreRevocationsInput input) -> str:
+        auto p = query.query_params("RemoveTrustStoreRevocations", "2015-12-01")
+        p = query.query_scalar(p, "TrustStoreArn", input.TrustStoreArn)
+        auto qi0 = 1
+        for qe1 in input.RevocationIds:
+            p = query.query_scalar(p, "RevocationIds.member." + str(qi0), str(qe1))
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
     # SetIpAddressType
     # errors: InvalidConfigurationRequestException, InvalidSubnetException, LoadBalancerNotFoundException
     def set_ip_address_type(self, SetIpAddressTypeInput input) -> str:
         auto p = query.query_params("SetIpAddressType", "2015-12-01")
         p = query.query_scalar(p, "LoadBalancerArn", input.LoadBalancerArn)
         p = query.query_scalar(p, "IpAddressType", input.IpAddressType)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # SetRulePriorities
+    # errors: OperationNotPermittedException, PriorityInUseException, RuleNotFoundException
+    def set_rule_priorities(self, SetRulePrioritiesInput input) -> str:
+        auto p = query.query_params("SetRulePriorities", "2015-12-01")
+        auto qi0 = 1
+        for qe1 in input.RulePriorities:
+            p = rule_priority_pair_to_query(p, "RulePriorities.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # SetSecurityGroups
@@ -1756,6 +2566,23 @@ struct Elastic_Load_Balancing_v2Client:
         if input.EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic.is_some():
             auto t0 = input.EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic.unwrap()
             p = query.query_scalar(p, "EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic", t0)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # SetSubnets
+    # errors: AllocationIdNotFoundException, AvailabilityZoneNotSupportedException, CapacityReservationPendingException, InvalidConfigurationRequestException, InvalidSubnetException, LoadBalancerNotFoundException, SubnetNotFoundException
+    def set_subnets(self, SetSubnetsInput input) -> str:
+        auto p = query.query_params("SetSubnets", "2015-12-01")
+        p = query.query_scalar(p, "LoadBalancerArn", input.LoadBalancerArn)
+        p = query.query_list(p, "Subnets", "member", input.Subnets.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.SubnetMappings.unwrap_or([]):
+            p = subnet_mapping_to_query(p, "SubnetMappings.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.IpAddressType.is_some():
+            p = query.query_scalar(p, "IpAddressType", input.IpAddressType.unwrap())
+        if input.EnablePrefixForIpv6SourceNat.is_some():
+            auto t2 = input.EnablePrefixForIpv6SourceNat.unwrap()
+            p = query.query_scalar(p, "EnablePrefixForIpv6SourceNat", t2)
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
 # Construct a Elastic_Load_Balancing_v2Client bound to credentials + region.

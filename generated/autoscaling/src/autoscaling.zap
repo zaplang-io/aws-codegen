@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 68 operations — 54 with a generated method,
-#   14 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 68 operations — 68 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   210 structs (plain carriers), 32 enums, 12 error variants.
 #   0 paginators generated (11 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -1598,23 +1598,6 @@ def autoscaling_error_from_code(str code) -> Auto_ScalingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AttachTrafficSources (member `TrafficSources` is a list of TrafficSourceIdentifier (only scalar lists in v0))
-#   BatchPutScheduledUpdateGroupAction (member `ScheduledUpdateGroupActions` is a list of ScheduledUpdateGroupActionRequest (only scalar lists in v0))
-#   CreateAutoScalingGroup (member `LaunchTemplate` is a nested structure (query nesting is a v0 follow-up))
-#   CreateLaunchConfiguration (member `BlockDeviceMappings` is a list of BlockDeviceMapping (only scalar lists in v0))
-#   CreateOrUpdateTags (member `Tags` is a list of Tag (only scalar lists in v0))
-#   DeleteTags (member `Tags` is a list of Tag (only scalar lists in v0))
-#   DescribeAutoScalingGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeScalingActivities (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTags (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DetachTrafficSources (member `TrafficSources` is a list of TrafficSourceIdentifier (only scalar lists in v0))
-#   PutScalingPolicy (member `StepAdjustments` is a list of StepAdjustment (only scalar lists in v0))
-#   PutWarmPool (member `InstanceReusePolicy` is a nested structure (query nesting is a v0 follow-up))
-#   StartInstanceRefresh (member `DesiredConfiguration` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateAutoScalingGroup (member `LaunchTemplate` is a nested structure (query nesting is a v0 follow-up))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeAutoScalingGroups
@@ -1628,6 +1611,755 @@ def autoscaling_error_from_code(str code) -> Auto_ScalingError:
 #   DescribeScheduledActions
 #   DescribeTags
 #   DescribeWarmPool
+
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AcceleratorCountRequest into the query form parameters under `prefix`.
+def accelerator_count_request_to_query(list[query.QueryPair] p, str prefix, AcceleratorCountRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize AcceleratorTotalMemoryMiBRequest into the query form parameters under `prefix`.
+def accelerator_total_memory_mi_b_request_to_query(list[query.QueryPair] p, str prefix, AcceleratorTotalMemoryMiBRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize AlarmSpecification into the query form parameters under `prefix`.
+def alarm_specification_to_query(list[query.QueryPair] p, str prefix, AlarmSpecification v) -> list[query.QueryPair]:
+    auto t0 = v.Alarms.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Alarms"), "member", t0)
+    return p
+
+# Serialize AvailabilityZoneDistribution into the query form parameters under `prefix`.
+def availability_zone_distribution_to_query(list[query.QueryPair] p, str prefix, AvailabilityZoneDistribution v) -> list[query.QueryPair]:
+    if v.CapacityDistributionStrategy.is_some():
+        auto t0 = v.CapacityDistributionStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CapacityDistributionStrategy"), t0)
+    return p
+
+# Serialize AvailabilityZoneImpairmentPolicy into the query form parameters under `prefix`.
+def availability_zone_impairment_policy_to_query(list[query.QueryPair] p, str prefix, AvailabilityZoneImpairmentPolicy v) -> list[query.QueryPair]:
+    if v.ZonalShiftEnabled.is_some():
+        auto t0 = query.query_bool(v.ZonalShiftEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ZonalShiftEnabled"), t0)
+    if v.ImpairedZoneHealthCheckBehavior.is_some():
+        auto t1 = v.ImpairedZoneHealthCheckBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ImpairedZoneHealthCheckBehavior"), t1)
+    return p
+
+# Serialize BaselineEbsBandwidthMbpsRequest into the query form parameters under `prefix`.
+def baseline_ebs_bandwidth_mbps_request_to_query(list[query.QueryPair] p, str prefix, BaselineEbsBandwidthMbpsRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize BaselinePerformanceFactorsRequest into the query form parameters under `prefix`.
+def baseline_performance_factors_request_to_query(list[query.QueryPair] p, str prefix, BaselinePerformanceFactorsRequest v) -> list[query.QueryPair]:
+    if v.Cpu.is_some():
+        auto t0 = v.Cpu.unwrap()
+        p = cpu_performance_factor_request_to_query(p, query.query_key(prefix, "Cpu"), t0)
+    return p
+
+# Serialize BlockDeviceMapping into the query form parameters under `prefix`.
+def block_device_mapping_to_query(list[query.QueryPair] p, str prefix, BlockDeviceMapping v) -> list[query.QueryPair]:
+    if v.VirtualName.is_some():
+        auto t0 = v.VirtualName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VirtualName"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "DeviceName"), v.DeviceName)
+    if v.Ebs.is_some():
+        p = ebs_to_query(p, query.query_key(prefix, "Ebs"), v.Ebs.unwrap())
+    if v.NoDevice.is_some():
+        auto t1 = query.query_bool(v.NoDevice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "NoDevice"), t1)
+    return p
+
+# Serialize CapacityReservationSpecification into the query form parameters under `prefix`.
+def capacity_reservation_specification_to_query(list[query.QueryPair] p, str prefix, CapacityReservationSpecification v) -> list[query.QueryPair]:
+    if v.CapacityReservationPreference.is_some():
+        auto t0 = v.CapacityReservationPreference.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CapacityReservationPreference"), t0)
+    if v.CapacityReservationTarget.is_some():
+        auto t1 = v.CapacityReservationTarget.unwrap()
+        p = capacity_reservation_target_to_query(p, query.query_key(prefix, "CapacityReservationTarget"), t1)
+    return p
+
+# Serialize CapacityReservationTarget into the query form parameters under `prefix`.
+def capacity_reservation_target_to_query(list[query.QueryPair] p, str prefix, CapacityReservationTarget v) -> list[query.QueryPair]:
+    auto t0 = v.CapacityReservationIds.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "CapacityReservationIds"), "member", t0)
+    auto t1 = v.CapacityReservationResourceGroupArns.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "CapacityReservationResourceGroupArns"), "member", t1)
+    return p
+
+# Serialize CpuPerformanceFactorRequest into the query form parameters under `prefix`.
+def cpu_performance_factor_request_to_query(list[query.QueryPair] p, str prefix, CpuPerformanceFactorRequest v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.References.unwrap_or([]):
+        auto t2 = qe1
+        p = performance_factor_reference_request_to_query(p, query.query_key(prefix, "Reference") + ".item" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize CustomizedMetricSpecification into the query form parameters under `prefix`.
+def customized_metric_specification_to_query(list[query.QueryPair] p, str prefix, CustomizedMetricSpecification v) -> list[query.QueryPair]:
+    if v.MetricName.is_some():
+        auto t0 = v.MetricName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MetricName"), t0)
+    if v.Namespace.is_some():
+        auto t1 = v.Namespace.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Namespace"), t1)
+    auto qi2 = 1
+    for qe3 in v.Dimensions.unwrap_or([]):
+        auto t4 = qe3
+        p = metric_dimension_to_query(p, query.query_key(prefix, "Dimensions") + ".member" + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    if v.Statistic.is_some():
+        auto t5 = v.Statistic.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Statistic"), t5)
+    if v.Unit.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Unit"), v.Unit.unwrap())
+    if v.Period.is_some():
+        auto t6 = str(v.Period.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Period"), t6)
+    auto qi7 = 1
+    for qe8 in v.Metrics.unwrap_or([]):
+        auto t9 = qe8
+        p = target_tracking_metric_data_query_to_query(p, query.query_key(prefix, "Metrics") + ".member" + "." + str(qi7), t9)
+        qi7 = qi7 + 1
+    return p
+
+# Serialize DesiredConfiguration into the query form parameters under `prefix`.
+def desired_configuration_to_query(list[query.QueryPair] p, str prefix, DesiredConfiguration v) -> list[query.QueryPair]:
+    if v.LaunchTemplate.is_some():
+        auto t0 = v.LaunchTemplate.unwrap()
+        p = launch_template_specification_to_query(p, query.query_key(prefix, "LaunchTemplate"), t0)
+    if v.MixedInstancesPolicy.is_some():
+        auto t1 = v.MixedInstancesPolicy.unwrap()
+        p = mixed_instances_policy_to_query(p, query.query_key(prefix, "MixedInstancesPolicy"), t1)
+    return p
+
+# Serialize DistributionSegment into the query form parameters under `prefix`.
+def distribution_segment_to_query(list[query.QueryPair] p, str prefix, DistributionSegment v) -> list[query.QueryPair]:
+    auto t0 = v.TargetCapacityTypes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "TargetCapacityTypes"), "member", t0)
+    return p
+
+# Serialize Ebs into the query form parameters under `prefix`.
+def ebs_to_query(list[query.QueryPair] p, str prefix, Ebs v) -> list[query.QueryPair]:
+    if v.SnapshotId.is_some():
+        auto t0 = v.SnapshotId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SnapshotId"), t0)
+    if v.VolumeSize.is_some():
+        auto t1 = str(v.VolumeSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeSize"), t1)
+    if v.VolumeType.is_some():
+        auto t2 = v.VolumeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeType"), t2)
+    if v.DeleteOnTermination.is_some():
+        auto t3 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t3)
+    if v.Iops.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Iops"), str(v.Iops.unwrap()))
+    if v.Encrypted.is_some():
+        auto t4 = query.query_bool(v.Encrypted.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Encrypted"), t4)
+    if v.Throughput.is_some():
+        auto t5 = str(v.Throughput.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Throughput"), t5)
+    return p
+
+# Serialize Filter into the query form parameters under `prefix`.
+def filter_to_query(list[query.QueryPair] p, str prefix, Filter v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t0)
+    return p
+
+# Serialize InstanceLifecyclePolicy into the query form parameters under `prefix`.
+def instance_lifecycle_policy_to_query(list[query.QueryPair] p, str prefix, InstanceLifecyclePolicy v) -> list[query.QueryPair]:
+    if v.RetentionTriggers.is_some():
+        auto t0 = v.RetentionTriggers.unwrap()
+        p = retention_triggers_to_query(p, query.query_key(prefix, "RetentionTriggers"), t0)
+    return p
+
+# Serialize InstanceMaintenancePolicy into the query form parameters under `prefix`.
+def instance_maintenance_policy_to_query(list[query.QueryPair] p, str prefix, InstanceMaintenancePolicy v) -> list[query.QueryPair]:
+    if v.MinHealthyPercentage.is_some():
+        auto t0 = str(v.MinHealthyPercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MinHealthyPercentage"), t0)
+    if v.MaxHealthyPercentage.is_some():
+        auto t1 = str(v.MaxHealthyPercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxHealthyPercentage"), t1)
+    return p
+
+# Serialize InstanceMetadataOptions into the query form parameters under `prefix`.
+def instance_metadata_options_to_query(list[query.QueryPair] p, str prefix, InstanceMetadataOptions v) -> list[query.QueryPair]:
+    if v.HttpTokens.is_some():
+        auto t0 = v.HttpTokens.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpTokens"), t0)
+    if v.HttpPutResponseHopLimit.is_some():
+        auto t1 = str(v.HttpPutResponseHopLimit.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HttpPutResponseHopLimit"), t1)
+    if v.HttpEndpoint.is_some():
+        auto t2 = v.HttpEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpEndpoint"), t2)
+    return p
+
+# Serialize InstanceMonitoring into the query form parameters under `prefix`.
+def instance_monitoring_to_query(list[query.QueryPair] p, str prefix, InstanceMonitoring v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize InstanceRequirements into the query form parameters under `prefix`.
+def instance_requirements_to_query(list[query.QueryPair] p, str prefix, InstanceRequirements v) -> list[query.QueryPair]:
+    auto t0 = v.VCpuCount
+    p = v_cpu_count_request_to_query(p, query.query_key(prefix, "VCpuCount"), t0)
+    auto t1 = v.MemoryMiB
+    p = memory_mi_b_request_to_query(p, query.query_key(prefix, "MemoryMiB"), t1)
+    auto t2 = v.CpuManufacturers.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "CpuManufacturers"), "member", t2)
+    if v.MemoryGiBPerVCpu.is_some():
+        auto t3 = v.MemoryGiBPerVCpu.unwrap()
+        p = memory_gi_b_per_v_cpu_request_to_query(p, query.query_key(prefix, "MemoryGiBPerVCpu"), t3)
+    auto t4 = v.ExcludedInstanceTypes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "ExcludedInstanceTypes"), "member", t4)
+    auto t5 = v.InstanceGenerations.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "InstanceGenerations"), "member", t5)
+    if v.SpotMaxPricePercentageOverLowestPrice.is_some():
+        auto t6 = str(v.SpotMaxPricePercentageOverLowestPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SpotMaxPricePercentageOverLowestPrice"), t6)
+    if v.MaxSpotPriceAsPercentageOfOptimalOnDemandPrice.is_some():
+        auto t7 = str(v.MaxSpotPriceAsPercentageOfOptimalOnDemandPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxSpotPriceAsPercentageOfOptimalOnDemandPrice"), t7)
+    if v.OnDemandMaxPricePercentageOverLowestPrice.is_some():
+        auto t8 = str(v.OnDemandMaxPricePercentageOverLowestPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandMaxPricePercentageOverLowestPrice"), t8)
+    if v.BareMetal.is_some():
+        auto t9 = v.BareMetal.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BareMetal"), t9)
+    if v.BurstablePerformance.is_some():
+        auto t10 = v.BurstablePerformance.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BurstablePerformance"), t10)
+    if v.RequireHibernateSupport.is_some():
+        auto t11 = query.query_bool(v.RequireHibernateSupport.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RequireHibernateSupport"), t11)
+    if v.NetworkInterfaceCount.is_some():
+        auto t12 = v.NetworkInterfaceCount.unwrap()
+        p = network_interface_count_request_to_query(p, query.query_key(prefix, "NetworkInterfaceCount"), t12)
+    if v.LocalStorage.is_some():
+        auto t13 = v.LocalStorage.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LocalStorage"), t13)
+    auto t14 = v.LocalStorageTypes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "LocalStorageTypes"), "member", t14)
+    if v.TotalLocalStorageGB.is_some():
+        auto t15 = v.TotalLocalStorageGB.unwrap()
+        p = total_local_storage_gb_request_to_query(p, query.query_key(prefix, "TotalLocalStorageGB"), t15)
+    if v.BaselineEbsBandwidthMbps.is_some():
+        auto t16 = v.BaselineEbsBandwidthMbps.unwrap()
+        p = baseline_ebs_bandwidth_mbps_request_to_query(p, query.query_key(prefix, "BaselineEbsBandwidthMbps"), t16)
+    auto t17 = v.AcceleratorTypes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "AcceleratorTypes"), "member", t17)
+    if v.AcceleratorCount.is_some():
+        auto t18 = v.AcceleratorCount.unwrap()
+        p = accelerator_count_request_to_query(p, query.query_key(prefix, "AcceleratorCount"), t18)
+    auto t19 = v.AcceleratorManufacturers.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "AcceleratorManufacturers"), "member", t19)
+    auto t20 = v.AcceleratorNames.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "AcceleratorNames"), "member", t20)
+    if v.AcceleratorTotalMemoryMiB.is_some():
+        auto t21 = v.AcceleratorTotalMemoryMiB.unwrap()
+        p = accelerator_total_memory_mi_b_request_to_query(p, query.query_key(prefix, "AcceleratorTotalMemoryMiB"), t21)
+    if v.NetworkBandwidthGbps.is_some():
+        auto t22 = v.NetworkBandwidthGbps.unwrap()
+        p = network_bandwidth_gbps_request_to_query(p, query.query_key(prefix, "NetworkBandwidthGbps"), t22)
+    auto t23 = v.AllowedInstanceTypes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "AllowedInstanceTypes"), "member", t23)
+    if v.BaselinePerformanceFactors.is_some():
+        auto t24 = v.BaselinePerformanceFactors.unwrap()
+        p = baseline_performance_factors_request_to_query(p, query.query_key(prefix, "BaselinePerformanceFactors"), t24)
+    return p
+
+# Serialize InstanceReusePolicy into the query form parameters under `prefix`.
+def instance_reuse_policy_to_query(list[query.QueryPair] p, str prefix, InstanceReusePolicy v) -> list[query.QueryPair]:
+    if v.ReuseOnScaleIn.is_some():
+        auto t0 = query.query_bool(v.ReuseOnScaleIn.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReuseOnScaleIn"), t0)
+    return p
+
+# Serialize InstancesDistribution into the query form parameters under `prefix`.
+def instances_distribution_to_query(list[query.QueryPair] p, str prefix, InstancesDistribution v) -> list[query.QueryPair]:
+    if v.OnDemandAllocationStrategy.is_some():
+        auto t0 = v.OnDemandAllocationStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandAllocationStrategy"), t0)
+    if v.OnDemandBaseCapacity.is_some():
+        auto t1 = str(v.OnDemandBaseCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandBaseCapacity"), t1)
+    if v.OnDemandPercentageAboveBaseCapacity.is_some():
+        auto t2 = str(v.OnDemandPercentageAboveBaseCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandPercentageAboveBaseCapacity"), t2)
+    if v.SpotAllocationStrategy.is_some():
+        auto t3 = v.SpotAllocationStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotAllocationStrategy"), t3)
+    if v.SpotInstancePools.is_some():
+        auto t4 = str(v.SpotInstancePools.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SpotInstancePools"), t4)
+    if v.SpotMaxPrice.is_some():
+        auto t5 = v.SpotMaxPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotMaxPrice"), t5)
+    auto qi6 = 1
+    for qe7 in v.DistributionSegments.unwrap_or([]):
+        auto t8 = qe7
+        p = distribution_segment_to_query(p, query.query_key(prefix, "DistributionSegments") + ".member" + "." + str(qi6), t8)
+        qi6 = qi6 + 1
+    return p
+
+# Serialize LaunchTemplate into the query form parameters under `prefix`.
+def launch_template_to_query(list[query.QueryPair] p, str prefix, LaunchTemplate v) -> list[query.QueryPair]:
+    if v.LaunchTemplateSpecification.is_some():
+        auto t0 = v.LaunchTemplateSpecification.unwrap()
+        p = launch_template_specification_to_query(p, query.query_key(prefix, "LaunchTemplateSpecification"), t0)
+    auto qi1 = 1
+    for qe2 in v.Overrides.unwrap_or([]):
+        auto t3 = qe2
+        p = launch_template_overrides_to_query(p, query.query_key(prefix, "Overrides") + ".member" + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize LaunchTemplateOverrides into the query form parameters under `prefix`.
+def launch_template_overrides_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateOverrides v) -> list[query.QueryPair]:
+    if v.InstanceType.is_some():
+        auto t0 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t0)
+    if v.WeightedCapacity.is_some():
+        auto t1 = v.WeightedCapacity.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "WeightedCapacity"), t1)
+    if v.LaunchTemplateSpecification.is_some():
+        auto t2 = v.LaunchTemplateSpecification.unwrap()
+        p = launch_template_specification_to_query(p, query.query_key(prefix, "LaunchTemplateSpecification"), t2)
+    if v.InstanceRequirements.is_some():
+        auto t3 = v.InstanceRequirements.unwrap()
+        p = instance_requirements_to_query(p, query.query_key(prefix, "InstanceRequirements"), t3)
+    if v.ImageId.is_some():
+        auto t4 = v.ImageId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ImageId"), t4)
+    return p
+
+# Serialize LaunchTemplateSpecification into the query form parameters under `prefix`.
+def launch_template_specification_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateSpecification v) -> list[query.QueryPair]:
+    if v.LaunchTemplateId.is_some():
+        auto t0 = v.LaunchTemplateId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateId"), t0)
+    if v.LaunchTemplateName.is_some():
+        auto t1 = v.LaunchTemplateName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateName"), t1)
+    if v.Version.is_some():
+        auto t2 = v.Version.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Version"), t2)
+    return p
+
+# Serialize LifecycleHookSpecification into the query form parameters under `prefix`.
+def lifecycle_hook_specification_to_query(list[query.QueryPair] p, str prefix, LifecycleHookSpecification v) -> list[query.QueryPair]:
+    auto t0 = v.LifecycleHookName
+    p = query.query_scalar(p, query.query_key(prefix, "LifecycleHookName"), t0)
+    auto t1 = v.LifecycleTransition
+    p = query.query_scalar(p, query.query_key(prefix, "LifecycleTransition"), t1)
+    if v.NotificationMetadata.is_some():
+        auto t2 = v.NotificationMetadata.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NotificationMetadata"), t2)
+    if v.HeartbeatTimeout.is_some():
+        auto t3 = str(v.HeartbeatTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HeartbeatTimeout"), t3)
+    if v.DefaultResult.is_some():
+        auto t4 = v.DefaultResult.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultResult"), t4)
+    if v.NotificationTargetARN.is_some():
+        auto t5 = v.NotificationTargetARN.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NotificationTargetARN"), t5)
+    if v.RoleARN.is_some():
+        auto t6 = v.RoleARN.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RoleARN"), t6)
+    return p
+
+# Serialize MemoryGiBPerVCpuRequest into the query form parameters under `prefix`.
+def memory_gi_b_per_v_cpu_request_to_query(list[query.QueryPair] p, str prefix, MemoryGiBPerVCpuRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize MemoryMiBRequest into the query form parameters under `prefix`.
+def memory_mi_b_request_to_query(list[query.QueryPair] p, str prefix, MemoryMiBRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize Metric into the query form parameters under `prefix`.
+def metric_to_query(list[query.QueryPair] p, str prefix, Metric v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Namespace"), v.Namespace)
+    p = query.query_scalar(p, query.query_key(prefix, "MetricName"), v.MetricName)
+    auto qi0 = 1
+    for qe1 in v.Dimensions.unwrap_or([]):
+        auto t2 = qe1
+        p = metric_dimension_to_query(p, query.query_key(prefix, "Dimensions") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize MetricDataQuery into the query form parameters under `prefix`.
+def metric_data_query_to_query(list[query.QueryPair] p, str prefix, MetricDataQuery v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Id"), v.Id)
+    if v.Expression.is_some():
+        auto t0 = v.Expression.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Expression"), t0)
+    if v.MetricStat.is_some():
+        auto t1 = v.MetricStat.unwrap()
+        p = metric_stat_to_query(p, query.query_key(prefix, "MetricStat"), t1)
+    if v.Label.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Label"), v.Label.unwrap())
+    if v.ReturnData.is_some():
+        auto t2 = query.query_bool(v.ReturnData.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnData"), t2)
+    return p
+
+# Serialize MetricDimension into the query form parameters under `prefix`.
+def metric_dimension_to_query(list[query.QueryPair] p, str prefix, MetricDimension v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    return p
+
+# Serialize MetricStat into the query form parameters under `prefix`.
+def metric_stat_to_query(list[query.QueryPair] p, str prefix, MetricStat v) -> list[query.QueryPair]:
+    p = metric_to_query(p, query.query_key(prefix, "Metric"), v.Metric)
+    p = query.query_scalar(p, query.query_key(prefix, "Stat"), v.Stat)
+    if v.Unit.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Unit"), v.Unit.unwrap())
+    return p
+
+# Serialize MixedInstancesPolicy into the query form parameters under `prefix`.
+def mixed_instances_policy_to_query(list[query.QueryPair] p, str prefix, MixedInstancesPolicy v) -> list[query.QueryPair]:
+    if v.LaunchTemplate.is_some():
+        auto t0 = v.LaunchTemplate.unwrap()
+        p = launch_template_to_query(p, query.query_key(prefix, "LaunchTemplate"), t0)
+    if v.InstancesDistribution.is_some():
+        auto t1 = v.InstancesDistribution.unwrap()
+        p = instances_distribution_to_query(p, query.query_key(prefix, "InstancesDistribution"), t1)
+    return p
+
+# Serialize NetworkBandwidthGbpsRequest into the query form parameters under `prefix`.
+def network_bandwidth_gbps_request_to_query(list[query.QueryPair] p, str prefix, NetworkBandwidthGbpsRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize NetworkInterfaceCountRequest into the query form parameters under `prefix`.
+def network_interface_count_request_to_query(list[query.QueryPair] p, str prefix, NetworkInterfaceCountRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize Operator into the query form parameters under `prefix`.
+def operator_to_query(list[query.QueryPair] p, str prefix, Operator v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Principal"), v.Principal)
+    return p
+
+# Serialize PerformanceFactorReferenceRequest into the query form parameters under `prefix`.
+def performance_factor_reference_request_to_query(list[query.QueryPair] p, str prefix, PerformanceFactorReferenceRequest v) -> list[query.QueryPair]:
+    if v.InstanceFamily.is_some():
+        auto t0 = v.InstanceFamily.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceFamily"), t0)
+    return p
+
+# Serialize PredefinedMetricSpecification into the query form parameters under `prefix`.
+def predefined_metric_specification_to_query(list[query.QueryPair] p, str prefix, PredefinedMetricSpecification v) -> list[query.QueryPair]:
+    auto t0 = v.PredefinedMetricType
+    p = query.query_scalar(p, query.query_key(prefix, "PredefinedMetricType"), t0)
+    if v.ResourceLabel.is_some():
+        auto t1 = v.ResourceLabel.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceLabel"), t1)
+    return p
+
+# Serialize PredictiveScalingConfiguration into the query form parameters under `prefix`.
+def predictive_scaling_configuration_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingConfiguration v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.MetricSpecifications:
+        auto t2 = qe1
+        p = predictive_scaling_metric_specification_to_query(p, query.query_key(prefix, "MetricSpecifications") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    if v.Mode.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Mode"), v.Mode.unwrap())
+    if v.SchedulingBufferTime.is_some():
+        auto t3 = str(v.SchedulingBufferTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SchedulingBufferTime"), t3)
+    if v.MaxCapacityBreachBehavior.is_some():
+        auto t4 = v.MaxCapacityBreachBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MaxCapacityBreachBehavior"), t4)
+    if v.MaxCapacityBuffer.is_some():
+        auto t5 = str(v.MaxCapacityBuffer.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxCapacityBuffer"), t5)
+    return p
+
+# Serialize PredictiveScalingCustomizedCapacityMetric into the query form parameters under `prefix`.
+def predictive_scaling_customized_capacity_metric_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingCustomizedCapacityMetric v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.MetricDataQueries:
+        auto t2 = qe1
+        p = metric_data_query_to_query(p, query.query_key(prefix, "MetricDataQueries") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize PredictiveScalingCustomizedLoadMetric into the query form parameters under `prefix`.
+def predictive_scaling_customized_load_metric_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingCustomizedLoadMetric v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.MetricDataQueries:
+        auto t2 = qe1
+        p = metric_data_query_to_query(p, query.query_key(prefix, "MetricDataQueries") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize PredictiveScalingCustomizedScalingMetric into the query form parameters under `prefix`.
+def predictive_scaling_customized_scaling_metric_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingCustomizedScalingMetric v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.MetricDataQueries:
+        auto t2 = qe1
+        p = metric_data_query_to_query(p, query.query_key(prefix, "MetricDataQueries") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize PredictiveScalingMetricSpecification into the query form parameters under `prefix`.
+def predictive_scaling_metric_specification_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingMetricSpecification v) -> list[query.QueryPair]:
+    auto t0 = str(v.TargetValue)
+    p = query.query_scalar(p, query.query_key(prefix, "TargetValue"), t0)
+    if v.PredefinedMetricPairSpecification.is_some():
+        auto t1 = v.PredefinedMetricPairSpecification.unwrap()
+        p = predictive_scaling_predefined_metric_pair_to_query(p, query.query_key(prefix, "PredefinedMetricPairSpecification"), t1)
+    if v.PredefinedScalingMetricSpecification.is_some():
+        auto t2 = v.PredefinedScalingMetricSpecification.unwrap()
+        p = predictive_scaling_predefined_scaling_metric_to_query(p, query.query_key(prefix, "PredefinedScalingMetricSpecification"), t2)
+    if v.PredefinedLoadMetricSpecification.is_some():
+        auto t3 = v.PredefinedLoadMetricSpecification.unwrap()
+        p = predictive_scaling_predefined_load_metric_to_query(p, query.query_key(prefix, "PredefinedLoadMetricSpecification"), t3)
+    if v.CustomizedScalingMetricSpecification.is_some():
+        auto t4 = v.CustomizedScalingMetricSpecification.unwrap()
+        p = predictive_scaling_customized_scaling_metric_to_query(p, query.query_key(prefix, "CustomizedScalingMetricSpecification"), t4)
+    if v.CustomizedLoadMetricSpecification.is_some():
+        auto t5 = v.CustomizedLoadMetricSpecification.unwrap()
+        p = predictive_scaling_customized_load_metric_to_query(p, query.query_key(prefix, "CustomizedLoadMetricSpecification"), t5)
+    if v.CustomizedCapacityMetricSpecification.is_some():
+        auto t6 = v.CustomizedCapacityMetricSpecification.unwrap()
+        p = predictive_scaling_customized_capacity_metric_to_query(p, query.query_key(prefix, "CustomizedCapacityMetricSpecification"), t6)
+    return p
+
+# Serialize PredictiveScalingPredefinedLoadMetric into the query form parameters under `prefix`.
+def predictive_scaling_predefined_load_metric_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingPredefinedLoadMetric v) -> list[query.QueryPair]:
+    auto t0 = v.PredefinedMetricType
+    p = query.query_scalar(p, query.query_key(prefix, "PredefinedMetricType"), t0)
+    if v.ResourceLabel.is_some():
+        auto t1 = v.ResourceLabel.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceLabel"), t1)
+    return p
+
+# Serialize PredictiveScalingPredefinedMetricPair into the query form parameters under `prefix`.
+def predictive_scaling_predefined_metric_pair_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingPredefinedMetricPair v) -> list[query.QueryPair]:
+    auto t0 = v.PredefinedMetricType
+    p = query.query_scalar(p, query.query_key(prefix, "PredefinedMetricType"), t0)
+    if v.ResourceLabel.is_some():
+        auto t1 = v.ResourceLabel.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceLabel"), t1)
+    return p
+
+# Serialize PredictiveScalingPredefinedScalingMetric into the query form parameters under `prefix`.
+def predictive_scaling_predefined_scaling_metric_to_query(list[query.QueryPair] p, str prefix, PredictiveScalingPredefinedScalingMetric v) -> list[query.QueryPair]:
+    auto t0 = v.PredefinedMetricType
+    p = query.query_scalar(p, query.query_key(prefix, "PredefinedMetricType"), t0)
+    if v.ResourceLabel.is_some():
+        auto t1 = v.ResourceLabel.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceLabel"), t1)
+    return p
+
+# Serialize RefreshPreferences into the query form parameters under `prefix`.
+def refresh_preferences_to_query(list[query.QueryPair] p, str prefix, RefreshPreferences v) -> list[query.QueryPair]:
+    if v.MinHealthyPercentage.is_some():
+        auto t0 = str(v.MinHealthyPercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MinHealthyPercentage"), t0)
+    if v.InstanceWarmup.is_some():
+        auto t1 = str(v.InstanceWarmup.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceWarmup"), t1)
+    auto qi2 = 1
+    for qe3 in v.CheckpointPercentages.unwrap_or([]):
+        auto t4 = str(qe3)
+        p = query.query_scalar(p, query.query_key(prefix, "CheckpointPercentages") + ".member" + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    if v.CheckpointDelay.is_some():
+        auto t5 = str(v.CheckpointDelay.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "CheckpointDelay"), t5)
+    if v.SkipMatching.is_some():
+        auto t6 = query.query_bool(v.SkipMatching.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SkipMatching"), t6)
+    if v.AutoRollback.is_some():
+        auto t7 = query.query_bool(v.AutoRollback.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AutoRollback"), t7)
+    if v.ScaleInProtectedInstances.is_some():
+        auto t8 = v.ScaleInProtectedInstances.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ScaleInProtectedInstances"), t8)
+    if v.StandbyInstances.is_some():
+        auto t9 = v.StandbyInstances.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StandbyInstances"), t9)
+    if v.AlarmSpecification.is_some():
+        auto t10 = v.AlarmSpecification.unwrap()
+        p = alarm_specification_to_query(p, query.query_key(prefix, "AlarmSpecification"), t10)
+    if v.MaxHealthyPercentage.is_some():
+        auto t11 = str(v.MaxHealthyPercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxHealthyPercentage"), t11)
+    if v.BakeTime.is_some():
+        auto t12 = str(v.BakeTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "BakeTime"), t12)
+    return p
+
+# Serialize RetentionTriggers into the query form parameters under `prefix`.
+def retention_triggers_to_query(list[query.QueryPair] p, str prefix, RetentionTriggers v) -> list[query.QueryPair]:
+    if v.TerminateHookAbandon.is_some():
+        auto t0 = v.TerminateHookAbandon.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TerminateHookAbandon"), t0)
+    return p
+
+# Serialize ScheduledUpdateGroupActionRequest into the query form parameters under `prefix`.
+def scheduled_update_group_action_request_to_query(list[query.QueryPair] p, str prefix, ScheduledUpdateGroupActionRequest v) -> list[query.QueryPair]:
+    auto t0 = v.ScheduledActionName
+    p = query.query_scalar(p, query.query_key(prefix, "ScheduledActionName"), t0)
+    if v.StartTime.is_some():
+        auto t1 = query.query_timestamp_iso8601(v.StartTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "StartTime"), t1)
+    if v.EndTime.is_some():
+        auto t2 = query.query_timestamp_iso8601(v.EndTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EndTime"), t2)
+    if v.Recurrence.is_some():
+        auto t3 = v.Recurrence.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Recurrence"), t3)
+    if v.MinSize.is_some():
+        auto t4 = str(v.MinSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MinSize"), t4)
+    if v.MaxSize.is_some():
+        auto t5 = str(v.MaxSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxSize"), t5)
+    if v.DesiredCapacity.is_some():
+        auto t6 = str(v.DesiredCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DesiredCapacity"), t6)
+    if v.TimeZone.is_some():
+        auto t7 = v.TimeZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TimeZone"), t7)
+    return p
+
+# Serialize StepAdjustment into the query form parameters under `prefix`.
+def step_adjustment_to_query(list[query.QueryPair] p, str prefix, StepAdjustment v) -> list[query.QueryPair]:
+    if v.MetricIntervalLowerBound.is_some():
+        auto t0 = str(v.MetricIntervalLowerBound.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MetricIntervalLowerBound"), t0)
+    if v.MetricIntervalUpperBound.is_some():
+        auto t1 = str(v.MetricIntervalUpperBound.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MetricIntervalUpperBound"), t1)
+    auto t2 = str(v.ScalingAdjustment)
+    p = query.query_scalar(p, query.query_key(prefix, "ScalingAdjustment"), t2)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    if v.ResourceId.is_some():
+        auto t0 = v.ResourceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceId"), t0)
+    if v.ResourceType.is_some():
+        auto t1 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t1)
+    p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key)
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    if v.PropagateAtLaunch.is_some():
+        auto t2 = query.query_bool(v.PropagateAtLaunch.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PropagateAtLaunch"), t2)
+    return p
+
+# Serialize TargetTrackingConfiguration into the query form parameters under `prefix`.
+def target_tracking_configuration_to_query(list[query.QueryPair] p, str prefix, TargetTrackingConfiguration v) -> list[query.QueryPair]:
+    if v.PredefinedMetricSpecification.is_some():
+        auto t0 = v.PredefinedMetricSpecification.unwrap()
+        p = predefined_metric_specification_to_query(p, query.query_key(prefix, "PredefinedMetricSpecification"), t0)
+    if v.CustomizedMetricSpecification.is_some():
+        auto t1 = v.CustomizedMetricSpecification.unwrap()
+        p = customized_metric_specification_to_query(p, query.query_key(prefix, "CustomizedMetricSpecification"), t1)
+    auto t2 = str(v.TargetValue)
+    p = query.query_scalar(p, query.query_key(prefix, "TargetValue"), t2)
+    if v.DisableScaleIn.is_some():
+        auto t3 = query.query_bool(v.DisableScaleIn.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DisableScaleIn"), t3)
+    return p
+
+# Serialize TargetTrackingMetricDataQuery into the query form parameters under `prefix`.
+def target_tracking_metric_data_query_to_query(list[query.QueryPair] p, str prefix, TargetTrackingMetricDataQuery v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Id"), v.Id)
+    if v.Expression.is_some():
+        auto t0 = v.Expression.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Expression"), t0)
+    if v.MetricStat.is_some():
+        auto t1 = v.MetricStat.unwrap()
+        p = target_tracking_metric_stat_to_query(p, query.query_key(prefix, "MetricStat"), t1)
+    if v.Label.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Label"), v.Label.unwrap())
+    if v.Period.is_some():
+        auto t2 = str(v.Period.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Period"), t2)
+    if v.ReturnData.is_some():
+        auto t3 = query.query_bool(v.ReturnData.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnData"), t3)
+    return p
+
+# Serialize TargetTrackingMetricStat into the query form parameters under `prefix`.
+def target_tracking_metric_stat_to_query(list[query.QueryPair] p, str prefix, TargetTrackingMetricStat v) -> list[query.QueryPair]:
+    p = metric_to_query(p, query.query_key(prefix, "Metric"), v.Metric)
+    p = query.query_scalar(p, query.query_key(prefix, "Stat"), v.Stat)
+    if v.Unit.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Unit"), v.Unit.unwrap())
+    if v.Period.is_some():
+        auto t0 = str(v.Period.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Period"), t0)
+    return p
+
+# Serialize TotalLocalStorageGBRequest into the query form parameters under `prefix`.
+def total_local_storage_gb_request_to_query(list[query.QueryPair] p, str prefix, TotalLocalStorageGBRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize TrafficSourceIdentifier into the query form parameters under `prefix`.
+def traffic_source_identifier_to_query(list[query.QueryPair] p, str prefix, TrafficSourceIdentifier v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Identifier"), v.Identifier)
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    return p
+
+# Serialize VCpuCountRequest into the query form parameters under `prefix`.
+def v_cpu_count_request_to_query(list[query.QueryPair] p, str prefix, VCpuCountRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
 
 # A bound Auto_Scaling client: credentials + region, threaded into every operation.
 struct Auto_ScalingClient:
@@ -1659,6 +2391,21 @@ struct Auto_ScalingClient:
         p = query.query_list(p, "LoadBalancerNames", "member", input.LoadBalancerNames)
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
+    # AttachTrafficSources
+    # errors: InstanceRefreshInProgressFault, ResourceContentionFault, ServiceLinkedRoleFailure
+    def attach_traffic_sources(self, AttachTrafficSourcesType input) -> str:
+        auto p = query.query_params("AttachTrafficSources", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        auto qi0 = 1
+        for qe1 in input.TrafficSources:
+            auto t2 = qe1
+            p = traffic_source_identifier_to_query(p, "TrafficSources.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.SkipZonalShiftValidation.is_some():
+            auto t3 = query.query_bool(input.SkipZonalShiftValidation.unwrap())
+            p = query.query_scalar(p, "SkipZonalShiftValidation", t3)
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
     # BatchDeleteScheduledAction
     # errors: ResourceContentionFault
     def batch_delete_scheduled_action(self, BatchDeleteScheduledActionType input) -> str:
@@ -1666,6 +2413,18 @@ struct Auto_ScalingClient:
         p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
         auto t0 = input.ScheduledActionNames
         p = query.query_list(p, "ScheduledActionNames", "member", t0)
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # BatchPutScheduledUpdateGroupAction
+    # errors: AlreadyExistsFault, LimitExceededFault, ResourceContentionFault
+    def batch_put_scheduled_update_group_action(self, BatchPutScheduledUpdateGroupActionType input) -> str:
+        auto p = query.query_params("BatchPutScheduledUpdateGroupAction", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        auto qi0 = 1
+        for qe1 in input.ScheduledUpdateGroupActions:
+            auto t2 = qe1
+            p = scheduled_update_group_action_request_to_query(p, "ScheduledUpdateGroupActions.member." + str(qi0), t2)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
     # CancelInstanceRefresh
@@ -1690,6 +2449,173 @@ struct Auto_ScalingClient:
         p = query.query_scalar(p, "LifecycleActionResult", input.LifecycleActionResult)
         if input.InstanceId.is_some():
             p = query.query_scalar(p, "InstanceId", input.InstanceId.unwrap())
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # CreateAutoScalingGroup
+    # errors: AlreadyExistsFault, LimitExceededFault, ResourceContentionFault, ServiceLinkedRoleFailure
+    def create_auto_scaling_group(self, CreateAutoScalingGroupType input) -> str:
+        auto p = query.query_params("CreateAutoScalingGroup", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        if input.LaunchConfigurationName.is_some():
+            auto t0 = input.LaunchConfigurationName.unwrap()
+            p = query.query_scalar(p, "LaunchConfigurationName", t0)
+        if input.LaunchTemplate.is_some():
+            auto t1 = input.LaunchTemplate.unwrap()
+            p = launch_template_specification_to_query(p, "LaunchTemplate", t1)
+        if input.MixedInstancesPolicy.is_some():
+            auto t2 = input.MixedInstancesPolicy.unwrap()
+            p = mixed_instances_policy_to_query(p, "MixedInstancesPolicy", t2)
+        if input.InstanceId.is_some():
+            p = query.query_scalar(p, "InstanceId", input.InstanceId.unwrap())
+        p = query.query_scalar(p, "MinSize", str(input.MinSize))
+        p = query.query_scalar(p, "MaxSize", str(input.MaxSize))
+        if input.DesiredCapacity.is_some():
+            auto t3 = str(input.DesiredCapacity.unwrap())
+            p = query.query_scalar(p, "DesiredCapacity", t3)
+        if input.DefaultCooldown.is_some():
+            auto t4 = str(input.DefaultCooldown.unwrap())
+            p = query.query_scalar(p, "DefaultCooldown", t4)
+        auto t5 = input.AvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZones", "member", t5)
+        auto t6 = input.AvailabilityZoneIds.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZoneIds", "member", t6)
+        auto t7 = input.LoadBalancerNames.unwrap_or([])
+        p = query.query_list(p, "LoadBalancerNames", "member", t7)
+        auto t8 = input.TargetGroupARNs.unwrap_or([])
+        p = query.query_list(p, "TargetGroupARNs", "member", t8)
+        if input.HealthCheckType.is_some():
+            p = query.query_scalar(p, "HealthCheckType", input.HealthCheckType.unwrap())
+        if input.HealthCheckGracePeriod.is_some():
+            auto t9 = str(input.HealthCheckGracePeriod.unwrap())
+            p = query.query_scalar(p, "HealthCheckGracePeriod", t9)
+        if input.PlacementGroup.is_some():
+            p = query.query_scalar(p, "PlacementGroup", input.PlacementGroup.unwrap())
+        if input.VPCZoneIdentifier.is_some():
+            auto t10 = input.VPCZoneIdentifier.unwrap()
+            p = query.query_scalar(p, "VPCZoneIdentifier", t10)
+        auto t11 = input.TerminationPolicies.unwrap_or([])
+        p = query.query_list(p, "TerminationPolicies", "member", t11)
+        if input.NewInstancesProtectedFromScaleIn.is_some():
+            auto t12 = query.query_bool(input.NewInstancesProtectedFromScaleIn.unwrap())
+            p = query.query_scalar(p, "NewInstancesProtectedFromScaleIn", t12)
+        if input.CapacityRebalance.is_some():
+            auto t13 = query.query_bool(input.CapacityRebalance.unwrap())
+            p = query.query_scalar(p, "CapacityRebalance", t13)
+        auto qi14 = 1
+        for qe15 in input.LifecycleHookSpecificationList.unwrap_or([]):
+            auto t16 = qe15
+            p = lifecycle_hook_specification_to_query(p, "LifecycleHookSpecificationList.member." + str(qi14), t16)
+            qi14 = qi14 + 1
+        if input.DeletionProtection.is_some():
+            auto t17 = input.DeletionProtection.unwrap()
+            p = query.query_scalar(p, "DeletionProtection", t17)
+        auto qi18 = 1
+        for qe19 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi18), qe19)
+            qi18 = qi18 + 1
+        if input.ServiceLinkedRoleARN.is_some():
+            auto t20 = input.ServiceLinkedRoleARN.unwrap()
+            p = query.query_scalar(p, "ServiceLinkedRoleARN", t20)
+        if input.MaxInstanceLifetime.is_some():
+            auto t21 = str(input.MaxInstanceLifetime.unwrap())
+            p = query.query_scalar(p, "MaxInstanceLifetime", t21)
+        if input.Context.is_some():
+            p = query.query_scalar(p, "Context", input.Context.unwrap())
+        if input.DesiredCapacityType.is_some():
+            auto t22 = input.DesiredCapacityType.unwrap()
+            p = query.query_scalar(p, "DesiredCapacityType", t22)
+        if input.DefaultInstanceWarmup.is_some():
+            auto t23 = str(input.DefaultInstanceWarmup.unwrap())
+            p = query.query_scalar(p, "DefaultInstanceWarmup", t23)
+        auto qi24 = 1
+        for qe25 in input.TrafficSources.unwrap_or([]):
+            auto t26 = qe25
+            p = traffic_source_identifier_to_query(p, "TrafficSources.member." + str(qi24), t26)
+            qi24 = qi24 + 1
+        if input.InstanceMaintenancePolicy.is_some():
+            auto t27 = input.InstanceMaintenancePolicy.unwrap()
+            p = instance_maintenance_policy_to_query(p, "InstanceMaintenancePolicy", t27)
+        if input.AvailabilityZoneDistribution.is_some():
+            auto t28 = input.AvailabilityZoneDistribution.unwrap()
+            p = availability_zone_distribution_to_query(p, "AvailabilityZoneDistribution", t28)
+        if input.AvailabilityZoneImpairmentPolicy.is_some():
+            auto t29 = input.AvailabilityZoneImpairmentPolicy.unwrap()
+            p = availability_zone_impairment_policy_to_query(p, "AvailabilityZoneImpairmentPolicy", t29)
+        if input.SkipZonalShiftValidation.is_some():
+            auto t30 = query.query_bool(input.SkipZonalShiftValidation.unwrap())
+            p = query.query_scalar(p, "SkipZonalShiftValidation", t30)
+        if input.CapacityReservationSpecification.is_some():
+            auto t31 = input.CapacityReservationSpecification.unwrap()
+            p = capacity_reservation_specification_to_query(p, "CapacityReservationSpecification", t31)
+        if input.InstanceLifecyclePolicy.is_some():
+            auto t32 = input.InstanceLifecyclePolicy.unwrap()
+            p = instance_lifecycle_policy_to_query(p, "InstanceLifecyclePolicy", t32)
+        if input.Operator.is_some():
+            p = operator_to_query(p, "Operator", input.Operator.unwrap())
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # CreateLaunchConfiguration
+    # errors: AlreadyExistsFault, LimitExceededFault, ResourceContentionFault
+    def create_launch_configuration(self, CreateLaunchConfigurationType input) -> str:
+        auto p = query.query_params("CreateLaunchConfiguration", "2011-01-01")
+        auto t0 = input.LaunchConfigurationName
+        p = query.query_scalar(p, "LaunchConfigurationName", t0)
+        if input.ImageId.is_some():
+            p = query.query_scalar(p, "ImageId", input.ImageId.unwrap())
+        if input.KeyName.is_some():
+            p = query.query_scalar(p, "KeyName", input.KeyName.unwrap())
+        auto t1 = input.SecurityGroups.unwrap_or([])
+        p = query.query_list(p, "SecurityGroups", "member", t1)
+        if input.ClassicLinkVPCId.is_some():
+            auto t2 = input.ClassicLinkVPCId.unwrap()
+            p = query.query_scalar(p, "ClassicLinkVPCId", t2)
+        auto t3 = input.ClassicLinkVPCSecurityGroups.unwrap_or([])
+        p = query.query_list(p, "ClassicLinkVPCSecurityGroups", "member", t3)
+        if input.UserData.is_some():
+            p = query.query_scalar(p, "UserData", input.UserData.unwrap())
+        if input.InstanceId.is_some():
+            p = query.query_scalar(p, "InstanceId", input.InstanceId.unwrap())
+        if input.InstanceType.is_some():
+            p = query.query_scalar(p, "InstanceType", input.InstanceType.unwrap())
+        if input.KernelId.is_some():
+            p = query.query_scalar(p, "KernelId", input.KernelId.unwrap())
+        if input.RamdiskId.is_some():
+            p = query.query_scalar(p, "RamdiskId", input.RamdiskId.unwrap())
+        auto qi4 = 1
+        for qe5 in input.BlockDeviceMappings.unwrap_or([]):
+            auto t6 = qe5
+            p = block_device_mapping_to_query(p, "BlockDeviceMappings.member." + str(qi4), t6)
+            qi4 = qi4 + 1
+        if input.InstanceMonitoring.is_some():
+            auto t7 = input.InstanceMonitoring.unwrap()
+            p = instance_monitoring_to_query(p, "InstanceMonitoring", t7)
+        if input.SpotPrice.is_some():
+            p = query.query_scalar(p, "SpotPrice", input.SpotPrice.unwrap())
+        if input.IamInstanceProfile.is_some():
+            auto t8 = input.IamInstanceProfile.unwrap()
+            p = query.query_scalar(p, "IamInstanceProfile", t8)
+        if input.EbsOptimized.is_some():
+            auto t9 = query.query_bool(input.EbsOptimized.unwrap())
+            p = query.query_scalar(p, "EbsOptimized", t9)
+        if input.AssociatePublicIpAddress.is_some():
+            auto t10 = query.query_bool(input.AssociatePublicIpAddress.unwrap())
+            p = query.query_scalar(p, "AssociatePublicIpAddress", t10)
+        if input.PlacementTenancy.is_some():
+            auto t11 = input.PlacementTenancy.unwrap()
+            p = query.query_scalar(p, "PlacementTenancy", t11)
+        if input.MetadataOptions.is_some():
+            auto t12 = input.MetadataOptions.unwrap()
+            p = instance_metadata_options_to_query(p, "MetadataOptions", t12)
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # CreateOrUpdateTags
+    # errors: AlreadyExistsFault, LimitExceededFault, ResourceContentionFault, ResourceInUseFault
+    def create_or_update_tags(self, CreateOrUpdateTagsType input) -> str:
+        auto p = query.query_params("CreateOrUpdateTags", "2011-01-01")
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
     # DeleteAutoScalingGroup
@@ -1744,6 +2670,16 @@ struct Auto_ScalingClient:
         p = query.query_scalar(p, "ScheduledActionName", input.ScheduledActionName)
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
+    # DeleteTags
+    # errors: ResourceContentionFault, ResourceInUseFault
+    def delete_tags(self, DeleteTagsType input) -> str:
+        auto p = query.query_params("DeleteTags", "2011-01-01")
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
     # DeleteWarmPool
     # errors: LimitExceededFault, ResourceContentionFault, ResourceInUseFault, ScalingActivityInProgressFault
     def delete_warm_pool(self, DeleteWarmPoolType input) -> str:
@@ -1776,6 +2712,25 @@ struct Auto_ScalingClient:
     # errors: ResourceContentionFault
     def describe_adjustment_types(self) -> str:
         auto p = query.query_params("DescribeAdjustmentTypes", "2011-01-01")
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # DescribeAutoScalingGroups
+    # errors: InvalidNextToken, ResourceContentionFault
+    def describe_auto_scaling_groups(self, AutoScalingGroupNamesType input) -> str:
+        auto p = query.query_params("DescribeAutoScalingGroups", "2011-01-01")
+        auto t0 = input.AutoScalingGroupNames.unwrap_or([])
+        p = query.query_list(p, "AutoScalingGroupNames", "member", t0)
+        if input.IncludeInstances.is_some():
+            auto t1 = query.query_bool(input.IncludeInstances.unwrap())
+            p = query.query_scalar(p, "IncludeInstances", t1)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.member." + str(qi2), qe3)
+            qi2 = qi2 + 1
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
     # DescribeAutoScalingInstances
@@ -1893,6 +2848,28 @@ struct Auto_ScalingClient:
             p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
+    # DescribeScalingActivities
+    # errors: InvalidNextToken, ResourceContentionFault
+    def describe_scaling_activities(self, DescribeScalingActivitiesType input) -> str:
+        auto p = query.query_params("DescribeScalingActivities", "2011-01-01")
+        auto t0 = input.ActivityIds.unwrap_or([])
+        p = query.query_list(p, "ActivityIds", "member", t0)
+        if input.AutoScalingGroupName.is_some():
+            auto t1 = input.AutoScalingGroupName.unwrap()
+            p = query.query_scalar(p, "AutoScalingGroupName", t1)
+        if input.IncludeDeletedGroups.is_some():
+            auto t2 = query.query_bool(input.IncludeDeletedGroups.unwrap())
+            p = query.query_scalar(p, "IncludeDeletedGroups", t2)
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi3 = 1
+        for qe4 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
     # DescribeScalingProcessTypes
     # errors: ResourceContentionFault
     def describe_scaling_process_types(self) -> str:
@@ -1914,6 +2891,20 @@ struct Auto_ScalingClient:
         if input.EndTime.is_some():
             auto t3 = query.query_timestamp_iso8601(input.EndTime.unwrap())
             p = query.query_scalar(p, "EndTime", t3)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # DescribeTags
+    # errors: InvalidNextToken, ResourceContentionFault
+    def describe_tags(self, DescribeTagsType input) -> str:
+        auto p = query.query_params("DescribeTags", "2011-01-01")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.MaxRecords.is_some():
@@ -1976,6 +2967,18 @@ struct Auto_ScalingClient:
         auto p = query.query_params("DetachLoadBalancers", "2011-01-01")
         p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
         p = query.query_list(p, "LoadBalancerNames", "member", input.LoadBalancerNames)
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # DetachTrafficSources
+    # errors: ResourceContentionFault
+    def detach_traffic_sources(self, DetachTrafficSourcesType input) -> str:
+        auto p = query.query_params("DetachTrafficSources", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        auto qi0 = 1
+        for qe1 in input.TrafficSources:
+            auto t2 = qe1
+            p = traffic_source_identifier_to_query(p, "TrafficSources.member." + str(qi0), t2)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
     # DisableMetricsCollection
@@ -2101,6 +3104,48 @@ struct Auto_ScalingClient:
         p = query.query_list(p, "NotificationTypes", "member", input.NotificationTypes)
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
+    # PutScalingPolicy
+    # errors: LimitExceededFault, ResourceContentionFault, ServiceLinkedRoleFailure
+    def put_scaling_policy(self, PutScalingPolicyType input) -> str:
+        auto p = query.query_params("PutScalingPolicy", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        p = query.query_scalar(p, "PolicyName", input.PolicyName)
+        if input.PolicyType.is_some():
+            p = query.query_scalar(p, "PolicyType", input.PolicyType.unwrap())
+        if input.AdjustmentType.is_some():
+            p = query.query_scalar(p, "AdjustmentType", input.AdjustmentType.unwrap())
+        if input.MinAdjustmentStep.is_some():
+            auto t0 = str(input.MinAdjustmentStep.unwrap())
+            p = query.query_scalar(p, "MinAdjustmentStep", t0)
+        if input.MinAdjustmentMagnitude.is_some():
+            auto t1 = str(input.MinAdjustmentMagnitude.unwrap())
+            p = query.query_scalar(p, "MinAdjustmentMagnitude", t1)
+        if input.ScalingAdjustment.is_some():
+            auto t2 = str(input.ScalingAdjustment.unwrap())
+            p = query.query_scalar(p, "ScalingAdjustment", t2)
+        if input.Cooldown.is_some():
+            p = query.query_scalar(p, "Cooldown", str(input.Cooldown.unwrap()))
+        if input.MetricAggregationType.is_some():
+            auto t3 = input.MetricAggregationType.unwrap()
+            p = query.query_scalar(p, "MetricAggregationType", t3)
+        auto qi4 = 1
+        for qe5 in input.StepAdjustments.unwrap_or([]):
+            p = step_adjustment_to_query(p, "StepAdjustments.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.EstimatedInstanceWarmup.is_some():
+            auto t6 = str(input.EstimatedInstanceWarmup.unwrap())
+            p = query.query_scalar(p, "EstimatedInstanceWarmup", t6)
+        if input.TargetTrackingConfiguration.is_some():
+            auto t7 = input.TargetTrackingConfiguration.unwrap()
+            p = target_tracking_configuration_to_query(p, "TargetTrackingConfiguration", t7)
+        if input.Enabled.is_some():
+            auto t8 = query.query_bool(input.Enabled.unwrap())
+            p = query.query_scalar(p, "Enabled", t8)
+        if input.PredictiveScalingConfiguration.is_some():
+            auto t9 = input.PredictiveScalingConfiguration.unwrap()
+            p = predictive_scaling_configuration_to_query(p, "PredictiveScalingConfiguration", t9)
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
     # PutScheduledUpdateGroupAction
     # errors: AlreadyExistsFault, LimitExceededFault, ResourceContentionFault
     def put_scheduled_update_group_action(self, PutScheduledUpdateGroupActionType input) -> str:
@@ -2127,6 +3172,23 @@ struct Auto_ScalingClient:
             p = query.query_scalar(p, "DesiredCapacity", t3)
         if input.TimeZone.is_some():
             p = query.query_scalar(p, "TimeZone", input.TimeZone.unwrap())
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # PutWarmPool
+    # errors: InstanceRefreshInProgressFault, LimitExceededFault, ResourceContentionFault
+    def put_warm_pool(self, PutWarmPoolType input) -> str:
+        auto p = query.query_params("PutWarmPool", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        if input.MaxGroupPreparedCapacity.is_some():
+            auto t0 = str(input.MaxGroupPreparedCapacity.unwrap())
+            p = query.query_scalar(p, "MaxGroupPreparedCapacity", t0)
+        if input.MinSize.is_some():
+            p = query.query_scalar(p, "MinSize", str(input.MinSize.unwrap()))
+        if input.PoolState.is_some():
+            p = query.query_scalar(p, "PoolState", input.PoolState.unwrap())
+        if input.InstanceReusePolicy.is_some():
+            auto t1 = input.InstanceReusePolicy.unwrap()
+            p = instance_reuse_policy_to_query(p, "InstanceReusePolicy", t1)
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
     # RecordLifecycleActionHeartbeat
@@ -2190,6 +3252,21 @@ struct Auto_ScalingClient:
         p = query.query_scalar(p, "ProtectedFromScaleIn", t0)
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
+    # StartInstanceRefresh
+    # errors: InstanceRefreshInProgressFault, LimitExceededFault, ResourceContentionFault
+    def start_instance_refresh(self, StartInstanceRefreshType input) -> str:
+        auto p = query.query_params("StartInstanceRefresh", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        if input.Strategy.is_some():
+            p = query.query_scalar(p, "Strategy", input.Strategy.unwrap())
+        if input.DesiredConfiguration.is_some():
+            auto t0 = input.DesiredConfiguration.unwrap()
+            p = desired_configuration_to_query(p, "DesiredConfiguration", t0)
+        if input.Preferences.is_some():
+            auto t1 = input.Preferences.unwrap()
+            p = refresh_preferences_to_query(p, "Preferences", t1)
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
     # SuspendProcesses
     # errors: ResourceContentionFault, ResourceInUseFault
     def suspend_processes(self, ScalingProcessQuery input) -> str:
@@ -2212,6 +3289,89 @@ struct Auto_ScalingClient:
             p = query.query_scalar(p, "AutoScalingGroupName", t1)
         auto t2 = query.query_bool(input.ShouldDecrementDesiredCapacity)
         p = query.query_scalar(p, "ShouldDecrementDesiredCapacity", t2)
+        return query.query_request(self.creds, autoscaling_service(), self.region, p)
+
+    # UpdateAutoScalingGroup
+    # errors: ResourceContentionFault, ScalingActivityInProgressFault, ServiceLinkedRoleFailure
+    def update_auto_scaling_group(self, UpdateAutoScalingGroupType input) -> str:
+        auto p = query.query_params("UpdateAutoScalingGroup", "2011-01-01")
+        p = query.query_scalar(p, "AutoScalingGroupName", input.AutoScalingGroupName)
+        if input.LaunchConfigurationName.is_some():
+            auto t0 = input.LaunchConfigurationName.unwrap()
+            p = query.query_scalar(p, "LaunchConfigurationName", t0)
+        if input.LaunchTemplate.is_some():
+            auto t1 = input.LaunchTemplate.unwrap()
+            p = launch_template_specification_to_query(p, "LaunchTemplate", t1)
+        if input.MixedInstancesPolicy.is_some():
+            auto t2 = input.MixedInstancesPolicy.unwrap()
+            p = mixed_instances_policy_to_query(p, "MixedInstancesPolicy", t2)
+        if input.MinSize.is_some():
+            p = query.query_scalar(p, "MinSize", str(input.MinSize.unwrap()))
+        if input.MaxSize.is_some():
+            p = query.query_scalar(p, "MaxSize", str(input.MaxSize.unwrap()))
+        if input.DesiredCapacity.is_some():
+            auto t3 = str(input.DesiredCapacity.unwrap())
+            p = query.query_scalar(p, "DesiredCapacity", t3)
+        if input.DefaultCooldown.is_some():
+            auto t4 = str(input.DefaultCooldown.unwrap())
+            p = query.query_scalar(p, "DefaultCooldown", t4)
+        auto t5 = input.AvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZones", "member", t5)
+        auto t6 = input.AvailabilityZoneIds.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZoneIds", "member", t6)
+        if input.HealthCheckType.is_some():
+            p = query.query_scalar(p, "HealthCheckType", input.HealthCheckType.unwrap())
+        if input.HealthCheckGracePeriod.is_some():
+            auto t7 = str(input.HealthCheckGracePeriod.unwrap())
+            p = query.query_scalar(p, "HealthCheckGracePeriod", t7)
+        if input.PlacementGroup.is_some():
+            p = query.query_scalar(p, "PlacementGroup", input.PlacementGroup.unwrap())
+        if input.VPCZoneIdentifier.is_some():
+            auto t8 = input.VPCZoneIdentifier.unwrap()
+            p = query.query_scalar(p, "VPCZoneIdentifier", t8)
+        auto t9 = input.TerminationPolicies.unwrap_or([])
+        p = query.query_list(p, "TerminationPolicies", "member", t9)
+        if input.NewInstancesProtectedFromScaleIn.is_some():
+            auto t10 = query.query_bool(input.NewInstancesProtectedFromScaleIn.unwrap())
+            p = query.query_scalar(p, "NewInstancesProtectedFromScaleIn", t10)
+        if input.ServiceLinkedRoleARN.is_some():
+            auto t11 = input.ServiceLinkedRoleARN.unwrap()
+            p = query.query_scalar(p, "ServiceLinkedRoleARN", t11)
+        if input.MaxInstanceLifetime.is_some():
+            auto t12 = str(input.MaxInstanceLifetime.unwrap())
+            p = query.query_scalar(p, "MaxInstanceLifetime", t12)
+        if input.CapacityRebalance.is_some():
+            auto t13 = query.query_bool(input.CapacityRebalance.unwrap())
+            p = query.query_scalar(p, "CapacityRebalance", t13)
+        if input.Context.is_some():
+            p = query.query_scalar(p, "Context", input.Context.unwrap())
+        if input.DesiredCapacityType.is_some():
+            auto t14 = input.DesiredCapacityType.unwrap()
+            p = query.query_scalar(p, "DesiredCapacityType", t14)
+        if input.DefaultInstanceWarmup.is_some():
+            auto t15 = str(input.DefaultInstanceWarmup.unwrap())
+            p = query.query_scalar(p, "DefaultInstanceWarmup", t15)
+        if input.InstanceMaintenancePolicy.is_some():
+            auto t16 = input.InstanceMaintenancePolicy.unwrap()
+            p = instance_maintenance_policy_to_query(p, "InstanceMaintenancePolicy", t16)
+        if input.AvailabilityZoneDistribution.is_some():
+            auto t17 = input.AvailabilityZoneDistribution.unwrap()
+            p = availability_zone_distribution_to_query(p, "AvailabilityZoneDistribution", t17)
+        if input.AvailabilityZoneImpairmentPolicy.is_some():
+            auto t18 = input.AvailabilityZoneImpairmentPolicy.unwrap()
+            p = availability_zone_impairment_policy_to_query(p, "AvailabilityZoneImpairmentPolicy", t18)
+        if input.SkipZonalShiftValidation.is_some():
+            auto t19 = query.query_bool(input.SkipZonalShiftValidation.unwrap())
+            p = query.query_scalar(p, "SkipZonalShiftValidation", t19)
+        if input.CapacityReservationSpecification.is_some():
+            auto t20 = input.CapacityReservationSpecification.unwrap()
+            p = capacity_reservation_specification_to_query(p, "CapacityReservationSpecification", t20)
+        if input.InstanceLifecyclePolicy.is_some():
+            auto t21 = input.InstanceLifecyclePolicy.unwrap()
+            p = instance_lifecycle_policy_to_query(p, "InstanceLifecyclePolicy", t21)
+        if input.DeletionProtection.is_some():
+            auto t22 = input.DeletionProtection.unwrap()
+            p = query.query_scalar(p, "DeletionProtection", t22)
         return query.query_request(self.creds, autoscaling_service(), self.region, p)
 
 # Construct a Auto_ScalingClient bound to credentials + region.

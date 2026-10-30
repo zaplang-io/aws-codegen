@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (ec2): 811 operations — 427 with a generated method,
-#   384 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (ec2): 811 operations — 811 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   2547 structs (plain carriers), 447 enums, 0 error variants.
 #   0 paginators generated (174 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -20890,393 +20890,6 @@ def ec2_error_from_code(str code) -> EC2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AcceptAddressTransfer (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   AcceptReservedInstancesExchangeQuote (member `TargetConfigurations` is a list of TargetConfigurationRequest (only scalar lists in v0))
-#   AllocateAddress (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   AllocateHosts (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   AllocateIpamPoolCidr (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   AssociateApplicationStatusCheck (member `TargetTagAssociations` is a list of CustomTagKeyValueRequestPair (only scalar lists in v0))
-#   AssociateIamInstanceProfile (member `IamInstanceProfile` is a nested structure (query nesting is a v0 follow-up))
-#   AssociateInstanceEventWindow (member `AssociationTarget` is a nested structure (query nesting is a v0 follow-up))
-#   AssociateIpamResourceDiscovery (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   AttachNetworkInterface (member `EnaSrdSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   AuthorizeSecurityGroupEgress (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   AuthorizeSecurityGroupIngress (member `IpPermissions` is a list of IpPermission (only scalar lists in v0))
-#   BundleInstance (member `Storage` is a nested structure (query nesting is a v0 follow-up))
-#   CopyImage (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CopySnapshot (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CopyVolumes (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateApplicationStatusCheck (member `HealthCheckPaths` is a list of HealthCheckPathRequestObject (only scalar lists in v0))
-#   CreateCapacityManagerDataExport (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateCapacityReservation (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateCapacityReservationBySplitting (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateCapacityReservationCancellationQuote (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateCapacityReservationDateChangeQuote (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateCapacityReservationFleet (member `InstanceTypeSpecifications` is a list of ReservationFleetInstanceSpecification (only scalar lists in v0))
-#   CreateCarrierGateway (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateClientVpnEndpoint (member `AuthenticationOptions` is a list of ClientVpnAuthenticationRequest (only scalar lists in v0))
-#   CreateCoipPool (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateCustomerGateway (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateDelegateMacVolumeOwnershipTask (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateDhcpOptions (member `DhcpConfigurations` is a list of NewDhcpConfiguration (only scalar lists in v0))
-#   CreateEgressOnlyInternetGateway (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateFleet (member `SpotOptions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateFlowLogs (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateFpgaImage (member `InputStorageLocation` is a nested structure (query nesting is a v0 follow-up))
-#   CreateImage (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateImageUsageReport (member `ResourceTypes` is a list of ImageUsageResourceTypeRequest (only scalar lists in v0))
-#   CreateInstanceConnectEndpoint (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateInstanceEventWindow (member `TimeRanges` is a list of InstanceEventWindowTimeRangeRequest (only scalar lists in v0))
-#   CreateInstanceExportTask (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateInternetGateway (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateInterruptibleCapacityReservationAllocation (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateIpam (member `OperatingRegions` is a list of AddIpamOperatingRegion (only scalar lists in v0))
-#   CreateIpamExternalResourceVerificationToken (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateIpamInternetRegistryAssociation (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateIpamPolicy (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateIpamPool (member `AllocationResourceTags` is a list of RequestIpamResourceTag (only scalar lists in v0))
-#   CreateIpamPrefixListResolver (member `Rules` is a list of IpamPrefixListResolverRuleRequest (only scalar lists in v0))
-#   CreateIpamPrefixListResolverTarget (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateIpamResourceDiscovery (member `OperatingRegions` is a list of AddIpamOperatingRegion (only scalar lists in v0))
-#   CreateIpamScope (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateKeyPair (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateLaunchTemplate (member `LaunchTemplateData` is a nested structure (query nesting is a v0 follow-up))
-#   CreateLaunchTemplateVersion (member `LaunchTemplateData` is a nested structure (query nesting is a v0 follow-up))
-#   CreateLocalGatewayRouteTable (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateLocalGatewayRouteTableVirtualInterfaceGroupAssociation (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateLocalGatewayRouteTableVpcAssociation (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateLocalGatewayVirtualInterface (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateLocalGatewayVirtualInterfaceGroup (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateMacSystemIntegrityProtectionModificationTask (member `MacSystemIntegrityProtectionConfiguration` is a nested structure (query nesting is a v0 follow-up))
-#   CreateManagedPrefixList (member `Entries` is a list of AddPrefixListEntry (only scalar lists in v0))
-#   CreateNatGateway (member `AvailabilityZoneAddresses` is a list of AvailabilityZoneAddress (only scalar lists in v0))
-#   CreateNetworkAcl (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateNetworkAclEntry (member `IcmpTypeCode` is a nested structure (query nesting is a v0 follow-up))
-#   CreateNetworkInsightsAccessScope (member `MatchPaths` is a list of AccessScopePathRequest (only scalar lists in v0))
-#   CreateNetworkInsightsPath (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateNetworkInterface (member `Ipv4Prefixes` is a list of Ipv4PrefixSpecificationRequest (only scalar lists in v0))
-#   CreatePlacementGroup (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreatePublicIpv4Pool (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateReplaceRootVolumeTask (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateReservedInstancesListing (member `PriceSchedules` is a list of PriceScheduleSpecification (only scalar lists in v0))
-#   CreateRestoreImageTask (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateRouteServer (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateRouteServerEndpoint (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateRouteServerPeer (member `BgpOptions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateRouteTable (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateSecondaryNetwork (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateSecondarySubnet (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateSecurityGroup (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateSnapshot (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateSnapshots (member `InstanceSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   CreateStoreImageTask (member `S3ObjectTags` is a list of S3ObjectTag (only scalar lists in v0))
-#   CreateSubnet (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateSubnetCidrReservation (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTags (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateTrafficMirrorFilter (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTrafficMirrorFilterRule (member `DestinationPortRange` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTrafficMirrorSession (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTrafficMirrorTarget (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTransitGateway (member `Options` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTransitGatewayConnect (member `Options` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTransitGatewayConnectPeer (member `BgpOptions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTransitGatewayMeteringPolicy (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTransitGatewayMulticastDomain (member `Options` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTransitGatewayPeeringAttachment (member `Options` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTransitGatewayPolicyTable (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTransitGatewayPolicyTableEntry (member `PolicyRule` is a nested structure (query nesting is a v0 follow-up))
-#   CreateTransitGatewayRouteTable (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTransitGatewayRouteTableAnnouncement (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateTransitGatewayVpcAttachment (member `Options` is a nested structure (query nesting is a v0 follow-up))
-#   CreateVerifiedAccessEndpoint (member `LoadBalancerOptions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateVerifiedAccessGroup (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVerifiedAccessInstance (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVerifiedAccessTrustProvider (member `OidcOptions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateVolume (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVpc (member `VpcEncryptionControl` is a nested structure (query nesting is a v0 follow-up))
-#   CreateVpcBlockPublicAccessExclusion (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVpcEncryptionControl (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVpcEndpoint (member `DnsOptions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateVpcEndpointServiceConfiguration (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVpcPeeringConnection (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVpnConcentrator (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVpnConnection (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   CreateVpnGateway (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   DeleteTags (member `Tags` is a list of Tag (only scalar lists in v0))
-#   DeregisterInstanceEventNotificationAttributes (member `InstanceTagAttribute` is a nested structure (query nesting is a v0 follow-up))
-#   DescribeAddresses (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeApplicationStatus (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeApplicationStatusCheckAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeApplicationStatusChecks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeAvailabilityZones (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeAwsNetworkPerformanceMetricSubscriptions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeBundleTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityBlockExtensionHistory (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityBlockStatus (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityBlocks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityManagerDataExports (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityReservationBillingRequests (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityReservationCancellationQuotes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityReservationDateChangeQuotes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityReservationFleets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityReservationTopology (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCapacityReservations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCarrierGateways (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeClassicLinkInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeClientVpnAuthorizationRules (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeClientVpnConnections (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeClientVpnEndpoints (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeClientVpnRoutes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeClientVpnTargetNetworks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCoipPools (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCustomerGateways (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDhcpOptions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeEgressOnlyInternetGateways (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeElasticGpus (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeExportImageTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeExportTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeFastLaunchImages (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeFastSnapshotRestores (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeFleetInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeFleets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeFlowLogs (member `Filter` is a list of Filter (only scalar lists in v0))
-#   DescribeFpgaImages (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeHostReservationOfferings (member `Filter` is a list of Filter (only scalar lists in v0))
-#   DescribeHostReservations (member `Filter` is a list of Filter (only scalar lists in v0))
-#   DescribeHosts (member `Filter` is a list of Filter (only scalar lists in v0))
-#   DescribeIamInstanceProfileAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeImageReferences (member `ResourceTypes` is a list of ResourceTypeRequest (only scalar lists in v0))
-#   DescribeImageUsageReportEntries (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeImageUsageReports (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeImages (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeImportImageTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeImportSnapshotTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceConnectEndpoints (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceCreditSpecifications (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceEventWindows (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceImageMetadata (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceSqlHaHistoryStates (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceSqlHaStates (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceStatus (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceTopology (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceTypeOfferings (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstanceTypes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeInternetGateways (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamExternalResourceVerificationTokens (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamInternetRegistryAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamPolicies (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamPoolAllocations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamPools (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamPrefixListResolverTargets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamPrefixListResolvers (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamResourceDiscoveries (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamResourceDiscoveryAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpamScopes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpams (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIpv6Pools (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeKeyPairs (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLaunchTemplateVersions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLaunchTemplates (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLocalGatewayRouteTableVpcAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLocalGatewayRouteTables (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLocalGatewayVirtualInterfaceGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLocalGatewayVirtualInterfaces (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLocalGateways (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeLockedSnapshots (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeMacHosts (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeMacModificationTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeManagedPrefixLists (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeMovingAddresses (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeNatGateways (member `Filter` is a list of Filter (only scalar lists in v0))
-#   DescribeNetworkAcls (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeNetworkInsightsAccessScopeAnalyses (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeNetworkInsightsAccessScopes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeNetworkInsightsAnalyses (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeNetworkInsightsPaths (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeNetworkInterfacePermissions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeNetworkInterfaces (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeOutpostLags (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribePlacementGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribePrefixLists (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribePublicIpv4Pools (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeRegions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeReplaceRootVolumeTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeReservedInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeReservedInstancesListings (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeReservedInstancesModifications (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeReservedInstancesOfferings (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeRouteServerEndpoints (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeRouteServerPeers (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeRouteServers (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeRouteTables (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeScheduledInstanceAvailability (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeScheduledInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSecondaryInterfaces (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSecondaryNetworks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSecondarySubnets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSecurityGroupRules (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSecurityGroupVpcAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSecurityGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeServiceLinkVirtualInterfaces (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSnapshotTierStatus (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSnapshots (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSpotInstanceRequests (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSpotPriceHistory (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeStoreImageTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSubnets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTags (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTrafficMirrorFilterRules (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTrafficMirrorFilters (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTrafficMirrorSessions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTrafficMirrorTargets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayAttachments (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayConnectPeers (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayConnects (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayMeteringPolicies (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayMulticastDomains (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayPeeringAttachments (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayPolicyTables (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayRouteTableAnnouncements (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayRouteTables (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGatewayVpcAttachments (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTransitGateways (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTrunkInterfaceAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVerifiedAccessEndpoints (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVerifiedAccessGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVerifiedAccessInstanceLoggingConfigurations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVerifiedAccessInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVerifiedAccessTrustProviders (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVolumeStatus (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVolumes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVolumesModifications (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcBlockPublicAccessExclusions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcClassicLink (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEncryptionControls (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEndpointAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEndpointConnectionNotifications (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEndpointConnections (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEndpointServiceConfigurations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEndpointServicePermissions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEndpointServices (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcEndpoints (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcPeeringConnections (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpcs (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpnConcentrators (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpnConnections (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeVpnGateways (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DisassociateApplicationStatusCheck (member `TargetTagAssociations` is a list of CustomTagKeyValueRequestPair (only scalar lists in v0))
-#   DisassociateInstanceEventWindow (member `AssociationTarget` is a nested structure (query nesting is a v0 follow-up))
-#   EnableFastLaunch (member `SnapshotConfiguration` is a nested structure (query nesting is a v0 follow-up))
-#   ExportImage (member `S3ExportLocation` is a nested structure (query nesting is a v0 follow-up))
-#   ExportTransitGatewayRoutes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetAwsNetworkPerformanceData (member `DataQueries` is a list of DataQuery (only scalar lists in v0))
-#   GetCapacityManagerMetricData (member `FilterBy` is a list of CapacityManagerCondition (only scalar lists in v0))
-#   GetCapacityManagerMetricDimensions (member `FilterBy` is a list of CapacityManagerCondition (only scalar lists in v0))
-#   GetCapacityManagerSupportabilityScores (member `InstanceRequirementsWithMetadata` is a nested structure (query nesting is a v0 follow-up))
-#   GetCoipPoolUsage (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetFlowLogsIntegrationTemplate (member `IntegrateServices` is a nested structure (query nesting is a v0 follow-up))
-#   GetInstanceTypesFromInstanceRequirements (member `InstanceRequirements` is a nested structure (query nesting is a v0 follow-up))
-#   GetIpamDiscoveredAccounts (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamDiscoveredPublicAddresses (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamDiscoveredResourceCidrs (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamDiscoveredRoutes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamInternetRegistryAssociationAsns (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamInternetRegistryAssociationCidrs (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamPolicyAllocationRules (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamPolicyOrganizationTargets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamPoolAllocations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamPoolCidrs (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamPrefixListResolverRules (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamPrefixListResolverVersions (member `IpamPrefixListResolverVersions` is a list of int64 (only scalar lists in v0))
-#   GetIpamResourceCidrs (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetIpamRouteProtectionFindings (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetReservedInstancesExchangeQuote (member `TargetConfigurations` is a list of TargetConfigurationRequest (only scalar lists in v0))
-#   GetRouteServerRoutingDatabase (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetSecurityGroupsForVpc (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetSpotPlacementScores (member `InstanceRequirementsWithMetadata` is a nested structure (query nesting is a v0 follow-up))
-#   GetSubnetCidrReservations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayAttachmentPropagations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayMeteringPolicyEntries (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayMulticastDomainAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayPolicyTableAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayPolicyTableEntries (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayPrefixListReferences (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayRouteTableAssociations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   GetTransitGatewayRouteTablePropagations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   ImportImage (member `ClientData` is a nested structure (query nesting is a v0 follow-up))
-#   ImportInstance (member `LaunchSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   ImportKeyPair (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   ImportSnapshot (member `ClientData` is a nested structure (query nesting is a v0 follow-up))
-#   ImportVolume (member `Image` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyApplicationStatusCheck (member `HealthCheckPaths` is a list of HealthCheckPathRequestObject (only scalar lists in v0))
-#   ModifyClientVpnEndpoint (member `ConnectionLogOptions` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyFleet (member `LaunchTemplateConfigs` is a list of FleetLaunchTemplateConfigRequest (only scalar lists in v0))
-#   ModifyFpgaImageAttribute (member `LoadPermission` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyImageAttribute (member `Description` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyInstanceAttribute (member `SourceDestCheck` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyInstanceCapacityReservationAttributes (member `CapacityReservationSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyInstanceCreditSpecification (member `InstanceCreditSpecifications` is a list of InstanceCreditSpecificationRequest (only scalar lists in v0))
-#   ModifyInstanceEventWindow (member `TimeRanges` is a list of InstanceEventWindowTimeRangeRequest (only scalar lists in v0))
-#   ModifyIpam (member `AddOperatingRegions` is a list of AddIpamOperatingRegion (only scalar lists in v0))
-#   ModifyIpamPolicyAllocationRules (member `AllocationRules` is a list of IpamPolicyAllocationRuleRequest (only scalar lists in v0))
-#   ModifyIpamPool (member `AddAllocationResourceTags` is a list of RequestIpamResourceTag (only scalar lists in v0))
-#   ModifyIpamPrefixListResolver (member `Rules` is a list of IpamPrefixListResolverRuleRequest (only scalar lists in v0))
-#   ModifyIpamResourceDiscovery (member `AddOperatingRegions` is a list of AddIpamOperatingRegion (only scalar lists in v0))
-#   ModifyIpamScope (member `ExternalAuthorityConfiguration` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyManagedPrefixList (member `AddEntries` is a list of AddPrefixListEntry (only scalar lists in v0))
-#   ModifyNetworkInterfaceAttribute (member `EnaSrdSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyReservedInstances (member `TargetConfigurations` is a list of ReservedInstancesConfiguration (only scalar lists in v0))
-#   ModifySecurityGroupRules (member `SecurityGroupRules` is a list of SecurityGroupRuleUpdate (only scalar lists in v0))
-#   ModifySnapshotAttribute (member `CreateVolumePermission` is a nested structure (query nesting is a v0 follow-up))
-#   ModifySpotFleetRequest (member `LaunchTemplateConfigs` is a list of LaunchTemplateConfig (only scalar lists in v0))
-#   ModifySubnetAttribute (member `AssignIpv6AddressOnCreation` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyTrafficMirrorFilterRule (member `DestinationPortRange` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyTransitGateway (member `Options` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyTransitGatewayAttachmentNatConfiguration (member `NatGatewayRules` is a list of TransitGatewayNatRuleRequest (only scalar lists in v0))
-#   ModifyTransitGatewayPolicyTableEntry (member `PolicyRule` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyTransitGatewayVpcAttachment (member `Options` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVerifiedAccessEndpoint (member `LoadBalancerOptions` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVerifiedAccessEndpointPolicy (member `SseSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVerifiedAccessGroupPolicy (member `SseSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVerifiedAccessInstanceLoggingConfiguration (member `AccessLogs` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVerifiedAccessTrustProvider (member `OidcOptions` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVolumeAttribute (member `AutoEnableIO` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVpcAttribute (member `EnableDnsHostnames` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVpcEndpoint (member `DnsOptions` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVpcPeeringConnectionOptions (member `AccepterPeeringConnectionOptions` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyVpnTunnelOptions (member `TunnelOptions` is a nested structure (query nesting is a v0 follow-up))
-#   ProvisionByoipCidr (member `CidrAuthorizationContext` is a nested structure (query nesting is a v0 follow-up))
-#   ProvisionIpamByoasn (member `AsnAuthorizationContext` is a nested structure (query nesting is a v0 follow-up))
-#   ProvisionIpamPoolCidr (member `CidrAuthorizationContext` is a nested structure (query nesting is a v0 follow-up))
-#   PurchaseCapacityBlock (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   PurchaseHostReservation (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   PurchaseReservedInstancesOffering (member `LimitPrice` is a nested structure (query nesting is a v0 follow-up))
-#   PurchaseScheduledInstances (member `PurchaseRequests` is a list of PurchaseRequest (only scalar lists in v0))
-#   RegisterImage (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   RegisterInstanceEventNotificationAttributes (member `InstanceTagAttribute` is a nested structure (query nesting is a v0 follow-up))
-#   ReplaceIamInstanceProfileAssociation (member `IamInstanceProfile` is a nested structure (query nesting is a v0 follow-up))
-#   ReplaceImageCriteriaInAllowedImagesSettings (member `ImageCriteria` is a list of ImageCriterionRequest (only scalar lists in v0))
-#   ReplaceImageInstanceTypeSpecification (member `InstanceTypeSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   ReplaceNetworkAclEntry (member `IcmpTypeCode` is a nested structure (query nesting is a v0 follow-up))
-#   RequestSpotFleet (member `SpotFleetRequestConfig` is a nested structure (query nesting is a v0 follow-up))
-#   RequestSpotInstances (member `LaunchSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   RevokeSecurityGroupEgress (member `IpPermissions` is a list of IpPermission (only scalar lists in v0))
-#   RevokeSecurityGroupIngress (member `IpPermissions` is a list of IpPermission (only scalar lists in v0))
-#   RunInstances (member `BlockDeviceMappings` is a list of BlockDeviceMapping (only scalar lists in v0))
-#   RunScheduledInstances (member `LaunchSpecification` is a nested structure (query nesting is a v0 follow-up))
-#   SearchLocalGatewayRoutes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   SearchTransitGatewayMulticastGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   SearchTransitGatewayRoutes (member `Filters` is a list of Filter (only scalar lists in v0))
-#   StartDeclarativePoliciesReport (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   StartNetworkInsightsAccessScopeAnalysis (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   StartNetworkInsightsAnalysis (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   UpdateSecurityGroupRuleDescriptionsEgress (member `IpPermissions` is a list of IpPermission (only scalar lists in v0))
-#   UpdateSecurityGroupRuleDescriptionsIngress (member `IpPermissions` is a list of IpPermission (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeAddressTransfers
@@ -21454,10 +21067,4339 @@ def ec2_error_from_code(str code) -> EC2Error:
 #   SearchTransitGatewayMulticastGroups
 #   SearchTransitGatewayRoutes
 
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AcceleratorCount into the query form parameters under `prefix`.
+def accelerator_count_to_query(list[query.QueryPair] p, str prefix, AcceleratorCount v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize AcceleratorCountRequest into the query form parameters under `prefix`.
+def accelerator_count_request_to_query(list[query.QueryPair] p, str prefix, AcceleratorCountRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize AcceleratorTotalMemoryMiB into the query form parameters under `prefix`.
+def accelerator_total_memory_mi_b_to_query(list[query.QueryPair] p, str prefix, AcceleratorTotalMemoryMiB v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize AcceleratorTotalMemoryMiBRequest into the query form parameters under `prefix`.
+def accelerator_total_memory_mi_b_request_to_query(list[query.QueryPair] p, str prefix, AcceleratorTotalMemoryMiBRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize AccessScopePathRequest into the query form parameters under `prefix`.
+def access_scope_path_request_to_query(list[query.QueryPair] p, str prefix, AccessScopePathRequest v) -> list[query.QueryPair]:
+    if v.Source.is_some():
+        auto t0 = v.Source.unwrap()
+        p = path_statement_request_to_query(p, query.query_key(prefix, "Source"), t0)
+    if v.Destination.is_some():
+        auto t1 = v.Destination.unwrap()
+        p = path_statement_request_to_query(p, query.query_key(prefix, "Destination"), t1)
+    auto qi2 = 1
+    for qe3 in v.ThroughResources.unwrap_or([]):
+        auto t4 = qe3
+        p = through_resources_statement_request_to_query(p, query.query_key(prefix, "ThroughResource") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    return p
+
+# Serialize AddIpamOperatingRegion into the query form parameters under `prefix`.
+def add_ipam_operating_region_to_query(list[query.QueryPair] p, str prefix, AddIpamOperatingRegion v) -> list[query.QueryPair]:
+    if v.RegionName.is_some():
+        auto t0 = v.RegionName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RegionName"), t0)
+    return p
+
+# Serialize AddIpamOrganizationalUnitExclusion into the query form parameters under `prefix`.
+def add_ipam_organizational_unit_exclusion_to_query(list[query.QueryPair] p, str prefix, AddIpamOrganizationalUnitExclusion v) -> list[query.QueryPair]:
+    if v.OrganizationsEntityPath.is_some():
+        auto t0 = v.OrganizationsEntityPath.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OrganizationsEntityPath"), t0)
+    return p
+
+# Serialize AddPrefixListEntry into the query form parameters under `prefix`.
+def add_prefix_list_entry_to_query(list[query.QueryPair] p, str prefix, AddPrefixListEntry v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Cidr"), v.Cidr)
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    return p
+
+# Serialize AsnAuthorizationContext into the query form parameters under `prefix`.
+def asn_authorization_context_to_query(list[query.QueryPair] p, str prefix, AsnAuthorizationContext v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Message"), v.Message)
+    p = query.query_scalar(p, query.query_key(prefix, "Signature"), v.Signature)
+    return p
+
+# Serialize AthenaIntegration into the query form parameters under `prefix`.
+def athena_integration_to_query(list[query.QueryPair] p, str prefix, AthenaIntegration v) -> list[query.QueryPair]:
+    auto t0 = v.IntegrationResultS3DestinationArn
+    p = query.query_scalar(p, query.query_key(prefix, "IntegrationResultS3DestinationArn"), t0)
+    auto t1 = v.PartitionLoadFrequency
+    p = query.query_scalar(p, query.query_key(prefix, "PartitionLoadFrequency"), t1)
+    if v.PartitionStartDate.is_some():
+        auto t2 = query.query_timestamp_iso8601(v.PartitionStartDate.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PartitionStartDate"), t2)
+    if v.PartitionEndDate.is_some():
+        auto t3 = query.query_timestamp_iso8601(v.PartitionEndDate.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PartitionEndDate"), t3)
+    return p
+
+# Serialize AttributeBooleanValue into the query form parameters under `prefix`.
+def attribute_boolean_value_to_query(list[query.QueryPair] p, str prefix, AttributeBooleanValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        auto t0 = query.query_bool(v.Value.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), t0)
+    return p
+
+# Serialize AttributeValue into the query form parameters under `prefix`.
+def attribute_value_to_query(list[query.QueryPair] p, str prefix, AttributeValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize AvailabilityZoneAddress into the query form parameters under `prefix`.
+def availability_zone_address_to_query(list[query.QueryPair] p, str prefix, AvailabilityZoneAddress v) -> list[query.QueryPair]:
+    if v.AvailabilityZone.is_some():
+        auto t0 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t0)
+    if v.AvailabilityZoneId.is_some():
+        auto t1 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t1)
+    auto t2 = v.AllocationIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AllocationId"), t2)
+    return p
+
+# Serialize BaselineEbsBandwidthMbps into the query form parameters under `prefix`.
+def baseline_ebs_bandwidth_mbps_to_query(list[query.QueryPair] p, str prefix, BaselineEbsBandwidthMbps v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize BaselineEbsBandwidthMbpsRequest into the query form parameters under `prefix`.
+def baseline_ebs_bandwidth_mbps_request_to_query(list[query.QueryPair] p, str prefix, BaselineEbsBandwidthMbpsRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize BaselinePerformanceFactors into the query form parameters under `prefix`.
+def baseline_performance_factors_to_query(list[query.QueryPair] p, str prefix, BaselinePerformanceFactors v) -> list[query.QueryPair]:
+    if v.Cpu.is_some():
+        auto t0 = v.Cpu.unwrap()
+        p = cpu_performance_factor_to_query(p, query.query_key(prefix, "Cpu"), t0)
+    return p
+
+# Serialize BaselinePerformanceFactorsRequest into the query form parameters under `prefix`.
+def baseline_performance_factors_request_to_query(list[query.QueryPair] p, str prefix, BaselinePerformanceFactorsRequest v) -> list[query.QueryPair]:
+    if v.Cpu.is_some():
+        auto t0 = v.Cpu.unwrap()
+        p = cpu_performance_factor_request_to_query(p, query.query_key(prefix, "Cpu"), t0)
+    return p
+
+# Serialize BlockDeviceMapping into the query form parameters under `prefix`.
+def block_device_mapping_to_query(list[query.QueryPair] p, str prefix, BlockDeviceMapping v) -> list[query.QueryPair]:
+    if v.Ebs.is_some():
+        p = ebs_block_device_to_query(p, query.query_key(prefix, "Ebs"), v.Ebs.unwrap())
+    if v.NoDevice.is_some():
+        auto t0 = v.NoDevice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NoDevice"), t0)
+    if v.DeviceName.is_some():
+        auto t1 = v.DeviceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceName"), t1)
+    if v.VirtualName.is_some():
+        auto t2 = v.VirtualName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VirtualName"), t2)
+    return p
+
+# Serialize CapacityManagerCondition into the query form parameters under `prefix`.
+def capacity_manager_condition_to_query(list[query.QueryPair] p, str prefix, CapacityManagerCondition v) -> list[query.QueryPair]:
+    if v.DimensionCondition.is_some():
+        auto t0 = v.DimensionCondition.unwrap()
+        p = dimension_condition_to_query(p, query.query_key(prefix, "DimensionCondition"), t0)
+    return p
+
+# Serialize CapacityReservationOptionsRequest into the query form parameters under `prefix`.
+def capacity_reservation_options_request_to_query(list[query.QueryPair] p, str prefix, CapacityReservationOptionsRequest v) -> list[query.QueryPair]:
+    if v.UsageStrategy.is_some():
+        auto t0 = v.UsageStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UsageStrategy"), t0)
+    return p
+
+# Serialize CapacityReservationSpecification into the query form parameters under `prefix`.
+def capacity_reservation_specification_to_query(list[query.QueryPair] p, str prefix, CapacityReservationSpecification v) -> list[query.QueryPair]:
+    if v.CapacityReservationPreference.is_some():
+        auto t0 = v.CapacityReservationPreference.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CapacityReservationPreference"), t0)
+    if v.CapacityReservationTarget.is_some():
+        auto t1 = v.CapacityReservationTarget.unwrap()
+        p = capacity_reservation_target_to_query(p, query.query_key(prefix, "CapacityReservationTarget"), t1)
+    return p
+
+# Serialize CapacityReservationTarget into the query form parameters under `prefix`.
+def capacity_reservation_target_to_query(list[query.QueryPair] p, str prefix, CapacityReservationTarget v) -> list[query.QueryPair]:
+    if v.CapacityReservationId.is_some():
+        auto t0 = v.CapacityReservationId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CapacityReservationId"), t0)
+    if v.CapacityReservationResourceGroupArn.is_some():
+        auto t1 = v.CapacityReservationResourceGroupArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CapacityReservationResourceGroupArn"), t1)
+    return p
+
+# Serialize CertificateAuthenticationRequest into the query form parameters under `prefix`.
+def certificate_authentication_request_to_query(list[query.QueryPair] p, str prefix, CertificateAuthenticationRequest v) -> list[query.QueryPair]:
+    if v.ClientRootCertificateChainArn.is_some():
+        auto t0 = v.ClientRootCertificateChainArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientRootCertificateChainArn"), t0)
+    return p
+
+# Serialize CidrAuthorizationContext into the query form parameters under `prefix`.
+def cidr_authorization_context_to_query(list[query.QueryPair] p, str prefix, CidrAuthorizationContext v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Message"), v.Message)
+    p = query.query_scalar(p, query.query_key(prefix, "Signature"), v.Signature)
+    return p
+
+# Serialize ClassicLoadBalancer into the query form parameters under `prefix`.
+def classic_load_balancer_to_query(list[query.QueryPair] p, str prefix, ClassicLoadBalancer v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    return p
+
+# Serialize ClassicLoadBalancersConfig into the query form parameters under `prefix`.
+def classic_load_balancers_config_to_query(list[query.QueryPair] p, str prefix, ClassicLoadBalancersConfig v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.ClassicLoadBalancers.unwrap_or([]):
+        auto t2 = qe1
+        p = classic_load_balancer_to_query(p, query.query_key(prefix, "ClassicLoadBalancers") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize ClientConnectOptions into the query form parameters under `prefix`.
+def client_connect_options_to_query(list[query.QueryPair] p, str prefix, ClientConnectOptions v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.LambdaFunctionArn.is_some():
+        auto t1 = v.LambdaFunctionArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LambdaFunctionArn"), t1)
+    return p
+
+# Serialize ClientData into the query form parameters under `prefix`.
+def client_data_to_query(list[query.QueryPair] p, str prefix, ClientData v) -> list[query.QueryPair]:
+    if v.Comment.is_some():
+        auto t0 = v.Comment.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Comment"), t0)
+    if v.UploadEnd.is_some():
+        auto t1 = query.query_timestamp_iso8601(v.UploadEnd.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UploadEnd"), t1)
+    if v.UploadSize.is_some():
+        auto t2 = str(v.UploadSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UploadSize"), t2)
+    if v.UploadStart.is_some():
+        auto t3 = query.query_timestamp_iso8601(v.UploadStart.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UploadStart"), t3)
+    return p
+
+# Serialize ClientLoginBannerOptions into the query form parameters under `prefix`.
+def client_login_banner_options_to_query(list[query.QueryPair] p, str prefix, ClientLoginBannerOptions v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.BannerText.is_some():
+        auto t1 = v.BannerText.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BannerText"), t1)
+    return p
+
+# Serialize ClientRouteEnforcementOptions into the query form parameters under `prefix`.
+def client_route_enforcement_options_to_query(list[query.QueryPair] p, str prefix, ClientRouteEnforcementOptions v) -> list[query.QueryPair]:
+    if v.Enforced.is_some():
+        auto t0 = query.query_bool(v.Enforced.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enforced"), t0)
+    return p
+
+# Serialize ClientVpnAuthenticationRequest into the query form parameters under `prefix`.
+def client_vpn_authentication_request_to_query(list[query.QueryPair] p, str prefix, ClientVpnAuthenticationRequest v) -> list[query.QueryPair]:
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    if v.ActiveDirectory.is_some():
+        auto t0 = v.ActiveDirectory.unwrap()
+        p = directory_service_authentication_request_to_query(p, query.query_key(prefix, "ActiveDirectory"), t0)
+    if v.MutualAuthentication.is_some():
+        auto t1 = v.MutualAuthentication.unwrap()
+        p = certificate_authentication_request_to_query(p, query.query_key(prefix, "MutualAuthentication"), t1)
+    if v.FederatedAuthentication.is_some():
+        auto t2 = v.FederatedAuthentication.unwrap()
+        p = federated_authentication_request_to_query(p, query.query_key(prefix, "FederatedAuthentication"), t2)
+    return p
+
+# Serialize ClientVpnTrustProviderRequest into the query form parameters under `prefix`.
+def client_vpn_trust_provider_request_to_query(list[query.QueryPair] p, str prefix, ClientVpnTrustProviderRequest v) -> list[query.QueryPair]:
+    if v.TrustProviderType.is_some():
+        auto t0 = v.TrustProviderType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TrustProviderType"), t0)
+    if v.TenantId.is_some():
+        auto t1 = v.TenantId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TenantId"), t1)
+    if v.PublicSigningKeyUrl.is_some():
+        auto t2 = v.PublicSigningKeyUrl.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PublicSigningKeyUrl"), t2)
+    return p
+
+# Serialize CloudWatchLogOptionsSpecification into the query form parameters under `prefix`.
+def cloud_watch_log_options_specification_to_query(list[query.QueryPair] p, str prefix, CloudWatchLogOptionsSpecification v) -> list[query.QueryPair]:
+    if v.LogEnabled.is_some():
+        auto t0 = query.query_bool(v.LogEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "LogEnabled"), t0)
+    if v.LogGroupArn.is_some():
+        auto t1 = v.LogGroupArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogGroupArn"), t1)
+    if v.LogOutputFormat.is_some():
+        auto t2 = v.LogOutputFormat.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogOutputFormat"), t2)
+    if v.BgpLogEnabled.is_some():
+        auto t3 = query.query_bool(v.BgpLogEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "BgpLogEnabled"), t3)
+    if v.BgpLogGroupArn.is_some():
+        auto t4 = v.BgpLogGroupArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BgpLogGroupArn"), t4)
+    if v.BgpLogOutputFormat.is_some():
+        auto t5 = v.BgpLogOutputFormat.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BgpLogOutputFormat"), t5)
+    return p
+
+# Serialize ConnectionLogOptions into the query form parameters under `prefix`.
+def connection_log_options_to_query(list[query.QueryPair] p, str prefix, ConnectionLogOptions v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.CloudwatchLogGroup.is_some():
+        auto t1 = v.CloudwatchLogGroup.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CloudwatchLogGroup"), t1)
+    if v.CloudwatchLogStream.is_some():
+        auto t2 = v.CloudwatchLogStream.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CloudwatchLogStream"), t2)
+    if v.IncludeAuthorizationPolicyContext.is_some():
+        auto t3 = query.query_bool(v.IncludeAuthorizationPolicyContext.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IncludeAuthorizationPolicyContext"), t3)
+    return p
+
+# Serialize ConnectionTrackingSpecificationRequest into the query form parameters under `prefix`.
+def connection_tracking_specification_request_to_query(list[query.QueryPair] p, str prefix, ConnectionTrackingSpecificationRequest v) -> list[query.QueryPair]:
+    if v.TcpEstablishedTimeout.is_some():
+        auto t0 = str(v.TcpEstablishedTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TcpEstablishedTimeout"), t0)
+    if v.UdpStreamTimeout.is_some():
+        auto t1 = str(v.UdpStreamTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UdpStreamTimeout"), t1)
+    if v.UdpTimeout.is_some():
+        auto t2 = str(v.UdpTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UdpTimeout"), t2)
+    return p
+
+# Serialize CpuOptionsRequest into the query form parameters under `prefix`.
+def cpu_options_request_to_query(list[query.QueryPair] p, str prefix, CpuOptionsRequest v) -> list[query.QueryPair]:
+    if v.CoreCount.is_some():
+        auto t0 = str(v.CoreCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "CoreCount"), t0)
+    if v.ThreadsPerCore.is_some():
+        auto t1 = str(v.ThreadsPerCore.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ThreadsPerCore"), t1)
+    if v.AmdSevSnp.is_some():
+        auto t2 = v.AmdSevSnp.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AmdSevSnp"), t2)
+    if v.NestedVirtualization.is_some():
+        auto t3 = v.NestedVirtualization.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NestedVirtualization"), t3)
+    return p
+
+# Serialize CpuPerformanceFactor into the query form parameters under `prefix`.
+def cpu_performance_factor_to_query(list[query.QueryPair] p, str prefix, CpuPerformanceFactor v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.References.unwrap_or([]):
+        auto t2 = qe1
+        p = performance_factor_reference_to_query(p, query.query_key(prefix, "ReferenceSet") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize CpuPerformanceFactorRequest into the query form parameters under `prefix`.
+def cpu_performance_factor_request_to_query(list[query.QueryPair] p, str prefix, CpuPerformanceFactorRequest v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.References.unwrap_or([]):
+        auto t2 = qe1
+        p = performance_factor_reference_request_to_query(p, query.query_key(prefix, "Reference") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize CreateTransitGatewayConnectRequestOptions into the query form parameters under `prefix`.
+def create_transit_gateway_connect_request_options_to_query(list[query.QueryPair] p, str prefix, CreateTransitGatewayConnectRequestOptions v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Protocol"), v.Protocol)
+    return p
+
+# Serialize CreateTransitGatewayMulticastDomainRequestOptions into the query form parameters under `prefix`.
+def create_transit_gateway_multicast_domain_request_options_to_query(list[query.QueryPair] p, str prefix, CreateTransitGatewayMulticastDomainRequestOptions v) -> list[query.QueryPair]:
+    if v.Igmpv2Support.is_some():
+        auto t0 = v.Igmpv2Support.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Igmpv2Support"), t0)
+    if v.StaticSourcesSupport.is_some():
+        auto t1 = v.StaticSourcesSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StaticSourcesSupport"), t1)
+    if v.AutoAcceptSharedAssociations.is_some():
+        auto t2 = v.AutoAcceptSharedAssociations.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AutoAcceptSharedAssociations"), t2)
+    return p
+
+# Serialize CreateTransitGatewayPeeringAttachmentRequestOptions into the query form parameters under `prefix`.
+def create_transit_gateway_peering_attachment_request_options_to_query(list[query.QueryPair] p, str prefix, CreateTransitGatewayPeeringAttachmentRequestOptions v) -> list[query.QueryPair]:
+    if v.DynamicRouting.is_some():
+        auto t0 = v.DynamicRouting.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DynamicRouting"), t0)
+    return p
+
+# Serialize CreateTransitGatewayVpcAttachmentRequestOptions into the query form parameters under `prefix`.
+def create_transit_gateway_vpc_attachment_request_options_to_query(list[query.QueryPair] p, str prefix, CreateTransitGatewayVpcAttachmentRequestOptions v) -> list[query.QueryPair]:
+    if v.DnsSupport.is_some():
+        auto t0 = v.DnsSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DnsSupport"), t0)
+    if v.SecurityGroupReferencingSupport.is_some():
+        auto t1 = v.SecurityGroupReferencingSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupReferencingSupport"), t1)
+    if v.Ipv6Support.is_some():
+        auto t2 = v.Ipv6Support.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6Support"), t2)
+    if v.ApplianceModeSupport.is_some():
+        auto t3 = v.ApplianceModeSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApplianceModeSupport"), t3)
+    return p
+
+# Serialize CreateVerifiedAccessEndpointCidrOptions into the query form parameters under `prefix`.
+def create_verified_access_endpoint_cidr_options_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessEndpointCidrOptions v) -> list[query.QueryPair]:
+    if v.Protocol.is_some():
+        auto t0 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t0)
+    auto t1 = v.SubnetIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SubnetId"), t1)
+    if v.Cidr.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Cidr"), v.Cidr.unwrap())
+    auto qi2 = 1
+    for qe3 in v.PortRanges.unwrap_or([]):
+        auto t4 = qe3
+        p = create_verified_access_endpoint_port_range_to_query(p, query.query_key(prefix, "PortRange") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    return p
+
+# Serialize CreateVerifiedAccessEndpointEniOptions into the query form parameters under `prefix`.
+def create_verified_access_endpoint_eni_options_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessEndpointEniOptions v) -> list[query.QueryPair]:
+    if v.NetworkInterfaceId.is_some():
+        auto t0 = v.NetworkInterfaceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkInterfaceId"), t0)
+    if v.Protocol.is_some():
+        auto t1 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t1)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    auto qi2 = 1
+    for qe3 in v.PortRanges.unwrap_or([]):
+        auto t4 = qe3
+        p = create_verified_access_endpoint_port_range_to_query(p, query.query_key(prefix, "PortRange") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    return p
+
+# Serialize CreateVerifiedAccessEndpointLoadBalancerOptions into the query form parameters under `prefix`.
+def create_verified_access_endpoint_load_balancer_options_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessEndpointLoadBalancerOptions v) -> list[query.QueryPair]:
+    if v.Protocol.is_some():
+        auto t0 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t0)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    if v.LoadBalancerArn.is_some():
+        auto t1 = v.LoadBalancerArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LoadBalancerArn"), t1)
+    auto t2 = v.SubnetIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SubnetId"), t2)
+    auto qi3 = 1
+    for qe4 in v.PortRanges.unwrap_or([]):
+        auto t5 = qe4
+        p = create_verified_access_endpoint_port_range_to_query(p, query.query_key(prefix, "PortRange") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    return p
+
+# Serialize CreateVerifiedAccessEndpointPortRange into the query form parameters under `prefix`.
+def create_verified_access_endpoint_port_range_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessEndpointPortRange v) -> list[query.QueryPair]:
+    if v.FromPort.is_some():
+        auto t0 = str(v.FromPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FromPort"), t0)
+    if v.ToPort.is_some():
+        auto t1 = str(v.ToPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ToPort"), t1)
+    return p
+
+# Serialize CreateVerifiedAccessEndpointRdsOptions into the query form parameters under `prefix`.
+def create_verified_access_endpoint_rds_options_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessEndpointRdsOptions v) -> list[query.QueryPair]:
+    if v.Protocol.is_some():
+        auto t0 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t0)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    if v.RdsDbInstanceArn.is_some():
+        auto t1 = v.RdsDbInstanceArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RdsDbInstanceArn"), t1)
+    if v.RdsDbClusterArn.is_some():
+        auto t2 = v.RdsDbClusterArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RdsDbClusterArn"), t2)
+    if v.RdsDbProxyArn.is_some():
+        auto t3 = v.RdsDbProxyArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RdsDbProxyArn"), t3)
+    if v.RdsEndpoint.is_some():
+        auto t4 = v.RdsEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RdsEndpoint"), t4)
+    auto t5 = v.SubnetIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SubnetId"), t5)
+    return p
+
+# Serialize CreateVerifiedAccessNativeApplicationOidcOptions into the query form parameters under `prefix`.
+def create_verified_access_native_application_oidc_options_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessNativeApplicationOidcOptions v) -> list[query.QueryPair]:
+    if v.PublicSigningKeyEndpoint.is_some():
+        auto t0 = v.PublicSigningKeyEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PublicSigningKeyEndpoint"), t0)
+    if v.Issuer.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Issuer"), v.Issuer.unwrap())
+    if v.AuthorizationEndpoint.is_some():
+        auto t1 = v.AuthorizationEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AuthorizationEndpoint"), t1)
+    if v.TokenEndpoint.is_some():
+        auto t2 = v.TokenEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TokenEndpoint"), t2)
+    if v.UserInfoEndpoint.is_some():
+        auto t3 = v.UserInfoEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserInfoEndpoint"), t3)
+    if v.ClientId.is_some():
+        auto t4 = v.ClientId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientId"), t4)
+    if v.ClientSecret.is_some():
+        auto t5 = v.ClientSecret.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientSecret"), t5)
+    if v.Scope.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope.unwrap())
+    return p
+
+# Serialize CreateVerifiedAccessTrustProviderDeviceOptions into the query form parameters under `prefix`.
+def create_verified_access_trust_provider_device_options_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessTrustProviderDeviceOptions v) -> list[query.QueryPair]:
+    if v.TenantId.is_some():
+        auto t0 = v.TenantId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TenantId"), t0)
+    if v.PublicSigningKeyUrl.is_some():
+        auto t1 = v.PublicSigningKeyUrl.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PublicSigningKeyUrl"), t1)
+    return p
+
+# Serialize CreateVerifiedAccessTrustProviderOidcOptions into the query form parameters under `prefix`.
+def create_verified_access_trust_provider_oidc_options_to_query(list[query.QueryPair] p, str prefix, CreateVerifiedAccessTrustProviderOidcOptions v) -> list[query.QueryPair]:
+    if v.Issuer.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Issuer"), v.Issuer.unwrap())
+    if v.AuthorizationEndpoint.is_some():
+        auto t0 = v.AuthorizationEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AuthorizationEndpoint"), t0)
+    if v.TokenEndpoint.is_some():
+        auto t1 = v.TokenEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TokenEndpoint"), t1)
+    if v.UserInfoEndpoint.is_some():
+        auto t2 = v.UserInfoEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserInfoEndpoint"), t2)
+    if v.ClientId.is_some():
+        auto t3 = v.ClientId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientId"), t3)
+    if v.ClientSecret.is_some():
+        auto t4 = v.ClientSecret.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientSecret"), t4)
+    if v.Scope.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope.unwrap())
+    return p
+
+# Serialize CreateVolumePermission into the query form parameters under `prefix`.
+def create_volume_permission_to_query(list[query.QueryPair] p, str prefix, CreateVolumePermission v) -> list[query.QueryPair]:
+    if v.UserId.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "UserId"), v.UserId.unwrap())
+    if v.Group.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Group"), v.Group.unwrap())
+    return p
+
+# Serialize CreateVolumePermissionModifications into the query form parameters under `prefix`.
+def create_volume_permission_modifications_to_query(list[query.QueryPair] p, str prefix, CreateVolumePermissionModifications v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.Add.unwrap_or([]):
+        auto t2 = qe1
+        p = create_volume_permission_to_query(p, query.query_key(prefix, "Add") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    auto qi3 = 1
+    for qe4 in v.Remove.unwrap_or([]):
+        auto t5 = qe4
+        p = create_volume_permission_to_query(p, query.query_key(prefix, "Remove") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    return p
+
+# Serialize CreationDateConditionRequest into the query form parameters under `prefix`.
+def creation_date_condition_request_to_query(list[query.QueryPair] p, str prefix, CreationDateConditionRequest v) -> list[query.QueryPair]:
+    if v.MaximumDaysSinceCreated.is_some():
+        auto t0 = str(v.MaximumDaysSinceCreated.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaximumDaysSinceCreated"), t0)
+    return p
+
+# Serialize CreditSpecificationRequest into the query form parameters under `prefix`.
+def credit_specification_request_to_query(list[query.QueryPair] p, str prefix, CreditSpecificationRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "CpuCredits"), v.CpuCredits)
+    return p
+
+# Serialize CustomTagKeyValueRequestPair into the query form parameters under `prefix`.
+def custom_tag_key_value_request_pair_to_query(list[query.QueryPair] p, str prefix, CustomTagKeyValueRequestPair v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize DataQuery into the query form parameters under `prefix`.
+def data_query_to_query(list[query.QueryPair] p, str prefix, DataQuery v) -> list[query.QueryPair]:
+    if v.Id.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Id"), v.Id.unwrap())
+    if v.Source.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Source"), v.Source.unwrap())
+    if v.Destination.is_some():
+        auto t0 = v.Destination.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Destination"), t0)
+    if v.Metric.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Metric"), v.Metric.unwrap())
+    if v.Statistic.is_some():
+        auto t1 = v.Statistic.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Statistic"), t1)
+    if v.Period.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Period"), v.Period.unwrap())
+    return p
+
+# Serialize DeprecationTimeConditionRequest into the query form parameters under `prefix`.
+def deprecation_time_condition_request_to_query(list[query.QueryPair] p, str prefix, DeprecationTimeConditionRequest v) -> list[query.QueryPair]:
+    if v.MaximumDaysSinceDeprecated.is_some():
+        auto t0 = str(v.MaximumDaysSinceDeprecated.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaximumDaysSinceDeprecated"), t0)
+    return p
+
+# Serialize DeregisterInstanceTagAttributeRequest into the query form parameters under `prefix`.
+def deregister_instance_tag_attribute_request_to_query(list[query.QueryPair] p, str prefix, DeregisterInstanceTagAttributeRequest v) -> list[query.QueryPair]:
+    if v.IncludeAllTagsOfInstance.is_some():
+        auto t0 = query.query_bool(v.IncludeAllTagsOfInstance.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IncludeAllTagsOfInstance"), t0)
+    auto t1 = v.InstanceTagKeys.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "InstanceTagKey"), t1)
+    return p
+
+# Serialize DestinationOptionsRequest into the query form parameters under `prefix`.
+def destination_options_request_to_query(list[query.QueryPair] p, str prefix, DestinationOptionsRequest v) -> list[query.QueryPair]:
+    if v.FileFormat.is_some():
+        auto t0 = v.FileFormat.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "FileFormat"), t0)
+    if v.HiveCompatiblePartitions.is_some():
+        auto t1 = query.query_bool(v.HiveCompatiblePartitions.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HiveCompatiblePartitions"), t1)
+    if v.PerHourPartition.is_some():
+        auto t2 = query.query_bool(v.PerHourPartition.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PerHourPartition"), t2)
+    return p
+
+# Serialize DevicePostureOptions into the query form parameters under `prefix`.
+def device_posture_options_to_query(list[query.QueryPair] p, str prefix, DevicePostureOptions v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.TrustProviders.unwrap_or([]):
+        auto t2 = qe1
+        p = client_vpn_trust_provider_request_to_query(p, query.query_key(prefix, "TrustProvider") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    if v.Enabled.is_some():
+        auto t3 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t3)
+    return p
+
+# Serialize DimensionCondition into the query form parameters under `prefix`.
+def dimension_condition_to_query(list[query.QueryPair] p, str prefix, DimensionCondition v) -> list[query.QueryPair]:
+    if v.Dimension.is_some():
+        auto t0 = v.Dimension.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Dimension"), t0)
+    if v.Comparison.is_some():
+        auto t1 = v.Comparison.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Comparison"), t1)
+    auto t2 = v.Values.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "Value"), t2)
+    return p
+
+# Serialize DirectoryServiceAuthenticationRequest into the query form parameters under `prefix`.
+def directory_service_authentication_request_to_query(list[query.QueryPair] p, str prefix, DirectoryServiceAuthenticationRequest v) -> list[query.QueryPair]:
+    if v.DirectoryId.is_some():
+        auto t0 = v.DirectoryId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DirectoryId"), t0)
+    return p
+
+# Serialize DiskImage into the query form parameters under `prefix`.
+def disk_image_to_query(list[query.QueryPair] p, str prefix, DiskImage v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.Image.is_some():
+        auto t1 = v.Image.unwrap()
+        p = disk_image_detail_to_query(p, query.query_key(prefix, "Image"), t1)
+    if v.Volume.is_some():
+        auto t2 = v.Volume.unwrap()
+        p = volume_detail_to_query(p, query.query_key(prefix, "Volume"), t2)
+    return p
+
+# Serialize DiskImageDetail into the query form parameters under `prefix`.
+def disk_image_detail_to_query(list[query.QueryPair] p, str prefix, DiskImageDetail v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Format"), v.Format)
+    p = query.query_scalar(p, query.query_key(prefix, "Bytes"), str(v.Bytes))
+    auto t0 = v.ImportManifestUrl
+    p = query.query_scalar(p, query.query_key(prefix, "ImportManifestUrl"), t0)
+    return p
+
+# Serialize DnsOptionsSpecification into the query form parameters under `prefix`.
+def dns_options_specification_to_query(list[query.QueryPair] p, str prefix, DnsOptionsSpecification v) -> list[query.QueryPair]:
+    if v.DnsRecordIpType.is_some():
+        auto t0 = v.DnsRecordIpType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DnsRecordIpType"), t0)
+    if v.PrivateDnsOnlyForInboundResolverEndpoint.is_some():
+        auto t1 = query.query_bool(v.PrivateDnsOnlyForInboundResolverEndpoint.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateDnsOnlyForInboundResolverEndpoint"), t1)
+    if v.PrivateDnsPreference.is_some():
+        auto t2 = v.PrivateDnsPreference.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateDnsPreference"), t2)
+    auto t3 = v.PrivateDnsSpecifiedDomains.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "PrivateDnsSpecifiedDomain"), t3)
+    return p
+
+# Serialize DnsServersOptionsModifyStructure into the query form parameters under `prefix`.
+def dns_servers_options_modify_structure_to_query(list[query.QueryPair] p, str prefix, DnsServersOptionsModifyStructure v) -> list[query.QueryPair]:
+    auto t0 = v.CustomDnsServers.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "CustomDnsServers"), t0)
+    if v.Enabled.is_some():
+        auto t1 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t1)
+    return p
+
+# Serialize EbsBlockDevice into the query form parameters under `prefix`.
+def ebs_block_device_to_query(list[query.QueryPair] p, str prefix, EbsBlockDevice v) -> list[query.QueryPair]:
+    if v.DeleteOnTermination.is_some():
+        auto t0 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t0)
+    if v.Iops.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Iops"), str(v.Iops.unwrap()))
+    if v.SnapshotId.is_some():
+        auto t1 = v.SnapshotId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SnapshotId"), t1)
+    if v.VolumeSize.is_some():
+        auto t2 = str(v.VolumeSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeSize"), t2)
+    if v.VolumeType.is_some():
+        auto t3 = v.VolumeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeType"), t3)
+    if v.KmsKeyId.is_some():
+        auto t4 = v.KmsKeyId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KmsKeyId"), t4)
+    if v.Throughput.is_some():
+        auto t5 = str(v.Throughput.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Throughput"), t5)
+    if v.OutpostArn.is_some():
+        auto t6 = v.OutpostArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OutpostArn"), t6)
+    if v.AvailabilityZone.is_some():
+        auto t7 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t7)
+    if v.Encrypted.is_some():
+        auto t8 = query.query_bool(v.Encrypted.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Encrypted"), t8)
+    if v.VolumeInitializationRate.is_some():
+        auto t9 = str(v.VolumeInitializationRate.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeInitializationRate"), t9)
+    if v.AvailabilityZoneId.is_some():
+        auto t10 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t10)
+    if v.EbsCardIndex.is_some():
+        auto t11 = str(v.EbsCardIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EbsCardIndex"), t11)
+    return p
+
+# Serialize EbsInstanceBlockDeviceSpecification into the query form parameters under `prefix`.
+def ebs_instance_block_device_specification_to_query(list[query.QueryPair] p, str prefix, EbsInstanceBlockDeviceSpecification v) -> list[query.QueryPair]:
+    if v.VolumeId.is_some():
+        auto t0 = v.VolumeId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeId"), t0)
+    if v.DeleteOnTermination.is_some():
+        auto t1 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t1)
+    return p
+
+# Serialize ElasticGpuSpecification into the query form parameters under `prefix`.
+def elastic_gpu_specification_to_query(list[query.QueryPair] p, str prefix, ElasticGpuSpecification v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type)
+    return p
+
+# Serialize ElasticInferenceAccelerator into the query form parameters under `prefix`.
+def elastic_inference_accelerator_to_query(list[query.QueryPair] p, str prefix, ElasticInferenceAccelerator v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type)
+    if v.Count.is_some():
+        auto t0 = str(v.Count.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Count"), t0)
+    return p
+
+# Serialize EnaSrdSpecification into the query form parameters under `prefix`.
+def ena_srd_specification_to_query(list[query.QueryPair] p, str prefix, EnaSrdSpecification v) -> list[query.QueryPair]:
+    if v.EnaSrdEnabled.is_some():
+        auto t0 = query.query_bool(v.EnaSrdEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnaSrdEnabled"), t0)
+    if v.EnaSrdUdpSpecification.is_some():
+        auto t1 = v.EnaSrdUdpSpecification.unwrap()
+        p = ena_srd_udp_specification_to_query(p, query.query_key(prefix, "EnaSrdUdpSpecification"), t1)
+    return p
+
+# Serialize EnaSrdSpecificationRequest into the query form parameters under `prefix`.
+def ena_srd_specification_request_to_query(list[query.QueryPair] p, str prefix, EnaSrdSpecificationRequest v) -> list[query.QueryPair]:
+    if v.EnaSrdEnabled.is_some():
+        auto t0 = query.query_bool(v.EnaSrdEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnaSrdEnabled"), t0)
+    if v.EnaSrdUdpSpecification.is_some():
+        auto t1 = v.EnaSrdUdpSpecification.unwrap()
+        p = ena_srd_udp_specification_request_to_query(p, query.query_key(prefix, "EnaSrdUdpSpecification"), t1)
+    return p
+
+# Serialize EnaSrdUdpSpecification into the query form parameters under `prefix`.
+def ena_srd_udp_specification_to_query(list[query.QueryPair] p, str prefix, EnaSrdUdpSpecification v) -> list[query.QueryPair]:
+    if v.EnaSrdUdpEnabled.is_some():
+        auto t0 = query.query_bool(v.EnaSrdUdpEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnaSrdUdpEnabled"), t0)
+    return p
+
+# Serialize EnaSrdUdpSpecificationRequest into the query form parameters under `prefix`.
+def ena_srd_udp_specification_request_to_query(list[query.QueryPair] p, str prefix, EnaSrdUdpSpecificationRequest v) -> list[query.QueryPair]:
+    if v.EnaSrdUdpEnabled.is_some():
+        auto t0 = query.query_bool(v.EnaSrdUdpEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnaSrdUdpEnabled"), t0)
+    return p
+
+# Serialize EnclaveOptionsRequest into the query form parameters under `prefix`.
+def enclave_options_request_to_query(list[query.QueryPair] p, str prefix, EnclaveOptionsRequest v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize ExportTaskS3LocationRequest into the query form parameters under `prefix`.
+def export_task_s3_location_request_to_query(list[query.QueryPair] p, str prefix, ExportTaskS3LocationRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "S3Bucket"), v.S3Bucket)
+    if v.S3Prefix.is_some():
+        auto t0 = v.S3Prefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3Prefix"), t0)
+    return p
+
+# Serialize ExportToS3TaskSpecification into the query form parameters under `prefix`.
+def export_to_s3_task_specification_to_query(list[query.QueryPair] p, str prefix, ExportToS3TaskSpecification v) -> list[query.QueryPair]:
+    if v.DiskImageFormat.is_some():
+        auto t0 = v.DiskImageFormat.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DiskImageFormat"), t0)
+    if v.ContainerFormat.is_some():
+        auto t1 = v.ContainerFormat.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ContainerFormat"), t1)
+    if v.S3Bucket.is_some():
+        auto t2 = v.S3Bucket.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3Bucket"), t2)
+    if v.S3Prefix.is_some():
+        auto t3 = v.S3Prefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3Prefix"), t3)
+    return p
+
+# Serialize ExternalAuthorityConfiguration into the query form parameters under `prefix`.
+def external_authority_configuration_to_query(list[query.QueryPair] p, str prefix, ExternalAuthorityConfiguration v) -> list[query.QueryPair]:
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    if v.ExternalResourceIdentifier.is_some():
+        auto t0 = v.ExternalResourceIdentifier.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ExternalResourceIdentifier"), t0)
+    return p
+
+# Serialize FastLaunchLaunchTemplateSpecificationRequest into the query form parameters under `prefix`.
+def fast_launch_launch_template_specification_request_to_query(list[query.QueryPair] p, str prefix, FastLaunchLaunchTemplateSpecificationRequest v) -> list[query.QueryPair]:
+    if v.LaunchTemplateId.is_some():
+        auto t0 = v.LaunchTemplateId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateId"), t0)
+    if v.LaunchTemplateName.is_some():
+        auto t1 = v.LaunchTemplateName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateName"), t1)
+    p = query.query_scalar(p, query.query_key(prefix, "Version"), v.Version)
+    return p
+
+# Serialize FastLaunchSnapshotConfigurationRequest into the query form parameters under `prefix`.
+def fast_launch_snapshot_configuration_request_to_query(list[query.QueryPair] p, str prefix, FastLaunchSnapshotConfigurationRequest v) -> list[query.QueryPair]:
+    if v.TargetResourceCount.is_some():
+        auto t0 = str(v.TargetResourceCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TargetResourceCount"), t0)
+    return p
+
+# Serialize FederatedAuthenticationRequest into the query form parameters under `prefix`.
+def federated_authentication_request_to_query(list[query.QueryPair] p, str prefix, FederatedAuthenticationRequest v) -> list[query.QueryPair]:
+    if v.SAMLProviderArn.is_some():
+        auto t0 = v.SAMLProviderArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SAMLProviderArn"), t0)
+    if v.SelfServiceSAMLProviderArn.is_some():
+        auto t1 = v.SelfServiceSAMLProviderArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SelfServiceSAMLProviderArn"), t1)
+    return p
+
+# Serialize Filter into the query form parameters under `prefix`.
+def filter_to_query(list[query.QueryPair] p, str prefix, Filter v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "Value"), t0)
+    return p
+
+# Serialize FleetBlockDeviceMappingRequest into the query form parameters under `prefix`.
+def fleet_block_device_mapping_request_to_query(list[query.QueryPair] p, str prefix, FleetBlockDeviceMappingRequest v) -> list[query.QueryPair]:
+    if v.DeviceName.is_some():
+        auto t0 = v.DeviceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceName"), t0)
+    if v.VirtualName.is_some():
+        auto t1 = v.VirtualName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VirtualName"), t1)
+    if v.Ebs.is_some():
+        auto t2 = v.Ebs.unwrap()
+        p = fleet_ebs_block_device_request_to_query(p, query.query_key(prefix, "Ebs"), t2)
+    if v.NoDevice.is_some():
+        auto t3 = v.NoDevice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NoDevice"), t3)
+    return p
+
+# Serialize FleetCapacityReservationTargetRequest into the query form parameters under `prefix`.
+def fleet_capacity_reservation_target_request_to_query(list[query.QueryPair] p, str prefix, FleetCapacityReservationTargetRequest v) -> list[query.QueryPair]:
+    auto t0 = v.CapacityReservationIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "CapacityReservationId"), t0)
+    auto t1 = v.CapacityReservationResourceGroupArns.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "CapacityReservationResourceGroupArn"), t1)
+    return p
+
+# Serialize FleetEbsBlockDeviceRequest into the query form parameters under `prefix`.
+def fleet_ebs_block_device_request_to_query(list[query.QueryPair] p, str prefix, FleetEbsBlockDeviceRequest v) -> list[query.QueryPair]:
+    if v.Encrypted.is_some():
+        auto t0 = query.query_bool(v.Encrypted.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Encrypted"), t0)
+    if v.DeleteOnTermination.is_some():
+        auto t1 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t1)
+    if v.Iops.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Iops"), str(v.Iops.unwrap()))
+    if v.Throughput.is_some():
+        auto t2 = str(v.Throughput.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Throughput"), t2)
+    if v.KmsKeyId.is_some():
+        auto t3 = v.KmsKeyId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KmsKeyId"), t3)
+    if v.SnapshotId.is_some():
+        auto t4 = v.SnapshotId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SnapshotId"), t4)
+    if v.VolumeSize.is_some():
+        auto t5 = str(v.VolumeSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeSize"), t5)
+    if v.VolumeType.is_some():
+        auto t6 = v.VolumeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeType"), t6)
+    return p
+
+# Serialize FleetIamInstanceProfileSpecificationRequest into the query form parameters under `prefix`.
+def fleet_iam_instance_profile_specification_request_to_query(list[query.QueryPair] p, str prefix, FleetIamInstanceProfileSpecificationRequest v) -> list[query.QueryPair]:
+    if v.Arn.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Arn"), v.Arn.unwrap())
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    return p
+
+# Serialize FleetInstanceMetadataOptionsRequest into the query form parameters under `prefix`.
+def fleet_instance_metadata_options_request_to_query(list[query.QueryPair] p, str prefix, FleetInstanceMetadataOptionsRequest v) -> list[query.QueryPair]:
+    if v.HttpTokens.is_some():
+        auto t0 = v.HttpTokens.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpTokens"), t0)
+    if v.HttpPutResponseHopLimit.is_some():
+        auto t1 = str(v.HttpPutResponseHopLimit.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HttpPutResponseHopLimit"), t1)
+    if v.HttpEndpoint.is_some():
+        auto t2 = v.HttpEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpEndpoint"), t2)
+    return p
+
+# Serialize FleetLaunchTemplateConfigRequest into the query form parameters under `prefix`.
+def fleet_launch_template_config_request_to_query(list[query.QueryPair] p, str prefix, FleetLaunchTemplateConfigRequest v) -> list[query.QueryPair]:
+    if v.LaunchTemplateSpecification.is_some():
+        auto t0 = v.LaunchTemplateSpecification.unwrap()
+        p = fleet_launch_template_specification_request_to_query(p, query.query_key(prefix, "LaunchTemplateSpecification"), t0)
+    auto qi1 = 1
+    for qe2 in v.Overrides.unwrap_or([]):
+        auto t3 = qe2
+        p = fleet_launch_template_overrides_request_to_query(p, query.query_key(prefix, "Overrides") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize FleetLaunchTemplateOverridesRequest into the query form parameters under `prefix`.
+def fleet_launch_template_overrides_request_to_query(list[query.QueryPair] p, str prefix, FleetLaunchTemplateOverridesRequest v) -> list[query.QueryPair]:
+    if v.InstanceType.is_some():
+        auto t0 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t0)
+    if v.MaxPrice.is_some():
+        auto t1 = v.MaxPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MaxPrice"), t1)
+    if v.SubnetId.is_some():
+        auto t2 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t2)
+    if v.AvailabilityZone.is_some():
+        auto t3 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t3)
+    if v.WeightedCapacity.is_some():
+        auto t4 = str(v.WeightedCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "WeightedCapacity"), t4)
+    if v.Priority.is_some():
+        auto t5 = str(v.Priority.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Priority"), t5)
+    if v.Placement.is_some():
+        auto t6 = v.Placement.unwrap()
+        p = placement_to_query(p, query.query_key(prefix, "Placement"), t6)
+    if v.KeyName.is_some():
+        auto t7 = v.KeyName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KeyName"), t7)
+    auto qi8 = 1
+    for qe9 in v.BlockDeviceMappings.unwrap_or([]):
+        auto t10 = qe9
+        p = fleet_block_device_mapping_request_to_query(p, query.query_key(prefix, "BlockDeviceMapping") + "." + str(qi8), t10)
+        qi8 = qi8 + 1
+    if v.IamInstanceProfile.is_some():
+        auto t11 = v.IamInstanceProfile.unwrap()
+        p = fleet_iam_instance_profile_specification_request_to_query(p, query.query_key(prefix, "IamInstanceProfile"), t11)
+    if v.MetadataOptions.is_some():
+        auto t12 = v.MetadataOptions.unwrap()
+        p = fleet_instance_metadata_options_request_to_query(p, query.query_key(prefix, "MetadataOptions"), t12)
+    if v.InstanceRequirements.is_some():
+        auto t13 = v.InstanceRequirements.unwrap()
+        p = instance_requirements_request_to_query(p, query.query_key(prefix, "InstanceRequirements"), t13)
+    if v.ImageId.is_some():
+        auto t14 = v.ImageId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ImageId"), t14)
+    if v.AvailabilityZoneId.is_some():
+        auto t15 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t15)
+    return p
+
+# Serialize FleetLaunchTemplateSpecification into the query form parameters under `prefix`.
+def fleet_launch_template_specification_to_query(list[query.QueryPair] p, str prefix, FleetLaunchTemplateSpecification v) -> list[query.QueryPair]:
+    if v.LaunchTemplateId.is_some():
+        auto t0 = v.LaunchTemplateId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateId"), t0)
+    if v.LaunchTemplateName.is_some():
+        auto t1 = v.LaunchTemplateName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateName"), t1)
+    if v.Version.is_some():
+        auto t2 = v.Version.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Version"), t2)
+    return p
+
+# Serialize FleetLaunchTemplateSpecificationRequest into the query form parameters under `prefix`.
+def fleet_launch_template_specification_request_to_query(list[query.QueryPair] p, str prefix, FleetLaunchTemplateSpecificationRequest v) -> list[query.QueryPair]:
+    if v.LaunchTemplateId.is_some():
+        auto t0 = v.LaunchTemplateId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateId"), t0)
+    if v.LaunchTemplateName.is_some():
+        auto t1 = v.LaunchTemplateName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateName"), t1)
+    if v.Version.is_some():
+        auto t2 = v.Version.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Version"), t2)
+    if v.LaunchTemplateSpecificationUserData.is_some():
+        auto t3 = v.LaunchTemplateSpecificationUserData.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateSpecificationUserData"), t3)
+    return p
+
+# Serialize FleetSpotCapacityRebalanceRequest into the query form parameters under `prefix`.
+def fleet_spot_capacity_rebalance_request_to_query(list[query.QueryPair] p, str prefix, FleetSpotCapacityRebalanceRequest v) -> list[query.QueryPair]:
+    if v.ReplacementStrategy.is_some():
+        auto t0 = v.ReplacementStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ReplacementStrategy"), t0)
+    if v.TerminationDelay.is_some():
+        auto t1 = str(v.TerminationDelay.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TerminationDelay"), t1)
+    return p
+
+# Serialize FleetSpotMaintenanceStrategiesRequest into the query form parameters under `prefix`.
+def fleet_spot_maintenance_strategies_request_to_query(list[query.QueryPair] p, str prefix, FleetSpotMaintenanceStrategiesRequest v) -> list[query.QueryPair]:
+    if v.CapacityRebalance.is_some():
+        auto t0 = v.CapacityRebalance.unwrap()
+        p = fleet_spot_capacity_rebalance_request_to_query(p, query.query_key(prefix, "CapacityRebalance"), t0)
+    return p
+
+# Serialize GroupIdentifier into the query form parameters under `prefix`.
+def group_identifier_to_query(list[query.QueryPair] p, str prefix, GroupIdentifier v) -> list[query.QueryPair]:
+    if v.GroupId.is_some():
+        auto t0 = v.GroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupId"), t0)
+    if v.GroupName.is_some():
+        auto t1 = v.GroupName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupName"), t1)
+    return p
+
+# Serialize HealthCheckPathDestinationRequestObject into the query form parameters under `prefix`.
+def health_check_path_destination_request_object_to_query(list[query.QueryPair] p, str prefix, HealthCheckPathDestinationRequestObject v) -> list[query.QueryPair]:
+    if v.SubnetId.is_some():
+        auto t0 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t0)
+    if v.SecurityGroupId.is_some():
+        auto t1 = v.SecurityGroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupId"), t1)
+    return p
+
+# Serialize HealthCheckPathRequestObject into the query form parameters under `prefix`.
+def health_check_path_request_object_to_query(list[query.QueryPair] p, str prefix, HealthCheckPathRequestObject v) -> list[query.QueryPair]:
+    if v.Source.is_some():
+        auto t0 = v.Source.unwrap()
+        p = health_check_path_source_request_object_to_query(p, query.query_key(prefix, "Source"), t0)
+    auto qi1 = 1
+    for qe2 in v.Destinations.unwrap_or([]):
+        auto t3 = qe2
+        p = health_check_path_destination_request_object_to_query(p, query.query_key(prefix, "Destination") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize HealthCheckPathSourceRequestObject into the query form parameters under `prefix`.
+def health_check_path_source_request_object_to_query(list[query.QueryPair] p, str prefix, HealthCheckPathSourceRequestObject v) -> list[query.QueryPair]:
+    if v.SubnetId.is_some():
+        auto t0 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t0)
+    if v.SecurityGroupId.is_some():
+        auto t1 = v.SecurityGroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupId"), t1)
+    return p
+
+# Serialize HibernationOptionsRequest into the query form parameters under `prefix`.
+def hibernation_options_request_to_query(list[query.QueryPair] p, str prefix, HibernationOptionsRequest v) -> list[query.QueryPair]:
+    if v.Configured.is_some():
+        auto t0 = query.query_bool(v.Configured.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Configured"), t0)
+    return p
+
+# Serialize HostCpuOptionsRequest into the query form parameters under `prefix`.
+def host_cpu_options_request_to_query(list[query.QueryPair] p, str prefix, HostCpuOptionsRequest v) -> list[query.QueryPair]:
+    if v.AmdSevSnp.is_some():
+        auto t0 = v.AmdSevSnp.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AmdSevSnp"), t0)
+    return p
+
+# Serialize IKEVersionsRequestListValue into the query form parameters under `prefix`.
+def ike_versions_request_list_value_to_query(list[query.QueryPair] p, str prefix, IKEVersionsRequestListValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize IamInstanceProfileSpecification into the query form parameters under `prefix`.
+def iam_instance_profile_specification_to_query(list[query.QueryPair] p, str prefix, IamInstanceProfileSpecification v) -> list[query.QueryPair]:
+    if v.Arn.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Arn"), v.Arn.unwrap())
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    return p
+
+# Serialize IcmpTypeCode into the query form parameters under `prefix`.
+def icmp_type_code_to_query(list[query.QueryPair] p, str prefix, IcmpTypeCode v) -> list[query.QueryPair]:
+    if v.Code.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Code"), str(v.Code.unwrap()))
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), str(v.Type.unwrap()))
+    return p
+
+# Serialize ImageCriterionRequest into the query form parameters under `prefix`.
+def image_criterion_request_to_query(list[query.QueryPair] p, str prefix, ImageCriterionRequest v) -> list[query.QueryPair]:
+    auto t0 = v.ImageProviders.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ImageProvider"), t0)
+    auto t1 = v.MarketplaceProductCodes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "MarketplaceProductCode"), t1)
+    auto t2 = v.ImageNames.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ImageName"), t2)
+    if v.DeprecationTimeCondition.is_some():
+        auto t3 = v.DeprecationTimeCondition.unwrap()
+        p = deprecation_time_condition_request_to_query(p, query.query_key(prefix, "DeprecationTimeCondition"), t3)
+    if v.CreationDateCondition.is_some():
+        auto t4 = v.CreationDateCondition.unwrap()
+        p = creation_date_condition_request_to_query(p, query.query_key(prefix, "CreationDateCondition"), t4)
+    auto qi5 = 1
+    for qe6 in v.ImageWatermarks.unwrap_or([]):
+        auto t7 = qe6
+        p = image_watermark_filter_request_to_query(p, query.query_key(prefix, "ImageWatermark") + "." + str(qi5), t7)
+        qi5 = qi5 + 1
+    if v.ScanResultCondition.is_some():
+        auto t8 = v.ScanResultCondition.unwrap()
+        p = scan_result_condition_request_to_query(p, query.query_key(prefix, "ScanResultCondition"), t8)
+    return p
+
+# Serialize ImageDiskContainer into the query form parameters under `prefix`.
+def image_disk_container_to_query(list[query.QueryPair] p, str prefix, ImageDiskContainer v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.DeviceName.is_some():
+        auto t1 = v.DeviceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceName"), t1)
+    if v.Format.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Format"), v.Format.unwrap())
+    if v.SnapshotId.is_some():
+        auto t2 = v.SnapshotId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SnapshotId"), t2)
+    if v.Url.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Url"), v.Url.unwrap())
+    if v.UserBucket.is_some():
+        auto t3 = v.UserBucket.unwrap()
+        p = user_bucket_to_query(p, query.query_key(prefix, "UserBucket"), t3)
+    return p
+
+# Serialize ImageUsageResourceTypeOptionRequest into the query form parameters under `prefix`.
+def image_usage_resource_type_option_request_to_query(list[query.QueryPair] p, str prefix, ImageUsageResourceTypeOptionRequest v) -> list[query.QueryPair]:
+    if v.OptionName.is_some():
+        auto t0 = v.OptionName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OptionName"), t0)
+    auto t1 = v.OptionValues.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "OptionValue"), t1)
+    return p
+
+# Serialize ImageUsageResourceTypeRequest into the query form parameters under `prefix`.
+def image_usage_resource_type_request_to_query(list[query.QueryPair] p, str prefix, ImageUsageResourceTypeRequest v) -> list[query.QueryPair]:
+    if v.ResourceType.is_some():
+        auto t0 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t0)
+    auto qi1 = 1
+    for qe2 in v.ResourceTypeOptions.unwrap_or([]):
+        auto t3 = qe2
+        p = image_usage_resource_type_option_request_to_query(p, query.query_key(prefix, "ResourceTypeOption") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize ImageWatermarkFilterRequest into the query form parameters under `prefix`.
+def image_watermark_filter_request_to_query(list[query.QueryPair] p, str prefix, ImageWatermarkFilterRequest v) -> list[query.QueryPair]:
+    if v.WatermarkKey.is_some():
+        auto t0 = v.WatermarkKey.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "WatermarkKey"), t0)
+    if v.SourceImageRegion.is_some():
+        auto t1 = v.SourceImageRegion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceImageRegion"), t1)
+    if v.MaximumDaysSinceSourceImageCreated.is_some():
+        auto t2 = str(v.MaximumDaysSinceSourceImageCreated.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaximumDaysSinceSourceImageCreated"), t2)
+    if v.MaximumDaysSinceWatermarkCreated.is_some():
+        auto t3 = str(v.MaximumDaysSinceWatermarkCreated.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaximumDaysSinceWatermarkCreated"), t3)
+    return p
+
+# Serialize ImportImageLicenseConfigurationRequest into the query form parameters under `prefix`.
+def import_image_license_configuration_request_to_query(list[query.QueryPair] p, str prefix, ImportImageLicenseConfigurationRequest v) -> list[query.QueryPair]:
+    if v.LicenseConfigurationArn.is_some():
+        auto t0 = v.LicenseConfigurationArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LicenseConfigurationArn"), t0)
+    return p
+
+# Serialize ImportInstanceLaunchSpecification into the query form parameters under `prefix`.
+def import_instance_launch_specification_to_query(list[query.QueryPair] p, str prefix, ImportInstanceLaunchSpecification v) -> list[query.QueryPair]:
+    if v.Architecture.is_some():
+        auto t0 = v.Architecture.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Architecture"), t0)
+    auto t1 = v.GroupNames.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "GroupName"), t1)
+    auto t2 = v.GroupIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "GroupId"), t2)
+    if v.AdditionalInfo.is_some():
+        auto t3 = v.AdditionalInfo.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AdditionalInfo"), t3)
+    if v.UserData.is_some():
+        auto t4 = v.UserData.unwrap()
+        p = user_data_to_query(p, query.query_key(prefix, "UserData"), t4)
+    if v.InstanceType.is_some():
+        auto t5 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t5)
+    if v.Placement.is_some():
+        auto t6 = v.Placement.unwrap()
+        p = placement_to_query(p, query.query_key(prefix, "Placement"), t6)
+    if v.Monitoring.is_some():
+        auto t7 = query.query_bool(v.Monitoring.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Monitoring"), t7)
+    if v.SubnetId.is_some():
+        auto t8 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t8)
+    if v.InstanceInitiatedShutdownBehavior.is_some():
+        auto t9 = v.InstanceInitiatedShutdownBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceInitiatedShutdownBehavior"), t9)
+    if v.PrivateIpAddress.is_some():
+        auto t10 = v.PrivateIpAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t10)
+    return p
+
+# Serialize InstanceBlockDeviceMappingSpecification into the query form parameters under `prefix`.
+def instance_block_device_mapping_specification_to_query(list[query.QueryPair] p, str prefix, InstanceBlockDeviceMappingSpecification v) -> list[query.QueryPair]:
+    if v.DeviceName.is_some():
+        auto t0 = v.DeviceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceName"), t0)
+    if v.Ebs.is_some():
+        auto t1 = v.Ebs.unwrap()
+        p = ebs_instance_block_device_specification_to_query(p, query.query_key(prefix, "Ebs"), t1)
+    if v.VirtualName.is_some():
+        auto t2 = v.VirtualName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VirtualName"), t2)
+    if v.NoDevice.is_some():
+        auto t3 = v.NoDevice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NoDevice"), t3)
+    return p
+
+# Serialize InstanceCreditSpecificationRequest into the query form parameters under `prefix`.
+def instance_credit_specification_request_to_query(list[query.QueryPair] p, str prefix, InstanceCreditSpecificationRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "InstanceId"), v.InstanceId)
+    if v.CpuCredits.is_some():
+        auto t0 = v.CpuCredits.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CpuCredits"), t0)
+    return p
+
+# Serialize InstanceEventWindowAssociationRequest into the query form parameters under `prefix`.
+def instance_event_window_association_request_to_query(list[query.QueryPair] p, str prefix, InstanceEventWindowAssociationRequest v) -> list[query.QueryPair]:
+    auto t0 = v.InstanceIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "InstanceId"), t0)
+    auto qi1 = 1
+    for qe2 in v.InstanceTags.unwrap_or([]):
+        auto t3 = qe2
+        p = tag_to_query(p, query.query_key(prefix, "InstanceTag") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    auto t4 = v.DedicatedHostIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "DedicatedHostId"), t4)
+    return p
+
+# Serialize InstanceEventWindowDisassociationRequest into the query form parameters under `prefix`.
+def instance_event_window_disassociation_request_to_query(list[query.QueryPair] p, str prefix, InstanceEventWindowDisassociationRequest v) -> list[query.QueryPair]:
+    auto t0 = v.InstanceIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "InstanceId"), t0)
+    auto qi1 = 1
+    for qe2 in v.InstanceTags.unwrap_or([]):
+        auto t3 = qe2
+        p = tag_to_query(p, query.query_key(prefix, "InstanceTag") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    auto t4 = v.DedicatedHostIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "DedicatedHostId"), t4)
+    return p
+
+# Serialize InstanceEventWindowTimeRangeRequest into the query form parameters under `prefix`.
+def instance_event_window_time_range_request_to_query(list[query.QueryPair] p, str prefix, InstanceEventWindowTimeRangeRequest v) -> list[query.QueryPair]:
+    if v.StartWeekDay.is_some():
+        auto t0 = v.StartWeekDay.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StartWeekDay"), t0)
+    if v.StartHour.is_some():
+        auto t1 = str(v.StartHour.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "StartHour"), t1)
+    if v.EndWeekDay.is_some():
+        auto t2 = v.EndWeekDay.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "EndWeekDay"), t2)
+    if v.EndHour.is_some():
+        auto t3 = str(v.EndHour.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EndHour"), t3)
+    return p
+
+# Serialize InstanceIpv6Address into the query form parameters under `prefix`.
+def instance_ipv6_address_to_query(list[query.QueryPair] p, str prefix, InstanceIpv6Address v) -> list[query.QueryPair]:
+    if v.Ipv6Address.is_some():
+        auto t0 = v.Ipv6Address.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6Address"), t0)
+    if v.IsPrimaryIpv6.is_some():
+        auto t1 = query.query_bool(v.IsPrimaryIpv6.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IsPrimaryIpv6"), t1)
+    return p
+
+# Serialize InstanceIpv6AddressRequest into the query form parameters under `prefix`.
+def instance_ipv6_address_request_to_query(list[query.QueryPair] p, str prefix, InstanceIpv6AddressRequest v) -> list[query.QueryPair]:
+    if v.Ipv6Address.is_some():
+        auto t0 = v.Ipv6Address.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6Address"), t0)
+    return p
+
+# Serialize InstanceMaintenanceOptionsRequest into the query form parameters under `prefix`.
+def instance_maintenance_options_request_to_query(list[query.QueryPair] p, str prefix, InstanceMaintenanceOptionsRequest v) -> list[query.QueryPair]:
+    if v.AutoRecovery.is_some():
+        auto t0 = v.AutoRecovery.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AutoRecovery"), t0)
+    return p
+
+# Serialize InstanceMarketOptionsRequest into the query form parameters under `prefix`.
+def instance_market_options_request_to_query(list[query.QueryPair] p, str prefix, InstanceMarketOptionsRequest v) -> list[query.QueryPair]:
+    if v.MarketType.is_some():
+        auto t0 = v.MarketType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MarketType"), t0)
+    if v.SpotOptions.is_some():
+        auto t1 = v.SpotOptions.unwrap()
+        p = spot_market_options_to_query(p, query.query_key(prefix, "SpotOptions"), t1)
+    return p
+
+# Serialize InstanceMetadataOptionsRequest into the query form parameters under `prefix`.
+def instance_metadata_options_request_to_query(list[query.QueryPair] p, str prefix, InstanceMetadataOptionsRequest v) -> list[query.QueryPair]:
+    if v.HttpTokens.is_some():
+        auto t0 = v.HttpTokens.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpTokens"), t0)
+    if v.HttpPutResponseHopLimit.is_some():
+        auto t1 = str(v.HttpPutResponseHopLimit.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HttpPutResponseHopLimit"), t1)
+    if v.HttpEndpoint.is_some():
+        auto t2 = v.HttpEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpEndpoint"), t2)
+    if v.HttpProtocolIpv6.is_some():
+        auto t3 = v.HttpProtocolIpv6.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpProtocolIpv6"), t3)
+    if v.InstanceMetadataTags.is_some():
+        auto t4 = v.InstanceMetadataTags.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceMetadataTags"), t4)
+    return p
+
+# Serialize InstanceNetworkInterfaceSpecification into the query form parameters under `prefix`.
+def instance_network_interface_specification_to_query(list[query.QueryPair] p, str prefix, InstanceNetworkInterfaceSpecification v) -> list[query.QueryPair]:
+    if v.AssociatePublicIpAddress.is_some():
+        auto t0 = query.query_bool(v.AssociatePublicIpAddress.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AssociatePublicIpAddress"), t0)
+    if v.DeleteOnTermination.is_some():
+        auto t1 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t1)
+    if v.Description.is_some():
+        auto t2 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t2)
+    if v.DeviceIndex.is_some():
+        auto t3 = str(v.DeviceIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceIndex"), t3)
+    auto t4 = v.Groups.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SecurityGroupId"), t4)
+    if v.Ipv6AddressCount.is_some():
+        auto t5 = str(v.Ipv6AddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6AddressCount"), t5)
+    auto qi6 = 1
+    for qe7 in v.Ipv6Addresses.unwrap_or([]):
+        auto t8 = qe7
+        p = instance_ipv6_address_to_query(p, query.query_key(prefix, "Ipv6Addresses") + "." + str(qi6), t8)
+        qi6 = qi6 + 1
+    if v.NetworkInterfaceId.is_some():
+        auto t9 = v.NetworkInterfaceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkInterfaceId"), t9)
+    if v.PrivateIpAddress.is_some():
+        auto t10 = v.PrivateIpAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t10)
+    auto qi11 = 1
+    for qe12 in v.PrivateIpAddresses.unwrap_or([]):
+        auto t13 = qe12
+        p = private_ip_address_specification_to_query(p, query.query_key(prefix, "PrivateIpAddresses") + "." + str(qi11), t13)
+        qi11 = qi11 + 1
+    if v.SecondaryPrivateIpAddressCount.is_some():
+        auto t14 = str(v.SecondaryPrivateIpAddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SecondaryPrivateIpAddressCount"), t14)
+    if v.SubnetId.is_some():
+        auto t15 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t15)
+    if v.AssociateCarrierIpAddress.is_some():
+        auto t16 = query.query_bool(v.AssociateCarrierIpAddress.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AssociateCarrierIpAddress"), t16)
+    if v.InterfaceType.is_some():
+        auto t17 = v.InterfaceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InterfaceType"), t17)
+    if v.NetworkCardIndex.is_some():
+        auto t18 = str(v.NetworkCardIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkCardIndex"), t18)
+    auto qi19 = 1
+    for qe20 in v.Ipv4Prefixes.unwrap_or([]):
+        auto t21 = qe20
+        p = ipv4_prefix_specification_request_to_query(p, query.query_key(prefix, "Ipv4Prefix") + "." + str(qi19), t21)
+        qi19 = qi19 + 1
+    if v.Ipv4PrefixCount.is_some():
+        auto t22 = str(v.Ipv4PrefixCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv4PrefixCount"), t22)
+    auto qi23 = 1
+    for qe24 in v.Ipv6Prefixes.unwrap_or([]):
+        auto t25 = qe24
+        p = ipv6_prefix_specification_request_to_query(p, query.query_key(prefix, "Ipv6Prefix") + "." + str(qi23), t25)
+        qi23 = qi23 + 1
+    if v.Ipv6PrefixCount.is_some():
+        auto t26 = str(v.Ipv6PrefixCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6PrefixCount"), t26)
+    if v.PrimaryIpv6.is_some():
+        auto t27 = query.query_bool(v.PrimaryIpv6.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PrimaryIpv6"), t27)
+    if v.EnaSrdSpecification.is_some():
+        auto t28 = v.EnaSrdSpecification.unwrap()
+        p = ena_srd_specification_request_to_query(p, query.query_key(prefix, "EnaSrdSpecification"), t28)
+    if v.ConnectionTrackingSpecification.is_some():
+        auto t29 = v.ConnectionTrackingSpecification.unwrap()
+        p = connection_tracking_specification_request_to_query(p, query.query_key(prefix, "ConnectionTrackingSpecification"), t29)
+    if v.EnaQueueCount.is_some():
+        auto t30 = str(v.EnaQueueCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnaQueueCount"), t30)
+    return p
+
+# Serialize InstanceNetworkPerformanceOptionsRequest into the query form parameters under `prefix`.
+def instance_network_performance_options_request_to_query(list[query.QueryPair] p, str prefix, InstanceNetworkPerformanceOptionsRequest v) -> list[query.QueryPair]:
+    if v.BandwidthWeighting.is_some():
+        auto t0 = v.BandwidthWeighting.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BandwidthWeighting"), t0)
+    return p
+
+# Serialize InstanceRequirements into the query form parameters under `prefix`.
+def instance_requirements_to_query(list[query.QueryPair] p, str prefix, InstanceRequirements v) -> list[query.QueryPair]:
+    if v.VCpuCount.is_some():
+        auto t0 = v.VCpuCount.unwrap()
+        p = v_cpu_count_range_to_query(p, query.query_key(prefix, "VCpuCount"), t0)
+    if v.MemoryMiB.is_some():
+        auto t1 = v.MemoryMiB.unwrap()
+        p = memory_mi_b_to_query(p, query.query_key(prefix, "MemoryMiB"), t1)
+    auto t2 = v.CpuManufacturers.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "CpuManufacturerSet"), t2)
+    if v.MemoryGiBPerVCpu.is_some():
+        auto t3 = v.MemoryGiBPerVCpu.unwrap()
+        p = memory_gi_b_per_v_cpu_to_query(p, query.query_key(prefix, "MemoryGiBPerVCpu"), t3)
+    auto t4 = v.ExcludedInstanceTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ExcludedInstanceTypeSet"), t4)
+    auto t5 = v.InstanceGenerations.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "InstanceGenerationSet"), t5)
+    if v.SpotMaxPricePercentageOverLowestPrice.is_some():
+        auto t6 = str(v.SpotMaxPricePercentageOverLowestPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SpotMaxPricePercentageOverLowestPrice"), t6)
+    if v.OnDemandMaxPricePercentageOverLowestPrice.is_some():
+        auto t7 = str(v.OnDemandMaxPricePercentageOverLowestPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandMaxPricePercentageOverLowestPrice"), t7)
+    if v.BareMetal.is_some():
+        auto t8 = v.BareMetal.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BareMetal"), t8)
+    if v.BurstablePerformance.is_some():
+        auto t9 = v.BurstablePerformance.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BurstablePerformance"), t9)
+    if v.RequireHibernateSupport.is_some():
+        auto t10 = query.query_bool(v.RequireHibernateSupport.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RequireHibernateSupport"), t10)
+    if v.NetworkInterfaceCount.is_some():
+        auto t11 = v.NetworkInterfaceCount.unwrap()
+        p = network_interface_count_to_query(p, query.query_key(prefix, "NetworkInterfaceCount"), t11)
+    if v.LocalStorage.is_some():
+        auto t12 = v.LocalStorage.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LocalStorage"), t12)
+    auto t13 = v.LocalStorageTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "LocalStorageTypeSet"), t13)
+    if v.TotalLocalStorageGB.is_some():
+        auto t14 = v.TotalLocalStorageGB.unwrap()
+        p = total_local_storage_gb_to_query(p, query.query_key(prefix, "TotalLocalStorageGB"), t14)
+    if v.BaselineEbsBandwidthMbps.is_some():
+        auto t15 = v.BaselineEbsBandwidthMbps.unwrap()
+        p = baseline_ebs_bandwidth_mbps_to_query(p, query.query_key(prefix, "BaselineEbsBandwidthMbps"), t15)
+    auto t16 = v.AcceleratorTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AcceleratorTypeSet"), t16)
+    if v.AcceleratorCount.is_some():
+        auto t17 = v.AcceleratorCount.unwrap()
+        p = accelerator_count_to_query(p, query.query_key(prefix, "AcceleratorCount"), t17)
+    auto t18 = v.AcceleratorManufacturers.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AcceleratorManufacturerSet"), t18)
+    auto t19 = v.AcceleratorNames.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AcceleratorNameSet"), t19)
+    if v.AcceleratorTotalMemoryMiB.is_some():
+        auto t20 = v.AcceleratorTotalMemoryMiB.unwrap()
+        p = accelerator_total_memory_mi_b_to_query(p, query.query_key(prefix, "AcceleratorTotalMemoryMiB"), t20)
+    if v.NetworkBandwidthGbps.is_some():
+        auto t21 = v.NetworkBandwidthGbps.unwrap()
+        p = network_bandwidth_gbps_to_query(p, query.query_key(prefix, "NetworkBandwidthGbps"), t21)
+    auto t22 = v.AllowedInstanceTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AllowedInstanceTypeSet"), t22)
+    if v.MaxSpotPriceAsPercentageOfOptimalOnDemandPrice.is_some():
+        auto t23 = str(v.MaxSpotPriceAsPercentageOfOptimalOnDemandPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxSpotPriceAsPercentageOfOptimalOnDemandPrice"), t23)
+    if v.BaselinePerformanceFactors.is_some():
+        auto t24 = v.BaselinePerformanceFactors.unwrap()
+        p = baseline_performance_factors_to_query(p, query.query_key(prefix, "BaselinePerformanceFactors"), t24)
+    if v.RequireEncryptionInTransit.is_some():
+        auto t25 = query.query_bool(v.RequireEncryptionInTransit.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RequireEncryptionInTransit"), t25)
+    return p
+
+# Serialize InstanceRequirementsRequest into the query form parameters under `prefix`.
+def instance_requirements_request_to_query(list[query.QueryPair] p, str prefix, InstanceRequirementsRequest v) -> list[query.QueryPair]:
+    auto t0 = v.VCpuCount
+    p = v_cpu_count_range_request_to_query(p, query.query_key(prefix, "VCpuCount"), t0)
+    auto t1 = v.MemoryMiB
+    p = memory_mi_b_request_to_query(p, query.query_key(prefix, "MemoryMiB"), t1)
+    auto t2 = v.CpuManufacturers.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "CpuManufacturer"), t2)
+    if v.MemoryGiBPerVCpu.is_some():
+        auto t3 = v.MemoryGiBPerVCpu.unwrap()
+        p = memory_gi_b_per_v_cpu_request_to_query(p, query.query_key(prefix, "MemoryGiBPerVCpu"), t3)
+    auto t4 = v.ExcludedInstanceTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ExcludedInstanceType"), t4)
+    auto t5 = v.InstanceGenerations.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "InstanceGeneration"), t5)
+    if v.SpotMaxPricePercentageOverLowestPrice.is_some():
+        auto t6 = str(v.SpotMaxPricePercentageOverLowestPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SpotMaxPricePercentageOverLowestPrice"), t6)
+    if v.OnDemandMaxPricePercentageOverLowestPrice.is_some():
+        auto t7 = str(v.OnDemandMaxPricePercentageOverLowestPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandMaxPricePercentageOverLowestPrice"), t7)
+    if v.BareMetal.is_some():
+        auto t8 = v.BareMetal.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BareMetal"), t8)
+    if v.BurstablePerformance.is_some():
+        auto t9 = v.BurstablePerformance.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BurstablePerformance"), t9)
+    if v.RequireHibernateSupport.is_some():
+        auto t10 = query.query_bool(v.RequireHibernateSupport.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RequireHibernateSupport"), t10)
+    if v.NetworkInterfaceCount.is_some():
+        auto t11 = v.NetworkInterfaceCount.unwrap()
+        p = network_interface_count_request_to_query(p, query.query_key(prefix, "NetworkInterfaceCount"), t11)
+    if v.LocalStorage.is_some():
+        auto t12 = v.LocalStorage.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LocalStorage"), t12)
+    auto t13 = v.LocalStorageTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "LocalStorageType"), t13)
+    if v.TotalLocalStorageGB.is_some():
+        auto t14 = v.TotalLocalStorageGB.unwrap()
+        p = total_local_storage_gb_request_to_query(p, query.query_key(prefix, "TotalLocalStorageGB"), t14)
+    if v.BaselineEbsBandwidthMbps.is_some():
+        auto t15 = v.BaselineEbsBandwidthMbps.unwrap()
+        p = baseline_ebs_bandwidth_mbps_request_to_query(p, query.query_key(prefix, "BaselineEbsBandwidthMbps"), t15)
+    auto t16 = v.AcceleratorTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AcceleratorType"), t16)
+    if v.AcceleratorCount.is_some():
+        auto t17 = v.AcceleratorCount.unwrap()
+        p = accelerator_count_request_to_query(p, query.query_key(prefix, "AcceleratorCount"), t17)
+    auto t18 = v.AcceleratorManufacturers.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AcceleratorManufacturer"), t18)
+    auto t19 = v.AcceleratorNames.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AcceleratorName"), t19)
+    if v.AcceleratorTotalMemoryMiB.is_some():
+        auto t20 = v.AcceleratorTotalMemoryMiB.unwrap()
+        p = accelerator_total_memory_mi_b_request_to_query(p, query.query_key(prefix, "AcceleratorTotalMemoryMiB"), t20)
+    if v.NetworkBandwidthGbps.is_some():
+        auto t21 = v.NetworkBandwidthGbps.unwrap()
+        p = network_bandwidth_gbps_request_to_query(p, query.query_key(prefix, "NetworkBandwidthGbps"), t21)
+    auto t22 = v.AllowedInstanceTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AllowedInstanceType"), t22)
+    if v.MaxSpotPriceAsPercentageOfOptimalOnDemandPrice.is_some():
+        auto t23 = str(v.MaxSpotPriceAsPercentageOfOptimalOnDemandPrice.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxSpotPriceAsPercentageOfOptimalOnDemandPrice"), t23)
+    if v.BaselinePerformanceFactors.is_some():
+        auto t24 = v.BaselinePerformanceFactors.unwrap()
+        p = baseline_performance_factors_request_to_query(p, query.query_key(prefix, "BaselinePerformanceFactors"), t24)
+    if v.RequireEncryptionInTransit.is_some():
+        auto t25 = query.query_bool(v.RequireEncryptionInTransit.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RequireEncryptionInTransit"), t25)
+    return p
+
+# Serialize InstanceRequirementsWithMetadataRequest into the query form parameters under `prefix`.
+def instance_requirements_with_metadata_request_to_query(list[query.QueryPair] p, str prefix, InstanceRequirementsWithMetadataRequest v) -> list[query.QueryPair]:
+    auto t0 = v.ArchitectureTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ArchitectureType"), t0)
+    auto t1 = v.VirtualizationTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "VirtualizationType"), t1)
+    if v.InstanceRequirements.is_some():
+        auto t2 = v.InstanceRequirements.unwrap()
+        p = instance_requirements_request_to_query(p, query.query_key(prefix, "InstanceRequirements"), t2)
+    return p
+
+# Serialize InstanceSecondaryInterfacePrivateIpAddressRequest into the query form parameters under `prefix`.
+def instance_secondary_interface_private_ip_address_request_to_query(list[query.QueryPair] p, str prefix, InstanceSecondaryInterfacePrivateIpAddressRequest v) -> list[query.QueryPair]:
+    auto t0 = v.PrivateIpAddress
+    p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t0)
+    return p
+
+# Serialize InstanceSecondaryInterfaceSpecificationRequest into the query form parameters under `prefix`.
+def instance_secondary_interface_specification_request_to_query(list[query.QueryPair] p, str prefix, InstanceSecondaryInterfaceSpecificationRequest v) -> list[query.QueryPair]:
+    if v.DeleteOnTermination.is_some():
+        auto t0 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t0)
+    if v.DeviceIndex.is_some():
+        auto t1 = str(v.DeviceIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceIndex"), t1)
+    auto qi2 = 1
+    for qe3 in v.PrivateIpAddresses.unwrap_or([]):
+        auto t4 = qe3
+        p = instance_secondary_interface_private_ip_address_request_to_query(p, query.query_key(prefix, "PrivateIpAddress") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    if v.PrivateIpAddressCount.is_some():
+        auto t5 = str(v.PrivateIpAddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddressCount"), t5)
+    if v.SecondarySubnetId.is_some():
+        auto t6 = v.SecondarySubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecondarySubnetId"), t6)
+    if v.InterfaceType.is_some():
+        auto t7 = v.InterfaceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InterfaceType"), t7)
+    if v.NetworkCardIndex.is_some():
+        auto t8 = str(v.NetworkCardIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkCardIndex"), t8)
+    return p
+
+# Serialize InstanceSpecification into the query form parameters under `prefix`.
+def instance_specification_to_query(list[query.QueryPair] p, str prefix, InstanceSpecification v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "InstanceId"), v.InstanceId)
+    if v.ExcludeBootVolume.is_some():
+        auto t0 = query.query_bool(v.ExcludeBootVolume.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ExcludeBootVolume"), t0)
+    auto t1 = v.ExcludeDataVolumeIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ExcludeDataVolumeId"), t1)
+    return p
+
+# Serialize InstanceTypeSpecificationRequest into the query form parameters under `prefix`.
+def instance_type_specification_request_to_query(list[query.QueryPair] p, str prefix, InstanceTypeSpecificationRequest v) -> list[query.QueryPair]:
+    auto t0 = v.SupportedInstanceTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SupportedInstanceType"), t0)
+    auto t1 = v.UnsupportedInstanceTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "UnsupportedInstanceType"), t1)
+    return p
+
+# Serialize IntegrateServices into the query form parameters under `prefix`.
+def integrate_services_to_query(list[query.QueryPair] p, str prefix, IntegrateServices v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.AthenaIntegrations.unwrap_or([]):
+        auto t2 = qe1
+        p = athena_integration_to_query(p, query.query_key(prefix, "AthenaIntegration") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize IpPermission into the query form parameters under `prefix`.
+def ip_permission_to_query(list[query.QueryPair] p, str prefix, IpPermission v) -> list[query.QueryPair]:
+    if v.IpProtocol.is_some():
+        auto t0 = v.IpProtocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IpProtocol"), t0)
+    if v.FromPort.is_some():
+        auto t1 = str(v.FromPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FromPort"), t1)
+    if v.ToPort.is_some():
+        auto t2 = str(v.ToPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ToPort"), t2)
+    auto qi3 = 1
+    for qe4 in v.UserIdGroupPairs.unwrap_or([]):
+        auto t5 = qe4
+        p = user_id_group_pair_to_query(p, query.query_key(prefix, "Groups") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    auto qi6 = 1
+    for qe7 in v.IpRanges.unwrap_or([]):
+        auto t8 = qe7
+        p = ip_range_to_query(p, query.query_key(prefix, "IpRanges") + "." + str(qi6), t8)
+        qi6 = qi6 + 1
+    auto qi9 = 1
+    for qe10 in v.Ipv6Ranges.unwrap_or([]):
+        auto t11 = qe10
+        p = ipv6_range_to_query(p, query.query_key(prefix, "Ipv6Ranges") + "." + str(qi9), t11)
+        qi9 = qi9 + 1
+    auto qi12 = 1
+    for qe13 in v.PrefixListIds.unwrap_or([]):
+        auto t14 = qe13
+        p = prefix_list_id_to_query(p, query.query_key(prefix, "PrefixListIds") + "." + str(qi12), t14)
+        qi12 = qi12 + 1
+    return p
+
+# Serialize IpRange into the query form parameters under `prefix`.
+def ip_range_to_query(list[query.QueryPair] p, str prefix, IpRange v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.CidrIp.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "CidrIp"), v.CidrIp.unwrap())
+    return p
+
+# Serialize IpamCidrAuthorizationContext into the query form parameters under `prefix`.
+def ipam_cidr_authorization_context_to_query(list[query.QueryPair] p, str prefix, IpamCidrAuthorizationContext v) -> list[query.QueryPair]:
+    if v.Message.is_some():
+        auto t0 = v.Message.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Message"), t0)
+    if v.Signature.is_some():
+        auto t1 = v.Signature.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Signature"), t1)
+    return p
+
+# Serialize IpamPolicyAllocationRuleRequest into the query form parameters under `prefix`.
+def ipam_policy_allocation_rule_request_to_query(list[query.QueryPair] p, str prefix, IpamPolicyAllocationRuleRequest v) -> list[query.QueryPair]:
+    if v.SourceIpamPoolId.is_some():
+        auto t0 = v.SourceIpamPoolId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceIpamPoolId"), t0)
+    return p
+
+# Serialize IpamPoolSourceResourceRequest into the query form parameters under `prefix`.
+def ipam_pool_source_resource_request_to_query(list[query.QueryPair] p, str prefix, IpamPoolSourceResourceRequest v) -> list[query.QueryPair]:
+    if v.ResourceId.is_some():
+        auto t0 = v.ResourceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceId"), t0)
+    if v.ResourceType.is_some():
+        auto t1 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t1)
+    if v.ResourceRegion.is_some():
+        auto t2 = v.ResourceRegion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceRegion"), t2)
+    if v.ResourceOwner.is_some():
+        auto t3 = v.ResourceOwner.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceOwner"), t3)
+    return p
+
+# Serialize IpamPrefixListResolverRuleConditionRequest into the query form parameters under `prefix`.
+def ipam_prefix_list_resolver_rule_condition_request_to_query(list[query.QueryPair] p, str prefix, IpamPrefixListResolverRuleConditionRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Operation"), v.Operation)
+    if v.IpamPoolId.is_some():
+        auto t0 = v.IpamPoolId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IpamPoolId"), t0)
+    if v.ResourceId.is_some():
+        auto t1 = v.ResourceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceId"), t1)
+    if v.ResourceOwner.is_some():
+        auto t2 = v.ResourceOwner.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceOwner"), t2)
+    if v.ResourceRegion.is_some():
+        auto t3 = v.ResourceRegion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceRegion"), t3)
+    if v.ResourceTag.is_some():
+        auto t4 = v.ResourceTag.unwrap()
+        p = request_ipam_resource_tag_to_query(p, query.query_key(prefix, "ResourceTag"), t4)
+    if v.Cidr.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Cidr"), v.Cidr.unwrap())
+    return p
+
+# Serialize IpamPrefixListResolverRuleRequest into the query form parameters under `prefix`.
+def ipam_prefix_list_resolver_rule_request_to_query(list[query.QueryPair] p, str prefix, IpamPrefixListResolverRuleRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "RuleType"), v.RuleType)
+    if v.StaticCidr.is_some():
+        auto t0 = v.StaticCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StaticCidr"), t0)
+    if v.IpamScopeId.is_some():
+        auto t1 = v.IpamScopeId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IpamScopeId"), t1)
+    if v.ResourceType.is_some():
+        auto t2 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t2)
+    auto qi3 = 1
+    for qe4 in v.Conditions.unwrap_or([]):
+        auto t5 = qe4
+        p = ipam_prefix_list_resolver_rule_condition_request_to_query(p, query.query_key(prefix, "Condition") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    return p
+
+# Serialize Ipv4PrefixSpecificationRequest into the query form parameters under `prefix`.
+def ipv4_prefix_specification_request_to_query(list[query.QueryPair] p, str prefix, Ipv4PrefixSpecificationRequest v) -> list[query.QueryPair]:
+    if v.Ipv4Prefix.is_some():
+        auto t0 = v.Ipv4Prefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv4Prefix"), t0)
+    return p
+
+# Serialize Ipv6PrefixSpecificationRequest into the query form parameters under `prefix`.
+def ipv6_prefix_specification_request_to_query(list[query.QueryPair] p, str prefix, Ipv6PrefixSpecificationRequest v) -> list[query.QueryPair]:
+    if v.Ipv6Prefix.is_some():
+        auto t0 = v.Ipv6Prefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6Prefix"), t0)
+    return p
+
+# Serialize Ipv6Range into the query form parameters under `prefix`.
+def ipv6_range_to_query(list[query.QueryPair] p, str prefix, Ipv6Range v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.CidrIpv6.is_some():
+        auto t1 = v.CidrIpv6.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CidrIpv6"), t1)
+    return p
+
+# Serialize LaunchPermission into the query form parameters under `prefix`.
+def launch_permission_to_query(list[query.QueryPair] p, str prefix, LaunchPermission v) -> list[query.QueryPair]:
+    if v.OrganizationArn.is_some():
+        auto t0 = v.OrganizationArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OrganizationArn"), t0)
+    if v.OrganizationalUnitArn.is_some():
+        auto t1 = v.OrganizationalUnitArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OrganizationalUnitArn"), t1)
+    if v.UserId.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "UserId"), v.UserId.unwrap())
+    if v.Group.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Group"), v.Group.unwrap())
+    return p
+
+# Serialize LaunchPermissionModifications into the query form parameters under `prefix`.
+def launch_permission_modifications_to_query(list[query.QueryPair] p, str prefix, LaunchPermissionModifications v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.Add.unwrap_or([]):
+        auto t2 = qe1
+        p = launch_permission_to_query(p, query.query_key(prefix, "Add") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    auto qi3 = 1
+    for qe4 in v.Remove.unwrap_or([]):
+        auto t5 = qe4
+        p = launch_permission_to_query(p, query.query_key(prefix, "Remove") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    return p
+
+# Serialize LaunchTemplateBlockDeviceMappingRequest into the query form parameters under `prefix`.
+def launch_template_block_device_mapping_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateBlockDeviceMappingRequest v) -> list[query.QueryPair]:
+    if v.DeviceName.is_some():
+        auto t0 = v.DeviceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceName"), t0)
+    if v.VirtualName.is_some():
+        auto t1 = v.VirtualName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VirtualName"), t1)
+    if v.Ebs.is_some():
+        auto t2 = v.Ebs.unwrap()
+        p = launch_template_ebs_block_device_request_to_query(p, query.query_key(prefix, "Ebs"), t2)
+    if v.NoDevice.is_some():
+        auto t3 = v.NoDevice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NoDevice"), t3)
+    return p
+
+# Serialize LaunchTemplateCapacityReservationSpecificationRequest into the query form parameters under `prefix`.
+def launch_template_capacity_reservation_specification_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateCapacityReservationSpecificationRequest v) -> list[query.QueryPair]:
+    if v.CapacityReservationPreference.is_some():
+        auto t0 = v.CapacityReservationPreference.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CapacityReservationPreference"), t0)
+    if v.CapacityReservationTarget.is_some():
+        auto t1 = v.CapacityReservationTarget.unwrap()
+        p = capacity_reservation_target_to_query(p, query.query_key(prefix, "CapacityReservationTarget"), t1)
+    return p
+
+# Serialize LaunchTemplateConfig into the query form parameters under `prefix`.
+def launch_template_config_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateConfig v) -> list[query.QueryPair]:
+    if v.LaunchTemplateSpecification.is_some():
+        auto t0 = v.LaunchTemplateSpecification.unwrap()
+        p = fleet_launch_template_specification_to_query(p, query.query_key(prefix, "LaunchTemplateSpecification"), t0)
+    auto qi1 = 1
+    for qe2 in v.Overrides.unwrap_or([]):
+        auto t3 = qe2
+        p = launch_template_overrides_to_query(p, query.query_key(prefix, "Overrides") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize LaunchTemplateCpuOptionsRequest into the query form parameters under `prefix`.
+def launch_template_cpu_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateCpuOptionsRequest v) -> list[query.QueryPair]:
+    if v.CoreCount.is_some():
+        auto t0 = str(v.CoreCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "CoreCount"), t0)
+    if v.ThreadsPerCore.is_some():
+        auto t1 = str(v.ThreadsPerCore.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ThreadsPerCore"), t1)
+    if v.AmdSevSnp.is_some():
+        auto t2 = v.AmdSevSnp.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AmdSevSnp"), t2)
+    if v.NestedVirtualization.is_some():
+        auto t3 = v.NestedVirtualization.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NestedVirtualization"), t3)
+    return p
+
+# Serialize LaunchTemplateEbsBlockDeviceRequest into the query form parameters under `prefix`.
+def launch_template_ebs_block_device_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateEbsBlockDeviceRequest v) -> list[query.QueryPair]:
+    if v.Encrypted.is_some():
+        auto t0 = query.query_bool(v.Encrypted.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Encrypted"), t0)
+    if v.DeleteOnTermination.is_some():
+        auto t1 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t1)
+    if v.Iops.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Iops"), str(v.Iops.unwrap()))
+    if v.KmsKeyId.is_some():
+        auto t2 = v.KmsKeyId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KmsKeyId"), t2)
+    if v.SnapshotId.is_some():
+        auto t3 = v.SnapshotId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SnapshotId"), t3)
+    if v.VolumeSize.is_some():
+        auto t4 = str(v.VolumeSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeSize"), t4)
+    if v.VolumeType.is_some():
+        auto t5 = v.VolumeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeType"), t5)
+    if v.Throughput.is_some():
+        auto t6 = str(v.Throughput.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Throughput"), t6)
+    if v.VolumeInitializationRate.is_some():
+        auto t7 = str(v.VolumeInitializationRate.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeInitializationRate"), t7)
+    if v.EbsCardIndex.is_some():
+        auto t8 = str(v.EbsCardIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EbsCardIndex"), t8)
+    return p
+
+# Serialize LaunchTemplateElasticInferenceAccelerator into the query form parameters under `prefix`.
+def launch_template_elastic_inference_accelerator_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateElasticInferenceAccelerator v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type)
+    if v.Count.is_some():
+        auto t0 = str(v.Count.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Count"), t0)
+    return p
+
+# Serialize LaunchTemplateEnclaveOptionsRequest into the query form parameters under `prefix`.
+def launch_template_enclave_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateEnclaveOptionsRequest v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize LaunchTemplateHibernationOptionsRequest into the query form parameters under `prefix`.
+def launch_template_hibernation_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateHibernationOptionsRequest v) -> list[query.QueryPair]:
+    if v.Configured.is_some():
+        auto t0 = query.query_bool(v.Configured.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Configured"), t0)
+    return p
+
+# Serialize LaunchTemplateIamInstanceProfileSpecificationRequest into the query form parameters under `prefix`.
+def launch_template_iam_instance_profile_specification_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateIamInstanceProfileSpecificationRequest v) -> list[query.QueryPair]:
+    if v.Arn.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Arn"), v.Arn.unwrap())
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    return p
+
+# Serialize LaunchTemplateInstanceMaintenanceOptionsRequest into the query form parameters under `prefix`.
+def launch_template_instance_maintenance_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateInstanceMaintenanceOptionsRequest v) -> list[query.QueryPair]:
+    if v.AutoRecovery.is_some():
+        auto t0 = v.AutoRecovery.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AutoRecovery"), t0)
+    return p
+
+# Serialize LaunchTemplateInstanceMarketOptionsRequest into the query form parameters under `prefix`.
+def launch_template_instance_market_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateInstanceMarketOptionsRequest v) -> list[query.QueryPair]:
+    if v.MarketType.is_some():
+        auto t0 = v.MarketType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MarketType"), t0)
+    if v.SpotOptions.is_some():
+        auto t1 = v.SpotOptions.unwrap()
+        p = launch_template_spot_market_options_request_to_query(p, query.query_key(prefix, "SpotOptions"), t1)
+    return p
+
+# Serialize LaunchTemplateInstanceMetadataOptionsRequest into the query form parameters under `prefix`.
+def launch_template_instance_metadata_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateInstanceMetadataOptionsRequest v) -> list[query.QueryPair]:
+    if v.HttpTokens.is_some():
+        auto t0 = v.HttpTokens.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpTokens"), t0)
+    if v.HttpPutResponseHopLimit.is_some():
+        auto t1 = str(v.HttpPutResponseHopLimit.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HttpPutResponseHopLimit"), t1)
+    if v.HttpEndpoint.is_some():
+        auto t2 = v.HttpEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpEndpoint"), t2)
+    if v.HttpProtocolIpv6.is_some():
+        auto t3 = v.HttpProtocolIpv6.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HttpProtocolIpv6"), t3)
+    if v.InstanceMetadataTags.is_some():
+        auto t4 = v.InstanceMetadataTags.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceMetadataTags"), t4)
+    return p
+
+# Serialize LaunchTemplateInstanceNetworkInterfaceSpecificationRequest into the query form parameters under `prefix`.
+def launch_template_instance_network_interface_specification_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateInstanceNetworkInterfaceSpecificationRequest v) -> list[query.QueryPair]:
+    if v.AssociateCarrierIpAddress.is_some():
+        auto t0 = query.query_bool(v.AssociateCarrierIpAddress.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AssociateCarrierIpAddress"), t0)
+    if v.AssociatePublicIpAddress.is_some():
+        auto t1 = query.query_bool(v.AssociatePublicIpAddress.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AssociatePublicIpAddress"), t1)
+    if v.DeleteOnTermination.is_some():
+        auto t2 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t2)
+    if v.Description.is_some():
+        auto t3 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t3)
+    if v.DeviceIndex.is_some():
+        auto t4 = str(v.DeviceIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceIndex"), t4)
+    auto t5 = v.Groups.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SecurityGroupId"), t5)
+    if v.InterfaceType.is_some():
+        auto t6 = v.InterfaceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InterfaceType"), t6)
+    if v.Ipv6AddressCount.is_some():
+        auto t7 = str(v.Ipv6AddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6AddressCount"), t7)
+    auto qi8 = 1
+    for qe9 in v.Ipv6Addresses.unwrap_or([]):
+        auto t10 = qe9
+        p = instance_ipv6_address_request_to_query(p, query.query_key(prefix, "Ipv6Addresses") + "." + str(qi8), t10)
+        qi8 = qi8 + 1
+    if v.NetworkInterfaceId.is_some():
+        auto t11 = v.NetworkInterfaceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkInterfaceId"), t11)
+    if v.PrivateIpAddress.is_some():
+        auto t12 = v.PrivateIpAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t12)
+    auto qi13 = 1
+    for qe14 in v.PrivateIpAddresses.unwrap_or([]):
+        auto t15 = qe14
+        p = private_ip_address_specification_to_query(p, query.query_key(prefix, "PrivateIpAddresses") + "." + str(qi13), t15)
+        qi13 = qi13 + 1
+    if v.SecondaryPrivateIpAddressCount.is_some():
+        auto t16 = str(v.SecondaryPrivateIpAddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SecondaryPrivateIpAddressCount"), t16)
+    if v.SubnetId.is_some():
+        auto t17 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t17)
+    if v.NetworkCardIndex.is_some():
+        auto t18 = str(v.NetworkCardIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkCardIndex"), t18)
+    auto qi19 = 1
+    for qe20 in v.Ipv4Prefixes.unwrap_or([]):
+        auto t21 = qe20
+        p = ipv4_prefix_specification_request_to_query(p, query.query_key(prefix, "Ipv4Prefix") + "." + str(qi19), t21)
+        qi19 = qi19 + 1
+    if v.Ipv4PrefixCount.is_some():
+        auto t22 = str(v.Ipv4PrefixCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv4PrefixCount"), t22)
+    auto qi23 = 1
+    for qe24 in v.Ipv6Prefixes.unwrap_or([]):
+        auto t25 = qe24
+        p = ipv6_prefix_specification_request_to_query(p, query.query_key(prefix, "Ipv6Prefix") + "." + str(qi23), t25)
+        qi23 = qi23 + 1
+    if v.Ipv6PrefixCount.is_some():
+        auto t26 = str(v.Ipv6PrefixCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6PrefixCount"), t26)
+    if v.PrimaryIpv6.is_some():
+        auto t27 = query.query_bool(v.PrimaryIpv6.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PrimaryIpv6"), t27)
+    if v.EnaSrdSpecification.is_some():
+        auto t28 = v.EnaSrdSpecification.unwrap()
+        p = ena_srd_specification_request_to_query(p, query.query_key(prefix, "EnaSrdSpecification"), t28)
+    if v.ConnectionTrackingSpecification.is_some():
+        auto t29 = v.ConnectionTrackingSpecification.unwrap()
+        p = connection_tracking_specification_request_to_query(p, query.query_key(prefix, "ConnectionTrackingSpecification"), t29)
+    if v.EnaQueueCount.is_some():
+        auto t30 = str(v.EnaQueueCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnaQueueCount"), t30)
+    return p
+
+# Serialize LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest into the query form parameters under `prefix`.
+def launch_template_instance_secondary_interface_specification_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest v) -> list[query.QueryPair]:
+    if v.DeleteOnTermination.is_some():
+        auto t0 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t0)
+    if v.DeviceIndex.is_some():
+        auto t1 = str(v.DeviceIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceIndex"), t1)
+    auto qi2 = 1
+    for qe3 in v.PrivateIpAddresses.unwrap_or([]):
+        auto t4 = qe3
+        p = secondary_interface_private_ip_address_specification_request_to_query(p, query.query_key(prefix, "PrivateIpAddress") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    if v.PrivateIpAddressCount.is_some():
+        auto t5 = str(v.PrivateIpAddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddressCount"), t5)
+    if v.SecondarySubnetId.is_some():
+        auto t6 = v.SecondarySubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecondarySubnetId"), t6)
+    if v.InterfaceType.is_some():
+        auto t7 = v.InterfaceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InterfaceType"), t7)
+    if v.NetworkCardIndex.is_some():
+        auto t8 = str(v.NetworkCardIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkCardIndex"), t8)
+    return p
+
+# Serialize LaunchTemplateLicenseConfigurationRequest into the query form parameters under `prefix`.
+def launch_template_license_configuration_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateLicenseConfigurationRequest v) -> list[query.QueryPair]:
+    if v.LicenseConfigurationArn.is_some():
+        auto t0 = v.LicenseConfigurationArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LicenseConfigurationArn"), t0)
+    return p
+
+# Serialize LaunchTemplateNetworkPerformanceOptionsRequest into the query form parameters under `prefix`.
+def launch_template_network_performance_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateNetworkPerformanceOptionsRequest v) -> list[query.QueryPair]:
+    if v.BandwidthWeighting.is_some():
+        auto t0 = v.BandwidthWeighting.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BandwidthWeighting"), t0)
+    return p
+
+# Serialize LaunchTemplateOverrides into the query form parameters under `prefix`.
+def launch_template_overrides_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateOverrides v) -> list[query.QueryPair]:
+    if v.InstanceType.is_some():
+        auto t0 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t0)
+    if v.SpotPrice.is_some():
+        auto t1 = v.SpotPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotPrice"), t1)
+    if v.SubnetId.is_some():
+        auto t2 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t2)
+    if v.AvailabilityZone.is_some():
+        auto t3 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t3)
+    if v.WeightedCapacity.is_some():
+        auto t4 = str(v.WeightedCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "WeightedCapacity"), t4)
+    if v.Priority.is_some():
+        auto t5 = str(v.Priority.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Priority"), t5)
+    if v.InstanceRequirements.is_some():
+        auto t6 = v.InstanceRequirements.unwrap()
+        p = instance_requirements_to_query(p, query.query_key(prefix, "InstanceRequirements"), t6)
+    if v.AvailabilityZoneId.is_some():
+        auto t7 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t7)
+    return p
+
+# Serialize LaunchTemplatePlacementRequest into the query form parameters under `prefix`.
+def launch_template_placement_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplatePlacementRequest v) -> list[query.QueryPair]:
+    if v.AvailabilityZone.is_some():
+        auto t0 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t0)
+    if v.AvailabilityZoneId.is_some():
+        auto t1 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t1)
+    if v.Affinity.is_some():
+        auto t2 = v.Affinity.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Affinity"), t2)
+    if v.GroupName.is_some():
+        auto t3 = v.GroupName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupName"), t3)
+    if v.HostId.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "HostId"), v.HostId.unwrap())
+    if v.Tenancy.is_some():
+        auto t4 = v.Tenancy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Tenancy"), t4)
+    if v.SpreadDomain.is_some():
+        auto t5 = v.SpreadDomain.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpreadDomain"), t5)
+    if v.HostResourceGroupArn.is_some():
+        auto t6 = v.HostResourceGroupArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HostResourceGroupArn"), t6)
+    if v.PartitionNumber.is_some():
+        auto t7 = str(v.PartitionNumber.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PartitionNumber"), t7)
+    if v.GroupId.is_some():
+        auto t8 = v.GroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupId"), t8)
+    return p
+
+# Serialize LaunchTemplatePrivateDnsNameOptionsRequest into the query form parameters under `prefix`.
+def launch_template_private_dns_name_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplatePrivateDnsNameOptionsRequest v) -> list[query.QueryPair]:
+    if v.HostnameType.is_some():
+        auto t0 = v.HostnameType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HostnameType"), t0)
+    if v.EnableResourceNameDnsARecord.is_some():
+        auto t1 = query.query_bool(v.EnableResourceNameDnsARecord.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnableResourceNameDnsARecord"), t1)
+    if v.EnableResourceNameDnsAAAARecord.is_some():
+        auto t2 = query.query_bool(v.EnableResourceNameDnsAAAARecord.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnableResourceNameDnsAAAARecord"), t2)
+    return p
+
+# Serialize LaunchTemplateSpecification into the query form parameters under `prefix`.
+def launch_template_specification_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateSpecification v) -> list[query.QueryPair]:
+    if v.LaunchTemplateId.is_some():
+        auto t0 = v.LaunchTemplateId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateId"), t0)
+    if v.LaunchTemplateName.is_some():
+        auto t1 = v.LaunchTemplateName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LaunchTemplateName"), t1)
+    if v.Version.is_some():
+        auto t2 = v.Version.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Version"), t2)
+    return p
+
+# Serialize LaunchTemplateSpotMarketOptionsRequest into the query form parameters under `prefix`.
+def launch_template_spot_market_options_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateSpotMarketOptionsRequest v) -> list[query.QueryPair]:
+    if v.MaxPrice.is_some():
+        auto t0 = v.MaxPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MaxPrice"), t0)
+    if v.SpotInstanceType.is_some():
+        auto t1 = v.SpotInstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotInstanceType"), t1)
+    if v.BlockDurationMinutes.is_some():
+        auto t2 = str(v.BlockDurationMinutes.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "BlockDurationMinutes"), t2)
+    if v.ValidUntil.is_some():
+        auto t3 = query.query_timestamp_iso8601(v.ValidUntil.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ValidUntil"), t3)
+    if v.InstanceInterruptionBehavior.is_some():
+        auto t4 = v.InstanceInterruptionBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceInterruptionBehavior"), t4)
+    return p
+
+# Serialize LaunchTemplateTagSpecificationRequest into the query form parameters under `prefix`.
+def launch_template_tag_specification_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplateTagSpecificationRequest v) -> list[query.QueryPair]:
+    if v.ResourceType.is_some():
+        auto t0 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t0)
+    auto qi1 = 1
+    for qe2 in v.Tags.unwrap_or([]):
+        p = tag_to_query(p, query.query_key(prefix, "Tag") + "." + str(qi1), qe2)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize LaunchTemplatesMonitoringRequest into the query form parameters under `prefix`.
+def launch_templates_monitoring_request_to_query(list[query.QueryPair] p, str prefix, LaunchTemplatesMonitoringRequest v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize LicenseConfigurationRequest into the query form parameters under `prefix`.
+def license_configuration_request_to_query(list[query.QueryPair] p, str prefix, LicenseConfigurationRequest v) -> list[query.QueryPair]:
+    if v.LicenseConfigurationArn.is_some():
+        auto t0 = v.LicenseConfigurationArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LicenseConfigurationArn"), t0)
+    return p
+
+# Serialize LoadBalancersConfig into the query form parameters under `prefix`.
+def load_balancers_config_to_query(list[query.QueryPair] p, str prefix, LoadBalancersConfig v) -> list[query.QueryPair]:
+    if v.ClassicLoadBalancersConfig.is_some():
+        auto t0 = v.ClassicLoadBalancersConfig.unwrap()
+        p = classic_load_balancers_config_to_query(p, query.query_key(prefix, "ClassicLoadBalancersConfig"), t0)
+    if v.TargetGroupsConfig.is_some():
+        auto t1 = v.TargetGroupsConfig.unwrap()
+        p = target_groups_config_to_query(p, query.query_key(prefix, "TargetGroupsConfig"), t1)
+    return p
+
+# Serialize LoadPermissionModifications into the query form parameters under `prefix`.
+def load_permission_modifications_to_query(list[query.QueryPair] p, str prefix, LoadPermissionModifications v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.Add.unwrap_or([]):
+        auto t2 = qe1
+        p = load_permission_request_to_query(p, query.query_key(prefix, "Add") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    auto qi3 = 1
+    for qe4 in v.Remove.unwrap_or([]):
+        auto t5 = qe4
+        p = load_permission_request_to_query(p, query.query_key(prefix, "Remove") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    return p
+
+# Serialize LoadPermissionRequest into the query form parameters under `prefix`.
+def load_permission_request_to_query(list[query.QueryPair] p, str prefix, LoadPermissionRequest v) -> list[query.QueryPair]:
+    if v.Group.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Group"), v.Group.unwrap())
+    if v.UserId.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "UserId"), v.UserId.unwrap())
+    return p
+
+# Serialize MacSystemIntegrityProtectionConfigurationRequest into the query form parameters under `prefix`.
+def mac_system_integrity_protection_configuration_request_to_query(list[query.QueryPair] p, str prefix, MacSystemIntegrityProtectionConfigurationRequest v) -> list[query.QueryPair]:
+    if v.AppleInternal.is_some():
+        auto t0 = v.AppleInternal.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AppleInternal"), t0)
+    if v.BaseSystem.is_some():
+        auto t1 = v.BaseSystem.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BaseSystem"), t1)
+    if v.DebuggingRestrictions.is_some():
+        auto t2 = v.DebuggingRestrictions.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DebuggingRestrictions"), t2)
+    if v.DTraceRestrictions.is_some():
+        auto t3 = v.DTraceRestrictions.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DTraceRestrictions"), t3)
+    if v.FilesystemProtections.is_some():
+        auto t4 = v.FilesystemProtections.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "FilesystemProtections"), t4)
+    if v.KextSigning.is_some():
+        auto t5 = v.KextSigning.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KextSigning"), t5)
+    if v.NvramProtections.is_some():
+        auto t6 = v.NvramProtections.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NvramProtections"), t6)
+    return p
+
+# Serialize MemoryGiBPerVCpu into the query form parameters under `prefix`.
+def memory_gi_b_per_v_cpu_to_query(list[query.QueryPair] p, str prefix, MemoryGiBPerVCpu v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize MemoryGiBPerVCpuRequest into the query form parameters under `prefix`.
+def memory_gi_b_per_v_cpu_request_to_query(list[query.QueryPair] p, str prefix, MemoryGiBPerVCpuRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize MemoryMiB into the query form parameters under `prefix`.
+def memory_mi_b_to_query(list[query.QueryPair] p, str prefix, MemoryMiB v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize MemoryMiBRequest into the query form parameters under `prefix`.
+def memory_mi_b_request_to_query(list[query.QueryPair] p, str prefix, MemoryMiBRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize ModifyTransitGatewayOptions into the query form parameters under `prefix`.
+def modify_transit_gateway_options_to_query(list[query.QueryPair] p, str prefix, ModifyTransitGatewayOptions v) -> list[query.QueryPair]:
+    auto t0 = v.AddTransitGatewayCidrBlocks.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AddTransitGatewayCidrBlocks"), t0)
+    auto t1 = v.RemoveTransitGatewayCidrBlocks.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "RemoveTransitGatewayCidrBlocks"), t1)
+    if v.VpnEcmpSupport.is_some():
+        auto t2 = v.VpnEcmpSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VpnEcmpSupport"), t2)
+    if v.DnsSupport.is_some():
+        auto t3 = v.DnsSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DnsSupport"), t3)
+    if v.SecurityGroupReferencingSupport.is_some():
+        auto t4 = v.SecurityGroupReferencingSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupReferencingSupport"), t4)
+    if v.AutoAcceptSharedAttachments.is_some():
+        auto t5 = v.AutoAcceptSharedAttachments.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AutoAcceptSharedAttachments"), t5)
+    if v.DefaultRouteTableAssociation.is_some():
+        auto t6 = v.DefaultRouteTableAssociation.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultRouteTableAssociation"), t6)
+    if v.AssociationDefaultRouteTableId.is_some():
+        auto t7 = v.AssociationDefaultRouteTableId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AssociationDefaultRouteTableId"), t7)
+    if v.DefaultRouteTablePropagation.is_some():
+        auto t8 = v.DefaultRouteTablePropagation.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultRouteTablePropagation"), t8)
+    if v.PropagationDefaultRouteTableId.is_some():
+        auto t9 = v.PropagationDefaultRouteTableId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PropagationDefaultRouteTableId"), t9)
+    if v.AmazonSideAsn.is_some():
+        auto t10 = str(v.AmazonSideAsn.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AmazonSideAsn"), t10)
+    if v.EncryptionSupport.is_some():
+        auto t11 = v.EncryptionSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "EncryptionSupport"), t11)
+    return p
+
+# Serialize ModifyTransitGatewayVpcAttachmentRequestOptions into the query form parameters under `prefix`.
+def modify_transit_gateway_vpc_attachment_request_options_to_query(list[query.QueryPair] p, str prefix, ModifyTransitGatewayVpcAttachmentRequestOptions v) -> list[query.QueryPair]:
+    if v.DnsSupport.is_some():
+        auto t0 = v.DnsSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DnsSupport"), t0)
+    if v.SecurityGroupReferencingSupport.is_some():
+        auto t1 = v.SecurityGroupReferencingSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupReferencingSupport"), t1)
+    if v.Ipv6Support.is_some():
+        auto t2 = v.Ipv6Support.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6Support"), t2)
+    if v.ApplianceModeSupport.is_some():
+        auto t3 = v.ApplianceModeSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApplianceModeSupport"), t3)
+    return p
+
+# Serialize ModifyVerifiedAccessEndpointCidrOptions into the query form parameters under `prefix`.
+def modify_verified_access_endpoint_cidr_options_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessEndpointCidrOptions v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.PortRanges.unwrap_or([]):
+        auto t2 = qe1
+        p = modify_verified_access_endpoint_port_range_to_query(p, query.query_key(prefix, "PortRange") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize ModifyVerifiedAccessEndpointEniOptions into the query form parameters under `prefix`.
+def modify_verified_access_endpoint_eni_options_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessEndpointEniOptions v) -> list[query.QueryPair]:
+    if v.Protocol.is_some():
+        auto t0 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t0)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    auto qi1 = 1
+    for qe2 in v.PortRanges.unwrap_or([]):
+        auto t3 = qe2
+        p = modify_verified_access_endpoint_port_range_to_query(p, query.query_key(prefix, "PortRange") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize ModifyVerifiedAccessEndpointLoadBalancerOptions into the query form parameters under `prefix`.
+def modify_verified_access_endpoint_load_balancer_options_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessEndpointLoadBalancerOptions v) -> list[query.QueryPair]:
+    auto t0 = v.SubnetIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SubnetId"), t0)
+    if v.Protocol.is_some():
+        auto t1 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t1)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    auto qi2 = 1
+    for qe3 in v.PortRanges.unwrap_or([]):
+        auto t4 = qe3
+        p = modify_verified_access_endpoint_port_range_to_query(p, query.query_key(prefix, "PortRange") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    return p
+
+# Serialize ModifyVerifiedAccessEndpointPortRange into the query form parameters under `prefix`.
+def modify_verified_access_endpoint_port_range_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessEndpointPortRange v) -> list[query.QueryPair]:
+    if v.FromPort.is_some():
+        auto t0 = str(v.FromPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FromPort"), t0)
+    if v.ToPort.is_some():
+        auto t1 = str(v.ToPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ToPort"), t1)
+    return p
+
+# Serialize ModifyVerifiedAccessEndpointRdsOptions into the query form parameters under `prefix`.
+def modify_verified_access_endpoint_rds_options_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessEndpointRdsOptions v) -> list[query.QueryPair]:
+    auto t0 = v.SubnetIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SubnetId"), t0)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    if v.RdsEndpoint.is_some():
+        auto t1 = v.RdsEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RdsEndpoint"), t1)
+    return p
+
+# Serialize ModifyVerifiedAccessNativeApplicationOidcOptions into the query form parameters under `prefix`.
+def modify_verified_access_native_application_oidc_options_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessNativeApplicationOidcOptions v) -> list[query.QueryPair]:
+    if v.PublicSigningKeyEndpoint.is_some():
+        auto t0 = v.PublicSigningKeyEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PublicSigningKeyEndpoint"), t0)
+    if v.Issuer.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Issuer"), v.Issuer.unwrap())
+    if v.AuthorizationEndpoint.is_some():
+        auto t1 = v.AuthorizationEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AuthorizationEndpoint"), t1)
+    if v.TokenEndpoint.is_some():
+        auto t2 = v.TokenEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TokenEndpoint"), t2)
+    if v.UserInfoEndpoint.is_some():
+        auto t3 = v.UserInfoEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserInfoEndpoint"), t3)
+    if v.ClientId.is_some():
+        auto t4 = v.ClientId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientId"), t4)
+    if v.ClientSecret.is_some():
+        auto t5 = v.ClientSecret.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientSecret"), t5)
+    if v.Scope.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope.unwrap())
+    return p
+
+# Serialize ModifyVerifiedAccessTrustProviderDeviceOptions into the query form parameters under `prefix`.
+def modify_verified_access_trust_provider_device_options_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessTrustProviderDeviceOptions v) -> list[query.QueryPair]:
+    if v.PublicSigningKeyUrl.is_some():
+        auto t0 = v.PublicSigningKeyUrl.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PublicSigningKeyUrl"), t0)
+    return p
+
+# Serialize ModifyVerifiedAccessTrustProviderOidcOptions into the query form parameters under `prefix`.
+def modify_verified_access_trust_provider_oidc_options_to_query(list[query.QueryPair] p, str prefix, ModifyVerifiedAccessTrustProviderOidcOptions v) -> list[query.QueryPair]:
+    if v.Issuer.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Issuer"), v.Issuer.unwrap())
+    if v.AuthorizationEndpoint.is_some():
+        auto t0 = v.AuthorizationEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AuthorizationEndpoint"), t0)
+    if v.TokenEndpoint.is_some():
+        auto t1 = v.TokenEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TokenEndpoint"), t1)
+    if v.UserInfoEndpoint.is_some():
+        auto t2 = v.UserInfoEndpoint.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserInfoEndpoint"), t2)
+    if v.ClientId.is_some():
+        auto t3 = v.ClientId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientId"), t3)
+    if v.ClientSecret.is_some():
+        auto t4 = v.ClientSecret.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientSecret"), t4)
+    if v.Scope.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope.unwrap())
+    return p
+
+# Serialize ModifyVpnTunnelOptionsSpecification into the query form parameters under `prefix`.
+def modify_vpn_tunnel_options_specification_to_query(list[query.QueryPair] p, str prefix, ModifyVpnTunnelOptionsSpecification v) -> list[query.QueryPair]:
+    if v.TunnelInsideCidr.is_some():
+        auto t0 = v.TunnelInsideCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TunnelInsideCidr"), t0)
+    if v.TunnelInsideIpv6Cidr.is_some():
+        auto t1 = v.TunnelInsideIpv6Cidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TunnelInsideIpv6Cidr"), t1)
+    if v.PreSharedKey.is_some():
+        auto t2 = v.PreSharedKey.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PreSharedKey"), t2)
+    if v.Phase1LifetimeSeconds.is_some():
+        auto t3 = str(v.Phase1LifetimeSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Phase1LifetimeSeconds"), t3)
+    if v.Phase2LifetimeSeconds.is_some():
+        auto t4 = str(v.Phase2LifetimeSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Phase2LifetimeSeconds"), t4)
+    if v.RekeyMarginTimeSeconds.is_some():
+        auto t5 = str(v.RekeyMarginTimeSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RekeyMarginTimeSeconds"), t5)
+    if v.RekeyFuzzPercentage.is_some():
+        auto t6 = str(v.RekeyFuzzPercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RekeyFuzzPercentage"), t6)
+    if v.ReplayWindowSize.is_some():
+        auto t7 = str(v.ReplayWindowSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReplayWindowSize"), t7)
+    if v.DPDTimeoutSeconds.is_some():
+        auto t8 = str(v.DPDTimeoutSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DPDTimeoutSeconds"), t8)
+    if v.DPDTimeoutAction.is_some():
+        auto t9 = v.DPDTimeoutAction.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DPDTimeoutAction"), t9)
+    auto qi10 = 1
+    for qe11 in v.Phase1EncryptionAlgorithms.unwrap_or([]):
+        auto t12 = qe11
+        p = phase1_encryption_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase1EncryptionAlgorithm") + "." + str(qi10), t12)
+        qi10 = qi10 + 1
+    auto qi13 = 1
+    for qe14 in v.Phase2EncryptionAlgorithms.unwrap_or([]):
+        auto t15 = qe14
+        p = phase2_encryption_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase2EncryptionAlgorithm") + "." + str(qi13), t15)
+        qi13 = qi13 + 1
+    auto qi16 = 1
+    for qe17 in v.Phase1IntegrityAlgorithms.unwrap_or([]):
+        auto t18 = qe17
+        p = phase1_integrity_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase1IntegrityAlgorithm") + "." + str(qi16), t18)
+        qi16 = qi16 + 1
+    auto qi19 = 1
+    for qe20 in v.Phase2IntegrityAlgorithms.unwrap_or([]):
+        auto t21 = qe20
+        p = phase2_integrity_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase2IntegrityAlgorithm") + "." + str(qi19), t21)
+        qi19 = qi19 + 1
+    auto qi22 = 1
+    for qe23 in v.Phase1DHGroupNumbers.unwrap_or([]):
+        auto t24 = qe23
+        p = phase1_dh_group_numbers_request_list_value_to_query(p, query.query_key(prefix, "Phase1DHGroupNumber") + "." + str(qi22), t24)
+        qi22 = qi22 + 1
+    auto qi25 = 1
+    for qe26 in v.Phase2DHGroupNumbers.unwrap_or([]):
+        auto t27 = qe26
+        p = phase2_dh_group_numbers_request_list_value_to_query(p, query.query_key(prefix, "Phase2DHGroupNumber") + "." + str(qi25), t27)
+        qi25 = qi25 + 1
+    auto qi28 = 1
+    for qe29 in v.IKEVersions.unwrap_or([]):
+        auto t30 = qe29
+        p = ike_versions_request_list_value_to_query(p, query.query_key(prefix, "IKEVersion") + "." + str(qi28), t30)
+        qi28 = qi28 + 1
+    if v.StartupAction.is_some():
+        auto t31 = v.StartupAction.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StartupAction"), t31)
+    if v.LogOptions.is_some():
+        auto t32 = v.LogOptions.unwrap()
+        p = vpn_tunnel_log_options_specification_to_query(p, query.query_key(prefix, "LogOptions"), t32)
+    if v.EnableTunnelLifecycleControl.is_some():
+        auto t33 = query.query_bool(v.EnableTunnelLifecycleControl.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnableTunnelLifecycleControl"), t33)
+    return p
+
+# Serialize NetworkBandwidthGbps into the query form parameters under `prefix`.
+def network_bandwidth_gbps_to_query(list[query.QueryPair] p, str prefix, NetworkBandwidthGbps v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize NetworkBandwidthGbpsRequest into the query form parameters under `prefix`.
+def network_bandwidth_gbps_request_to_query(list[query.QueryPair] p, str prefix, NetworkBandwidthGbpsRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize NetworkInterfaceAttachmentChanges into the query form parameters under `prefix`.
+def network_interface_attachment_changes_to_query(list[query.QueryPair] p, str prefix, NetworkInterfaceAttachmentChanges v) -> list[query.QueryPair]:
+    if v.DefaultEnaQueueCount.is_some():
+        auto t0 = query.query_bool(v.DefaultEnaQueueCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultEnaQueueCount"), t0)
+    if v.EnaQueueCount.is_some():
+        auto t1 = str(v.EnaQueueCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnaQueueCount"), t1)
+    if v.AttachmentId.is_some():
+        auto t2 = v.AttachmentId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AttachmentId"), t2)
+    if v.DeleteOnTermination.is_some():
+        auto t3 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t3)
+    return p
+
+# Serialize NetworkInterfaceCount into the query form parameters under `prefix`.
+def network_interface_count_to_query(list[query.QueryPair] p, str prefix, NetworkInterfaceCount v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize NetworkInterfaceCountRequest into the query form parameters under `prefix`.
+def network_interface_count_request_to_query(list[query.QueryPair] p, str prefix, NetworkInterfaceCountRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize NewDhcpConfiguration into the query form parameters under `prefix`.
+def new_dhcp_configuration_to_query(list[query.QueryPair] p, str prefix, NewDhcpConfiguration v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "Value"), t0)
+    return p
+
+# Serialize OnDemandOptionsRequest into the query form parameters under `prefix`.
+def on_demand_options_request_to_query(list[query.QueryPair] p, str prefix, OnDemandOptionsRequest v) -> list[query.QueryPair]:
+    if v.AllocationStrategy.is_some():
+        auto t0 = v.AllocationStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllocationStrategy"), t0)
+    if v.CapacityReservationOptions.is_some():
+        auto t1 = v.CapacityReservationOptions.unwrap()
+        p = capacity_reservation_options_request_to_query(p, query.query_key(prefix, "CapacityReservationOptions"), t1)
+    if v.SingleInstanceType.is_some():
+        auto t2 = query.query_bool(v.SingleInstanceType.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SingleInstanceType"), t2)
+    if v.SingleAvailabilityZone.is_some():
+        auto t3 = query.query_bool(v.SingleAvailabilityZone.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SingleAvailabilityZone"), t3)
+    if v.MinTargetCapacity.is_some():
+        auto t4 = str(v.MinTargetCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MinTargetCapacity"), t4)
+    if v.MaxTotalPrice.is_some():
+        auto t5 = v.MaxTotalPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MaxTotalPrice"), t5)
+    return p
+
+# Serialize OperatorRequest into the query form parameters under `prefix`.
+def operator_request_to_query(list[query.QueryPair] p, str prefix, OperatorRequest v) -> list[query.QueryPair]:
+    if v.Principal.is_some():
+        auto t0 = v.Principal.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Principal"), t0)
+    return p
+
+# Serialize PacketHeaderStatementRequest into the query form parameters under `prefix`.
+def packet_header_statement_request_to_query(list[query.QueryPair] p, str prefix, PacketHeaderStatementRequest v) -> list[query.QueryPair]:
+    auto t0 = v.SourceAddresses.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SourceAddress"), t0)
+    auto t1 = v.DestinationAddresses.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "DestinationAddress"), t1)
+    auto t2 = v.SourcePorts.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SourcePort"), t2)
+    auto t3 = v.DestinationPorts.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "DestinationPort"), t3)
+    auto t4 = v.SourcePrefixLists.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SourcePrefixList"), t4)
+    auto t5 = v.DestinationPrefixLists.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "DestinationPrefixList"), t5)
+    auto t6 = v.Protocols.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "Protocol"), t6)
+    return p
+
+# Serialize PathRequestFilter into the query form parameters under `prefix`.
+def path_request_filter_to_query(list[query.QueryPair] p, str prefix, PathRequestFilter v) -> list[query.QueryPair]:
+    if v.SourceAddress.is_some():
+        auto t0 = v.SourceAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceAddress"), t0)
+    if v.SourcePortRange.is_some():
+        auto t1 = v.SourcePortRange.unwrap()
+        p = request_filter_port_range_to_query(p, query.query_key(prefix, "SourcePortRange"), t1)
+    if v.DestinationAddress.is_some():
+        auto t2 = v.DestinationAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DestinationAddress"), t2)
+    if v.DestinationPortRange.is_some():
+        auto t3 = v.DestinationPortRange.unwrap()
+        p = request_filter_port_range_to_query(p, query.query_key(prefix, "DestinationPortRange"), t3)
+    return p
+
+# Serialize PathStatementRequest into the query form parameters under `prefix`.
+def path_statement_request_to_query(list[query.QueryPair] p, str prefix, PathStatementRequest v) -> list[query.QueryPair]:
+    if v.PacketHeaderStatement.is_some():
+        auto t0 = v.PacketHeaderStatement.unwrap()
+        p = packet_header_statement_request_to_query(p, query.query_key(prefix, "PacketHeaderStatement"), t0)
+    if v.ResourceStatement.is_some():
+        auto t1 = v.ResourceStatement.unwrap()
+        p = resource_statement_request_to_query(p, query.query_key(prefix, "ResourceStatement"), t1)
+    return p
+
+# Serialize PeeringConnectionOptionsRequest into the query form parameters under `prefix`.
+def peering_connection_options_request_to_query(list[query.QueryPair] p, str prefix, PeeringConnectionOptionsRequest v) -> list[query.QueryPair]:
+    if v.AllowDnsResolutionFromRemoteVpc.is_some():
+        auto t0 = query.query_bool(v.AllowDnsResolutionFromRemoteVpc.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AllowDnsResolutionFromRemoteVpc"), t0)
+    if v.AllowEgressFromLocalClassicLinkToRemoteVpc.is_some():
+        auto t1 = query.query_bool(v.AllowEgressFromLocalClassicLinkToRemoteVpc.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AllowEgressFromLocalClassicLinkToRemoteVpc"), t1)
+    if v.AllowEgressFromLocalVpcToRemoteClassicLink.is_some():
+        auto t2 = query.query_bool(v.AllowEgressFromLocalVpcToRemoteClassicLink.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AllowEgressFromLocalVpcToRemoteClassicLink"), t2)
+    return p
+
+# Serialize PerformanceFactorReference into the query form parameters under `prefix`.
+def performance_factor_reference_to_query(list[query.QueryPair] p, str prefix, PerformanceFactorReference v) -> list[query.QueryPair]:
+    if v.InstanceFamily.is_some():
+        auto t0 = v.InstanceFamily.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceFamily"), t0)
+    return p
+
+# Serialize PerformanceFactorReferenceRequest into the query form parameters under `prefix`.
+def performance_factor_reference_request_to_query(list[query.QueryPair] p, str prefix, PerformanceFactorReferenceRequest v) -> list[query.QueryPair]:
+    if v.InstanceFamily.is_some():
+        auto t0 = v.InstanceFamily.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceFamily"), t0)
+    return p
+
+# Serialize Phase1DHGroupNumbersRequestListValue into the query form parameters under `prefix`.
+def phase1_dh_group_numbers_request_list_value_to_query(list[query.QueryPair] p, str prefix, Phase1DHGroupNumbersRequestListValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        auto t0 = str(v.Value.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), t0)
+    return p
+
+# Serialize Phase1EncryptionAlgorithmsRequestListValue into the query form parameters under `prefix`.
+def phase1_encryption_algorithms_request_list_value_to_query(list[query.QueryPair] p, str prefix, Phase1EncryptionAlgorithmsRequestListValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize Phase1IntegrityAlgorithmsRequestListValue into the query form parameters under `prefix`.
+def phase1_integrity_algorithms_request_list_value_to_query(list[query.QueryPair] p, str prefix, Phase1IntegrityAlgorithmsRequestListValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize Phase2DHGroupNumbersRequestListValue into the query form parameters under `prefix`.
+def phase2_dh_group_numbers_request_list_value_to_query(list[query.QueryPair] p, str prefix, Phase2DHGroupNumbersRequestListValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        auto t0 = str(v.Value.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), t0)
+    return p
+
+# Serialize Phase2EncryptionAlgorithmsRequestListValue into the query form parameters under `prefix`.
+def phase2_encryption_algorithms_request_list_value_to_query(list[query.QueryPair] p, str prefix, Phase2EncryptionAlgorithmsRequestListValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize Phase2IntegrityAlgorithmsRequestListValue into the query form parameters under `prefix`.
+def phase2_integrity_algorithms_request_list_value_to_query(list[query.QueryPair] p, str prefix, Phase2IntegrityAlgorithmsRequestListValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize Placement into the query form parameters under `prefix`.
+def placement_to_query(list[query.QueryPair] p, str prefix, Placement v) -> list[query.QueryPair]:
+    if v.AvailabilityZoneId.is_some():
+        auto t0 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t0)
+    if v.Affinity.is_some():
+        auto t1 = v.Affinity.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Affinity"), t1)
+    if v.GroupName.is_some():
+        auto t2 = v.GroupName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupName"), t2)
+    if v.PartitionNumber.is_some():
+        auto t3 = str(v.PartitionNumber.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PartitionNumber"), t3)
+    if v.HostId.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "HostId"), v.HostId.unwrap())
+    if v.Tenancy.is_some():
+        auto t4 = v.Tenancy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Tenancy"), t4)
+    if v.SpreadDomain.is_some():
+        auto t5 = v.SpreadDomain.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpreadDomain"), t5)
+    if v.HostResourceGroupArn.is_some():
+        auto t6 = v.HostResourceGroupArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HostResourceGroupArn"), t6)
+    if v.GroupId.is_some():
+        auto t7 = v.GroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupId"), t7)
+    if v.AvailabilityZone.is_some():
+        auto t8 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t8)
+    return p
+
+# Serialize PortRange into the query form parameters under `prefix`.
+def port_range_to_query(list[query.QueryPair] p, str prefix, PortRange v) -> list[query.QueryPair]:
+    if v.From.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "From"), str(v.From.unwrap()))
+    if v.To.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "To"), str(v.To.unwrap()))
+    return p
+
+# Serialize PrefixListId into the query form parameters under `prefix`.
+def prefix_list_id_to_query(list[query.QueryPair] p, str prefix, PrefixListId v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.PrefixListId.is_some():
+        auto t1 = v.PrefixListId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrefixListId"), t1)
+    return p
+
+# Serialize PriceScheduleSpecification into the query form parameters under `prefix`.
+def price_schedule_specification_to_query(list[query.QueryPair] p, str prefix, PriceScheduleSpecification v) -> list[query.QueryPair]:
+    if v.Term.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Term"), str(v.Term.unwrap()))
+    if v.Price.is_some():
+        auto t0 = str(v.Price.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Price"), t0)
+    if v.CurrencyCode.is_some():
+        auto t1 = v.CurrencyCode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CurrencyCode"), t1)
+    return p
+
+# Serialize PrivateDnsNameOptionsRequest into the query form parameters under `prefix`.
+def private_dns_name_options_request_to_query(list[query.QueryPair] p, str prefix, PrivateDnsNameOptionsRequest v) -> list[query.QueryPair]:
+    if v.HostnameType.is_some():
+        auto t0 = v.HostnameType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "HostnameType"), t0)
+    if v.EnableResourceNameDnsARecord.is_some():
+        auto t1 = query.query_bool(v.EnableResourceNameDnsARecord.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnableResourceNameDnsARecord"), t1)
+    if v.EnableResourceNameDnsAAAARecord.is_some():
+        auto t2 = query.query_bool(v.EnableResourceNameDnsAAAARecord.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnableResourceNameDnsAAAARecord"), t2)
+    return p
+
+# Serialize PrivateIpAddressSpecification into the query form parameters under `prefix`.
+def private_ip_address_specification_to_query(list[query.QueryPair] p, str prefix, PrivateIpAddressSpecification v) -> list[query.QueryPair]:
+    if v.Primary.is_some():
+        auto t0 = query.query_bool(v.Primary.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Primary"), t0)
+    if v.PrivateIpAddress.is_some():
+        auto t1 = v.PrivateIpAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t1)
+    return p
+
+# Serialize PurchaseRequest into the query form parameters under `prefix`.
+def purchase_request_to_query(list[query.QueryPair] p, str prefix, PurchaseRequest v) -> list[query.QueryPair]:
+    auto t0 = str(v.InstanceCount)
+    p = query.query_scalar(p, query.query_key(prefix, "InstanceCount"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "PurchaseToken"), v.PurchaseToken)
+    return p
+
+# Serialize RegisterInstanceTagAttributeRequest into the query form parameters under `prefix`.
+def register_instance_tag_attribute_request_to_query(list[query.QueryPair] p, str prefix, RegisterInstanceTagAttributeRequest v) -> list[query.QueryPair]:
+    if v.IncludeAllTagsOfInstance.is_some():
+        auto t0 = query.query_bool(v.IncludeAllTagsOfInstance.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IncludeAllTagsOfInstance"), t0)
+    auto t1 = v.InstanceTagKeys.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "InstanceTagKey"), t1)
+    return p
+
+# Serialize RemoveIpamOperatingRegion into the query form parameters under `prefix`.
+def remove_ipam_operating_region_to_query(list[query.QueryPair] p, str prefix, RemoveIpamOperatingRegion v) -> list[query.QueryPair]:
+    if v.RegionName.is_some():
+        auto t0 = v.RegionName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RegionName"), t0)
+    return p
+
+# Serialize RemoveIpamOrganizationalUnitExclusion into the query form parameters under `prefix`.
+def remove_ipam_organizational_unit_exclusion_to_query(list[query.QueryPair] p, str prefix, RemoveIpamOrganizationalUnitExclusion v) -> list[query.QueryPair]:
+    if v.OrganizationsEntityPath.is_some():
+        auto t0 = v.OrganizationsEntityPath.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OrganizationsEntityPath"), t0)
+    return p
+
+# Serialize RemovePrefixListEntry into the query form parameters under `prefix`.
+def remove_prefix_list_entry_to_query(list[query.QueryPair] p, str prefix, RemovePrefixListEntry v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Cidr"), v.Cidr)
+    return p
+
+# Serialize RequestFilterPortRange into the query form parameters under `prefix`.
+def request_filter_port_range_to_query(list[query.QueryPair] p, str prefix, RequestFilterPortRange v) -> list[query.QueryPair]:
+    if v.FromPort.is_some():
+        auto t0 = str(v.FromPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FromPort"), t0)
+    if v.ToPort.is_some():
+        auto t1 = str(v.ToPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ToPort"), t1)
+    return p
+
+# Serialize RequestIpamResourceTag into the query form parameters under `prefix`.
+def request_ipam_resource_tag_to_query(list[query.QueryPair] p, str prefix, RequestIpamResourceTag v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize RequestLaunchTemplateData into the query form parameters under `prefix`.
+def request_launch_template_data_to_query(list[query.QueryPair] p, str prefix, RequestLaunchTemplateData v) -> list[query.QueryPair]:
+    if v.KernelId.is_some():
+        auto t0 = v.KernelId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KernelId"), t0)
+    if v.EbsOptimized.is_some():
+        auto t1 = query.query_bool(v.EbsOptimized.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EbsOptimized"), t1)
+    if v.IamInstanceProfile.is_some():
+        auto t2 = v.IamInstanceProfile.unwrap()
+        p = launch_template_iam_instance_profile_specification_request_to_query(p, query.query_key(prefix, "IamInstanceProfile"), t2)
+    auto qi3 = 1
+    for qe4 in v.BlockDeviceMappings.unwrap_or([]):
+        auto t5 = qe4
+        p = launch_template_block_device_mapping_request_to_query(p, query.query_key(prefix, "BlockDeviceMapping") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    auto qi6 = 1
+    for qe7 in v.NetworkInterfaces.unwrap_or([]):
+        auto t8 = qe7
+        p = launch_template_instance_network_interface_specification_request_to_query(p, query.query_key(prefix, "NetworkInterface") + "." + str(qi6), t8)
+        qi6 = qi6 + 1
+    if v.ImageId.is_some():
+        auto t9 = v.ImageId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ImageId"), t9)
+    if v.InstanceType.is_some():
+        auto t10 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t10)
+    if v.KeyName.is_some():
+        auto t11 = v.KeyName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KeyName"), t11)
+    if v.Monitoring.is_some():
+        auto t12 = v.Monitoring.unwrap()
+        p = launch_templates_monitoring_request_to_query(p, query.query_key(prefix, "Monitoring"), t12)
+    if v.Placement.is_some():
+        auto t13 = v.Placement.unwrap()
+        p = launch_template_placement_request_to_query(p, query.query_key(prefix, "Placement"), t13)
+    if v.RamDiskId.is_some():
+        auto t14 = v.RamDiskId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RamDiskId"), t14)
+    if v.DisableApiTermination.is_some():
+        auto t15 = query.query_bool(v.DisableApiTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DisableApiTermination"), t15)
+    if v.InstanceInitiatedShutdownBehavior.is_some():
+        auto t16 = v.InstanceInitiatedShutdownBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceInitiatedShutdownBehavior"), t16)
+    if v.UserData.is_some():
+        auto t17 = v.UserData.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserData"), t17)
+    auto qi18 = 1
+    for qe19 in v.TagSpecifications.unwrap_or([]):
+        auto t20 = qe19
+        p = launch_template_tag_specification_request_to_query(p, query.query_key(prefix, "TagSpecification") + "." + str(qi18), t20)
+        qi18 = qi18 + 1
+    auto qi21 = 1
+    for qe22 in v.ElasticGpuSpecifications.unwrap_or([]):
+        auto t23 = qe22
+        p = elastic_gpu_specification_to_query(p, query.query_key(prefix, "ElasticGpuSpecification") + "." + str(qi21), t23)
+        qi21 = qi21 + 1
+    auto qi24 = 1
+    for qe25 in v.ElasticInferenceAccelerators.unwrap_or([]):
+        auto t26 = qe25
+        p = launch_template_elastic_inference_accelerator_to_query(p, query.query_key(prefix, "ElasticInferenceAccelerator") + "." + str(qi24), t26)
+        qi24 = qi24 + 1
+    auto t27 = v.SecurityGroupIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SecurityGroupId"), t27)
+    auto t28 = v.SecurityGroups.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SecurityGroup"), t28)
+    if v.InstanceMarketOptions.is_some():
+        auto t29 = v.InstanceMarketOptions.unwrap()
+        p = launch_template_instance_market_options_request_to_query(p, query.query_key(prefix, "InstanceMarketOptions"), t29)
+    if v.CreditSpecification.is_some():
+        auto t30 = v.CreditSpecification.unwrap()
+        p = credit_specification_request_to_query(p, query.query_key(prefix, "CreditSpecification"), t30)
+    if v.CpuOptions.is_some():
+        auto t31 = v.CpuOptions.unwrap()
+        p = launch_template_cpu_options_request_to_query(p, query.query_key(prefix, "CpuOptions"), t31)
+    if v.CapacityReservationSpecification.is_some():
+        auto t32 = v.CapacityReservationSpecification.unwrap()
+        p = launch_template_capacity_reservation_specification_request_to_query(p, query.query_key(prefix, "CapacityReservationSpecification"), t32)
+    auto qi33 = 1
+    for qe34 in v.LicenseSpecifications.unwrap_or([]):
+        auto t35 = qe34
+        p = launch_template_license_configuration_request_to_query(p, query.query_key(prefix, "LicenseSpecification") + "." + str(qi33), t35)
+        qi33 = qi33 + 1
+    if v.HibernationOptions.is_some():
+        auto t36 = v.HibernationOptions.unwrap()
+        p = launch_template_hibernation_options_request_to_query(p, query.query_key(prefix, "HibernationOptions"), t36)
+    if v.MetadataOptions.is_some():
+        auto t37 = v.MetadataOptions.unwrap()
+        p = launch_template_instance_metadata_options_request_to_query(p, query.query_key(prefix, "MetadataOptions"), t37)
+    if v.EnclaveOptions.is_some():
+        auto t38 = v.EnclaveOptions.unwrap()
+        p = launch_template_enclave_options_request_to_query(p, query.query_key(prefix, "EnclaveOptions"), t38)
+    if v.InstanceRequirements.is_some():
+        auto t39 = v.InstanceRequirements.unwrap()
+        p = instance_requirements_request_to_query(p, query.query_key(prefix, "InstanceRequirements"), t39)
+    if v.PrivateDnsNameOptions.is_some():
+        auto t40 = v.PrivateDnsNameOptions.unwrap()
+        p = launch_template_private_dns_name_options_request_to_query(p, query.query_key(prefix, "PrivateDnsNameOptions"), t40)
+    if v.MaintenanceOptions.is_some():
+        auto t41 = v.MaintenanceOptions.unwrap()
+        p = launch_template_instance_maintenance_options_request_to_query(p, query.query_key(prefix, "MaintenanceOptions"), t41)
+    if v.DisableApiStop.is_some():
+        auto t42 = query.query_bool(v.DisableApiStop.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DisableApiStop"), t42)
+    if v.Operator.is_some():
+        auto t43 = v.Operator.unwrap()
+        p = operator_request_to_query(p, query.query_key(prefix, "Operator"), t43)
+    if v.NetworkPerformanceOptions.is_some():
+        auto t44 = v.NetworkPerformanceOptions.unwrap()
+        p = launch_template_network_performance_options_request_to_query(p, query.query_key(prefix, "NetworkPerformanceOptions"), t44)
+    auto qi45 = 1
+    for qe46 in v.SecondaryInterfaces.unwrap_or([]):
+        auto t47 = qe46
+        p = launch_template_instance_secondary_interface_specification_request_to_query(p, query.query_key(prefix, "SecondaryInterface") + "." + str(qi45), t47)
+        qi45 = qi45 + 1
+    return p
+
+# Serialize RequestSpotLaunchSpecification into the query form parameters under `prefix`.
+def request_spot_launch_specification_to_query(list[query.QueryPair] p, str prefix, RequestSpotLaunchSpecification v) -> list[query.QueryPair]:
+    auto t0 = v.SecurityGroupIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SecurityGroupId"), t0)
+    auto t1 = v.SecurityGroups.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SecurityGroup"), t1)
+    if v.AddressingType.is_some():
+        auto t2 = v.AddressingType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AddressingType"), t2)
+    auto qi3 = 1
+    for qe4 in v.BlockDeviceMappings.unwrap_or([]):
+        auto t5 = qe4
+        p = block_device_mapping_to_query(p, query.query_key(prefix, "BlockDeviceMapping") + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    if v.EbsOptimized.is_some():
+        auto t6 = query.query_bool(v.EbsOptimized.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EbsOptimized"), t6)
+    if v.IamInstanceProfile.is_some():
+        auto t7 = v.IamInstanceProfile.unwrap()
+        p = iam_instance_profile_specification_to_query(p, query.query_key(prefix, "IamInstanceProfile"), t7)
+    if v.ImageId.is_some():
+        auto t8 = v.ImageId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ImageId"), t8)
+    if v.InstanceType.is_some():
+        auto t9 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t9)
+    if v.KernelId.is_some():
+        auto t10 = v.KernelId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KernelId"), t10)
+    if v.KeyName.is_some():
+        auto t11 = v.KeyName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KeyName"), t11)
+    if v.Monitoring.is_some():
+        auto t12 = v.Monitoring.unwrap()
+        p = run_instances_monitoring_enabled_to_query(p, query.query_key(prefix, "Monitoring"), t12)
+    auto qi13 = 1
+    for qe14 in v.NetworkInterfaces.unwrap_or([]):
+        auto t15 = qe14
+        p = instance_network_interface_specification_to_query(p, query.query_key(prefix, "NetworkInterface") + "." + str(qi13), t15)
+        qi13 = qi13 + 1
+    if v.Placement.is_some():
+        auto t16 = v.Placement.unwrap()
+        p = spot_placement_to_query(p, query.query_key(prefix, "Placement"), t16)
+    if v.RamdiskId.is_some():
+        auto t17 = v.RamdiskId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RamdiskId"), t17)
+    if v.SubnetId.is_some():
+        auto t18 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t18)
+    if v.UserData.is_some():
+        auto t19 = v.UserData.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserData"), t19)
+    return p
+
+# Serialize ReservationFleetInstanceSpecification into the query form parameters under `prefix`.
+def reservation_fleet_instance_specification_to_query(list[query.QueryPair] p, str prefix, ReservationFleetInstanceSpecification v) -> list[query.QueryPair]:
+    if v.InstanceType.is_some():
+        auto t0 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t0)
+    if v.InstancePlatform.is_some():
+        auto t1 = v.InstancePlatform.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstancePlatform"), t1)
+    if v.Weight.is_some():
+        auto t2 = str(v.Weight.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Weight"), t2)
+    if v.AvailabilityZone.is_some():
+        auto t3 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t3)
+    if v.AvailabilityZoneId.is_some():
+        auto t4 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t4)
+    if v.EbsOptimized.is_some():
+        auto t5 = query.query_bool(v.EbsOptimized.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EbsOptimized"), t5)
+    if v.Priority.is_some():
+        auto t6 = str(v.Priority.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Priority"), t6)
+    return p
+
+# Serialize ReservedCapacityFallbackOptionsRequest into the query form parameters under `prefix`.
+def reserved_capacity_fallback_options_request_to_query(list[query.QueryPair] p, str prefix, ReservedCapacityFallbackOptionsRequest v) -> list[query.QueryPair]:
+    auto t0 = v.MarketTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "MarketType"), t0)
+    return p
+
+# Serialize ReservedCapacityOptionsRequest into the query form parameters under `prefix`.
+def reserved_capacity_options_request_to_query(list[query.QueryPair] p, str prefix, ReservedCapacityOptionsRequest v) -> list[query.QueryPair]:
+    if v.AllocationStrategy.is_some():
+        auto t0 = v.AllocationStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllocationStrategy"), t0)
+    auto t1 = v.ReservationTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ReservationType"), t1)
+    if v.CapacityReservationTarget.is_some():
+        auto t2 = v.CapacityReservationTarget.unwrap()
+        p = fleet_capacity_reservation_target_request_to_query(p, query.query_key(prefix, "CapacityReservationTarget"), t2)
+    if v.ReservedCapacityFallbackOptions.is_some():
+        auto t3 = v.ReservedCapacityFallbackOptions.unwrap()
+        p = reserved_capacity_fallback_options_request_to_query(p, query.query_key(prefix, "ReservedCapacityFallbackOptions"), t3)
+    return p
+
+# Serialize ReservedInstanceLimitPrice into the query form parameters under `prefix`.
+def reserved_instance_limit_price_to_query(list[query.QueryPair] p, str prefix, ReservedInstanceLimitPrice v) -> list[query.QueryPair]:
+    if v.Amount.is_some():
+        auto t0 = str(v.Amount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Amount"), t0)
+    if v.CurrencyCode.is_some():
+        auto t1 = v.CurrencyCode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CurrencyCode"), t1)
+    return p
+
+# Serialize ReservedInstancesConfiguration into the query form parameters under `prefix`.
+def reserved_instances_configuration_to_query(list[query.QueryPair] p, str prefix, ReservedInstancesConfiguration v) -> list[query.QueryPair]:
+    if v.AvailabilityZone.is_some():
+        auto t0 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t0)
+    if v.InstanceCount.is_some():
+        auto t1 = str(v.InstanceCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceCount"), t1)
+    if v.InstanceType.is_some():
+        auto t2 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t2)
+    if v.Platform.is_some():
+        auto t3 = v.Platform.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Platform"), t3)
+    if v.Scope.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Scope"), v.Scope.unwrap())
+    if v.AvailabilityZoneId.is_some():
+        auto t4 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t4)
+    return p
+
+# Serialize ResourceStatementRequest into the query form parameters under `prefix`.
+def resource_statement_request_to_query(list[query.QueryPair] p, str prefix, ResourceStatementRequest v) -> list[query.QueryPair]:
+    auto t0 = v.Resources.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "Resource"), t0)
+    auto t1 = v.ResourceTypes.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "ResourceType"), t1)
+    return p
+
+# Serialize ResourceTypeOption into the query form parameters under `prefix`.
+def resource_type_option_to_query(list[query.QueryPair] p, str prefix, ResourceTypeOption v) -> list[query.QueryPair]:
+    if v.OptionName.is_some():
+        auto t0 = v.OptionName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OptionName"), t0)
+    auto t1 = v.OptionValues.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "OptionValue"), t1)
+    return p
+
+# Serialize ResourceTypeRequest into the query form parameters under `prefix`.
+def resource_type_request_to_query(list[query.QueryPair] p, str prefix, ResourceTypeRequest v) -> list[query.QueryPair]:
+    if v.ResourceType.is_some():
+        auto t0 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t0)
+    auto qi1 = 1
+    for qe2 in v.ResourceTypeOptions.unwrap_or([]):
+        auto t3 = qe2
+        p = resource_type_option_to_query(p, query.query_key(prefix, "ResourceTypeOption") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize RouteServerBgpOptionsRequest into the query form parameters under `prefix`.
+def route_server_bgp_options_request_to_query(list[query.QueryPair] p, str prefix, RouteServerBgpOptionsRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "PeerAsn"), str(v.PeerAsn))
+    if v.PeerLivenessDetection.is_some():
+        auto t0 = v.PeerLivenessDetection.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PeerLivenessDetection"), t0)
+    return p
+
+# Serialize RunInstancesMonitoringEnabled into the query form parameters under `prefix`.
+def run_instances_monitoring_enabled_to_query(list[query.QueryPair] p, str prefix, RunInstancesMonitoringEnabled v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize S3ObjectTag into the query form parameters under `prefix`.
+def s3_object_tag_to_query(list[query.QueryPair] p, str prefix, S3ObjectTag v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize S3Storage into the query form parameters under `prefix`.
+def s3_storage_to_query(list[query.QueryPair] p, str prefix, S3Storage v) -> list[query.QueryPair]:
+    if v.AWSAccessKeyId.is_some():
+        auto t0 = v.AWSAccessKeyId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AWSAccessKeyId"), t0)
+    if v.Bucket.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Bucket"), v.Bucket.unwrap())
+    if v.Prefix.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Prefix"), v.Prefix.unwrap())
+    if v.UploadPolicy.is_some():
+        auto t1 = query.query_blob(v.UploadPolicy.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UploadPolicy"), t1)
+    if v.UploadPolicySignature.is_some():
+        auto t2 = v.UploadPolicySignature.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UploadPolicySignature"), t2)
+    return p
+
+# Serialize ScanResultConditionRequest into the query form parameters under `prefix`.
+def scan_result_condition_request_to_query(list[query.QueryPair] p, str prefix, ScanResultConditionRequest v) -> list[query.QueryPair]:
+    if v.MaxDaysSinceLastFindingScan.is_some():
+        auto t0 = str(v.MaxDaysSinceLastFindingScan.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxDaysSinceLastFindingScan"), t0)
+    if v.MaximumSeverityLabel.is_some():
+        auto t1 = v.MaximumSeverityLabel.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MaximumSeverityLabel"), t1)
+    if v.MaxDaysSinceInformationalFixAvailable.is_some():
+        auto t2 = str(v.MaxDaysSinceInformationalFixAvailable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxDaysSinceInformationalFixAvailable"), t2)
+    if v.MaxDaysSinceLowFixAvailable.is_some():
+        auto t3 = str(v.MaxDaysSinceLowFixAvailable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxDaysSinceLowFixAvailable"), t3)
+    if v.MaxDaysSinceMediumFixAvailable.is_some():
+        auto t4 = str(v.MaxDaysSinceMediumFixAvailable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxDaysSinceMediumFixAvailable"), t4)
+    if v.MaxDaysSinceHighFixAvailable.is_some():
+        auto t5 = str(v.MaxDaysSinceHighFixAvailable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxDaysSinceHighFixAvailable"), t5)
+    if v.MaxDaysSinceCriticalFixAvailable.is_some():
+        auto t6 = str(v.MaxDaysSinceCriticalFixAvailable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxDaysSinceCriticalFixAvailable"), t6)
+    return p
+
+# Serialize ScheduledInstanceRecurrenceRequest into the query form parameters under `prefix`.
+def scheduled_instance_recurrence_request_to_query(list[query.QueryPair] p, str prefix, ScheduledInstanceRecurrenceRequest v) -> list[query.QueryPair]:
+    if v.Frequency.is_some():
+        auto t0 = v.Frequency.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Frequency"), t0)
+    if v.Interval.is_some():
+        auto t1 = str(v.Interval.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Interval"), t1)
+    auto qi2 = 1
+    for qe3 in v.OccurrenceDays.unwrap_or([]):
+        auto t4 = str(qe3)
+        p = query.query_scalar(p, query.query_key(prefix, "OccurrenceDay") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    if v.OccurrenceRelativeToEnd.is_some():
+        auto t5 = query.query_bool(v.OccurrenceRelativeToEnd.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OccurrenceRelativeToEnd"), t5)
+    if v.OccurrenceUnit.is_some():
+        auto t6 = v.OccurrenceUnit.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OccurrenceUnit"), t6)
+    return p
+
+# Serialize ScheduledInstancesBlockDeviceMapping into the query form parameters under `prefix`.
+def scheduled_instances_block_device_mapping_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesBlockDeviceMapping v) -> list[query.QueryPair]:
+    if v.DeviceName.is_some():
+        auto t0 = v.DeviceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceName"), t0)
+    if v.Ebs.is_some():
+        auto t1 = v.Ebs.unwrap()
+        p = scheduled_instances_ebs_to_query(p, query.query_key(prefix, "Ebs"), t1)
+    if v.NoDevice.is_some():
+        auto t2 = v.NoDevice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NoDevice"), t2)
+    if v.VirtualName.is_some():
+        auto t3 = v.VirtualName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VirtualName"), t3)
+    return p
+
+# Serialize ScheduledInstancesEbs into the query form parameters under `prefix`.
+def scheduled_instances_ebs_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesEbs v) -> list[query.QueryPair]:
+    if v.DeleteOnTermination.is_some():
+        auto t0 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t0)
+    if v.Encrypted.is_some():
+        auto t1 = query.query_bool(v.Encrypted.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Encrypted"), t1)
+    if v.Iops.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Iops"), str(v.Iops.unwrap()))
+    if v.SnapshotId.is_some():
+        auto t2 = v.SnapshotId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SnapshotId"), t2)
+    if v.VolumeSize.is_some():
+        auto t3 = str(v.VolumeSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeSize"), t3)
+    if v.VolumeType.is_some():
+        auto t4 = v.VolumeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VolumeType"), t4)
+    return p
+
+# Serialize ScheduledInstancesIamInstanceProfile into the query form parameters under `prefix`.
+def scheduled_instances_iam_instance_profile_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesIamInstanceProfile v) -> list[query.QueryPair]:
+    if v.Arn.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Arn"), v.Arn.unwrap())
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    return p
+
+# Serialize ScheduledInstancesIpv6Address into the query form parameters under `prefix`.
+def scheduled_instances_ipv6_address_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesIpv6Address v) -> list[query.QueryPair]:
+    if v.Ipv6Address.is_some():
+        auto t0 = v.Ipv6Address.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6Address"), t0)
+    return p
+
+# Serialize ScheduledInstancesLaunchSpecification into the query form parameters under `prefix`.
+def scheduled_instances_launch_specification_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesLaunchSpecification v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.BlockDeviceMappings.unwrap_or([]):
+        auto t2 = qe1
+        p = scheduled_instances_block_device_mapping_to_query(p, query.query_key(prefix, "BlockDeviceMapping") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    if v.EbsOptimized.is_some():
+        auto t3 = query.query_bool(v.EbsOptimized.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EbsOptimized"), t3)
+    if v.IamInstanceProfile.is_some():
+        auto t4 = v.IamInstanceProfile.unwrap()
+        p = scheduled_instances_iam_instance_profile_to_query(p, query.query_key(prefix, "IamInstanceProfile"), t4)
+    p = query.query_scalar(p, query.query_key(prefix, "ImageId"), v.ImageId)
+    if v.InstanceType.is_some():
+        auto t5 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t5)
+    if v.KernelId.is_some():
+        auto t6 = v.KernelId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KernelId"), t6)
+    if v.KeyName.is_some():
+        auto t7 = v.KeyName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KeyName"), t7)
+    if v.Monitoring.is_some():
+        auto t8 = v.Monitoring.unwrap()
+        p = scheduled_instances_monitoring_to_query(p, query.query_key(prefix, "Monitoring"), t8)
+    auto qi9 = 1
+    for qe10 in v.NetworkInterfaces.unwrap_or([]):
+        auto t11 = qe10
+        p = scheduled_instances_network_interface_to_query(p, query.query_key(prefix, "NetworkInterface") + "." + str(qi9), t11)
+        qi9 = qi9 + 1
+    if v.Placement.is_some():
+        auto t12 = v.Placement.unwrap()
+        p = scheduled_instances_placement_to_query(p, query.query_key(prefix, "Placement"), t12)
+    if v.RamdiskId.is_some():
+        auto t13 = v.RamdiskId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RamdiskId"), t13)
+    auto t14 = v.SecurityGroupIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "SecurityGroupId"), t14)
+    if v.SubnetId.is_some():
+        auto t15 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t15)
+    if v.UserData.is_some():
+        auto t16 = v.UserData.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserData"), t16)
+    return p
+
+# Serialize ScheduledInstancesMonitoring into the query form parameters under `prefix`.
+def scheduled_instances_monitoring_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesMonitoring v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize ScheduledInstancesNetworkInterface into the query form parameters under `prefix`.
+def scheduled_instances_network_interface_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesNetworkInterface v) -> list[query.QueryPair]:
+    if v.AssociatePublicIpAddress.is_some():
+        auto t0 = query.query_bool(v.AssociatePublicIpAddress.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AssociatePublicIpAddress"), t0)
+    if v.DeleteOnTermination.is_some():
+        auto t1 = query.query_bool(v.DeleteOnTermination.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteOnTermination"), t1)
+    if v.Description.is_some():
+        auto t2 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t2)
+    if v.DeviceIndex.is_some():
+        auto t3 = str(v.DeviceIndex.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeviceIndex"), t3)
+    auto t4 = v.Groups.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "Group"), t4)
+    if v.Ipv6AddressCount.is_some():
+        auto t5 = str(v.Ipv6AddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6AddressCount"), t5)
+    auto qi6 = 1
+    for qe7 in v.Ipv6Addresses.unwrap_or([]):
+        auto t8 = qe7
+        p = scheduled_instances_ipv6_address_to_query(p, query.query_key(prefix, "Ipv6Address") + "." + str(qi6), t8)
+        qi6 = qi6 + 1
+    if v.NetworkInterfaceId.is_some():
+        auto t9 = v.NetworkInterfaceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NetworkInterfaceId"), t9)
+    if v.PrivateIpAddress.is_some():
+        auto t10 = v.PrivateIpAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t10)
+    auto qi11 = 1
+    for qe12 in v.PrivateIpAddressConfigs.unwrap_or([]):
+        auto t13 = qe12
+        p = scheduled_instances_private_ip_address_config_to_query(p, query.query_key(prefix, "PrivateIpAddressConfig") + "." + str(qi11), t13)
+        qi11 = qi11 + 1
+    if v.SecondaryPrivateIpAddressCount.is_some():
+        auto t14 = str(v.SecondaryPrivateIpAddressCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SecondaryPrivateIpAddressCount"), t14)
+    if v.SubnetId.is_some():
+        auto t15 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t15)
+    return p
+
+# Serialize ScheduledInstancesPlacement into the query form parameters under `prefix`.
+def scheduled_instances_placement_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesPlacement v) -> list[query.QueryPair]:
+    if v.AvailabilityZone.is_some():
+        auto t0 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t0)
+    if v.GroupName.is_some():
+        auto t1 = v.GroupName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupName"), t1)
+    return p
+
+# Serialize ScheduledInstancesPrivateIpAddressConfig into the query form parameters under `prefix`.
+def scheduled_instances_private_ip_address_config_to_query(list[query.QueryPair] p, str prefix, ScheduledInstancesPrivateIpAddressConfig v) -> list[query.QueryPair]:
+    if v.Primary.is_some():
+        auto t0 = query.query_bool(v.Primary.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Primary"), t0)
+    if v.PrivateIpAddress.is_some():
+        auto t1 = v.PrivateIpAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t1)
+    return p
+
+# Serialize SecondaryInterfacePrivateIpAddressSpecificationRequest into the query form parameters under `prefix`.
+def secondary_interface_private_ip_address_specification_request_to_query(list[query.QueryPair] p, str prefix, SecondaryInterfacePrivateIpAddressSpecificationRequest v) -> list[query.QueryPair]:
+    if v.PrivateIpAddress.is_some():
+        auto t0 = v.PrivateIpAddress.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrivateIpAddress"), t0)
+    return p
+
+# Serialize SecureBlobAttributeValue into the query form parameters under `prefix`.
+def secure_blob_attribute_value_to_query(list[query.QueryPair] p, str prefix, SecureBlobAttributeValue v) -> list[query.QueryPair]:
+    if v.Value.is_some():
+        auto t0 = query.query_blob(v.Value.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), t0)
+    return p
+
+# Serialize SecurityGroupRuleDescription into the query form parameters under `prefix`.
+def security_group_rule_description_to_query(list[query.QueryPair] p, str prefix, SecurityGroupRuleDescription v) -> list[query.QueryPair]:
+    if v.SecurityGroupRuleId.is_some():
+        auto t0 = v.SecurityGroupRuleId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupRuleId"), t0)
+    if v.Description.is_some():
+        auto t1 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t1)
+    return p
+
+# Serialize SecurityGroupRuleRequest into the query form parameters under `prefix`.
+def security_group_rule_request_to_query(list[query.QueryPair] p, str prefix, SecurityGroupRuleRequest v) -> list[query.QueryPair]:
+    if v.IpProtocol.is_some():
+        auto t0 = v.IpProtocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IpProtocol"), t0)
+    if v.FromPort.is_some():
+        auto t1 = str(v.FromPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FromPort"), t1)
+    if v.ToPort.is_some():
+        auto t2 = str(v.ToPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ToPort"), t2)
+    if v.CidrIpv4.is_some():
+        auto t3 = v.CidrIpv4.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CidrIpv4"), t3)
+    if v.CidrIpv6.is_some():
+        auto t4 = v.CidrIpv6.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CidrIpv6"), t4)
+    if v.PrefixListId.is_some():
+        auto t5 = v.PrefixListId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrefixListId"), t5)
+    if v.ReferencedGroupId.is_some():
+        auto t6 = v.ReferencedGroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ReferencedGroupId"), t6)
+    if v.Description.is_some():
+        auto t7 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t7)
+    return p
+
+# Serialize SecurityGroupRuleUpdate into the query form parameters under `prefix`.
+def security_group_rule_update_to_query(list[query.QueryPair] p, str prefix, SecurityGroupRuleUpdate v) -> list[query.QueryPair]:
+    auto t0 = v.SecurityGroupRuleId
+    p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupRuleId"), t0)
+    if v.SecurityGroupRule.is_some():
+        auto t1 = v.SecurityGroupRule.unwrap()
+        p = security_group_rule_request_to_query(p, query.query_key(prefix, "SecurityGroupRule"), t1)
+    return p
+
+# Serialize SlotDateTimeRangeRequest into the query form parameters under `prefix`.
+def slot_date_time_range_request_to_query(list[query.QueryPair] p, str prefix, SlotDateTimeRangeRequest v) -> list[query.QueryPair]:
+    auto t0 = query.query_timestamp_iso8601(v.EarliestTime)
+    p = query.query_scalar(p, query.query_key(prefix, "EarliestTime"), t0)
+    auto t1 = query.query_timestamp_iso8601(v.LatestTime)
+    p = query.query_scalar(p, query.query_key(prefix, "LatestTime"), t1)
+    return p
+
+# Serialize SlotStartTimeRangeRequest into the query form parameters under `prefix`.
+def slot_start_time_range_request_to_query(list[query.QueryPair] p, str prefix, SlotStartTimeRangeRequest v) -> list[query.QueryPair]:
+    if v.EarliestTime.is_some():
+        auto t0 = query.query_timestamp_iso8601(v.EarliestTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EarliestTime"), t0)
+    if v.LatestTime.is_some():
+        auto t1 = query.query_timestamp_iso8601(v.LatestTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "LatestTime"), t1)
+    return p
+
+# Serialize SnapshotDiskContainer into the query form parameters under `prefix`.
+def snapshot_disk_container_to_query(list[query.QueryPair] p, str prefix, SnapshotDiskContainer v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.Format.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Format"), v.Format.unwrap())
+    if v.Url.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Url"), v.Url.unwrap())
+    if v.UserBucket.is_some():
+        auto t1 = v.UserBucket.unwrap()
+        p = user_bucket_to_query(p, query.query_key(prefix, "UserBucket"), t1)
+    return p
+
+# Serialize SpotCapacityRebalance into the query form parameters under `prefix`.
+def spot_capacity_rebalance_to_query(list[query.QueryPair] p, str prefix, SpotCapacityRebalance v) -> list[query.QueryPair]:
+    if v.ReplacementStrategy.is_some():
+        auto t0 = v.ReplacementStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ReplacementStrategy"), t0)
+    if v.TerminationDelay.is_some():
+        auto t1 = str(v.TerminationDelay.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TerminationDelay"), t1)
+    return p
+
+# Serialize SpotFleetLaunchSpecification into the query form parameters under `prefix`.
+def spot_fleet_launch_specification_to_query(list[query.QueryPair] p, str prefix, SpotFleetLaunchSpecification v) -> list[query.QueryPair]:
+    if v.AddressingType.is_some():
+        auto t0 = v.AddressingType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AddressingType"), t0)
+    auto qi1 = 1
+    for qe2 in v.BlockDeviceMappings.unwrap_or([]):
+        auto t3 = qe2
+        p = block_device_mapping_to_query(p, query.query_key(prefix, "BlockDeviceMapping") + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    if v.EbsOptimized.is_some():
+        auto t4 = query.query_bool(v.EbsOptimized.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EbsOptimized"), t4)
+    if v.IamInstanceProfile.is_some():
+        auto t5 = v.IamInstanceProfile.unwrap()
+        p = iam_instance_profile_specification_to_query(p, query.query_key(prefix, "IamInstanceProfile"), t5)
+    if v.ImageId.is_some():
+        auto t6 = v.ImageId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ImageId"), t6)
+    if v.InstanceType.is_some():
+        auto t7 = v.InstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceType"), t7)
+    if v.KernelId.is_some():
+        auto t8 = v.KernelId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KernelId"), t8)
+    if v.KeyName.is_some():
+        auto t9 = v.KeyName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KeyName"), t9)
+    if v.Monitoring.is_some():
+        auto t10 = v.Monitoring.unwrap()
+        p = spot_fleet_monitoring_to_query(p, query.query_key(prefix, "Monitoring"), t10)
+    auto qi11 = 1
+    for qe12 in v.NetworkInterfaces.unwrap_or([]):
+        auto t13 = qe12
+        p = instance_network_interface_specification_to_query(p, query.query_key(prefix, "NetworkInterfaceSet") + "." + str(qi11), t13)
+        qi11 = qi11 + 1
+    if v.Placement.is_some():
+        auto t14 = v.Placement.unwrap()
+        p = spot_placement_to_query(p, query.query_key(prefix, "Placement"), t14)
+    if v.RamdiskId.is_some():
+        auto t15 = v.RamdiskId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RamdiskId"), t15)
+    if v.SpotPrice.is_some():
+        auto t16 = v.SpotPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotPrice"), t16)
+    if v.SubnetId.is_some():
+        auto t17 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t17)
+    if v.UserData.is_some():
+        auto t18 = v.UserData.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserData"), t18)
+    if v.WeightedCapacity.is_some():
+        auto t19 = str(v.WeightedCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "WeightedCapacity"), t19)
+    auto qi20 = 1
+    for qe21 in v.TagSpecifications.unwrap_or([]):
+        auto t22 = qe21
+        p = spot_fleet_tag_specification_to_query(p, query.query_key(prefix, "TagSpecificationSet") + "." + str(qi20), t22)
+        qi20 = qi20 + 1
+    if v.InstanceRequirements.is_some():
+        auto t23 = v.InstanceRequirements.unwrap()
+        p = instance_requirements_to_query(p, query.query_key(prefix, "InstanceRequirements"), t23)
+    auto qi24 = 1
+    for qe25 in v.SecurityGroups.unwrap_or([]):
+        auto t26 = qe25
+        p = group_identifier_to_query(p, query.query_key(prefix, "GroupSet") + "." + str(qi24), t26)
+        qi24 = qi24 + 1
+    return p
+
+# Serialize SpotFleetMonitoring into the query form parameters under `prefix`.
+def spot_fleet_monitoring_to_query(list[query.QueryPair] p, str prefix, SpotFleetMonitoring v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize SpotFleetRequestConfigData into the query form parameters under `prefix`.
+def spot_fleet_request_config_data_to_query(list[query.QueryPair] p, str prefix, SpotFleetRequestConfigData v) -> list[query.QueryPair]:
+    if v.AllocationStrategy.is_some():
+        auto t0 = v.AllocationStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllocationStrategy"), t0)
+    if v.OnDemandAllocationStrategy.is_some():
+        auto t1 = v.OnDemandAllocationStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandAllocationStrategy"), t1)
+    if v.SpotMaintenanceStrategies.is_some():
+        auto t2 = v.SpotMaintenanceStrategies.unwrap()
+        p = spot_maintenance_strategies_to_query(p, query.query_key(prefix, "SpotMaintenanceStrategies"), t2)
+    if v.ClientToken.is_some():
+        auto t3 = v.ClientToken.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientToken"), t3)
+    if v.ExcessCapacityTerminationPolicy.is_some():
+        auto t4 = v.ExcessCapacityTerminationPolicy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ExcessCapacityTerminationPolicy"), t4)
+    if v.FulfilledCapacity.is_some():
+        auto t5 = str(v.FulfilledCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FulfilledCapacity"), t5)
+    if v.OnDemandFulfilledCapacity.is_some():
+        auto t6 = str(v.OnDemandFulfilledCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandFulfilledCapacity"), t6)
+    p = query.query_scalar(p, query.query_key(prefix, "IamFleetRole"), v.IamFleetRole)
+    auto qi7 = 1
+    for qe8 in v.LaunchSpecifications.unwrap_or([]):
+        auto t9 = qe8
+        p = spot_fleet_launch_specification_to_query(p, query.query_key(prefix, "LaunchSpecifications") + "." + str(qi7), t9)
+        qi7 = qi7 + 1
+    auto qi10 = 1
+    for qe11 in v.LaunchTemplateConfigs.unwrap_or([]):
+        auto t12 = qe11
+        p = launch_template_config_to_query(p, query.query_key(prefix, "LaunchTemplateConfigs") + "." + str(qi10), t12)
+        qi10 = qi10 + 1
+    if v.SpotPrice.is_some():
+        auto t13 = v.SpotPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotPrice"), t13)
+    auto t14 = str(v.TargetCapacity)
+    p = query.query_scalar(p, query.query_key(prefix, "TargetCapacity"), t14)
+    if v.OnDemandTargetCapacity.is_some():
+        auto t15 = str(v.OnDemandTargetCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandTargetCapacity"), t15)
+    if v.OnDemandMaxTotalPrice.is_some():
+        auto t16 = v.OnDemandMaxTotalPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandMaxTotalPrice"), t16)
+    if v.SpotMaxTotalPrice.is_some():
+        auto t17 = v.SpotMaxTotalPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotMaxTotalPrice"), t17)
+    if v.TerminateInstancesWithExpiration.is_some():
+        auto t18 = query.query_bool(v.TerminateInstancesWithExpiration.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TerminateInstancesWithExpiration"), t18)
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    if v.ValidFrom.is_some():
+        auto t19 = query.query_timestamp_iso8601(v.ValidFrom.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ValidFrom"), t19)
+    if v.ValidUntil.is_some():
+        auto t20 = query.query_timestamp_iso8601(v.ValidUntil.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ValidUntil"), t20)
+    if v.ReplaceUnhealthyInstances.is_some():
+        auto t21 = query.query_bool(v.ReplaceUnhealthyInstances.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReplaceUnhealthyInstances"), t21)
+    if v.InstanceInterruptionBehavior.is_some():
+        auto t22 = v.InstanceInterruptionBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceInterruptionBehavior"), t22)
+    if v.LoadBalancersConfig.is_some():
+        auto t23 = v.LoadBalancersConfig.unwrap()
+        p = load_balancers_config_to_query(p, query.query_key(prefix, "LoadBalancersConfig"), t23)
+    if v.InstancePoolsToUseCount.is_some():
+        auto t24 = str(v.InstancePoolsToUseCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "InstancePoolsToUseCount"), t24)
+    if v.Context.is_some():
+        auto t25 = v.Context.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Context"), t25)
+    if v.TargetCapacityUnitType.is_some():
+        auto t26 = v.TargetCapacityUnitType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TargetCapacityUnitType"), t26)
+    auto qi27 = 1
+    for qe28 in v.TagSpecifications.unwrap_or([]):
+        auto t29 = qe28
+        p = tag_specification_to_query(p, query.query_key(prefix, "TagSpecification") + "." + str(qi27), t29)
+        qi27 = qi27 + 1
+    return p
+
+# Serialize SpotFleetTagSpecification into the query form parameters under `prefix`.
+def spot_fleet_tag_specification_to_query(list[query.QueryPair] p, str prefix, SpotFleetTagSpecification v) -> list[query.QueryPair]:
+    if v.ResourceType.is_some():
+        auto t0 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t0)
+    auto qi1 = 1
+    for qe2 in v.Tags.unwrap_or([]):
+        p = tag_to_query(p, query.query_key(prefix, "Tag") + "." + str(qi1), qe2)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize SpotMaintenanceStrategies into the query form parameters under `prefix`.
+def spot_maintenance_strategies_to_query(list[query.QueryPair] p, str prefix, SpotMaintenanceStrategies v) -> list[query.QueryPair]:
+    if v.CapacityRebalance.is_some():
+        auto t0 = v.CapacityRebalance.unwrap()
+        p = spot_capacity_rebalance_to_query(p, query.query_key(prefix, "CapacityRebalance"), t0)
+    return p
+
+# Serialize SpotMarketOptions into the query form parameters under `prefix`.
+def spot_market_options_to_query(list[query.QueryPair] p, str prefix, SpotMarketOptions v) -> list[query.QueryPair]:
+    if v.MaxPrice.is_some():
+        auto t0 = v.MaxPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MaxPrice"), t0)
+    if v.SpotInstanceType.is_some():
+        auto t1 = v.SpotInstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SpotInstanceType"), t1)
+    if v.BlockDurationMinutes.is_some():
+        auto t2 = str(v.BlockDurationMinutes.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "BlockDurationMinutes"), t2)
+    if v.ValidUntil.is_some():
+        auto t3 = query.query_timestamp_iso8601(v.ValidUntil.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ValidUntil"), t3)
+    if v.InstanceInterruptionBehavior.is_some():
+        auto t4 = v.InstanceInterruptionBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceInterruptionBehavior"), t4)
+    return p
+
+# Serialize SpotOptionsRequest into the query form parameters under `prefix`.
+def spot_options_request_to_query(list[query.QueryPair] p, str prefix, SpotOptionsRequest v) -> list[query.QueryPair]:
+    if v.AllocationStrategy.is_some():
+        auto t0 = v.AllocationStrategy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllocationStrategy"), t0)
+    if v.MaintenanceStrategies.is_some():
+        auto t1 = v.MaintenanceStrategies.unwrap()
+        p = fleet_spot_maintenance_strategies_request_to_query(p, query.query_key(prefix, "MaintenanceStrategies"), t1)
+    if v.InstanceInterruptionBehavior.is_some():
+        auto t2 = v.InstanceInterruptionBehavior.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceInterruptionBehavior"), t2)
+    if v.InstancePoolsToUseCount.is_some():
+        auto t3 = str(v.InstancePoolsToUseCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "InstancePoolsToUseCount"), t3)
+    if v.SingleInstanceType.is_some():
+        auto t4 = query.query_bool(v.SingleInstanceType.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SingleInstanceType"), t4)
+    if v.SingleAvailabilityZone.is_some():
+        auto t5 = query.query_bool(v.SingleAvailabilityZone.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SingleAvailabilityZone"), t5)
+    if v.MinTargetCapacity.is_some():
+        auto t6 = str(v.MinTargetCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MinTargetCapacity"), t6)
+    if v.MaxTotalPrice.is_some():
+        auto t7 = v.MaxTotalPrice.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MaxTotalPrice"), t7)
+    return p
+
+# Serialize SpotPlacement into the query form parameters under `prefix`.
+def spot_placement_to_query(list[query.QueryPair] p, str prefix, SpotPlacement v) -> list[query.QueryPair]:
+    if v.AvailabilityZone.is_some():
+        auto t0 = v.AvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZone"), t0)
+    if v.GroupName.is_some():
+        auto t1 = v.GroupName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupName"), t1)
+    if v.Tenancy.is_some():
+        auto t2 = v.Tenancy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Tenancy"), t2)
+    if v.AvailabilityZoneId.is_some():
+        auto t3 = v.AvailabilityZoneId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AvailabilityZoneId"), t3)
+    return p
+
+# Serialize Storage into the query form parameters under `prefix`.
+def storage_to_query(list[query.QueryPair] p, str prefix, Storage v) -> list[query.QueryPair]:
+    if v.S3.is_some():
+        p = s3_storage_to_query(p, query.query_key(prefix, "S3"), v.S3.unwrap())
+    return p
+
+# Serialize StorageLocation into the query form parameters under `prefix`.
+def storage_location_to_query(list[query.QueryPair] p, str prefix, StorageLocation v) -> list[query.QueryPair]:
+    if v.Bucket.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Bucket"), v.Bucket.unwrap())
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    return p
+
+# Serialize SubnetConfiguration into the query form parameters under `prefix`.
+def subnet_configuration_to_query(list[query.QueryPair] p, str prefix, SubnetConfiguration v) -> list[query.QueryPair]:
+    if v.SubnetId.is_some():
+        auto t0 = v.SubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SubnetId"), t0)
+    if v.Ipv4.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv4"), v.Ipv4.unwrap())
+    if v.Ipv6.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Ipv6"), v.Ipv6.unwrap())
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize TagFieldSpecificationRequest into the query form parameters under `prefix`.
+def tag_field_specification_request_to_query(list[query.QueryPair] p, str prefix, TagFieldSpecificationRequest v) -> list[query.QueryPair]:
+    if v.ResourceType.is_some():
+        auto t0 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t0)
+    auto t1 = v.TagKeys.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "TagKey"), t1)
+    return p
+
+# Serialize TagSpecification into the query form parameters under `prefix`.
+def tag_specification_to_query(list[query.QueryPair] p, str prefix, TagSpecification v) -> list[query.QueryPair]:
+    if v.ResourceType.is_some():
+        auto t0 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t0)
+    auto qi1 = 1
+    for qe2 in v.Tags.unwrap_or([]):
+        p = tag_to_query(p, query.query_key(prefix, "Tag") + "." + str(qi1), qe2)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize TargetCapacitySpecificationRequest into the query form parameters under `prefix`.
+def target_capacity_specification_request_to_query(list[query.QueryPair] p, str prefix, TargetCapacitySpecificationRequest v) -> list[query.QueryPair]:
+    auto t0 = str(v.TotalTargetCapacity)
+    p = query.query_scalar(p, query.query_key(prefix, "TotalTargetCapacity"), t0)
+    if v.OnDemandTargetCapacity.is_some():
+        auto t1 = str(v.OnDemandTargetCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "OnDemandTargetCapacity"), t1)
+    if v.SpotTargetCapacity.is_some():
+        auto t2 = str(v.SpotTargetCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SpotTargetCapacity"), t2)
+    if v.DefaultTargetCapacityType.is_some():
+        auto t3 = v.DefaultTargetCapacityType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultTargetCapacityType"), t3)
+    if v.TargetCapacityUnitType.is_some():
+        auto t4 = v.TargetCapacityUnitType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TargetCapacityUnitType"), t4)
+    return p
+
+# Serialize TargetConfigurationRequest into the query form parameters under `prefix`.
+def target_configuration_request_to_query(list[query.QueryPair] p, str prefix, TargetConfigurationRequest v) -> list[query.QueryPair]:
+    if v.InstanceCount.is_some():
+        auto t0 = str(v.InstanceCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceCount"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "OfferingId"), v.OfferingId)
+    return p
+
+# Serialize TargetGroup into the query form parameters under `prefix`.
+def target_group_to_query(list[query.QueryPair] p, str prefix, TargetGroup v) -> list[query.QueryPair]:
+    if v.Arn.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Arn"), v.Arn.unwrap())
+    return p
+
+# Serialize TargetGroupsConfig into the query form parameters under `prefix`.
+def target_groups_config_to_query(list[query.QueryPair] p, str prefix, TargetGroupsConfig v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.TargetGroups.unwrap_or([]):
+        auto t2 = qe1
+        p = target_group_to_query(p, query.query_key(prefix, "TargetGroups") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize ThroughResourcesStatementRequest into the query form parameters under `prefix`.
+def through_resources_statement_request_to_query(list[query.QueryPair] p, str prefix, ThroughResourcesStatementRequest v) -> list[query.QueryPair]:
+    if v.ResourceStatement.is_some():
+        auto t0 = v.ResourceStatement.unwrap()
+        p = resource_statement_request_to_query(p, query.query_key(prefix, "ResourceStatement"), t0)
+    return p
+
+# Serialize TotalLocalStorageGB into the query form parameters under `prefix`.
+def total_local_storage_gb_to_query(list[query.QueryPair] p, str prefix, TotalLocalStorageGB v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize TotalLocalStorageGBRequest into the query form parameters under `prefix`.
+def total_local_storage_gb_request_to_query(list[query.QueryPair] p, str prefix, TotalLocalStorageGBRequest v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize TrafficMirrorPortRangeRequest into the query form parameters under `prefix`.
+def traffic_mirror_port_range_request_to_query(list[query.QueryPair] p, str prefix, TrafficMirrorPortRangeRequest v) -> list[query.QueryPair]:
+    if v.FromPort.is_some():
+        auto t0 = str(v.FromPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FromPort"), t0)
+    if v.ToPort.is_some():
+        auto t1 = str(v.ToPort.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ToPort"), t1)
+    return p
+
+# Serialize TransitGatewayConfigurationInputStructure into the query form parameters under `prefix`.
+def transit_gateway_configuration_input_structure_to_query(list[query.QueryPair] p, str prefix, TransitGatewayConfigurationInputStructure v) -> list[query.QueryPair]:
+    if v.TransitGatewayId.is_some():
+        auto t0 = v.TransitGatewayId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TransitGatewayId"), t0)
+    auto t1 = v.AvailabilityZones.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AvailabilityZone"), t1)
+    auto t2 = v.AvailabilityZoneIds.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "AvailabilityZoneId"), t2)
+    return p
+
+# Serialize TransitGatewayConnectRequestBgpOptions into the query form parameters under `prefix`.
+def transit_gateway_connect_request_bgp_options_to_query(list[query.QueryPair] p, str prefix, TransitGatewayConnectRequestBgpOptions v) -> list[query.QueryPair]:
+    if v.PeerAsn.is_some():
+        auto t0 = str(v.PeerAsn.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "PeerAsn"), t0)
+    return p
+
+# Serialize TransitGatewayNatRuleRequest into the query form parameters under `prefix`.
+def transit_gateway_nat_rule_request_to_query(list[query.QueryPair] p, str prefix, TransitGatewayNatRuleRequest v) -> list[query.QueryPair]:
+    if v.RuleNumber.is_some():
+        auto t0 = str(v.RuleNumber.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RuleNumber"), t0)
+    if v.MatchSourceCidr.is_some():
+        auto t1 = v.MatchSourceCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MatchSourceCidr"), t1)
+    if v.NatCidr.is_some():
+        auto t2 = v.NatCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NatCidr"), t2)
+    return p
+
+# Serialize TransitGatewayRequestOptions into the query form parameters under `prefix`.
+def transit_gateway_request_options_to_query(list[query.QueryPair] p, str prefix, TransitGatewayRequestOptions v) -> list[query.QueryPair]:
+    if v.AmazonSideAsn.is_some():
+        auto t0 = str(v.AmazonSideAsn.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AmazonSideAsn"), t0)
+    if v.AutoAcceptSharedAttachments.is_some():
+        auto t1 = v.AutoAcceptSharedAttachments.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AutoAcceptSharedAttachments"), t1)
+    if v.DefaultRouteTableAssociation.is_some():
+        auto t2 = v.DefaultRouteTableAssociation.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultRouteTableAssociation"), t2)
+    if v.DefaultRouteTablePropagation.is_some():
+        auto t3 = v.DefaultRouteTablePropagation.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultRouteTablePropagation"), t3)
+    if v.VpnEcmpSupport.is_some():
+        auto t4 = v.VpnEcmpSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VpnEcmpSupport"), t4)
+    if v.DnsSupport.is_some():
+        auto t5 = v.DnsSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DnsSupport"), t5)
+    if v.SecurityGroupReferencingSupport.is_some():
+        auto t6 = v.SecurityGroupReferencingSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecurityGroupReferencingSupport"), t6)
+    if v.MulticastSupport.is_some():
+        auto t7 = v.MulticastSupport.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MulticastSupport"), t7)
+    auto t8 = v.TransitGatewayCidrBlocks.unwrap_or([])
+    p = query.query_flat_list(p, query.query_key(prefix, "TransitGatewayCidrBlocks"), t8)
+    return p
+
+# Serialize TransitGatewayRequestPolicyRule into the query form parameters under `prefix`.
+def transit_gateway_request_policy_rule_to_query(list[query.QueryPair] p, str prefix, TransitGatewayRequestPolicyRule v) -> list[query.QueryPair]:
+    if v.SourceCidrBlock.is_some():
+        auto t0 = v.SourceCidrBlock.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceCidrBlock"), t0)
+    if v.SourcePortRange.is_some():
+        auto t1 = v.SourcePortRange.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourcePortRange"), t1)
+    if v.DestinationCidrBlock.is_some():
+        auto t2 = v.DestinationCidrBlock.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DestinationCidrBlock"), t2)
+    if v.DestinationPortRange.is_some():
+        auto t3 = v.DestinationPortRange.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DestinationPortRange"), t3)
+    if v.Protocol.is_some():
+        auto t4 = v.Protocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Protocol"), t4)
+    if v.MetaData.is_some():
+        auto t5 = v.MetaData.unwrap()
+        p = transit_gateway_request_policy_rule_meta_data_to_query(p, query.query_key(prefix, "MetaData"), t5)
+    return p
+
+# Serialize TransitGatewayRequestPolicyRuleMetaData into the query form parameters under `prefix`.
+def transit_gateway_request_policy_rule_meta_data_to_query(list[query.QueryPair] p, str prefix, TransitGatewayRequestPolicyRuleMetaData v) -> list[query.QueryPair]:
+    if v.MetaDataKey.is_some():
+        auto t0 = v.MetaDataKey.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MetaDataKey"), t0)
+    if v.MetaDataValue.is_some():
+        auto t1 = v.MetaDataValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MetaDataValue"), t1)
+    return p
+
+# Serialize UserBucket into the query form parameters under `prefix`.
+def user_bucket_to_query(list[query.QueryPair] p, str prefix, UserBucket v) -> list[query.QueryPair]:
+    if v.S3Bucket.is_some():
+        auto t0 = v.S3Bucket.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3Bucket"), t0)
+    if v.S3Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "S3Key"), v.S3Key.unwrap())
+    return p
+
+# Serialize UserData into the query form parameters under `prefix`.
+def user_data_to_query(list[query.QueryPair] p, str prefix, UserData v) -> list[query.QueryPair]:
+    if v.Data.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Data"), v.Data.unwrap())
+    return p
+
+# Serialize UserIdGroupPair into the query form parameters under `prefix`.
+def user_id_group_pair_to_query(list[query.QueryPair] p, str prefix, UserIdGroupPair v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.UserId.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "UserId"), v.UserId.unwrap())
+    if v.GroupName.is_some():
+        auto t1 = v.GroupName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupName"), t1)
+    if v.GroupId.is_some():
+        auto t2 = v.GroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "GroupId"), t2)
+    if v.VpcId.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "VpcId"), v.VpcId.unwrap())
+    if v.VpcPeeringConnectionId.is_some():
+        auto t3 = v.VpcPeeringConnectionId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VpcPeeringConnectionId"), t3)
+    if v.PeeringStatus.is_some():
+        auto t4 = v.PeeringStatus.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PeeringStatus"), t4)
+    return p
+
+# Serialize VCpuCountRange into the query form parameters under `prefix`.
+def v_cpu_count_range_to_query(list[query.QueryPair] p, str prefix, VCpuCountRange v) -> list[query.QueryPair]:
+    if v.Min.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min.unwrap()))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize VCpuCountRangeRequest into the query form parameters under `prefix`.
+def v_cpu_count_range_request_to_query(list[query.QueryPair] p, str prefix, VCpuCountRangeRequest v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Min"), str(v.Min))
+    if v.Max.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Max"), str(v.Max.unwrap()))
+    return p
+
+# Serialize VerifiedAccessLogCloudWatchLogsDestinationOptions into the query form parameters under `prefix`.
+def verified_access_log_cloud_watch_logs_destination_options_to_query(list[query.QueryPair] p, str prefix, VerifiedAccessLogCloudWatchLogsDestinationOptions v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.LogGroup.is_some():
+        auto t1 = v.LogGroup.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogGroup"), t1)
+    return p
+
+# Serialize VerifiedAccessLogKinesisDataFirehoseDestinationOptions into the query form parameters under `prefix`.
+def verified_access_log_kinesis_data_firehose_destination_options_to_query(list[query.QueryPair] p, str prefix, VerifiedAccessLogKinesisDataFirehoseDestinationOptions v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.DeliveryStream.is_some():
+        auto t1 = v.DeliveryStream.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeliveryStream"), t1)
+    return p
+
+# Serialize VerifiedAccessLogOptions into the query form parameters under `prefix`.
+def verified_access_log_options_to_query(list[query.QueryPair] p, str prefix, VerifiedAccessLogOptions v) -> list[query.QueryPair]:
+    if v.S3.is_some():
+        auto t0 = v.S3.unwrap()
+        p = verified_access_log_s3_destination_options_to_query(p, query.query_key(prefix, "S3"), t0)
+    if v.CloudWatchLogs.is_some():
+        auto t1 = v.CloudWatchLogs.unwrap()
+        p = verified_access_log_cloud_watch_logs_destination_options_to_query(p, query.query_key(prefix, "CloudWatchLogs"), t1)
+    if v.KinesisDataFirehose.is_some():
+        auto t2 = v.KinesisDataFirehose.unwrap()
+        p = verified_access_log_kinesis_data_firehose_destination_options_to_query(p, query.query_key(prefix, "KinesisDataFirehose"), t2)
+    if v.LogVersion.is_some():
+        auto t3 = v.LogVersion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogVersion"), t3)
+    if v.IncludeTrustContext.is_some():
+        auto t4 = query.query_bool(v.IncludeTrustContext.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IncludeTrustContext"), t4)
+    return p
+
+# Serialize VerifiedAccessLogS3DestinationOptions into the query form parameters under `prefix`.
+def verified_access_log_s3_destination_options_to_query(list[query.QueryPair] p, str prefix, VerifiedAccessLogS3DestinationOptions v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.BucketName.is_some():
+        auto t1 = v.BucketName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BucketName"), t1)
+    if v.Prefix.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Prefix"), v.Prefix.unwrap())
+    if v.BucketOwner.is_some():
+        auto t2 = v.BucketOwner.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "BucketOwner"), t2)
+    return p
+
+# Serialize VerifiedAccessSseSpecificationRequest into the query form parameters under `prefix`.
+def verified_access_sse_specification_request_to_query(list[query.QueryPair] p, str prefix, VerifiedAccessSseSpecificationRequest v) -> list[query.QueryPair]:
+    if v.CustomerManagedKeyEnabled.is_some():
+        auto t0 = query.query_bool(v.CustomerManagedKeyEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "CustomerManagedKeyEnabled"), t0)
+    if v.KmsKeyArn.is_some():
+        auto t1 = v.KmsKeyArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "KmsKeyArn"), t1)
+    return p
+
+# Serialize VolumeDetail into the query form parameters under `prefix`.
+def volume_detail_to_query(list[query.QueryPair] p, str prefix, VolumeDetail v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Size"), str(v.Size))
+    return p
+
+# Serialize VpcEncryptionControlConfiguration into the query form parameters under `prefix`.
+def vpc_encryption_control_configuration_to_query(list[query.QueryPair] p, str prefix, VpcEncryptionControlConfiguration v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Mode"), v.Mode)
+    if v.InternetGatewayExclusion.is_some():
+        auto t0 = v.InternetGatewayExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InternetGatewayExclusion"), t0)
+    if v.EgressOnlyInternetGatewayExclusion.is_some():
+        auto t1 = v.EgressOnlyInternetGatewayExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "EgressOnlyInternetGatewayExclusion"), t1)
+    if v.NatGatewayExclusion.is_some():
+        auto t2 = v.NatGatewayExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NatGatewayExclusion"), t2)
+    if v.VirtualPrivateGatewayExclusion.is_some():
+        auto t3 = v.VirtualPrivateGatewayExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VirtualPrivateGatewayExclusion"), t3)
+    if v.VpcPeeringExclusion.is_some():
+        auto t4 = v.VpcPeeringExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VpcPeeringExclusion"), t4)
+    if v.LambdaExclusion.is_some():
+        auto t5 = v.LambdaExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LambdaExclusion"), t5)
+    if v.VpcLatticeExclusion.is_some():
+        auto t6 = v.VpcLatticeExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "VpcLatticeExclusion"), t6)
+    if v.ElasticFileSystemExclusion.is_some():
+        auto t7 = v.ElasticFileSystemExclusion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ElasticFileSystemExclusion"), t7)
+    return p
+
+# Serialize VpnConnectionOptionsSpecification into the query form parameters under `prefix`.
+def vpn_connection_options_specification_to_query(list[query.QueryPair] p, str prefix, VpnConnectionOptionsSpecification v) -> list[query.QueryPair]:
+    if v.EnableAcceleration.is_some():
+        auto t0 = query.query_bool(v.EnableAcceleration.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnableAcceleration"), t0)
+    if v.TunnelInsideIpVersion.is_some():
+        auto t1 = v.TunnelInsideIpVersion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TunnelInsideIpVersion"), t1)
+    auto qi2 = 1
+    for qe3 in v.TunnelOptions.unwrap_or([]):
+        auto t4 = qe3
+        p = vpn_tunnel_options_specification_to_query(p, query.query_key(prefix, "TunnelOptions") + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    if v.LocalIpv4NetworkCidr.is_some():
+        auto t5 = v.LocalIpv4NetworkCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LocalIpv4NetworkCidr"), t5)
+    if v.RemoteIpv4NetworkCidr.is_some():
+        auto t6 = v.RemoteIpv4NetworkCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RemoteIpv4NetworkCidr"), t6)
+    if v.LocalIpv6NetworkCidr.is_some():
+        auto t7 = v.LocalIpv6NetworkCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LocalIpv6NetworkCidr"), t7)
+    if v.RemoteIpv6NetworkCidr.is_some():
+        auto t8 = v.RemoteIpv6NetworkCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RemoteIpv6NetworkCidr"), t8)
+    if v.OutsideIpAddressType.is_some():
+        auto t9 = v.OutsideIpAddressType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OutsideIpAddressType"), t9)
+    if v.TransportTransitGatewayAttachmentId.is_some():
+        auto t10 = v.TransportTransitGatewayAttachmentId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TransportTransitGatewayAttachmentId"), t10)
+    if v.TunnelBandwidth.is_some():
+        auto t11 = v.TunnelBandwidth.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TunnelBandwidth"), t11)
+    if v.StaticRoutesOnly.is_some():
+        auto t12 = query.query_bool(v.StaticRoutesOnly.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "StaticRoutesOnly"), t12)
+    return p
+
+# Serialize VpnTunnelLogOptionsSpecification into the query form parameters under `prefix`.
+def vpn_tunnel_log_options_specification_to_query(list[query.QueryPair] p, str prefix, VpnTunnelLogOptionsSpecification v) -> list[query.QueryPair]:
+    if v.CloudWatchLogOptions.is_some():
+        auto t0 = v.CloudWatchLogOptions.unwrap()
+        p = cloud_watch_log_options_specification_to_query(p, query.query_key(prefix, "CloudWatchLogOptions"), t0)
+    return p
+
+# Serialize VpnTunnelOptionsSpecification into the query form parameters under `prefix`.
+def vpn_tunnel_options_specification_to_query(list[query.QueryPair] p, str prefix, VpnTunnelOptionsSpecification v) -> list[query.QueryPair]:
+    if v.TunnelInsideCidr.is_some():
+        auto t0 = v.TunnelInsideCidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TunnelInsideCidr"), t0)
+    if v.TunnelInsideIpv6Cidr.is_some():
+        auto t1 = v.TunnelInsideIpv6Cidr.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TunnelInsideIpv6Cidr"), t1)
+    if v.PreSharedKey.is_some():
+        auto t2 = v.PreSharedKey.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PreSharedKey"), t2)
+    if v.Phase1LifetimeSeconds.is_some():
+        auto t3 = str(v.Phase1LifetimeSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Phase1LifetimeSeconds"), t3)
+    if v.Phase2LifetimeSeconds.is_some():
+        auto t4 = str(v.Phase2LifetimeSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Phase2LifetimeSeconds"), t4)
+    if v.RekeyMarginTimeSeconds.is_some():
+        auto t5 = str(v.RekeyMarginTimeSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RekeyMarginTimeSeconds"), t5)
+    if v.RekeyFuzzPercentage.is_some():
+        auto t6 = str(v.RekeyFuzzPercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RekeyFuzzPercentage"), t6)
+    if v.ReplayWindowSize.is_some():
+        auto t7 = str(v.ReplayWindowSize.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReplayWindowSize"), t7)
+    if v.DPDTimeoutSeconds.is_some():
+        auto t8 = str(v.DPDTimeoutSeconds.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DPDTimeoutSeconds"), t8)
+    if v.DPDTimeoutAction.is_some():
+        auto t9 = v.DPDTimeoutAction.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DPDTimeoutAction"), t9)
+    auto qi10 = 1
+    for qe11 in v.Phase1EncryptionAlgorithms.unwrap_or([]):
+        auto t12 = qe11
+        p = phase1_encryption_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase1EncryptionAlgorithm") + "." + str(qi10), t12)
+        qi10 = qi10 + 1
+    auto qi13 = 1
+    for qe14 in v.Phase2EncryptionAlgorithms.unwrap_or([]):
+        auto t15 = qe14
+        p = phase2_encryption_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase2EncryptionAlgorithm") + "." + str(qi13), t15)
+        qi13 = qi13 + 1
+    auto qi16 = 1
+    for qe17 in v.Phase1IntegrityAlgorithms.unwrap_or([]):
+        auto t18 = qe17
+        p = phase1_integrity_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase1IntegrityAlgorithm") + "." + str(qi16), t18)
+        qi16 = qi16 + 1
+    auto qi19 = 1
+    for qe20 in v.Phase2IntegrityAlgorithms.unwrap_or([]):
+        auto t21 = qe20
+        p = phase2_integrity_algorithms_request_list_value_to_query(p, query.query_key(prefix, "Phase2IntegrityAlgorithm") + "." + str(qi19), t21)
+        qi19 = qi19 + 1
+    auto qi22 = 1
+    for qe23 in v.Phase1DHGroupNumbers.unwrap_or([]):
+        auto t24 = qe23
+        p = phase1_dh_group_numbers_request_list_value_to_query(p, query.query_key(prefix, "Phase1DHGroupNumber") + "." + str(qi22), t24)
+        qi22 = qi22 + 1
+    auto qi25 = 1
+    for qe26 in v.Phase2DHGroupNumbers.unwrap_or([]):
+        auto t27 = qe26
+        p = phase2_dh_group_numbers_request_list_value_to_query(p, query.query_key(prefix, "Phase2DHGroupNumber") + "." + str(qi25), t27)
+        qi25 = qi25 + 1
+    auto qi28 = 1
+    for qe29 in v.IKEVersions.unwrap_or([]):
+        auto t30 = qe29
+        p = ike_versions_request_list_value_to_query(p, query.query_key(prefix, "IKEVersion") + "." + str(qi28), t30)
+        qi28 = qi28 + 1
+    if v.StartupAction.is_some():
+        auto t31 = v.StartupAction.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StartupAction"), t31)
+    if v.LogOptions.is_some():
+        auto t32 = v.LogOptions.unwrap()
+        p = vpn_tunnel_log_options_specification_to_query(p, query.query_key(prefix, "LogOptions"), t32)
+    if v.EnableTunnelLifecycleControl.is_some():
+        auto t33 = query.query_bool(v.EnableTunnelLifecycleControl.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnableTunnelLifecycleControl"), t33)
+    return p
+
 # A bound EC2 client: credentials + region, threaded into every operation.
 struct EC2Client:
     core.Credentials creds
     str region
+
+    # AcceptAddressTransfer
+    def accept_address_transfer(self, AcceptAddressTransferRequest input) -> str:
+        auto p = query.query_params("AcceptAddressTransfer", "2016-11-15")
+        p = query.query_scalar(p, "Address", input.Address)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # AcceptCapacityReservationBillingOwnership
     def accept_capacity_reservation_billing_ownership(self, AcceptCapacityReservationBillingOwnershipRequest input) -> str:
@@ -21465,6 +25407,19 @@ struct EC2Client:
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         p = query.query_scalar(p, "CapacityReservationId", input.CapacityReservationId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AcceptReservedInstancesExchangeQuote
+    def accept_reserved_instances_exchange_quote(self, AcceptReservedInstancesExchangeQuoteRequest input) -> str:
+        auto p = query.query_params("AcceptReservedInstancesExchangeQuote", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "ReservedInstanceId", input.ReservedInstanceIds)
+        auto qi0 = 1
+        for qe1 in input.TargetConfigurations.unwrap_or([]):
+            auto t2 = qe1
+            p = target_configuration_request_to_query(p, "TargetConfiguration." + str(qi0), t2)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # AcceptTransitGatewayClientVpnAttachment
@@ -21537,6 +25492,93 @@ struct EC2Client:
         if input.NetworkBorderGroup.is_some():
             auto t0 = input.NetworkBorderGroup.unwrap()
             p = query.query_scalar(p, "NetworkBorderGroup", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AllocateAddress
+    def allocate_address(self, AllocateAddressRequest input) -> str:
+        auto p = query.query_params("AllocateAddress", "2016-11-15")
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.Address.is_some():
+            p = query.query_scalar(p, "Address", input.Address.unwrap())
+        if input.PublicIpv4Pool.is_some():
+            p = query.query_scalar(p, "PublicIpv4Pool", input.PublicIpv4Pool.unwrap())
+        if input.NetworkBorderGroup.is_some():
+            auto t0 = input.NetworkBorderGroup.unwrap()
+            p = query.query_scalar(p, "NetworkBorderGroup", t0)
+        if input.CustomerOwnedIpv4Pool.is_some():
+            auto t1 = input.CustomerOwnedIpv4Pool.unwrap()
+            p = query.query_scalar(p, "CustomerOwnedIpv4Pool", t1)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.IpamPoolId.is_some():
+            p = query.query_scalar(p, "IpamPoolId", input.IpamPoolId.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AllocateHosts
+    def allocate_hosts(self, AllocateHostsRequest input) -> str:
+        auto p = query.query_params("AllocateHosts", "2016-11-15")
+        if input.InstanceFamily.is_some():
+            p = query.query_scalar(p, "InstanceFamily", input.InstanceFamily.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.HostRecovery.is_some():
+            p = query.query_scalar(p, "HostRecovery", input.HostRecovery.unwrap())
+        if input.OutpostArn.is_some():
+            p = query.query_scalar(p, "OutpostArn", input.OutpostArn.unwrap())
+        if input.HostMaintenance.is_some():
+            p = query.query_scalar(p, "HostMaintenance", input.HostMaintenance.unwrap())
+        p = query.query_flat_list(p, "AssetId", input.AssetIds.unwrap_or([]))
+        if input.AvailabilityZoneId.is_some():
+            auto t2 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t2)
+        if input.CpuOptions.is_some():
+            auto t3 = input.CpuOptions.unwrap()
+            p = host_cpu_options_request_to_query(p, "CpuOptions", t3)
+        if input.AutoPlacement.is_some():
+            p = query.query_scalar(p, "AutoPlacement", input.AutoPlacement.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.InstanceType.is_some():
+            p = query.query_scalar(p, "InstanceType", input.InstanceType.unwrap())
+        if input.Quantity.is_some():
+            p = query.query_scalar(p, "Quantity", str(input.Quantity.unwrap()))
+        if input.AvailabilityZone.is_some():
+            auto t4 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t4)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AllocateIpamPoolCidr
+    def allocate_ipam_pool_cidr(self, AllocateIpamPoolCidrRequest input) -> str:
+        auto p = query.query_params("AllocateIpamPoolCidr", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamPoolId", input.IpamPoolId)
+        if input.Cidr.is_some():
+            p = query.query_scalar(p, "Cidr", input.Cidr.unwrap())
+        if input.NetmaskLength.is_some():
+            auto t0 = str(input.NetmaskLength.unwrap())
+            p = query.query_scalar(p, "NetmaskLength", t0)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.PreviewNextCidr.is_some():
+            auto t1 = query.query_bool(input.PreviewNextCidr.unwrap())
+            p = query.query_scalar(p, "PreviewNextCidr", t1)
+        p = query.query_flat_list(p, "AllowedCidr", input.AllowedCidrs.unwrap_or([]))
+        auto t2 = input.DisallowedCidrs.unwrap_or([])
+        p = query.query_flat_list(p, "DisallowedCidr", t2)
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ApplySecurityGroupsToClientVpnTargetNetwork
@@ -21616,6 +25658,23 @@ struct EC2Client:
             p = query.query_scalar(p, "AllowReassociation", t2)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # AssociateApplicationStatusCheck
+    def associate_application_status_check(self, AssociateApplicationStatusCheckRequest input) -> str:
+        auto p = query.query_params("AssociateApplicationStatusCheck", "2016-11-15")
+        auto t0 = input.ApplicationStatusCheckId
+        p = query.query_scalar(p, "ApplicationStatusCheckId", t0)
+        auto qi1 = 1
+        for qe2 in input.TargetTagAssociations.unwrap_or([]):
+            auto t3 = qe2
+            p = custom_tag_key_value_request_pair_to_query(p, "TargetTagAssociation." + str(qi1), t3)
+            qi1 = qi1 + 1
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # AssociateCapacityReservationBillingOwner
     def associate_capacity_reservation_billing_owner(self, AssociateCapacityReservationBillingOwnerRequest input) -> str:
         auto p = query.query_params("AssociateCapacityReservationBillingOwner", "2016-11-15")
@@ -21662,6 +25721,24 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # AssociateIamInstanceProfile
+    def associate_iam_instance_profile(self, AssociateIamInstanceProfileRequest input) -> str:
+        auto p = query.query_params("AssociateIamInstanceProfile", "2016-11-15")
+        auto t0 = input.IamInstanceProfile
+        p = iam_instance_profile_specification_to_query(p, "IamInstanceProfile", t0)
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AssociateInstanceEventWindow
+    def associate_instance_event_window(self, AssociateInstanceEventWindowRequest input) -> str:
+        auto p = query.query_params("AssociateInstanceEventWindow", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "InstanceEventWindowId", input.InstanceEventWindowId)
+        auto t0 = input.AssociationTarget
+        p = instance_event_window_association_request_to_query(p, "AssociationTarget", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # AssociateIpamByoasn
     def associate_ipam_byoasn(self, AssociateIpamByoasnRequest input) -> str:
         auto p = query.query_params("AssociateIpamByoasn", "2016-11-15")
@@ -21669,6 +25746,22 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         p = query.query_scalar(p, "Asn", input.Asn)
         p = query.query_scalar(p, "Cidr", input.Cidr)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AssociateIpamResourceDiscovery
+    def associate_ipam_resource_discovery(self, AssociateIpamResourceDiscoveryRequest input) -> str:
+        auto p = query.query_params("AssociateIpamResourceDiscovery", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        auto t0 = input.IpamResourceDiscoveryId
+        p = query.query_scalar(p, "IpamResourceDiscoveryId", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # AssociateNatGatewayAddress
@@ -21838,6 +25931,25 @@ struct EC2Client:
         p = query.query_scalar(p, "VpcId", input.VpcId)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # AttachNetworkInterface
+    def attach_network_interface(self, AttachNetworkInterfaceRequest input) -> str:
+        auto p = query.query_params("AttachNetworkInterface", "2016-11-15")
+        if input.NetworkCardIndex.is_some():
+            auto t0 = str(input.NetworkCardIndex.unwrap())
+            p = query.query_scalar(p, "NetworkCardIndex", t0)
+        if input.EnaSrdSpecification.is_some():
+            auto t1 = input.EnaSrdSpecification.unwrap()
+            p = ena_srd_specification_to_query(p, "EnaSrdSpecification", t1)
+        if input.EnaQueueCount.is_some():
+            auto t2 = str(input.EnaQueueCount.unwrap())
+            p = query.query_scalar(p, "EnaQueueCount", t2)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "NetworkInterfaceId", input.NetworkInterfaceId)
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        p = query.query_scalar(p, "DeviceIndex", str(input.DeviceIndex))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # AttachVerifiedAccessTrustProvider
     def attach_verified_access_trust_provider(self, AttachVerifiedAccessTrustProviderRequest input) -> str:
         auto p = query.query_params("AttachVerifiedAccessTrustProvider", "2016-11-15")
@@ -21890,6 +26002,69 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # AuthorizeSecurityGroupEgress
+    def authorize_security_group_egress(self, AuthorizeSecurityGroupEgressRequest input) -> str:
+        auto p = query.query_params("AuthorizeSecurityGroupEgress", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "GroupId", input.GroupId)
+        if input.SourceSecurityGroupName.is_some():
+            auto t2 = input.SourceSecurityGroupName.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupName", t2)
+        if input.SourceSecurityGroupOwnerId.is_some():
+            auto t3 = input.SourceSecurityGroupOwnerId.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupOwnerId", t3)
+        if input.IpProtocol.is_some():
+            p = query.query_scalar(p, "IpProtocol", input.IpProtocol.unwrap())
+        if input.FromPort.is_some():
+            p = query.query_scalar(p, "FromPort", str(input.FromPort.unwrap()))
+        if input.ToPort.is_some():
+            p = query.query_scalar(p, "ToPort", str(input.ToPort.unwrap()))
+        if input.CidrIp.is_some():
+            p = query.query_scalar(p, "CidrIp", input.CidrIp.unwrap())
+        auto qi4 = 1
+        for qe5 in input.IpPermissions.unwrap_or([]):
+            p = ip_permission_to_query(p, "IpPermissions." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # AuthorizeSecurityGroupIngress
+    def authorize_security_group_ingress(self, AuthorizeSecurityGroupIngressRequest input) -> str:
+        auto p = query.query_params("AuthorizeSecurityGroupIngress", "2016-11-15")
+        if input.CidrIp.is_some():
+            p = query.query_scalar(p, "CidrIp", input.CidrIp.unwrap())
+        if input.FromPort.is_some():
+            p = query.query_scalar(p, "FromPort", str(input.FromPort.unwrap()))
+        if input.GroupId.is_some():
+            p = query.query_scalar(p, "GroupId", input.GroupId.unwrap())
+        if input.GroupName.is_some():
+            p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.IpPermissions.unwrap_or([]):
+            p = ip_permission_to_query(p, "IpPermissions." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.IpProtocol.is_some():
+            p = query.query_scalar(p, "IpProtocol", input.IpProtocol.unwrap())
+        if input.SourceSecurityGroupName.is_some():
+            auto t2 = input.SourceSecurityGroupName.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupName", t2)
+        if input.SourceSecurityGroupOwnerId.is_some():
+            auto t3 = input.SourceSecurityGroupOwnerId.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupOwnerId", t3)
+        if input.ToPort.is_some():
+            p = query.query_scalar(p, "ToPort", str(input.ToPort.unwrap()))
+        auto qi4 = 1
+        for qe5 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # BatchModifyIpamRoutingPolicyRegistrations
     def batch_modify_ipam_routing_policy_registrations(self, BatchModifyIpamRoutingPolicyRegistrationsRequest input) -> str:
         auto p = query.query_params("BatchModifyIpamRoutingPolicyRegistrations", "2016-11-15")
@@ -21902,6 +26077,15 @@ struct EC2Client:
             p = query.query_scalar(p, "Force", query.query_bool(input.Force.unwrap()))
         if input.ClientToken.is_some():
             p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # BundleInstance
+    def bundle_instance(self, BundleInstanceRequest input) -> str:
+        auto p = query.query_params("BundleInstance", "2016-11-15")
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        p = storage_to_query(p, "Storage", input.Storage)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # CancelBundleTask
@@ -22027,6 +26211,391 @@ struct EC2Client:
             p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CopyImage
+    def copy_image(self, CopyImageRequest input) -> str:
+        auto p = query.query_params("CopyImage", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Encrypted.is_some():
+            auto t0 = query.query_bool(input.Encrypted.unwrap())
+            p = query.query_scalar(p, "Encrypted", t0)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        p = query.query_scalar(p, "Name", input.Name)
+        p = query.query_scalar(p, "SourceImageId", input.SourceImageId)
+        p = query.query_scalar(p, "SourceRegion", input.SourceRegion)
+        if input.DestinationOutpostArn.is_some():
+            auto t1 = input.DestinationOutpostArn.unwrap()
+            p = query.query_scalar(p, "DestinationOutpostArn", t1)
+        if input.CopyImageTags.is_some():
+            auto t2 = query.query_bool(input.CopyImageTags.unwrap())
+            p = query.query_scalar(p, "CopyImageTags", t2)
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.SnapshotCopyCompletionDurationMinutes.is_some():
+            auto t5 = str(input.SnapshotCopyCompletionDurationMinutes.unwrap())
+            p = query.query_scalar(p, "SnapshotCopyCompletionDurationMinutes", t5)
+        if input.DestinationAvailabilityZone.is_some():
+            auto t6 = input.DestinationAvailabilityZone.unwrap()
+            p = query.query_scalar(p, "DestinationAvailabilityZone", t6)
+        if input.DestinationAvailabilityZoneId.is_some():
+            auto t7 = input.DestinationAvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "DestinationAvailabilityZoneId", t7)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CopySnapshot
+    def copy_snapshot(self, CopySnapshotRequest input) -> str:
+        auto p = query.query_params("CopySnapshot", "2016-11-15")
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.DestinationOutpostArn.is_some():
+            auto t0 = input.DestinationOutpostArn.unwrap()
+            p = query.query_scalar(p, "DestinationOutpostArn", t0)
+        if input.DestinationRegion.is_some():
+            auto t1 = input.DestinationRegion.unwrap()
+            p = query.query_scalar(p, "DestinationRegion", t1)
+        if input.Encrypted.is_some():
+            auto t2 = query.query_bool(input.Encrypted.unwrap())
+            p = query.query_scalar(p, "Encrypted", t2)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.PresignedUrl.is_some():
+            p = query.query_scalar(p, "PresignedUrl", input.PresignedUrl.unwrap())
+        p = query.query_scalar(p, "SourceRegion", input.SourceRegion)
+        p = query.query_scalar(p, "SourceSnapshotId", input.SourceSnapshotId)
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.CompletionDurationMinutes.is_some():
+            auto t5 = str(input.CompletionDurationMinutes.unwrap())
+            p = query.query_scalar(p, "CompletionDurationMinutes", t5)
+        if input.DestinationAvailabilityZone.is_some():
+            auto t6 = input.DestinationAvailabilityZone.unwrap()
+            p = query.query_scalar(p, "DestinationAvailabilityZone", t6)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CopyVolumes
+    def copy_volumes(self, CopyVolumesRequest input) -> str:
+        auto p = query.query_params("CopyVolumes", "2016-11-15")
+        p = query.query_scalar(p, "SourceVolumeId", input.SourceVolumeId)
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.Size.is_some():
+            p = query.query_scalar(p, "Size", str(input.Size.unwrap()))
+        if input.VolumeType.is_some():
+            p = query.query_scalar(p, "VolumeType", input.VolumeType.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MultiAttachEnabled.is_some():
+            auto t2 = query.query_bool(input.MultiAttachEnabled.unwrap())
+            p = query.query_scalar(p, "MultiAttachEnabled", t2)
+        if input.Throughput.is_some():
+            p = query.query_scalar(p, "Throughput", str(input.Throughput.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Encrypted.is_some():
+            auto t3 = query.query_bool(input.Encrypted.unwrap())
+            p = query.query_scalar(p, "Encrypted", t3)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateApplicationStatusCheck
+    def create_application_status_check(self, CreateApplicationStatusCheckRequest input) -> str:
+        auto p = query.query_params("CreateApplicationStatusCheck", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.HealthCheckPaths.unwrap_or([]):
+            auto t2 = qe1
+            p = health_check_path_request_object_to_query(p, "HealthCheckPath." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.Aggregation.is_some():
+            p = query.query_scalar(p, "Aggregation", input.Aggregation.unwrap())
+        p = query.query_scalar(p, "Protocol", input.Protocol)
+        p = query.query_scalar(p, "Port", str(input.Port))
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        if input.DeviceIndex.is_some():
+            p = query.query_scalar(p, "DeviceIndex", str(input.DeviceIndex.unwrap()))
+        if input.IpVersion.is_some():
+            p = query.query_scalar(p, "IpVersion", input.IpVersion.unwrap())
+        if input.IpScope.is_some():
+            p = query.query_scalar(p, "IpScope", input.IpScope.unwrap())
+        if input.Interval.is_some():
+            p = query.query_scalar(p, "Interval", str(input.Interval.unwrap()))
+        if input.Timeout.is_some():
+            p = query.query_scalar(p, "Timeout", str(input.Timeout.unwrap()))
+        if input.FailureThreshold.is_some():
+            auto t3 = str(input.FailureThreshold.unwrap())
+            p = query.query_scalar(p, "FailureThreshold", t3)
+        if input.SuccessThreshold.is_some():
+            auto t4 = str(input.SuccessThreshold.unwrap())
+            p = query.query_scalar(p, "SuccessThreshold", t4)
+        if input.StatusCodeMatcher.is_some():
+            auto t5 = input.StatusCodeMatcher.unwrap()
+            p = query.query_scalar(p, "StatusCodeMatcher", t5)
+        if input.InitializationGracePeriodSeconds.is_some():
+            auto t6 = str(input.InitializationGracePeriodSeconds.unwrap())
+            p = query.query_scalar(p, "InitializationGracePeriodSeconds", t6)
+        auto qi7 = 1
+        for qe8 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi7), qe8)
+            qi7 = qi7 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCapacityManagerDataExport
+    def create_capacity_manager_data_export(self, CreateCapacityManagerDataExportRequest input) -> str:
+        auto p = query.query_params("CreateCapacityManagerDataExport", "2016-11-15")
+        p = query.query_scalar(p, "S3BucketName", input.S3BucketName)
+        if input.S3BucketPrefix.is_some():
+            p = query.query_scalar(p, "S3BucketPrefix", input.S3BucketPrefix.unwrap())
+        p = query.query_scalar(p, "Schedule", input.Schedule)
+        p = query.query_scalar(p, "OutputFormat", input.OutputFormat)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCapacityReservation
+    def create_capacity_reservation(self, CreateCapacityReservationRequest input) -> str:
+        auto p = query.query_params("CreateCapacityReservation", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        p = query.query_scalar(p, "InstanceType", input.InstanceType)
+        p = query.query_scalar(p, "InstancePlatform", input.InstancePlatform)
+        if input.AvailabilityZone.is_some():
+            auto t0 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t0)
+        if input.AvailabilityZoneId.is_some():
+            auto t1 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t1)
+        if input.Tenancy.is_some():
+            p = query.query_scalar(p, "Tenancy", input.Tenancy.unwrap())
+        p = query.query_scalar(p, "InstanceCount", str(input.InstanceCount))
+        if input.EbsOptimized.is_some():
+            auto t2 = query.query_bool(input.EbsOptimized.unwrap())
+            p = query.query_scalar(p, "EbsOptimized", t2)
+        if input.EphemeralStorage.is_some():
+            auto t3 = query.query_bool(input.EphemeralStorage.unwrap())
+            p = query.query_scalar(p, "EphemeralStorage", t3)
+        if input.EndDate.is_some():
+            auto t4 = query.query_timestamp_iso8601(input.EndDate.unwrap())
+            p = query.query_scalar(p, "EndDate", t4)
+        if input.EndDateType.is_some():
+            p = query.query_scalar(p, "EndDateType", input.EndDateType.unwrap())
+        if input.InstanceMatchCriteria.is_some():
+            auto t5 = input.InstanceMatchCriteria.unwrap()
+            p = query.query_scalar(p, "InstanceMatchCriteria", t5)
+        auto qi6 = 1
+        for qe7 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.OutpostArn.is_some():
+            p = query.query_scalar(p, "OutpostArn", input.OutpostArn.unwrap())
+        if input.PlacementGroupArn.is_some():
+            auto t8 = input.PlacementGroupArn.unwrap()
+            p = query.query_scalar(p, "PlacementGroupArn", t8)
+        if input.StartDate.is_some():
+            auto t9 = query.query_timestamp_iso8601(input.StartDate.unwrap())
+            p = query.query_scalar(p, "StartDate", t9)
+        if input.CommitmentDuration.is_some():
+            auto t10 = str(input.CommitmentDuration.unwrap())
+            p = query.query_scalar(p, "CommitmentDuration", t10)
+        if input.DeliveryPreference.is_some():
+            auto t11 = input.DeliveryPreference.unwrap()
+            p = query.query_scalar(p, "DeliveryPreference", t11)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCapacityReservationBySplitting
+    def create_capacity_reservation_by_splitting(self, CreateCapacityReservationBySplittingRequest input) -> str:
+        auto p = query.query_params("CreateCapacityReservationBySplitting", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto t0 = input.SourceCapacityReservationId
+        p = query.query_scalar(p, "SourceCapacityReservationId", t0)
+        p = query.query_scalar(p, "InstanceCount", str(input.InstanceCount))
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCapacityReservationCancellationQuote
+    def create_capacity_reservation_cancellation_quote(self, CreateCapacityReservationCancellationQuoteRequest input) -> str:
+        auto p = query.query_params("CreateCapacityReservationCancellationQuote", "2016-11-15")
+        p = query.query_scalar(p, "CapacityReservationId", input.CapacityReservationId)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCapacityReservationDateChangeQuote
+    def create_capacity_reservation_date_change_quote(self, CreateCapacityReservationDateChangeQuoteRequest input) -> str:
+        auto p = query.query_params("CreateCapacityReservationDateChangeQuote", "2016-11-15")
+        p = query.query_scalar(p, "CapacityReservationId", input.CapacityReservationId)
+        auto t0 = query.query_timestamp_iso8601(input.NewStartDate)
+        p = query.query_scalar(p, "NewStartDate", t0)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCapacityReservationFleet
+    def create_capacity_reservation_fleet(self, CreateCapacityReservationFleetRequest input) -> str:
+        auto p = query.query_params("CreateCapacityReservationFleet", "2016-11-15")
+        if input.AllocationStrategy.is_some():
+            auto t0 = input.AllocationStrategy.unwrap()
+            p = query.query_scalar(p, "AllocationStrategy", t0)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.InstanceTypeSpecifications.unwrap_or([]):
+            auto t3 = qe2
+            p = reservation_fleet_instance_specification_to_query(p, "InstanceTypeSpecification." + str(qi1), t3)
+            qi1 = qi1 + 1
+        if input.InstanceRequirements.is_some():
+            auto t4 = input.InstanceRequirements.unwrap()
+            p = instance_requirements_request_to_query(p, "InstanceRequirements", t4)
+        if input.AvailabilityZone.is_some():
+            auto t5 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t5)
+        if input.AvailabilityZoneId.is_some():
+            auto t6 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t6)
+        if input.Tenancy.is_some():
+            p = query.query_scalar(p, "Tenancy", input.Tenancy.unwrap())
+        p = query.query_scalar(p, "TotalTargetCapacity", str(input.TotalTargetCapacity))
+        if input.EndDate.is_some():
+            auto t7 = query.query_timestamp_iso8601(input.EndDate.unwrap())
+            p = query.query_scalar(p, "EndDate", t7)
+        if input.InstanceMatchCriteria.is_some():
+            auto t8 = input.InstanceMatchCriteria.unwrap()
+            p = query.query_scalar(p, "InstanceMatchCriteria", t8)
+        auto qi9 = 1
+        for qe10 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi9), qe10)
+            qi9 = qi9 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCarrierGateway
+    def create_carrier_gateway(self, CreateCarrierGatewayRequest input) -> str:
+        auto p = query.query_params("CreateCarrierGateway", "2016-11-15")
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateClientVpnEndpoint
+    def create_client_vpn_endpoint(self, CreateClientVpnEndpointRequest input) -> str:
+        auto p = query.query_params("CreateClientVpnEndpoint", "2016-11-15")
+        if input.ClientCidrBlock.is_some():
+            p = query.query_scalar(p, "ClientCidrBlock", input.ClientCidrBlock.unwrap())
+        p = query.query_scalar(p, "ServerCertificateArn", input.ServerCertificateArn)
+        auto qi0 = 1
+        for qe1 in input.AuthenticationOptions:
+            auto t2 = qe1
+            p = client_vpn_authentication_request_to_query(p, "Authentication." + str(qi0), t2)
+            qi0 = qi0 + 1
+        auto t3 = input.ConnectionLogOptions
+        p = connection_log_options_to_query(p, "ConnectionLogOptions", t3)
+        p = query.query_flat_list(p, "DnsServers", input.DnsServers.unwrap_or([]))
+        if input.TransportProtocol.is_some():
+            auto t4 = input.TransportProtocol.unwrap()
+            p = query.query_scalar(p, "TransportProtocol", t4)
+        if input.VpnPort.is_some():
+            p = query.query_scalar(p, "VpnPort", str(input.VpnPort.unwrap()))
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.SplitTunnel.is_some():
+            auto t5 = query.query_bool(input.SplitTunnel.unwrap())
+            p = query.query_scalar(p, "SplitTunnel", t5)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi6 = 1
+        for qe7 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        auto t8 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupId", t8)
+        if input.VpcId.is_some():
+            p = query.query_scalar(p, "VpcId", input.VpcId.unwrap())
+        if input.SelfServicePortal.is_some():
+            auto t9 = input.SelfServicePortal.unwrap()
+            p = query.query_scalar(p, "SelfServicePortal", t9)
+        if input.ClientConnectOptions.is_some():
+            auto t10 = input.ClientConnectOptions.unwrap()
+            p = client_connect_options_to_query(p, "ClientConnectOptions", t10)
+        if input.SessionTimeoutHours.is_some():
+            auto t11 = str(input.SessionTimeoutHours.unwrap())
+            p = query.query_scalar(p, "SessionTimeoutHours", t11)
+        if input.ClientLoginBannerOptions.is_some():
+            auto t12 = input.ClientLoginBannerOptions.unwrap()
+            p = client_login_banner_options_to_query(p, "ClientLoginBannerOptions", t12)
+        if input.ClientRouteEnforcementOptions.is_some():
+            auto t13 = input.ClientRouteEnforcementOptions.unwrap()
+            p = client_route_enforcement_options_to_query(p, "ClientRouteEnforcementOptions", t13)
+        if input.DisconnectOnSessionTimeout.is_some():
+            auto t14 = query.query_bool(input.DisconnectOnSessionTimeout.unwrap())
+            p = query.query_scalar(p, "DisconnectOnSessionTimeout", t14)
+        if input.EndpointIpAddressType.is_some():
+            auto t15 = input.EndpointIpAddressType.unwrap()
+            p = query.query_scalar(p, "EndpointIpAddressType", t15)
+        if input.TrafficIpAddressType.is_some():
+            auto t16 = input.TrafficIpAddressType.unwrap()
+            p = query.query_scalar(p, "TrafficIpAddressType", t16)
+        if input.TransitGatewayConfiguration.is_some():
+            auto t17 = input.TransitGatewayConfiguration.unwrap()
+            p = transit_gateway_configuration_input_structure_to_query(p, "TransitGatewayConfiguration", t17)
+        if input.DevicePostureOptions.is_some():
+            auto t18 = input.DevicePostureOptions.unwrap()
+            p = device_posture_options_to_query(p, "DevicePostureOptions", t18)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateClientVpnRoute
     def create_client_vpn_route(self, CreateClientVpnRouteRequest input) -> str:
         auto p = query.query_params("CreateClientVpnRoute", "2016-11-15")
@@ -22048,6 +26617,44 @@ struct EC2Client:
         auto p = query.query_params("CreateCoipCidr", "2016-11-15")
         p = query.query_scalar(p, "Cidr", input.Cidr)
         p = query.query_scalar(p, "CoipPoolId", input.CoipPoolId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCoipPool
+    def create_coip_pool(self, CreateCoipPoolRequest input) -> str:
+        auto p = query.query_params("CreateCoipPool", "2016-11-15")
+        auto t0 = input.LocalGatewayRouteTableId
+        p = query.query_scalar(p, "LocalGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateCustomerGateway
+    def create_customer_gateway(self, CreateCustomerGatewayRequest input) -> str:
+        auto p = query.query_params("CreateCustomerGateway", "2016-11-15")
+        if input.BgpAsn.is_some():
+            p = query.query_scalar(p, "BgpAsn", str(input.BgpAsn.unwrap()))
+        if input.PublicIp.is_some():
+            p = query.query_scalar(p, "PublicIp", input.PublicIp.unwrap())
+        if input.CertificateArn.is_some():
+            p = query.query_scalar(p, "CertificateArn", input.CertificateArn.unwrap())
+        p = query.query_scalar(p, "Type", input.Type)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DeviceName.is_some():
+            p = query.query_scalar(p, "DeviceName", input.DeviceName.unwrap())
+        if input.IpAddress.is_some():
+            p = query.query_scalar(p, "IpAddress", input.IpAddress.unwrap())
+        if input.BgpAsnExtended.is_some():
+            auto t2 = str(input.BgpAsnExtended.unwrap())
+            p = query.query_scalar(p, "BgpAsnExtended", t2)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -22075,6 +26682,482 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CreateDelegateMacVolumeOwnershipTask
+    def create_delegate_mac_volume_ownership_task(self, CreateDelegateMacVolumeOwnershipTaskRequest input) -> str:
+        auto p = query.query_params("CreateDelegateMacVolumeOwnershipTask", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        p = query.query_scalar(p, "MacCredentials", input.MacCredentials)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateDhcpOptions
+    def create_dhcp_options(self, CreateDhcpOptionsRequest input) -> str:
+        auto p = query.query_params("CreateDhcpOptions", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.DhcpConfigurations:
+            p = new_dhcp_configuration_to_query(p, "DhcpConfiguration." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateEgressOnlyInternetGateway
+    def create_egress_only_internet_gateway(self, CreateEgressOnlyInternetGatewayRequest input) -> str:
+        auto p = query.query_params("CreateEgressOnlyInternetGateway", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateFleet
+    def create_fleet(self, CreateFleetRequest input) -> str:
+        auto p = query.query_params("CreateFleet", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.SpotOptions.is_some():
+            auto t0 = input.SpotOptions.unwrap()
+            p = spot_options_request_to_query(p, "SpotOptions", t0)
+        if input.OnDemandOptions.is_some():
+            auto t1 = input.OnDemandOptions.unwrap()
+            p = on_demand_options_request_to_query(p, "OnDemandOptions", t1)
+        if input.ReservedCapacityOptions.is_some():
+            auto t2 = input.ReservedCapacityOptions.unwrap()
+            p = reserved_capacity_options_request_to_query(p, "ReservedCapacityOptions", t2)
+        if input.ExcessCapacityTerminationPolicy.is_some():
+            auto t3 = input.ExcessCapacityTerminationPolicy.unwrap()
+            p = query.query_scalar(p, "ExcessCapacityTerminationPolicy", t3)
+        auto qi4 = 1
+        for qe5 in input.LaunchTemplateConfigs:
+            auto t6 = qe5
+            p = fleet_launch_template_config_request_to_query(p, "LaunchTemplateConfigs." + str(qi4), t6)
+            qi4 = qi4 + 1
+        auto t7 = input.TargetCapacitySpecification
+        p = target_capacity_specification_request_to_query(p, "TargetCapacitySpecification", t7)
+        if input.TerminateInstancesWithExpiration.is_some():
+            auto t8 = query.query_bool(input.TerminateInstancesWithExpiration.unwrap())
+            p = query.query_scalar(p, "TerminateInstancesWithExpiration", t8)
+        if input.Type.is_some():
+            p = query.query_scalar(p, "Type", input.Type.unwrap())
+        if input.ValidFrom.is_some():
+            auto t9 = query.query_timestamp_iso8601(input.ValidFrom.unwrap())
+            p = query.query_scalar(p, "ValidFrom", t9)
+        if input.ValidUntil.is_some():
+            auto t10 = query.query_timestamp_iso8601(input.ValidUntil.unwrap())
+            p = query.query_scalar(p, "ValidUntil", t10)
+        if input.ReplaceUnhealthyInstances.is_some():
+            auto t11 = query.query_bool(input.ReplaceUnhealthyInstances.unwrap())
+            p = query.query_scalar(p, "ReplaceUnhealthyInstances", t11)
+        auto qi12 = 1
+        for qe13 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi12), qe13)
+            qi12 = qi12 + 1
+        if input.Context.is_some():
+            p = query.query_scalar(p, "Context", input.Context.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateFlowLogs
+    def create_flow_logs(self, CreateFlowLogsRequest input) -> str:
+        auto p = query.query_params("CreateFlowLogs", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DeliverLogsPermissionArn.is_some():
+            auto t0 = input.DeliverLogsPermissionArn.unwrap()
+            p = query.query_scalar(p, "DeliverLogsPermissionArn", t0)
+        if input.DeliverCrossAccountRole.is_some():
+            auto t1 = input.DeliverCrossAccountRole.unwrap()
+            p = query.query_scalar(p, "DeliverCrossAccountRole", t1)
+        if input.LogGroupName.is_some():
+            p = query.query_scalar(p, "LogGroupName", input.LogGroupName.unwrap())
+        p = query.query_flat_list(p, "ResourceId", input.ResourceIds)
+        p = query.query_scalar(p, "ResourceType", input.ResourceType)
+        if input.TrafficType.is_some():
+            p = query.query_scalar(p, "TrafficType", input.TrafficType.unwrap())
+        if input.LogDestinationType.is_some():
+            auto t2 = input.LogDestinationType.unwrap()
+            p = query.query_scalar(p, "LogDestinationType", t2)
+        if input.LogDestination.is_some():
+            p = query.query_scalar(p, "LogDestination", input.LogDestination.unwrap())
+        if input.LogFormat.is_some():
+            p = query.query_scalar(p, "LogFormat", input.LogFormat.unwrap())
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.MaxAggregationInterval.is_some():
+            auto t5 = str(input.MaxAggregationInterval.unwrap())
+            p = query.query_scalar(p, "MaxAggregationInterval", t5)
+        if input.DestinationOptions.is_some():
+            auto t6 = input.DestinationOptions.unwrap()
+            p = destination_options_request_to_query(p, "DestinationOptions", t6)
+        auto qi7 = 1
+        for qe8 in input.TagFieldSpecifications.unwrap_or([]):
+            auto t9 = qe8
+            p = tag_field_specification_request_to_query(p, "TagFieldSpecification." + str(qi7), t9)
+            qi7 = qi7 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateFpgaImage
+    def create_fpga_image(self, CreateFpgaImageRequest input) -> str:
+        auto p = query.query_params("CreateFpgaImage", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.InputStorageLocation
+        p = storage_location_to_query(p, "InputStorageLocation", t0)
+        if input.LogsStorageLocation.is_some():
+            auto t1 = input.LogsStorageLocation.unwrap()
+            p = storage_location_to_query(p, "LogsStorageLocation", t1)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Name.is_some():
+            p = query.query_scalar(p, "Name", input.Name.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateImage
+    def create_image(self, CreateImageRequest input) -> str:
+        auto p = query.query_params("CreateImage", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.SnapshotLocation.is_some():
+            auto t2 = input.SnapshotLocation.unwrap()
+            p = query.query_scalar(p, "SnapshotLocation", t2)
+        if input.BootModeOverride.is_some():
+            auto t3 = input.BootModeOverride.unwrap()
+            p = query.query_scalar(p, "BootModeOverride", t3)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        p = query.query_scalar(p, "Name", input.Name)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.NoReboot.is_some():
+            auto t4 = query.query_bool(input.NoReboot.unwrap())
+            p = query.query_scalar(p, "NoReboot", t4)
+        auto qi5 = 1
+        for qe6 in input.BlockDeviceMappings.unwrap_or([]):
+            p = block_device_mapping_to_query(p, "BlockDeviceMapping." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateImageUsageReport
+    def create_image_usage_report(self, CreateImageUsageReportRequest input) -> str:
+        auto p = query.query_params("CreateImageUsageReport", "2016-11-15")
+        p = query.query_scalar(p, "ImageId", input.ImageId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.ResourceTypes:
+            auto t2 = qe1
+            p = image_usage_resource_type_request_to_query(p, "ResourceType." + str(qi0), t2)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "AccountId", input.AccountIds.unwrap_or([]))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateInstanceConnectEndpoint
+    def create_instance_connect_endpoint(self, CreateInstanceConnectEndpointRequest input) -> str:
+        auto p = query.query_params("CreateInstanceConnectEndpoint", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "SubnetId", input.SubnetId)
+        auto t0 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupId", t0)
+        if input.PreserveClientIp.is_some():
+            auto t1 = query.query_bool(input.PreserveClientIp.unwrap())
+            p = query.query_scalar(p, "PreserveClientIp", t1)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.IpAddressType.is_some():
+            p = query.query_scalar(p, "IpAddressType", input.IpAddressType.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateInstanceEventWindow
+    def create_instance_event_window(self, CreateInstanceEventWindowRequest input) -> str:
+        auto p = query.query_params("CreateInstanceEventWindow", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Name.is_some():
+            p = query.query_scalar(p, "Name", input.Name.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TimeRanges.unwrap_or([]):
+            auto t2 = qe1
+            p = instance_event_window_time_range_request_to_query(p, "TimeRange." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.CronExpression.is_some():
+            p = query.query_scalar(p, "CronExpression", input.CronExpression.unwrap())
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateInstanceExportTask
+    def create_instance_export_task(self, CreateInstanceExportTaskRequest input) -> str:
+        auto p = query.query_params("CreateInstanceExportTask", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        p = query.query_scalar(p, "TargetEnvironment", input.TargetEnvironment)
+        auto t2 = input.ExportToS3Task
+        p = export_to_s3_task_specification_to_query(p, "ExportToS3", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateInternetGateway
+    def create_internet_gateway(self, CreateInternetGatewayRequest input) -> str:
+        auto p = query.query_params("CreateInternetGateway", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateInterruptibleCapacityReservationAllocation
+    def create_interruptible_capacity_reservation_allocation(self, CreateInterruptibleCapacityReservationAllocationRequest input) -> str:
+        auto p = query.query_params("CreateInterruptibleCapacityReservationAllocation", "2016-11-15")
+        p = query.query_scalar(p, "CapacityReservationId", input.CapacityReservationId)
+        p = query.query_scalar(p, "InstanceCount", str(input.InstanceCount))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ZeroSizePreference.is_some():
+            auto t2 = input.ZeroSizePreference.unwrap()
+            p = query.query_scalar(p, "ZeroSizePreference", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpam
+    def create_ipam(self, CreateIpamRequest input) -> str:
+        auto p = query.query_params("CreateIpam", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.OperatingRegions.unwrap_or([]):
+            auto t2 = qe1
+            p = add_ipam_operating_region_to_query(p, "OperatingRegion." + str(qi0), t2)
+            qi0 = qi0 + 1
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Tier.is_some():
+            p = query.query_scalar(p, "Tier", input.Tier.unwrap())
+        if input.EnablePrivateGua.is_some():
+            auto t5 = query.query_bool(input.EnablePrivateGua.unwrap())
+            p = query.query_scalar(p, "EnablePrivateGua", t5)
+        if input.MeteredAccount.is_some():
+            p = query.query_scalar(p, "MeteredAccount", input.MeteredAccount.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamExternalResourceVerificationToken
+    def create_ipam_external_resource_verification_token(self, CreateIpamExternalResourceVerificationTokenRequest input) -> str:
+        auto p = query.query_params("CreateIpamExternalResourceVerificationToken", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamInternetRegistryAssociation
+    def create_ipam_internet_registry_association(self, CreateIpamInternetRegistryAssociationRequest input) -> str:
+        auto p = query.query_params("CreateIpamInternetRegistryAssociation", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        p = query.query_scalar(p, "Rir", input.Rir)
+        p = query.query_scalar(p, "OrganizationHandle", input.OrganizationHandle)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamPolicy
+    def create_ipam_policy(self, CreateIpamPolicyRequest input) -> str:
+        auto p = query.query_params("CreateIpamPolicy", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamPool
+    def create_ipam_pool(self, CreateIpamPoolRequest input) -> str:
+        auto p = query.query_params("CreateIpamPool", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamScopeId", input.IpamScopeId)
+        if input.Locale.is_some():
+            p = query.query_scalar(p, "Locale", input.Locale.unwrap())
+        if input.SourceIpamPoolId.is_some():
+            auto t0 = input.SourceIpamPoolId.unwrap()
+            p = query.query_scalar(p, "SourceIpamPoolId", t0)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        p = query.query_scalar(p, "AddressFamily", input.AddressFamily)
+        if input.AutoImport.is_some():
+            auto t1 = query.query_bool(input.AutoImport.unwrap())
+            p = query.query_scalar(p, "AutoImport", t1)
+        if input.PubliclyAdvertisable.is_some():
+            auto t2 = query.query_bool(input.PubliclyAdvertisable.unwrap())
+            p = query.query_scalar(p, "PubliclyAdvertisable", t2)
+        if input.AllocationMinNetmaskLength.is_some():
+            auto t3 = str(input.AllocationMinNetmaskLength.unwrap())
+            p = query.query_scalar(p, "AllocationMinNetmaskLength", t3)
+        if input.AllocationMaxNetmaskLength.is_some():
+            auto t4 = str(input.AllocationMaxNetmaskLength.unwrap())
+            p = query.query_scalar(p, "AllocationMaxNetmaskLength", t4)
+        if input.AllocationDefaultNetmaskLength.is_some():
+            auto t5 = str(input.AllocationDefaultNetmaskLength.unwrap())
+            p = query.query_scalar(p, "AllocationDefaultNetmaskLength", t5)
+        auto qi6 = 1
+        for qe7 in input.AllocationResourceTags.unwrap_or([]):
+            auto t8 = qe7
+            p = request_ipam_resource_tag_to_query(p, "AllocationResourceTag." + str(qi6), t8)
+            qi6 = qi6 + 1
+        auto qi9 = 1
+        for qe10 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi9), qe10)
+            qi9 = qi9 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.AwsService.is_some():
+            p = query.query_scalar(p, "AwsService", input.AwsService.unwrap())
+        if input.PublicIpSource.is_some():
+            p = query.query_scalar(p, "PublicIpSource", input.PublicIpSource.unwrap())
+        if input.SourceResource.is_some():
+            auto t11 = input.SourceResource.unwrap()
+            p = ipam_pool_source_resource_request_to_query(p, "SourceResource", t11)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamPrefixListResolver
+    def create_ipam_prefix_list_resolver(self, CreateIpamPrefixListResolverRequest input) -> str:
+        auto p = query.query_params("CreateIpamPrefixListResolver", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        p = query.query_scalar(p, "AddressFamily", input.AddressFamily)
+        auto qi0 = 1
+        for qe1 in input.Rules.unwrap_or([]):
+            auto t2 = qe1
+            p = ipam_prefix_list_resolver_rule_request_to_query(p, "Rule." + str(qi0), t2)
+            qi0 = qi0 + 1
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamPrefixListResolverTarget
+    def create_ipam_prefix_list_resolver_target(self, CreateIpamPrefixListResolverTargetRequest input) -> str:
+        auto p = query.query_params("CreateIpamPrefixListResolverTarget", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamPrefixListResolverId
+        p = query.query_scalar(p, "IpamPrefixListResolverId", t0)
+        p = query.query_scalar(p, "PrefixListId", input.PrefixListId)
+        p = query.query_scalar(p, "PrefixListRegion", input.PrefixListRegion)
+        if input.DesiredVersion.is_some():
+            auto t1 = str(input.DesiredVersion.unwrap())
+            p = query.query_scalar(p, "DesiredVersion", t1)
+        auto t2 = query.query_bool(input.TrackLatestVersion)
+        p = query.query_scalar(p, "TrackLatestVersion", t2)
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamResourceDiscovery
+    def create_ipam_resource_discovery(self, CreateIpamResourceDiscoveryRequest input) -> str:
+        auto p = query.query_params("CreateIpamResourceDiscovery", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.OperatingRegions.unwrap_or([]):
+            auto t2 = qe1
+            p = add_ipam_operating_region_to_query(p, "OperatingRegion." + str(qi0), t2)
+            qi0 = qi0 + 1
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateIpamRoutingPolicyRegistration
     def create_ipam_routing_policy_registration(self, CreateIpamRoutingPolicyRegistrationRequest input) -> str:
         auto p = query.query_params("CreateIpamRoutingPolicyRegistration", "2016-11-15")
@@ -22095,6 +27178,87 @@ struct EC2Client:
             p = query.query_scalar(p, "Force", query.query_bool(input.Force.unwrap()))
         if input.ClientToken.is_some():
             p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateIpamScope
+    def create_ipam_scope(self, CreateIpamScopeRequest input) -> str:
+        auto p = query.query_params("CreateIpamScope", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.ExternalAuthorityConfiguration.is_some():
+            auto t2 = input.ExternalAuthorityConfiguration.unwrap()
+            p = external_authority_configuration_to_query(p, "ExternalAuthorityConfiguration", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateKeyPair
+    def create_key_pair(self, CreateKeyPairRequest input) -> str:
+        auto p = query.query_params("CreateKeyPair", "2016-11-15")
+        p = query.query_scalar(p, "KeyName", input.KeyName)
+        if input.KeyType.is_some():
+            p = query.query_scalar(p, "KeyType", input.KeyType.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.KeyFormat.is_some():
+            p = query.query_scalar(p, "KeyFormat", input.KeyFormat.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateLaunchTemplate
+    def create_launch_template(self, CreateLaunchTemplateRequest input) -> str:
+        auto p = query.query_params("CreateLaunchTemplate", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        p = query.query_scalar(p, "LaunchTemplateName", input.LaunchTemplateName)
+        if input.VersionDescription.is_some():
+            auto t0 = input.VersionDescription.unwrap()
+            p = query.query_scalar(p, "VersionDescription", t0)
+        auto t1 = input.LaunchTemplateData
+        p = request_launch_template_data_to_query(p, "LaunchTemplateData", t1)
+        if input.Operator.is_some():
+            p = operator_request_to_query(p, "Operator", input.Operator.unwrap())
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateLaunchTemplateVersion
+    def create_launch_template_version(self, CreateLaunchTemplateVersionRequest input) -> str:
+        auto p = query.query_params("CreateLaunchTemplateVersion", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.LaunchTemplateId.is_some():
+            auto t0 = input.LaunchTemplateId.unwrap()
+            p = query.query_scalar(p, "LaunchTemplateId", t0)
+        if input.LaunchTemplateName.is_some():
+            auto t1 = input.LaunchTemplateName.unwrap()
+            p = query.query_scalar(p, "LaunchTemplateName", t1)
+        if input.SourceVersion.is_some():
+            p = query.query_scalar(p, "SourceVersion", input.SourceVersion.unwrap())
+        if input.VersionDescription.is_some():
+            auto t2 = input.VersionDescription.unwrap()
+            p = query.query_scalar(p, "VersionDescription", t2)
+        auto t3 = input.LaunchTemplateData
+        p = request_launch_template_data_to_query(p, "LaunchTemplateData", t3)
+        if input.ResolveAlias.is_some():
+            auto t4 = query.query_bool(input.ResolveAlias.unwrap())
+            p = query.query_scalar(p, "ResolveAlias", t4)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # CreateLocalGatewayRoute
@@ -22118,6 +27282,313 @@ struct EC2Client:
             p = query.query_scalar(p, "DestinationPrefixListId", t4)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CreateLocalGatewayRouteTable
+    def create_local_gateway_route_table(self, CreateLocalGatewayRouteTableRequest input) -> str:
+        auto p = query.query_params("CreateLocalGatewayRouteTable", "2016-11-15")
+        p = query.query_scalar(p, "LocalGatewayId", input.LocalGatewayId)
+        if input.Mode.is_some():
+            p = query.query_scalar(p, "Mode", input.Mode.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateLocalGatewayRouteTableVirtualInterfaceGroupAssociation
+    def create_local_gateway_route_table_virtual_interface_group_association(self, CreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRequest input) -> str:
+        auto p = query.query_params("CreateLocalGatewayRouteTableVirtualInterfaceGroupAssociation", "2016-11-15")
+        auto t0 = input.LocalGatewayRouteTableId
+        p = query.query_scalar(p, "LocalGatewayRouteTableId", t0)
+        auto t1 = input.LocalGatewayVirtualInterfaceGroupId
+        p = query.query_scalar(p, "LocalGatewayVirtualInterfaceGroupId", t1)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateLocalGatewayRouteTableVpcAssociation
+    def create_local_gateway_route_table_vpc_association(self, CreateLocalGatewayRouteTableVpcAssociationRequest input) -> str:
+        auto p = query.query_params("CreateLocalGatewayRouteTableVpcAssociation", "2016-11-15")
+        auto t0 = input.LocalGatewayRouteTableId
+        p = query.query_scalar(p, "LocalGatewayRouteTableId", t0)
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateLocalGatewayVirtualInterface
+    def create_local_gateway_virtual_interface(self, CreateLocalGatewayVirtualInterfaceRequest input) -> str:
+        auto p = query.query_params("CreateLocalGatewayVirtualInterface", "2016-11-15")
+        auto t0 = input.LocalGatewayVirtualInterfaceGroupId
+        p = query.query_scalar(p, "LocalGatewayVirtualInterfaceGroupId", t0)
+        p = query.query_scalar(p, "OutpostLagId", input.OutpostLagId)
+        p = query.query_scalar(p, "Vlan", str(input.Vlan))
+        p = query.query_scalar(p, "LocalAddress", input.LocalAddress)
+        p = query.query_scalar(p, "PeerAddress", input.PeerAddress)
+        if input.PeerBgpAsn.is_some():
+            p = query.query_scalar(p, "PeerBgpAsn", str(input.PeerBgpAsn.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.PeerBgpAsnExtended.is_some():
+            auto t3 = str(input.PeerBgpAsnExtended.unwrap())
+            p = query.query_scalar(p, "PeerBgpAsnExtended", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateLocalGatewayVirtualInterfaceGroup
+    def create_local_gateway_virtual_interface_group(self, CreateLocalGatewayVirtualInterfaceGroupRequest input) -> str:
+        auto p = query.query_params("CreateLocalGatewayVirtualInterfaceGroup", "2016-11-15")
+        p = query.query_scalar(p, "LocalGatewayId", input.LocalGatewayId)
+        if input.LocalBgpAsn.is_some():
+            p = query.query_scalar(p, "LocalBgpAsn", str(input.LocalBgpAsn.unwrap()))
+        if input.LocalBgpAsnExtended.is_some():
+            auto t0 = str(input.LocalBgpAsnExtended.unwrap())
+            p = query.query_scalar(p, "LocalBgpAsnExtended", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateMacSystemIntegrityProtectionModificationTask
+    def create_mac_system_integrity_protection_modification_task(self, CreateMacSystemIntegrityProtectionModificationTaskRequest input) -> str:
+        auto p = query.query_params("CreateMacSystemIntegrityProtectionModificationTask", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        if input.MacCredentials.is_some():
+            p = query.query_scalar(p, "MacCredentials", input.MacCredentials.unwrap())
+        if input.MacSystemIntegrityProtectionConfiguration.is_some():
+            auto t0 = input.MacSystemIntegrityProtectionConfiguration.unwrap()
+            p = mac_system_integrity_protection_configuration_request_to_query(p, "MacSystemIntegrityProtectionConfiguration", t0)
+        auto t1 = input.MacSystemIntegrityProtectionStatus
+        p = query.query_scalar(p, "MacSystemIntegrityProtectionStatus", t1)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateManagedPrefixList
+    def create_managed_prefix_list(self, CreateManagedPrefixListRequest input) -> str:
+        auto p = query.query_params("CreateManagedPrefixList", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "PrefixListName", input.PrefixListName)
+        auto qi0 = 1
+        for qe1 in input.Entries.unwrap_or([]):
+            p = add_prefix_list_entry_to_query(p, "Entry." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_scalar(p, "MaxEntries", str(input.MaxEntries))
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        p = query.query_scalar(p, "AddressFamily", input.AddressFamily)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateNatGateway
+    def create_nat_gateway(self, CreateNatGatewayRequest input) -> str:
+        auto p = query.query_params("CreateNatGateway", "2016-11-15")
+        if input.AvailabilityMode.is_some():
+            auto t0 = input.AvailabilityMode.unwrap()
+            p = query.query_scalar(p, "AvailabilityMode", t0)
+        if input.AllocationId.is_some():
+            p = query.query_scalar(p, "AllocationId", input.AllocationId.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SubnetId.is_some():
+            p = query.query_scalar(p, "SubnetId", input.SubnetId.unwrap())
+        if input.VpcId.is_some():
+            p = query.query_scalar(p, "VpcId", input.VpcId.unwrap())
+        auto qi1 = 1
+        for qe2 in input.AvailabilityZoneAddresses.unwrap_or([]):
+            auto t3 = qe2
+            p = availability_zone_address_to_query(p, "AvailabilityZoneAddress." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto qi4 = 1
+        for qe5 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.ConnectivityType.is_some():
+            auto t6 = input.ConnectivityType.unwrap()
+            p = query.query_scalar(p, "ConnectivityType", t6)
+        if input.PrivateIpAddress.is_some():
+            auto t7 = input.PrivateIpAddress.unwrap()
+            p = query.query_scalar(p, "PrivateIpAddress", t7)
+        auto t8 = input.SecondaryAllocationIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecondaryAllocationId", t8)
+        auto t9 = input.SecondaryPrivateIpAddresses.unwrap_or([])
+        p = query.query_flat_list(p, "SecondaryPrivateIpAddress", t9)
+        if input.SecondaryPrivateIpAddressCount.is_some():
+            auto t10 = str(input.SecondaryPrivateIpAddressCount.unwrap())
+            p = query.query_scalar(p, "SecondaryPrivateIpAddressCount", t10)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateNetworkAcl
+    def create_network_acl(self, CreateNetworkAclRequest input) -> str:
+        auto p = query.query_params("CreateNetworkAcl", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateNetworkAclEntry
+    def create_network_acl_entry(self, CreateNetworkAclEntryRequest input) -> str:
+        auto p = query.query_params("CreateNetworkAclEntry", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "NetworkAclId", input.NetworkAclId)
+        p = query.query_scalar(p, "RuleNumber", str(input.RuleNumber))
+        p = query.query_scalar(p, "Protocol", input.Protocol)
+        p = query.query_scalar(p, "RuleAction", input.RuleAction)
+        p = query.query_scalar(p, "Egress", query.query_bool(input.Egress))
+        if input.CidrBlock.is_some():
+            p = query.query_scalar(p, "CidrBlock", input.CidrBlock.unwrap())
+        if input.Ipv6CidrBlock.is_some():
+            p = query.query_scalar(p, "Ipv6CidrBlock", input.Ipv6CidrBlock.unwrap())
+        if input.IcmpTypeCode.is_some():
+            p = icmp_type_code_to_query(p, "Icmp", input.IcmpTypeCode.unwrap())
+        if input.PortRange.is_some():
+            p = port_range_to_query(p, "PortRange", input.PortRange.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateNetworkInsightsAccessScope
+    def create_network_insights_access_scope(self, CreateNetworkInsightsAccessScopeRequest input) -> str:
+        auto p = query.query_params("CreateNetworkInsightsAccessScope", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.MatchPaths.unwrap_or([]):
+            p = access_scope_path_request_to_query(p, "MatchPath." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto qi2 = 1
+        for qe3 in input.ExcludePaths.unwrap_or([]):
+            p = access_scope_path_request_to_query(p, "ExcludePath." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        p = query.query_scalar(p, "ClientToken", input.ClientToken)
+        auto qi4 = 1
+        for qe5 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateNetworkInsightsPath
+    def create_network_insights_path(self, CreateNetworkInsightsPathRequest input) -> str:
+        auto p = query.query_params("CreateNetworkInsightsPath", "2016-11-15")
+        if input.SourceIp.is_some():
+            p = query.query_scalar(p, "SourceIp", input.SourceIp.unwrap())
+        if input.DestinationIp.is_some():
+            p = query.query_scalar(p, "DestinationIp", input.DestinationIp.unwrap())
+        p = query.query_scalar(p, "Source", input.Source)
+        if input.Destination.is_some():
+            p = query.query_scalar(p, "Destination", input.Destination.unwrap())
+        p = query.query_scalar(p, "Protocol", input.Protocol)
+        if input.DestinationPort.is_some():
+            auto t0 = str(input.DestinationPort.unwrap())
+            p = query.query_scalar(p, "DestinationPort", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "ClientToken", input.ClientToken)
+        if input.FilterAtSource.is_some():
+            auto t3 = input.FilterAtSource.unwrap()
+            p = path_request_filter_to_query(p, "FilterAtSource", t3)
+        if input.FilterAtDestination.is_some():
+            auto t4 = input.FilterAtDestination.unwrap()
+            p = path_request_filter_to_query(p, "FilterAtDestination", t4)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateNetworkInterface
+    def create_network_interface(self, CreateNetworkInterfaceRequest input) -> str:
+        auto p = query.query_params("CreateNetworkInterface", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Ipv4Prefixes.unwrap_or([]):
+            auto t2 = qe1
+            p = ipv4_prefix_specification_request_to_query(p, "Ipv4Prefix." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.Ipv4PrefixCount.is_some():
+            auto t3 = str(input.Ipv4PrefixCount.unwrap())
+            p = query.query_scalar(p, "Ipv4PrefixCount", t3)
+        auto qi4 = 1
+        for qe5 in input.Ipv6Prefixes.unwrap_or([]):
+            auto t6 = qe5
+            p = ipv6_prefix_specification_request_to_query(p, "Ipv6Prefix." + str(qi4), t6)
+            qi4 = qi4 + 1
+        if input.Ipv6PrefixCount.is_some():
+            auto t7 = str(input.Ipv6PrefixCount.unwrap())
+            p = query.query_scalar(p, "Ipv6PrefixCount", t7)
+        if input.InterfaceType.is_some():
+            p = query.query_scalar(p, "InterfaceType", input.InterfaceType.unwrap())
+        auto qi8 = 1
+        for qe9 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi8), qe9)
+            qi8 = qi8 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.EnablePrimaryIpv6.is_some():
+            auto t10 = query.query_bool(input.EnablePrimaryIpv6.unwrap())
+            p = query.query_scalar(p, "EnablePrimaryIpv6", t10)
+        if input.ConnectionTrackingSpecification.is_some():
+            auto t11 = input.ConnectionTrackingSpecification.unwrap()
+            p = connection_tracking_specification_request_to_query(p, "ConnectionTrackingSpecification", t11)
+        if input.Operator.is_some():
+            p = operator_request_to_query(p, "Operator", input.Operator.unwrap())
+        p = query.query_scalar(p, "SubnetId", input.SubnetId)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.PrivateIpAddress.is_some():
+            auto t12 = input.PrivateIpAddress.unwrap()
+            p = query.query_scalar(p, "PrivateIpAddress", t12)
+        p = query.query_flat_list(p, "SecurityGroupId", input.Groups.unwrap_or([]))
+        auto qi13 = 1
+        for qe14 in input.PrivateIpAddresses.unwrap_or([]):
+            auto t15 = qe14
+            p = private_ip_address_specification_to_query(p, "PrivateIpAddresses." + str(qi13), t15)
+            qi13 = qi13 + 1
+        if input.SecondaryPrivateIpAddressCount.is_some():
+            auto t16 = str(input.SecondaryPrivateIpAddressCount.unwrap())
+            p = query.query_scalar(p, "SecondaryPrivateIpAddressCount", t16)
+        auto qi17 = 1
+        for qe18 in input.Ipv6Addresses.unwrap_or([]):
+            p = instance_ipv6_address_to_query(p, "Ipv6Addresses." + str(qi17), qe18)
+            qi17 = qi17 + 1
+        if input.Ipv6AddressCount.is_some():
+            auto t19 = str(input.Ipv6AddressCount.unwrap())
+            p = query.query_scalar(p, "Ipv6AddressCount", t19)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateNetworkInterfacePermission
     def create_network_interface_permission(self, CreateNetworkInterfacePermissionRequest input) -> str:
         auto p = query.query_params("CreateNetworkInterfacePermission", "2016-11-15")
@@ -22127,6 +27598,100 @@ struct EC2Client:
         if input.AwsService.is_some():
             p = query.query_scalar(p, "AwsService", input.AwsService.unwrap())
         p = query.query_scalar(p, "Permission", input.Permission)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreatePlacementGroup
+    def create_placement_group(self, CreatePlacementGroupRequest input) -> str:
+        auto p = query.query_params("CreatePlacementGroup", "2016-11-15")
+        if input.PartitionCount.is_some():
+            auto t0 = str(input.PartitionCount.unwrap())
+            p = query.query_scalar(p, "PartitionCount", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.SpreadLevel.is_some():
+            p = query.query_scalar(p, "SpreadLevel", input.SpreadLevel.unwrap())
+        if input.LinkedGroupId.is_some():
+            p = query.query_scalar(p, "LinkedGroupId", input.LinkedGroupId.unwrap())
+        if input.Operator.is_some():
+            p = operator_request_to_query(p, "Operator", input.Operator.unwrap())
+        if input.ParentGroupId.is_some():
+            p = query.query_scalar(p, "ParentGroupId", input.ParentGroupId.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.GroupName.is_some():
+            p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
+        if input.Strategy.is_some():
+            p = query.query_scalar(p, "Strategy", input.Strategy.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreatePublicIpv4Pool
+    def create_public_ipv4_pool(self, CreatePublicIpv4PoolRequest input) -> str:
+        auto p = query.query_params("CreatePublicIpv4Pool", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NetworkBorderGroup.is_some():
+            auto t2 = input.NetworkBorderGroup.unwrap()
+            p = query.query_scalar(p, "NetworkBorderGroup", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateReplaceRootVolumeTask
+    def create_replace_root_volume_task(self, CreateReplaceRootVolumeTaskRequest input) -> str:
+        auto p = query.query_params("CreateReplaceRootVolumeTask", "2016-11-15")
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        if input.SnapshotId.is_some():
+            p = query.query_scalar(p, "SnapshotId", input.SnapshotId.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ImageId.is_some():
+            p = query.query_scalar(p, "ImageId", input.ImageId.unwrap())
+        if input.DeleteReplacedRootVolume.is_some():
+            auto t2 = query.query_bool(input.DeleteReplacedRootVolume.unwrap())
+            p = query.query_scalar(p, "DeleteReplacedRootVolume", t2)
+        if input.VolumeInitializationRate.is_some():
+            auto t3 = str(input.VolumeInitializationRate.unwrap())
+            p = query.query_scalar(p, "VolumeInitializationRate", t3)
+        if input.VolumeId.is_some():
+            p = query.query_scalar(p, "VolumeId", input.VolumeId.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateReservedInstancesListing
+    def create_reserved_instances_listing(self, CreateReservedInstancesListingRequest input) -> str:
+        auto p = query.query_params("CreateReservedInstancesListing", "2016-11-15")
+        p = query.query_scalar(p, "ReservedInstancesId", input.ReservedInstancesId)
+        p = query.query_scalar(p, "InstanceCount", str(input.InstanceCount))
+        auto qi0 = 1
+        for qe1 in input.PriceSchedules:
+            auto t2 = qe1
+            p = price_schedule_specification_to_query(p, "PriceSchedules." + str(qi0), t2)
+            qi0 = qi0 + 1
+        p = query.query_scalar(p, "ClientToken", input.ClientToken)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateRestoreImageTask
+    def create_restore_image_task(self, CreateRestoreImageTaskRequest input) -> str:
+        auto p = query.query_params("CreateRestoreImageTask", "2016-11-15")
+        p = query.query_scalar(p, "Bucket", input.Bucket)
+        p = query.query_scalar(p, "ObjectKey", input.ObjectKey)
+        if input.Name.is_some():
+            p = query.query_scalar(p, "Name", input.Name.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -22177,6 +27742,162 @@ struct EC2Client:
             p = query.query_scalar(p, "NatGatewayId", input.NatGatewayId.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CreateRouteServer
+    def create_route_server(self, CreateRouteServerRequest input) -> str:
+        auto p = query.query_params("CreateRouteServer", "2016-11-15")
+        p = query.query_scalar(p, "AmazonSideAsn", str(input.AmazonSideAsn))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.PersistRoutes.is_some():
+            p = query.query_scalar(p, "PersistRoutes", input.PersistRoutes.unwrap())
+        if input.PersistRoutesDuration.is_some():
+            auto t0 = str(input.PersistRoutesDuration.unwrap())
+            p = query.query_scalar(p, "PersistRoutesDuration", t0)
+        if input.SnsNotificationsEnabled.is_some():
+            auto t1 = query.query_bool(input.SnsNotificationsEnabled.unwrap())
+            p = query.query_scalar(p, "SnsNotificationsEnabled", t1)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateRouteServerEndpoint
+    def create_route_server_endpoint(self, CreateRouteServerEndpointRequest input) -> str:
+        auto p = query.query_params("CreateRouteServerEndpoint", "2016-11-15")
+        p = query.query_scalar(p, "RouteServerId", input.RouteServerId)
+        p = query.query_scalar(p, "SubnetId", input.SubnetId)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateRouteServerPeer
+    def create_route_server_peer(self, CreateRouteServerPeerRequest input) -> str:
+        auto p = query.query_params("CreateRouteServerPeer", "2016-11-15")
+        p = query.query_scalar(p, "RouteServerEndpointId", input.RouteServerEndpointId)
+        p = query.query_scalar(p, "PeerAddress", input.PeerAddress)
+        p = route_server_bgp_options_request_to_query(p, "BgpOptions", input.BgpOptions)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateRouteTable
+    def create_route_table(self, CreateRouteTableRequest input) -> str:
+        auto p = query.query_params("CreateRouteTable", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateSecondaryNetwork
+    def create_secondary_network(self, CreateSecondaryNetworkRequest input) -> str:
+        auto p = query.query_params("CreateSecondaryNetwork", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "Ipv4CidrBlock", input.Ipv4CidrBlock)
+        p = query.query_scalar(p, "NetworkType", input.NetworkType)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateSecondarySubnet
+    def create_secondary_subnet(self, CreateSecondarySubnetRequest input) -> str:
+        auto p = query.query_params("CreateSecondarySubnet", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.AvailabilityZone.is_some():
+            auto t0 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t0)
+        if input.AvailabilityZoneId.is_some():
+            auto t1 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t1)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "Ipv4CidrBlock", input.Ipv4CidrBlock)
+        p = query.query_scalar(p, "SecondaryNetworkId", input.SecondaryNetworkId)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateSecurityGroup
+    def create_security_group(self, CreateSecurityGroupRequest input) -> str:
+        auto p = query.query_params("CreateSecurityGroup", "2016-11-15")
+        p = query.query_scalar(p, "GroupDescription", input.Description)
+        p = query.query_scalar(p, "GroupName", input.GroupName)
+        if input.VpcId.is_some():
+            p = query.query_scalar(p, "VpcId", input.VpcId.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateSnapshot
+    def create_snapshot(self, CreateSnapshotRequest input) -> str:
+        auto p = query.query_params("CreateSnapshot", "2016-11-15")
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.OutpostArn.is_some():
+            p = query.query_scalar(p, "OutpostArn", input.OutpostArn.unwrap())
+        p = query.query_scalar(p, "VolumeId", input.VolumeId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Location.is_some():
+            p = query.query_scalar(p, "Location", input.Location.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateSnapshots
+    def create_snapshots(self, CreateSnapshotsRequest input) -> str:
+        auto p = query.query_params("CreateSnapshots", "2016-11-15")
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto t0 = input.InstanceSpecification
+        p = instance_specification_to_query(p, "InstanceSpecification", t0)
+        if input.OutpostArn.is_some():
+            p = query.query_scalar(p, "OutpostArn", input.OutpostArn.unwrap())
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.CopyTagsFromSource.is_some():
+            auto t3 = input.CopyTagsFromSource.unwrap()
+            p = query.query_scalar(p, "CopyTagsFromSource", t3)
+        if input.Location.is_some():
+            p = query.query_scalar(p, "Location", input.Location.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateSpotDatafeedSubscription
     def create_spot_datafeed_subscription(self, CreateSpotDatafeedSubscriptionRequest input) -> str:
         auto p = query.query_params("CreateSpotDatafeedSubscription", "2016-11-15")
@@ -22185,6 +27906,242 @@ struct EC2Client:
         p = query.query_scalar(p, "Bucket", input.Bucket)
         if input.Prefix.is_some():
             p = query.query_scalar(p, "Prefix", input.Prefix.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateStoreImageTask
+    def create_store_image_task(self, CreateStoreImageTaskRequest input) -> str:
+        auto p = query.query_params("CreateStoreImageTask", "2016-11-15")
+        p = query.query_scalar(p, "ImageId", input.ImageId)
+        p = query.query_scalar(p, "Bucket", input.Bucket)
+        auto qi0 = 1
+        for qe1 in input.S3ObjectTags.unwrap_or([]):
+            p = s3_object_tag_to_query(p, "S3ObjectTag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateSubnet
+    def create_subnet(self, CreateSubnetRequest input) -> str:
+        auto p = query.query_params("CreateSubnet", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.AvailabilityZone.is_some():
+            auto t2 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t2)
+        if input.AvailabilityZoneId.is_some():
+            auto t3 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t3)
+        if input.CidrBlock.is_some():
+            p = query.query_scalar(p, "CidrBlock", input.CidrBlock.unwrap())
+        if input.Ipv6CidrBlock.is_some():
+            p = query.query_scalar(p, "Ipv6CidrBlock", input.Ipv6CidrBlock.unwrap())
+        if input.OutpostArn.is_some():
+            p = query.query_scalar(p, "OutpostArn", input.OutpostArn.unwrap())
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        if input.Ipv6Native.is_some():
+            auto t4 = query.query_bool(input.Ipv6Native.unwrap())
+            p = query.query_scalar(p, "Ipv6Native", t4)
+        if input.Ipv4IpamPoolId.is_some():
+            p = query.query_scalar(p, "Ipv4IpamPoolId", input.Ipv4IpamPoolId.unwrap())
+        if input.Ipv4NetmaskLength.is_some():
+            auto t5 = str(input.Ipv4NetmaskLength.unwrap())
+            p = query.query_scalar(p, "Ipv4NetmaskLength", t5)
+        if input.Ipv6IpamPoolId.is_some():
+            p = query.query_scalar(p, "Ipv6IpamPoolId", input.Ipv6IpamPoolId.unwrap())
+        if input.Ipv6NetmaskLength.is_some():
+            auto t6 = str(input.Ipv6NetmaskLength.unwrap())
+            p = query.query_scalar(p, "Ipv6NetmaskLength", t6)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateSubnetCidrReservation
+    def create_subnet_cidr_reservation(self, CreateSubnetCidrReservationRequest input) -> str:
+        auto p = query.query_params("CreateSubnetCidrReservation", "2016-11-15")
+        p = query.query_scalar(p, "SubnetId", input.SubnetId)
+        p = query.query_scalar(p, "Cidr", input.Cidr)
+        p = query.query_scalar(p, "ReservationType", input.ReservationType)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTags
+    def create_tags(self, CreateTagsRequest input) -> str:
+        auto p = query.query_params("CreateTags", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "ResourceId", input.Resources)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTrafficMirrorFilter
+    def create_traffic_mirror_filter(self, CreateTrafficMirrorFilterRequest input) -> str:
+        auto p = query.query_params("CreateTrafficMirrorFilter", "2016-11-15")
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTrafficMirrorFilterRule
+    def create_traffic_mirror_filter_rule(self, CreateTrafficMirrorFilterRuleRequest input) -> str:
+        auto p = query.query_params("CreateTrafficMirrorFilterRule", "2016-11-15")
+        p = query.query_scalar(p, "TrafficMirrorFilterId", input.TrafficMirrorFilterId)
+        p = query.query_scalar(p, "TrafficDirection", input.TrafficDirection)
+        p = query.query_scalar(p, "RuleNumber", str(input.RuleNumber))
+        p = query.query_scalar(p, "RuleAction", input.RuleAction)
+        if input.DestinationPortRange.is_some():
+            auto t0 = input.DestinationPortRange.unwrap()
+            p = traffic_mirror_port_range_request_to_query(p, "DestinationPortRange", t0)
+        if input.SourcePortRange.is_some():
+            auto t1 = input.SourcePortRange.unwrap()
+            p = traffic_mirror_port_range_request_to_query(p, "SourcePortRange", t1)
+        if input.Protocol.is_some():
+            p = query.query_scalar(p, "Protocol", str(input.Protocol.unwrap()))
+        p = query.query_scalar(p, "DestinationCidrBlock", input.DestinationCidrBlock)
+        p = query.query_scalar(p, "SourceCidrBlock", input.SourceCidrBlock)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTrafficMirrorSession
+    def create_traffic_mirror_session(self, CreateTrafficMirrorSessionRequest input) -> str:
+        auto p = query.query_params("CreateTrafficMirrorSession", "2016-11-15")
+        p = query.query_scalar(p, "NetworkInterfaceId", input.NetworkInterfaceId)
+        p = query.query_scalar(p, "TrafficMirrorTargetId", input.TrafficMirrorTargetId)
+        p = query.query_scalar(p, "TrafficMirrorFilterId", input.TrafficMirrorFilterId)
+        if input.PacketLength.is_some():
+            p = query.query_scalar(p, "PacketLength", str(input.PacketLength.unwrap()))
+        p = query.query_scalar(p, "SessionNumber", str(input.SessionNumber))
+        if input.VirtualNetworkId.is_some():
+            auto t0 = str(input.VirtualNetworkId.unwrap())
+            p = query.query_scalar(p, "VirtualNetworkId", t0)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTrafficMirrorTarget
+    def create_traffic_mirror_target(self, CreateTrafficMirrorTargetRequest input) -> str:
+        auto p = query.query_params("CreateTrafficMirrorTarget", "2016-11-15")
+        if input.NetworkInterfaceId.is_some():
+            auto t0 = input.NetworkInterfaceId.unwrap()
+            p = query.query_scalar(p, "NetworkInterfaceId", t0)
+        if input.NetworkLoadBalancerArn.is_some():
+            auto t1 = input.NetworkLoadBalancerArn.unwrap()
+            p = query.query_scalar(p, "NetworkLoadBalancerArn", t1)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.GatewayLoadBalancerEndpointId.is_some():
+            auto t4 = input.GatewayLoadBalancerEndpointId.unwrap()
+            p = query.query_scalar(p, "GatewayLoadBalancerEndpointId", t4)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGateway
+    def create_transit_gateway(self, CreateTransitGatewayRequest input) -> str:
+        auto p = query.query_params("CreateTransitGateway", "2016-11-15")
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Options.is_some():
+            auto t0 = input.Options.unwrap()
+            p = transit_gateway_request_options_to_query(p, "Options", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayConnect
+    def create_transit_gateway_connect(self, CreateTransitGatewayConnectRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayConnect", "2016-11-15")
+        auto t0 = input.TransportTransitGatewayAttachmentId
+        p = query.query_scalar(p, "TransportTransitGatewayAttachmentId", t0)
+        auto t1 = input.Options
+        p = create_transit_gateway_connect_request_options_to_query(p, "Options", t1)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayConnectPeer
+    def create_transit_gateway_connect_peer(self, CreateTransitGatewayConnectPeerRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayConnectPeer", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentId
+        p = query.query_scalar(p, "TransitGatewayAttachmentId", t0)
+        if input.TransitGatewayAddress.is_some():
+            auto t1 = input.TransitGatewayAddress.unwrap()
+            p = query.query_scalar(p, "TransitGatewayAddress", t1)
+        p = query.query_scalar(p, "PeerAddress", input.PeerAddress)
+        if input.BgpOptions.is_some():
+            auto t2 = input.BgpOptions.unwrap()
+            p = transit_gateway_connect_request_bgp_options_to_query(p, "BgpOptions", t2)
+        p = query.query_flat_list(p, "InsideCidrBlocks", input.InsideCidrBlocks)
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayMeteringPolicy
+    def create_transit_gateway_metering_policy(self, CreateTransitGatewayMeteringPolicyRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayMeteringPolicy", "2016-11-15")
+        p = query.query_scalar(p, "TransitGatewayId", input.TransitGatewayId)
+        auto t0 = input.MiddleboxAttachmentIds.unwrap_or([])
+        p = query.query_flat_list(p, "MiddleboxAttachmentId", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # CreateTransitGatewayMeteringPolicyEntry
@@ -22222,6 +28179,65 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CreateTransitGatewayMulticastDomain
+    def create_transit_gateway_multicast_domain(self, CreateTransitGatewayMulticastDomainRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayMulticastDomain", "2016-11-15")
+        p = query.query_scalar(p, "TransitGatewayId", input.TransitGatewayId)
+        if input.Options.is_some():
+            auto t0 = input.Options.unwrap()
+            p = create_transit_gateway_multicast_domain_request_options_to_query(p, "Options", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayPeeringAttachment
+    def create_transit_gateway_peering_attachment(self, CreateTransitGatewayPeeringAttachmentRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayPeeringAttachment", "2016-11-15")
+        p = query.query_scalar(p, "TransitGatewayId", input.TransitGatewayId)
+        p = query.query_scalar(p, "PeerTransitGatewayId", input.PeerTransitGatewayId)
+        p = query.query_scalar(p, "PeerAccountId", input.PeerAccountId)
+        p = query.query_scalar(p, "PeerRegion", input.PeerRegion)
+        if input.Options.is_some():
+            auto t0 = input.Options.unwrap()
+            p = create_transit_gateway_peering_attachment_request_options_to_query(p, "Options", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayPolicyTable
+    def create_transit_gateway_policy_table(self, CreateTransitGatewayPolicyTableRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayPolicyTable", "2016-11-15")
+        p = query.query_scalar(p, "TransitGatewayId", input.TransitGatewayId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayPolicyTableEntry
+    def create_transit_gateway_policy_table_entry(self, CreateTransitGatewayPolicyTableEntryRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayPolicyTableEntry", "2016-11-15")
+        auto t0 = input.TransitGatewayPolicyTableId
+        p = query.query_scalar(p, "TransitGatewayPolicyTableId", t0)
+        p = query.query_scalar(p, "PolicyRuleNumber", input.PolicyRuleNumber)
+        if input.PolicyRule.is_some():
+            auto t1 = input.PolicyRule.unwrap()
+            p = transit_gateway_request_policy_rule_to_query(p, "PolicyRule", t1)
+        p = query.query_scalar(p, "TargetRouteTableId", input.TargetRouteTableId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateTransitGatewayPrefixListReference
     def create_transit_gateway_prefix_list_reference(self, CreateTransitGatewayPrefixListReferenceRequest input) -> str:
         auto p = query.query_params("CreateTransitGatewayPrefixListReference", "2016-11-15")
@@ -22254,6 +28270,328 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CreateTransitGatewayRouteTable
+    def create_transit_gateway_route_table(self, CreateTransitGatewayRouteTableRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayRouteTable", "2016-11-15")
+        p = query.query_scalar(p, "TransitGatewayId", input.TransitGatewayId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayRouteTableAnnouncement
+    def create_transit_gateway_route_table_announcement(self, CreateTransitGatewayRouteTableAnnouncementRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayRouteTableAnnouncement", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableId
+        p = query.query_scalar(p, "TransitGatewayRouteTableId", t0)
+        p = query.query_scalar(p, "PeeringAttachmentId", input.PeeringAttachmentId)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateTransitGatewayVpcAttachment
+    def create_transit_gateway_vpc_attachment(self, CreateTransitGatewayVpcAttachmentRequest input) -> str:
+        auto p = query.query_params("CreateTransitGatewayVpcAttachment", "2016-11-15")
+        p = query.query_scalar(p, "TransitGatewayId", input.TransitGatewayId)
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        p = query.query_flat_list(p, "SubnetIds", input.SubnetIds)
+        if input.Options.is_some():
+            auto t0 = input.Options.unwrap()
+            p = create_transit_gateway_vpc_attachment_request_options_to_query(p, "Options", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVerifiedAccessEndpoint
+    def create_verified_access_endpoint(self, CreateVerifiedAccessEndpointRequest input) -> str:
+        auto p = query.query_params("CreateVerifiedAccessEndpoint", "2016-11-15")
+        p = query.query_scalar(p, "VerifiedAccessGroupId", input.VerifiedAccessGroupId)
+        p = query.query_scalar(p, "EndpointType", input.EndpointType)
+        p = query.query_scalar(p, "AttachmentType", input.AttachmentType)
+        if input.DomainCertificateArn.is_some():
+            auto t0 = input.DomainCertificateArn.unwrap()
+            p = query.query_scalar(p, "DomainCertificateArn", t0)
+        if input.ApplicationDomain.is_some():
+            auto t1 = input.ApplicationDomain.unwrap()
+            p = query.query_scalar(p, "ApplicationDomain", t1)
+        if input.EndpointDomainPrefix.is_some():
+            auto t2 = input.EndpointDomainPrefix.unwrap()
+            p = query.query_scalar(p, "EndpointDomainPrefix", t2)
+        auto t3 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupId", t3)
+        if input.LoadBalancerOptions.is_some():
+            auto t4 = input.LoadBalancerOptions.unwrap()
+            p = create_verified_access_endpoint_load_balancer_options_to_query(p, "LoadBalancerOptions", t4)
+        if input.NetworkInterfaceOptions.is_some():
+            auto t5 = input.NetworkInterfaceOptions.unwrap()
+            p = create_verified_access_endpoint_eni_options_to_query(p, "NetworkInterfaceOptions", t5)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.PolicyDocument.is_some():
+            p = query.query_scalar(p, "PolicyDocument", input.PolicyDocument.unwrap())
+        auto qi6 = 1
+        for qe7 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SseSpecification.is_some():
+            auto t8 = input.SseSpecification.unwrap()
+            p = verified_access_sse_specification_request_to_query(p, "SseSpecification", t8)
+        if input.RdsOptions.is_some():
+            auto t9 = input.RdsOptions.unwrap()
+            p = create_verified_access_endpoint_rds_options_to_query(p, "RdsOptions", t9)
+        if input.CidrOptions.is_some():
+            auto t10 = input.CidrOptions.unwrap()
+            p = create_verified_access_endpoint_cidr_options_to_query(p, "CidrOptions", t10)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVerifiedAccessGroup
+    def create_verified_access_group(self, CreateVerifiedAccessGroupRequest input) -> str:
+        auto p = query.query_params("CreateVerifiedAccessGroup", "2016-11-15")
+        auto t0 = input.VerifiedAccessInstanceId
+        p = query.query_scalar(p, "VerifiedAccessInstanceId", t0)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.PolicyDocument.is_some():
+            p = query.query_scalar(p, "PolicyDocument", input.PolicyDocument.unwrap())
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SseSpecification.is_some():
+            auto t3 = input.SseSpecification.unwrap()
+            p = verified_access_sse_specification_request_to_query(p, "SseSpecification", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVerifiedAccessInstance
+    def create_verified_access_instance(self, CreateVerifiedAccessInstanceRequest input) -> str:
+        auto p = query.query_params("CreateVerifiedAccessInstance", "2016-11-15")
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.FIPSEnabled.is_some():
+            auto t2 = query.query_bool(input.FIPSEnabled.unwrap())
+            p = query.query_scalar(p, "FIPSEnabled", t2)
+        if input.CidrEndpointsCustomSubDomain.is_some():
+            auto t3 = input.CidrEndpointsCustomSubDomain.unwrap()
+            p = query.query_scalar(p, "CidrEndpointsCustomSubDomain", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVerifiedAccessTrustProvider
+    def create_verified_access_trust_provider(self, CreateVerifiedAccessTrustProviderRequest input) -> str:
+        auto p = query.query_params("CreateVerifiedAccessTrustProvider", "2016-11-15")
+        p = query.query_scalar(p, "TrustProviderType", input.TrustProviderType)
+        if input.UserTrustProviderType.is_some():
+            auto t0 = input.UserTrustProviderType.unwrap()
+            p = query.query_scalar(p, "UserTrustProviderType", t0)
+        if input.DeviceTrustProviderType.is_some():
+            auto t1 = input.DeviceTrustProviderType.unwrap()
+            p = query.query_scalar(p, "DeviceTrustProviderType", t1)
+        if input.OidcOptions.is_some():
+            auto t2 = input.OidcOptions.unwrap()
+            p = create_verified_access_trust_provider_oidc_options_to_query(p, "OidcOptions", t2)
+        if input.DeviceOptions.is_some():
+            auto t3 = input.DeviceOptions.unwrap()
+            p = create_verified_access_trust_provider_device_options_to_query(p, "DeviceOptions", t3)
+        p = query.query_scalar(p, "PolicyReferenceName", input.PolicyReferenceName)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi4 = 1
+        for qe5 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SseSpecification.is_some():
+            auto t6 = input.SseSpecification.unwrap()
+            p = verified_access_sse_specification_request_to_query(p, "SseSpecification", t6)
+        if input.NativeApplicationOidcOptions.is_some():
+            auto t7 = input.NativeApplicationOidcOptions.unwrap()
+            p = create_verified_access_native_application_oidc_options_to_query(p, "NativeApplicationOidcOptions", t7)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVolume
+    def create_volume(self, CreateVolumeRequest input) -> str:
+        auto p = query.query_params("CreateVolume", "2016-11-15")
+        if input.AvailabilityZone.is_some():
+            auto t0 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t0)
+        if input.AvailabilityZoneId.is_some():
+            auto t1 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t1)
+        if input.Encrypted.is_some():
+            auto t2 = query.query_bool(input.Encrypted.unwrap())
+            p = query.query_scalar(p, "Encrypted", t2)
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.OutpostArn.is_some():
+            p = query.query_scalar(p, "OutpostArn", input.OutpostArn.unwrap())
+        if input.Size.is_some():
+            p = query.query_scalar(p, "Size", str(input.Size.unwrap()))
+        if input.SnapshotId.is_some():
+            p = query.query_scalar(p, "SnapshotId", input.SnapshotId.unwrap())
+        if input.VolumeType.is_some():
+            p = query.query_scalar(p, "VolumeType", input.VolumeType.unwrap())
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.MultiAttachEnabled.is_some():
+            auto t5 = query.query_bool(input.MultiAttachEnabled.unwrap())
+            p = query.query_scalar(p, "MultiAttachEnabled", t5)
+        if input.Throughput.is_some():
+            p = query.query_scalar(p, "Throughput", str(input.Throughput.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.VolumeInitializationRate.is_some():
+            auto t6 = str(input.VolumeInitializationRate.unwrap())
+            p = query.query_scalar(p, "VolumeInitializationRate", t6)
+        if input.Operator.is_some():
+            p = operator_request_to_query(p, "Operator", input.Operator.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpc
+    def create_vpc(self, CreateVpcRequest input) -> str:
+        auto p = query.query_params("CreateVpc", "2016-11-15")
+        if input.CidrBlock.is_some():
+            p = query.query_scalar(p, "CidrBlock", input.CidrBlock.unwrap())
+        if input.Ipv6Pool.is_some():
+            p = query.query_scalar(p, "Ipv6Pool", input.Ipv6Pool.unwrap())
+        if input.Ipv6CidrBlock.is_some():
+            p = query.query_scalar(p, "Ipv6CidrBlock", input.Ipv6CidrBlock.unwrap())
+        if input.Ipv4IpamPoolId.is_some():
+            p = query.query_scalar(p, "Ipv4IpamPoolId", input.Ipv4IpamPoolId.unwrap())
+        if input.Ipv4NetmaskLength.is_some():
+            auto t0 = str(input.Ipv4NetmaskLength.unwrap())
+            p = query.query_scalar(p, "Ipv4NetmaskLength", t0)
+        if input.Ipv6IpamPoolId.is_some():
+            p = query.query_scalar(p, "Ipv6IpamPoolId", input.Ipv6IpamPoolId.unwrap())
+        if input.Ipv6NetmaskLength.is_some():
+            auto t1 = str(input.Ipv6NetmaskLength.unwrap())
+            p = query.query_scalar(p, "Ipv6NetmaskLength", t1)
+        if input.Ipv6CidrBlockNetworkBorderGroup.is_some():
+            auto t2 = input.Ipv6CidrBlockNetworkBorderGroup.unwrap()
+            p = query.query_scalar(p, "Ipv6CidrBlockNetworkBorderGroup", t2)
+        if input.VpcEncryptionControl.is_some():
+            auto t3 = input.VpcEncryptionControl.unwrap()
+            p = vpc_encryption_control_configuration_to_query(p, "VpcEncryptionControl", t3)
+        auto qi4 = 1
+        for qe5 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.InstanceTenancy.is_some():
+            p = query.query_scalar(p, "InstanceTenancy", input.InstanceTenancy.unwrap())
+        if input.AmazonProvidedIpv6CidrBlock.is_some():
+            auto t6 = query.query_bool(input.AmazonProvidedIpv6CidrBlock.unwrap())
+            p = query.query_scalar(p, "AmazonProvidedIpv6CidrBlock", t6)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpcBlockPublicAccessExclusion
+    def create_vpc_block_public_access_exclusion(self, CreateVpcBlockPublicAccessExclusionRequest input) -> str:
+        auto p = query.query_params("CreateVpcBlockPublicAccessExclusion", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SubnetId.is_some():
+            p = query.query_scalar(p, "SubnetId", input.SubnetId.unwrap())
+        if input.VpcId.is_some():
+            p = query.query_scalar(p, "VpcId", input.VpcId.unwrap())
+        auto t0 = input.InternetGatewayExclusionMode
+        p = query.query_scalar(p, "InternetGatewayExclusionMode", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpcEncryptionControl
+    def create_vpc_encryption_control(self, CreateVpcEncryptionControlRequest input) -> str:
+        auto p = query.query_params("CreateVpcEncryptionControl", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpcEndpoint
+    def create_vpc_endpoint(self, CreateVpcEndpointRequest input) -> str:
+        auto p = query.query_params("CreateVpcEndpoint", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.VpcEndpointType.is_some():
+            p = query.query_scalar(p, "VpcEndpointType", input.VpcEndpointType.unwrap())
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        if input.ServiceName.is_some():
+            p = query.query_scalar(p, "ServiceName", input.ServiceName.unwrap())
+        if input.PolicyDocument.is_some():
+            p = query.query_scalar(p, "PolicyDocument", input.PolicyDocument.unwrap())
+        p = query.query_flat_list(p, "RouteTableId", input.RouteTableIds.unwrap_or([]))
+        p = query.query_flat_list(p, "SubnetId", input.SubnetIds.unwrap_or([]))
+        auto t0 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupId", t0)
+        if input.IpAddressType.is_some():
+            p = query.query_scalar(p, "IpAddressType", input.IpAddressType.unwrap())
+        if input.DnsOptions.is_some():
+            auto t1 = input.DnsOptions.unwrap()
+            p = dns_options_specification_to_query(p, "DnsOptions", t1)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.PrivateDnsEnabled.is_some():
+            auto t2 = query.query_bool(input.PrivateDnsEnabled.unwrap())
+            p = query.query_scalar(p, "PrivateDnsEnabled", t2)
+        auto qi3 = 1
+        for qe4 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        auto qi5 = 1
+        for qe6 in input.SubnetConfigurations.unwrap_or([]):
+            p = subnet_configuration_to_query(p, "SubnetConfiguration." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        if input.ServiceNetworkArn.is_some():
+            auto t7 = input.ServiceNetworkArn.unwrap()
+            p = query.query_scalar(p, "ServiceNetworkArn", t7)
+        if input.ResourceConfigurationArn.is_some():
+            auto t8 = input.ResourceConfigurationArn.unwrap()
+            p = query.query_scalar(p, "ResourceConfigurationArn", t8)
+        if input.ServiceRegion.is_some():
+            p = query.query_scalar(p, "ServiceRegion", input.ServiceRegion.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateVpcEndpointConnectionNotification
     def create_vpc_endpoint_connection_notification(self, CreateVpcEndpointConnectionNotificationRequest input) -> str:
         auto p = query.query_params("CreateVpcEndpointConnectionNotification", "2016-11-15")
@@ -22270,11 +28608,115 @@ struct EC2Client:
             p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # CreateVpcEndpointServiceConfiguration
+    def create_vpc_endpoint_service_configuration(self, CreateVpcEndpointServiceConfigurationRequest input) -> str:
+        auto p = query.query_params("CreateVpcEndpointServiceConfiguration", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.AcceptanceRequired.is_some():
+            auto t0 = query.query_bool(input.AcceptanceRequired.unwrap())
+            p = query.query_scalar(p, "AcceptanceRequired", t0)
+        if input.PrivateDnsName.is_some():
+            p = query.query_scalar(p, "PrivateDnsName", input.PrivateDnsName.unwrap())
+        auto t1 = input.NetworkLoadBalancerArns.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkLoadBalancerArn", t1)
+        auto t2 = input.GatewayLoadBalancerArns.unwrap_or([])
+        p = query.query_flat_list(p, "GatewayLoadBalancerArn", t2)
+        auto t3 = input.SupportedIpAddressTypes.unwrap_or([])
+        p = query.query_flat_list(p, "SupportedIpAddressType", t3)
+        auto t4 = input.SupportedRegions.unwrap_or([])
+        p = query.query_flat_list(p, "SupportedRegion", t4)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi5 = 1
+        for qe6 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpcPeeringConnection
+    def create_vpc_peering_connection(self, CreateVpcPeeringConnectionRequest input) -> str:
+        auto p = query.query_params("CreateVpcPeeringConnection", "2016-11-15")
+        if input.PeerRegion.is_some():
+            p = query.query_scalar(p, "PeerRegion", input.PeerRegion.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        if input.PeerVpcId.is_some():
+            p = query.query_scalar(p, "PeerVpcId", input.PeerVpcId.unwrap())
+        if input.PeerOwnerId.is_some():
+            p = query.query_scalar(p, "PeerOwnerId", input.PeerOwnerId.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpnConcentrator
+    def create_vpn_concentrator(self, CreateVpnConcentratorRequest input) -> str:
+        auto p = query.query_params("CreateVpnConcentrator", "2016-11-15")
+        p = query.query_scalar(p, "Type", input.Type)
+        if input.TransitGatewayId.is_some():
+            auto t0 = input.TransitGatewayId.unwrap()
+            p = query.query_scalar(p, "TransitGatewayId", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpnConnection
+    def create_vpn_connection(self, CreateVpnConnectionRequest input) -> str:
+        auto p = query.query_params("CreateVpnConnection", "2016-11-15")
+        p = query.query_scalar(p, "CustomerGatewayId", input.CustomerGatewayId)
+        p = query.query_scalar(p, "Type", input.Type)
+        if input.VpnGatewayId.is_some():
+            p = query.query_scalar(p, "VpnGatewayId", input.VpnGatewayId.unwrap())
+        if input.TransitGatewayId.is_some():
+            auto t0 = input.TransitGatewayId.unwrap()
+            p = query.query_scalar(p, "TransitGatewayId", t0)
+        if input.VpnConcentratorId.is_some():
+            auto t1 = input.VpnConcentratorId.unwrap()
+            p = query.query_scalar(p, "VpnConcentratorId", t1)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.PreSharedKeyStorage.is_some():
+            auto t4 = input.PreSharedKeyStorage.unwrap()
+            p = query.query_scalar(p, "PreSharedKeyStorage", t4)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Options.is_some():
+            auto t5 = input.Options.unwrap()
+            p = vpn_connection_options_specification_to_query(p, "Options", t5)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # CreateVpnConnectionRoute
     def create_vpn_connection_route(self, CreateVpnConnectionRouteRequest input) -> str:
         auto p = query.query_params("CreateVpnConnectionRoute", "2016-11-15")
         p = query.query_scalar(p, "DestinationCidrBlock", input.DestinationCidrBlock)
         p = query.query_scalar(p, "VpnConnectionId", input.VpnConnectionId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # CreateVpnGateway
+    def create_vpn_gateway(self, CreateVpnGatewayRequest input) -> str:
+        auto p = query.query_params("CreateVpnGateway", "2016-11-15")
+        if input.AvailabilityZone.is_some():
+            auto t0 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t0)
+        p = query.query_scalar(p, "Type", input.Type)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.AmazonSideAsn.is_some():
+            auto t3 = str(input.AmazonSideAsn.unwrap())
+            p = query.query_scalar(p, "AmazonSideAsn", t3)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DeleteApplicationStatusCheck
@@ -22859,6 +29301,18 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DeleteTags
+    def delete_tags(self, DeleteTagsRequest input) -> str:
+        auto p = query.query_params("DeleteTags", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "ResourceId", input.Resources)
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DeleteTrafficMirrorFilter
     def delete_traffic_mirror_filter(self, DeleteTrafficMirrorFilterRequest input) -> str:
         auto p = query.query_params("DeleteTrafficMirrorFilter", "2016-11-15")
@@ -23219,6 +29673,15 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DeregisterInstanceEventNotificationAttributes
+    def deregister_instance_event_notification_attributes(self, DeregisterInstanceEventNotificationAttributesRequest input) -> str:
+        auto p = query.query_params("DeregisterInstanceEventNotificationAttributes", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.InstanceTagAttribute
+        p = deregister_instance_tag_attribute_request_to_query(p, "InstanceTagAttribute", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DeregisterTransitGatewayMulticastGroupMembers
     def deregister_transit_gateway_multicast_group_members(self, DeregisterTransitGatewayMulticastGroupMembersRequest input) -> str:
         auto p = query.query_params("DeregisterTransitGatewayMulticastGroupMembers", "2016-11-15")
@@ -23275,6 +29738,19 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeAddresses
+    def describe_addresses(self, DescribeAddressesRequest input) -> str:
+        auto p = query.query_params("DescribeAddresses", "2016-11-15")
+        p = query.query_flat_list(p, "PublicIp", input.PublicIps.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "AllocationId", input.AllocationIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeAddressesAttribute
     def describe_addresses_attribute(self, DescribeAddressesAttributeRequest input) -> str:
         auto p = query.query_params("DescribeAddressesAttribute", "2016-11-15")
@@ -23296,6 +29772,102 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeApplicationStatus
+    def describe_application_status(self, DescribeApplicationStatusRequest input) -> str:
+        auto p = query.query_params("DescribeApplicationStatus", "2016-11-15")
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeApplicationStatusCheckAssociations
+    def describe_application_status_check_associations(self, DescribeApplicationStatusCheckAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeApplicationStatusCheckAssociations", "2016-11-15")
+        auto t0 = input.ApplicationStatusCheckIds.unwrap_or([])
+        p = query.query_flat_list(p, "ApplicationStatusCheckId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeApplicationStatusChecks
+    def describe_application_status_checks(self, DescribeApplicationStatusChecksRequest input) -> str:
+        auto p = query.query_params("DescribeApplicationStatusChecks", "2016-11-15")
+        auto t0 = input.ApplicationStatusCheckIds.unwrap_or([])
+        p = query.query_flat_list(p, "ApplicationStatusCheckId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.IncludeAll.is_some():
+            auto t3 = query.query_bool(input.IncludeAll.unwrap())
+            p = query.query_scalar(p, "IncludeAll", t3)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeAvailabilityZones
+    def describe_availability_zones(self, DescribeAvailabilityZonesRequest input) -> str:
+        auto p = query.query_params("DescribeAvailabilityZones", "2016-11-15")
+        p = query.query_flat_list(p, "ZoneName", input.ZoneNames.unwrap_or([]))
+        p = query.query_flat_list(p, "ZoneId", input.ZoneIds.unwrap_or([]))
+        if input.AllAvailabilityZones.is_some():
+            auto t0 = query.query_bool(input.AllAvailabilityZones.unwrap())
+            p = query.query_scalar(p, "AllAvailabilityZones", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeAwsNetworkPerformanceMetricSubscriptions
+    def describe_aws_network_performance_metric_subscriptions(self, DescribeAwsNetworkPerformanceMetricSubscriptionsRequest input) -> str:
+        auto p = query.query_params("DescribeAwsNetworkPerformanceMetricSubscriptions", "2016-11-15")
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeBundleTasks
+    def describe_bundle_tasks(self, DescribeBundleTasksRequest input) -> str:
+        auto p = query.query_params("DescribeBundleTasks", "2016-11-15")
+        p = query.query_flat_list(p, "BundleId", input.BundleIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeByoipCidrs
     def describe_byoip_cidrs(self, DescribeByoipCidrsRequest input) -> str:
         auto p = query.query_params("DescribeByoipCidrs", "2016-11-15")
@@ -23304,6 +29876,23 @@ struct EC2Client:
         p = query.query_scalar(p, "MaxResults", str(input.MaxResults))
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityBlockExtensionHistory
+    def describe_capacity_block_extension_history(self, DescribeCapacityBlockExtensionHistoryRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityBlockExtensionHistory", "2016-11-15")
+        auto t0 = input.CapacityReservationIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityReservationId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeCapacityBlockExtensionOfferings
@@ -23352,6 +29941,292 @@ struct EC2Client:
             p = query.query_scalar(p, "AllAvailabilityZones", t5)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeCapacityBlockStatus
+    def describe_capacity_block_status(self, DescribeCapacityBlockStatusRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityBlockStatus", "2016-11-15")
+        auto t0 = input.CapacityBlockIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityBlockId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityBlocks
+    def describe_capacity_blocks(self, DescribeCapacityBlocksRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityBlocks", "2016-11-15")
+        auto t0 = input.CapacityBlockIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityBlockId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityManagerDataExports
+    def describe_capacity_manager_data_exports(self, DescribeCapacityManagerDataExportsRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityManagerDataExports", "2016-11-15")
+        auto t0 = input.CapacityManagerDataExportIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityManagerDataExportId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityReservationBillingRequests
+    def describe_capacity_reservation_billing_requests(self, DescribeCapacityReservationBillingRequestsRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityReservationBillingRequests", "2016-11-15")
+        auto t0 = input.CapacityReservationIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityReservationId", t0)
+        p = query.query_scalar(p, "Role", input.Role)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityReservationCancellationQuotes
+    def describe_capacity_reservation_cancellation_quotes(self, DescribeCapacityReservationCancellationQuotesRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityReservationCancellationQuotes", "2016-11-15")
+        auto t0 = input.CapacityReservationCancellationQuoteIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityReservationCancellationQuoteId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityReservationDateChangeQuotes
+    def describe_capacity_reservation_date_change_quotes(self, DescribeCapacityReservationDateChangeQuotesRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityReservationDateChangeQuotes", "2016-11-15")
+        auto t0 = input.CapacityReservationModificationQuoteIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityReservationModificationQuoteId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityReservationFleets
+    def describe_capacity_reservation_fleets(self, DescribeCapacityReservationFleetsRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityReservationFleets", "2016-11-15")
+        auto t0 = input.CapacityReservationFleetIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityReservationFleetId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityReservationTopology
+    def describe_capacity_reservation_topology(self, DescribeCapacityReservationTopologyRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityReservationTopology", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto t0 = input.CapacityReservationIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityReservationId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCapacityReservations
+    def describe_capacity_reservations(self, DescribeCapacityReservationsRequest input) -> str:
+        auto p = query.query_params("DescribeCapacityReservations", "2016-11-15")
+        auto t0 = input.CapacityReservationIds.unwrap_or([])
+        p = query.query_flat_list(p, "CapacityReservationId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCarrierGateways
+    def describe_carrier_gateways(self, DescribeCarrierGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeCarrierGateways", "2016-11-15")
+        auto t0 = input.CarrierGatewayIds.unwrap_or([])
+        p = query.query_flat_list(p, "CarrierGatewayId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeClassicLinkInstances
+    def describe_classic_link_instances(self, DescribeClassicLinkInstancesRequest input) -> str:
+        auto p = query.query_params("DescribeClassicLinkInstances", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeClientVpnAuthorizationRules
+    def describe_client_vpn_authorization_rules(self, DescribeClientVpnAuthorizationRulesRequest input) -> str:
+        auto p = query.query_params("DescribeClientVpnAuthorizationRules", "2016-11-15")
+        p = query.query_scalar(p, "ClientVpnEndpointId", input.ClientVpnEndpointId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeClientVpnConnections
+    def describe_client_vpn_connections(self, DescribeClientVpnConnectionsRequest input) -> str:
+        auto p = query.query_params("DescribeClientVpnConnections", "2016-11-15")
+        p = query.query_scalar(p, "ClientVpnEndpointId", input.ClientVpnEndpointId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeClientVpnEndpoints
+    def describe_client_vpn_endpoints(self, DescribeClientVpnEndpointsRequest input) -> str:
+        auto p = query.query_params("DescribeClientVpnEndpoints", "2016-11-15")
+        auto t0 = input.ClientVpnEndpointIds.unwrap_or([])
+        p = query.query_flat_list(p, "ClientVpnEndpointId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeClientVpnRoutes
+    def describe_client_vpn_routes(self, DescribeClientVpnRoutesRequest input) -> str:
+        auto p = query.query_params("DescribeClientVpnRoutes", "2016-11-15")
+        p = query.query_scalar(p, "ClientVpnEndpointId", input.ClientVpnEndpointId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeClientVpnTargetNetworks
+    def describe_client_vpn_target_networks(self, DescribeClientVpnTargetNetworksRequest input) -> str:
+        auto p = query.query_params("DescribeClientVpnTargetNetworks", "2016-11-15")
+        p = query.query_scalar(p, "ClientVpnEndpointId", input.ClientVpnEndpointId)
+        auto t0 = input.AssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "AssociationIds", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCoipPools
+    def describe_coip_pools(self, DescribeCoipPoolsRequest input) -> str:
+        auto p = query.query_params("DescribeCoipPools", "2016-11-15")
+        p = query.query_flat_list(p, "PoolId", input.PoolIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeConversionTasks
     def describe_conversion_tasks(self, DescribeConversionTasksRequest input) -> str:
         auto p = query.query_params("DescribeConversionTasks", "2016-11-15")
@@ -23359,6 +30234,19 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         auto t0 = input.ConversionTaskIds.unwrap_or([])
         p = query.query_flat_list(p, "ConversionTaskId", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeCustomerGateways
+    def describe_customer_gateways(self, DescribeCustomerGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeCustomerGateways", "2016-11-15")
+        auto t0 = input.CustomerGatewayIds.unwrap_or([])
+        p = query.query_flat_list(p, "CustomerGatewayId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeDeclarativePoliciesReports
@@ -23371,6 +30259,114 @@ struct EC2Client:
         if input.MaxResults.is_some():
             p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         p = query.query_flat_list(p, "ReportId", input.ReportIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeDhcpOptions
+    def describe_dhcp_options(self, DescribeDhcpOptionsRequest input) -> str:
+        auto p = query.query_params("DescribeDhcpOptions", "2016-11-15")
+        auto t0 = input.DhcpOptionsIds.unwrap_or([])
+        p = query.query_flat_list(p, "DhcpOptionsId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeEgressOnlyInternetGateways
+    def describe_egress_only_internet_gateways(self, DescribeEgressOnlyInternetGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeEgressOnlyInternetGateways", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.EgressOnlyInternetGatewayIds.unwrap_or([])
+        p = query.query_flat_list(p, "EgressOnlyInternetGatewayId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeElasticGpus
+    def describe_elastic_gpus(self, DescribeElasticGpusRequest input) -> str:
+        auto p = query.query_params("DescribeElasticGpus", "2016-11-15")
+        p = query.query_flat_list(p, "ElasticGpuId", input.ElasticGpuIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeExportImageTasks
+    def describe_export_image_tasks(self, DescribeExportImageTasksRequest input) -> str:
+        auto p = query.query_params("DescribeExportImageTasks", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.ExportImageTaskIds.unwrap_or([])
+        p = query.query_flat_list(p, "ExportImageTaskId", t2)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeExportTasks
+    def describe_export_tasks(self, DescribeExportTasksRequest input) -> str:
+        auto p = query.query_params("DescribeExportTasks", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "ExportTaskId", input.ExportTaskIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeFastLaunchImages
+    def describe_fast_launch_images(self, DescribeFastLaunchImagesRequest input) -> str:
+        auto p = query.query_params("DescribeFastLaunchImages", "2016-11-15")
+        p = query.query_flat_list(p, "ImageId", input.ImageIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeFastSnapshotRestores
+    def describe_fast_snapshot_restores(self, DescribeFastSnapshotRestoresRequest input) -> str:
+        auto p = query.query_params("DescribeFastSnapshotRestores", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeFleetHistory
@@ -23389,6 +30385,54 @@ struct EC2Client:
         p = query.query_scalar(p, "StartTime", t0)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeFleetInstances
+    def describe_fleet_instances(self, DescribeFleetInstancesRequest input) -> str:
+        auto p = query.query_params("DescribeFleetInstances", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_scalar(p, "FleetId", input.FleetId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeFleets
+    def describe_fleets(self, DescribeFleetsRequest input) -> str:
+        auto p = query.query_params("DescribeFleets", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "FleetId", input.FleetIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeFlowLogs
+    def describe_flow_logs(self, DescribeFlowLogsRequest input) -> str:
+        auto p = query.query_params("DescribeFlowLogs", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filter.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "FlowLogId", input.FlowLogIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeFpgaImageAttribute
     def describe_fpga_image_attribute(self, DescribeFpgaImageAttributeRequest input) -> str:
         auto p = query.query_params("DescribeFpgaImageAttribute", "2016-11-15")
@@ -23396,6 +30440,86 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         p = query.query_scalar(p, "FpgaImageId", input.FpgaImageId)
         p = query.query_scalar(p, "Attribute", input.Attribute)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeFpgaImages
+    def describe_fpga_images(self, DescribeFpgaImagesRequest input) -> str:
+        auto p = query.query_params("DescribeFpgaImages", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "FpgaImageId", input.FpgaImageIds.unwrap_or([]))
+        p = query.query_flat_list(p, "Owner", input.Owners.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeHostReservationOfferings
+    def describe_host_reservation_offerings(self, DescribeHostReservationOfferingsRequest input) -> str:
+        auto p = query.query_params("DescribeHostReservationOfferings", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filter.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxDuration.is_some():
+            p = query.query_scalar(p, "MaxDuration", str(input.MaxDuration.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.MinDuration.is_some():
+            p = query.query_scalar(p, "MinDuration", str(input.MinDuration.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.OfferingId.is_some():
+            p = query.query_scalar(p, "OfferingId", input.OfferingId.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeHostReservations
+    def describe_host_reservations(self, DescribeHostReservationsRequest input) -> str:
+        auto p = query.query_params("DescribeHostReservations", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filter.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.HostReservationIdSet.unwrap_or([])
+        p = query.query_flat_list(p, "HostReservationIdSet", t2)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeHosts
+    def describe_hosts(self, DescribeHostsRequest input) -> str:
+        auto p = query.query_params("DescribeHosts", "2016-11-15")
+        p = query.query_flat_list(p, "HostId", input.HostIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filter.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIamInstanceProfileAssociations
+    def describe_iam_instance_profile_associations(self, DescribeIamInstanceProfileAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeIamInstanceProfileAssociations", "2016-11-15")
+        auto t0 = input.AssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "AssociationId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeIdFormat
@@ -23422,6 +30546,116 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeImageReferences
+    def describe_image_references(self, DescribeImageReferencesRequest input) -> str:
+        auto p = query.query_params("DescribeImageReferences", "2016-11-15")
+        p = query.query_flat_list(p, "ImageId", input.ImageIds)
+        if input.IncludeAllResourceTypes.is_some():
+            auto t0 = query.query_bool(input.IncludeAllResourceTypes.unwrap())
+            p = query.query_scalar(p, "IncludeAllResourceTypes", t0)
+        auto qi1 = 1
+        for qe2 in input.ResourceTypes.unwrap_or([]):
+            p = resource_type_request_to_query(p, "ResourceType." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeImageUsageReportEntries
+    def describe_image_usage_report_entries(self, DescribeImageUsageReportEntriesRequest input) -> str:
+        auto p = query.query_params("DescribeImageUsageReportEntries", "2016-11-15")
+        p = query.query_flat_list(p, "ImageId", input.ImageIds.unwrap_or([]))
+        p = query.query_flat_list(p, "ReportId", input.ReportIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeImageUsageReports
+    def describe_image_usage_reports(self, DescribeImageUsageReportsRequest input) -> str:
+        auto p = query.query_params("DescribeImageUsageReports", "2016-11-15")
+        p = query.query_flat_list(p, "ImageId", input.ImageIds.unwrap_or([]))
+        p = query.query_flat_list(p, "ReportId", input.ReportIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeImages
+    def describe_images(self, DescribeImagesRequest input) -> str:
+        auto p = query.query_params("DescribeImages", "2016-11-15")
+        auto t0 = input.ExecutableUsers.unwrap_or([])
+        p = query.query_flat_list(p, "ExecutableBy", t0)
+        p = query.query_flat_list(p, "ImageId", input.ImageIds.unwrap_or([]))
+        p = query.query_flat_list(p, "Owner", input.Owners.unwrap_or([]))
+        if input.IncludeDeprecated.is_some():
+            auto t1 = query.query_bool(input.IncludeDeprecated.unwrap())
+            p = query.query_scalar(p, "IncludeDeprecated", t1)
+        if input.IncludeDisabled.is_some():
+            auto t2 = query.query_bool(input.IncludeDisabled.unwrap())
+            p = query.query_scalar(p, "IncludeDisabled", t2)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi3 = 1
+        for qe4 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeImportImageTasks
+    def describe_import_image_tasks(self, DescribeImportImageTasksRequest input) -> str:
+        auto p = query.query_params("DescribeImportImageTasks", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "ImportTaskId", input.ImportTaskIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeImportSnapshotTasks
+    def describe_import_snapshot_tasks(self, DescribeImportSnapshotTasksRequest input) -> str:
+        auto p = query.query_params("DescribeImportSnapshotTasks", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "ImportTaskId", input.ImportTaskIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeInstanceAttribute
     def describe_instance_attribute(self, DescribeInstanceAttributeRequest input) -> str:
         auto p = query.query_params("DescribeInstanceAttribute", "2016-11-15")
@@ -23431,11 +30665,226 @@ struct EC2Client:
         p = query.query_scalar(p, "Attribute", input.Attribute)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeInstanceConnectEndpoints
+    def describe_instance_connect_endpoints(self, DescribeInstanceConnectEndpointsRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceConnectEndpoints", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.InstanceConnectEndpointIds.unwrap_or([])
+        p = query.query_flat_list(p, "InstanceConnectEndpointId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceCreditSpecifications
+    def describe_instance_credit_specifications(self, DescribeInstanceCreditSpecificationsRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceCreditSpecifications", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeInstanceEventNotificationAttributes
     def describe_instance_event_notification_attributes(self, DescribeInstanceEventNotificationAttributesRequest input) -> str:
         auto p = query.query_params("DescribeInstanceEventNotificationAttributes", "2016-11-15")
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceEventWindows
+    def describe_instance_event_windows(self, DescribeInstanceEventWindowsRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceEventWindows", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.InstanceEventWindowIds.unwrap_or([])
+        p = query.query_flat_list(p, "InstanceEventWindowId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceImageMetadata
+    def describe_instance_image_metadata(self, DescribeInstanceImageMetadataRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceImageMetadata", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceSqlHaHistoryStates
+    def describe_instance_sql_ha_history_states(self, DescribeInstanceSqlHaHistoryStatesRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceSqlHaHistoryStates", "2016-11-15")
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.StartTime.is_some():
+            auto t0 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t0)
+        if input.EndTime.is_some():
+            auto t1 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t1)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceSqlHaStates
+    def describe_instance_sql_ha_states(self, DescribeInstanceSqlHaStatesRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceSqlHaStates", "2016-11-15")
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceStatus
+    def describe_instance_status(self, DescribeInstanceStatusRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceStatus", "2016-11-15")
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.IncludeManagedResources.is_some():
+            auto t0 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.IncludeAllInstances.is_some():
+            auto t3 = query.query_bool(input.IncludeAllInstances.unwrap())
+            p = query.query_scalar(p, "IncludeAllInstances", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceTopology
+    def describe_instance_topology(self, DescribeInstanceTopologyRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceTopology", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        p = query.query_flat_list(p, "GroupName", input.GroupNames.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceTypeOfferings
+    def describe_instance_type_offerings(self, DescribeInstanceTypeOfferingsRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceTypeOfferings", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.LocationType.is_some():
+            p = query.query_scalar(p, "LocationType", input.LocationType.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstanceTypes
+    def describe_instance_types(self, DescribeInstanceTypesRequest input) -> str:
+        auto p = query.query_params("DescribeInstanceTypes", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "InstanceType", input.InstanceTypes.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.IncludeUnsupportedInRegion.is_some():
+            auto t2 = query.query_bool(input.IncludeUnsupportedInRegion.unwrap())
+            p = query.query_scalar(p, "IncludeUnsupportedInRegion", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInstances
+    def describe_instances(self, DescribeInstancesRequest input) -> str:
+        auto p = query.query_params("DescribeInstances", "2016-11-15")
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.IncludeManagedResources.is_some():
+            auto t0 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeInternetGateways
+    def describe_internet_gateways(self, DescribeInternetGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeInternetGateways", "2016-11-15")
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.InternetGatewayIds.unwrap_or([])
+        p = query.query_flat_list(p, "InternetGatewayId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeIpamByoasn
@@ -23445,6 +30894,578 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         if input.MaxResults.is_some():
             p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamExternalResourceVerificationTokens
+    def describe_ipam_external_resource_verification_tokens(self, DescribeIpamExternalResourceVerificationTokensRequest input) -> str:
+        auto p = query.query_params("DescribeIpamExternalResourceVerificationTokens", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto t2 = input.IpamExternalResourceVerificationTokenIds.unwrap_or([])
+        p = query.query_flat_list(p, "IpamExternalResourceVerificationTokenId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamInternetRegistryAssociations
+    def describe_ipam_internet_registry_associations(self, DescribeIpamInternetRegistryAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeIpamInternetRegistryAssociations", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamInternetRegistryAssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "IpamInternetRegistryAssociationId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamPolicies
+    def describe_ipam_policies(self, DescribeIpamPoliciesRequest input) -> str:
+        auto p = query.query_params("DescribeIpamPolicies", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "IpamPolicyId", input.IpamPolicyIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamPoolAllocations
+    def describe_ipam_pool_allocations(self, DescribeIpamPoolAllocationsRequest input) -> str:
+        auto p = query.query_params("DescribeIpamPoolAllocations", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamPoolAllocationIds.unwrap_or([])
+        p = query.query_flat_list(p, "IpamPoolAllocationId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamPools
+    def describe_ipam_pools(self, DescribeIpamPoolsRequest input) -> str:
+        auto p = query.query_params("DescribeIpamPools", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "IpamPoolId", input.IpamPoolIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamPrefixListResolverTargets
+    def describe_ipam_prefix_list_resolver_targets(self, DescribeIpamPrefixListResolverTargetsRequest input) -> str:
+        auto p = query.query_params("DescribeIpamPrefixListResolverTargets", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t2 = input.IpamPrefixListResolverTargetIds.unwrap_or([])
+        p = query.query_flat_list(p, "IpamPrefixListResolverTargetId", t2)
+        if input.IpamPrefixListResolverId.is_some():
+            auto t3 = input.IpamPrefixListResolverId.unwrap()
+            p = query.query_scalar(p, "IpamPrefixListResolverId", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamPrefixListResolvers
+    def describe_ipam_prefix_list_resolvers(self, DescribeIpamPrefixListResolversRequest input) -> str:
+        auto p = query.query_params("DescribeIpamPrefixListResolvers", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t2 = input.IpamPrefixListResolverIds.unwrap_or([])
+        p = query.query_flat_list(p, "IpamPrefixListResolverId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamResourceDiscoveries
+    def describe_ipam_resource_discoveries(self, DescribeIpamResourceDiscoveriesRequest input) -> str:
+        auto p = query.query_params("DescribeIpamResourceDiscoveries", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamResourceDiscoveryIds.unwrap_or([])
+        p = query.query_flat_list(p, "IpamResourceDiscoveryId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamResourceDiscoveryAssociations
+    def describe_ipam_resource_discovery_associations(self, DescribeIpamResourceDiscoveryAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeIpamResourceDiscoveryAssociations", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamResourceDiscoveryAssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "IpamResourceDiscoveryAssociationId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpamScopes
+    def describe_ipam_scopes(self, DescribeIpamScopesRequest input) -> str:
+        auto p = query.query_params("DescribeIpamScopes", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "IpamScopeId", input.IpamScopeIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpams
+    def describe_ipams(self, DescribeIpamsRequest input) -> str:
+        auto p = query.query_params("DescribeIpams", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "IpamId", input.IpamIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeIpv6Pools
+    def describe_ipv6_pools(self, DescribeIpv6PoolsRequest input) -> str:
+        auto p = query.query_params("DescribeIpv6Pools", "2016-11-15")
+        p = query.query_flat_list(p, "PoolId", input.PoolIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeKeyPairs
+    def describe_key_pairs(self, DescribeKeyPairsRequest input) -> str:
+        auto p = query.query_params("DescribeKeyPairs", "2016-11-15")
+        p = query.query_flat_list(p, "KeyName", input.KeyNames.unwrap_or([]))
+        p = query.query_flat_list(p, "KeyPairId", input.KeyPairIds.unwrap_or([]))
+        if input.IncludePublicKey.is_some():
+            auto t0 = query.query_bool(input.IncludePublicKey.unwrap())
+            p = query.query_scalar(p, "IncludePublicKey", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLaunchTemplateVersions
+    def describe_launch_template_versions(self, DescribeLaunchTemplateVersionsRequest input) -> str:
+        auto p = query.query_params("DescribeLaunchTemplateVersions", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.LaunchTemplateId.is_some():
+            auto t0 = input.LaunchTemplateId.unwrap()
+            p = query.query_scalar(p, "LaunchTemplateId", t0)
+        if input.LaunchTemplateName.is_some():
+            auto t1 = input.LaunchTemplateName.unwrap()
+            p = query.query_scalar(p, "LaunchTemplateName", t1)
+        auto t2 = input.Versions.unwrap_or([])
+        p = query.query_flat_list(p, "LaunchTemplateVersion", t2)
+        if input.MinVersion.is_some():
+            p = query.query_scalar(p, "MinVersion", input.MinVersion.unwrap())
+        if input.MaxVersion.is_some():
+            p = query.query_scalar(p, "MaxVersion", input.MaxVersion.unwrap())
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi3 = 1
+        for qe4 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.ResolveAlias.is_some():
+            auto t5 = query.query_bool(input.ResolveAlias.unwrap())
+            p = query.query_scalar(p, "ResolveAlias", t5)
+        if input.IncludeManagedResources.is_some():
+            auto t6 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t6)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLaunchTemplates
+    def describe_launch_templates(self, DescribeLaunchTemplatesRequest input) -> str:
+        auto p = query.query_params("DescribeLaunchTemplates", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.LaunchTemplateIds.unwrap_or([])
+        p = query.query_flat_list(p, "LaunchTemplateId", t0)
+        auto t1 = input.LaunchTemplateNames.unwrap_or([])
+        p = query.query_flat_list(p, "LaunchTemplateName", t1)
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.IncludeManagedResources.is_some():
+            auto t4 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t4)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociations
+    def describe_local_gateway_route_table_virtual_interface_group_associations(self, DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociations", "2016-11-15")
+        auto t0 = input.LocalGatewayRouteTableVirtualInterfaceGroupAssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "LocalGatewayRouteTableVirtualInterfaceGroupAssociationId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLocalGatewayRouteTableVpcAssociations
+    def describe_local_gateway_route_table_vpc_associations(self, DescribeLocalGatewayRouteTableVpcAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeLocalGatewayRouteTableVpcAssociations", "2016-11-15")
+        auto t0 = input.LocalGatewayRouteTableVpcAssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "LocalGatewayRouteTableVpcAssociationId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLocalGatewayRouteTables
+    def describe_local_gateway_route_tables(self, DescribeLocalGatewayRouteTablesRequest input) -> str:
+        auto p = query.query_params("DescribeLocalGatewayRouteTables", "2016-11-15")
+        auto t0 = input.LocalGatewayRouteTableIds.unwrap_or([])
+        p = query.query_flat_list(p, "LocalGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLocalGatewayVirtualInterfaceGroups
+    def describe_local_gateway_virtual_interface_groups(self, DescribeLocalGatewayVirtualInterfaceGroupsRequest input) -> str:
+        auto p = query.query_params("DescribeLocalGatewayVirtualInterfaceGroups", "2016-11-15")
+        auto t0 = input.LocalGatewayVirtualInterfaceGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "LocalGatewayVirtualInterfaceGroupId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLocalGatewayVirtualInterfaces
+    def describe_local_gateway_virtual_interfaces(self, DescribeLocalGatewayVirtualInterfacesRequest input) -> str:
+        auto p = query.query_params("DescribeLocalGatewayVirtualInterfaces", "2016-11-15")
+        auto t0 = input.LocalGatewayVirtualInterfaceIds.unwrap_or([])
+        p = query.query_flat_list(p, "LocalGatewayVirtualInterfaceId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLocalGateways
+    def describe_local_gateways(self, DescribeLocalGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeLocalGateways", "2016-11-15")
+        auto t0 = input.LocalGatewayIds.unwrap_or([])
+        p = query.query_flat_list(p, "LocalGatewayId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeLockedSnapshots
+    def describe_locked_snapshots(self, DescribeLockedSnapshotsRequest input) -> str:
+        auto p = query.query_params("DescribeLockedSnapshots", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "SnapshotId", input.SnapshotIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeMacHosts
+    def describe_mac_hosts(self, DescribeMacHostsRequest input) -> str:
+        auto p = query.query_params("DescribeMacHosts", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "HostId", input.HostIds.unwrap_or([]))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeMacModificationTasks
+    def describe_mac_modification_tasks(self, DescribeMacModificationTasksRequest input) -> str:
+        auto p = query.query_params("DescribeMacModificationTasks", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.MacModificationTaskIds.unwrap_or([])
+        p = query.query_flat_list(p, "MacModificationTaskId", t2)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeManagedPrefixLists
+    def describe_managed_prefix_lists(self, DescribeManagedPrefixListsRequest input) -> str:
+        auto p = query.query_params("DescribeManagedPrefixLists", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "PrefixListId", input.PrefixListIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeMovingAddresses
+    def describe_moving_addresses(self, DescribeMovingAddressesRequest input) -> str:
+        auto p = query.query_params("DescribeMovingAddresses", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "PublicIp", input.PublicIps.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNatGateways
+    def describe_nat_gateways(self, DescribeNatGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeNatGateways", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filter.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        p = query.query_flat_list(p, "NatGatewayId", input.NatGatewayIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkAcls
+    def describe_network_acls(self, DescribeNetworkAclsRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkAcls", "2016-11-15")
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "NetworkAclId", input.NetworkAclIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkInsightsAccessScopeAnalyses
+    def describe_network_insights_access_scope_analyses(self, DescribeNetworkInsightsAccessScopeAnalysesRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkInsightsAccessScopeAnalyses", "2016-11-15")
+        auto t0 = input.NetworkInsightsAccessScopeAnalysisIds.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkInsightsAccessScopeAnalysisId", t0)
+        if input.NetworkInsightsAccessScopeId.is_some():
+            auto t1 = input.NetworkInsightsAccessScopeId.unwrap()
+            p = query.query_scalar(p, "NetworkInsightsAccessScopeId", t1)
+        if input.AnalysisStartTimeBegin.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.AnalysisStartTimeBegin.unwrap())
+            p = query.query_scalar(p, "AnalysisStartTimeBegin", t2)
+        if input.AnalysisStartTimeEnd.is_some():
+            auto t3 = query.query_timestamp_iso8601(input.AnalysisStartTimeEnd.unwrap())
+            p = query.query_scalar(p, "AnalysisStartTimeEnd", t3)
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkInsightsAccessScopes
+    def describe_network_insights_access_scopes(self, DescribeNetworkInsightsAccessScopesRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkInsightsAccessScopes", "2016-11-15")
+        auto t0 = input.NetworkInsightsAccessScopeIds.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkInsightsAccessScopeId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkInsightsAnalyses
+    def describe_network_insights_analyses(self, DescribeNetworkInsightsAnalysesRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkInsightsAnalyses", "2016-11-15")
+        auto t0 = input.NetworkInsightsAnalysisIds.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkInsightsAnalysisId", t0)
+        if input.NetworkInsightsPathId.is_some():
+            auto t1 = input.NetworkInsightsPathId.unwrap()
+            p = query.query_scalar(p, "NetworkInsightsPathId", t1)
+        if input.AnalysisStartTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.AnalysisStartTime.unwrap())
+            p = query.query_scalar(p, "AnalysisStartTime", t2)
+        if input.AnalysisEndTime.is_some():
+            auto t3 = query.query_timestamp_iso8601(input.AnalysisEndTime.unwrap())
+            p = query.query_scalar(p, "AnalysisEndTime", t3)
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkInsightsPaths
+    def describe_network_insights_paths(self, DescribeNetworkInsightsPathsRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkInsightsPaths", "2016-11-15")
+        auto t0 = input.NetworkInsightsPathIds.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkInsightsPathId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -23459,6 +31480,86 @@ struct EC2Client:
             p = query.query_scalar(p, "Attribute", input.Attribute.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeNetworkInterfacePermissions
+    def describe_network_interface_permissions(self, DescribeNetworkInterfacePermissionsRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkInterfacePermissions", "2016-11-15")
+        auto t0 = input.NetworkInterfacePermissionIds.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkInterfacePermissionId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeNetworkInterfaces
+    def describe_network_interfaces(self, DescribeNetworkInterfacesRequest input) -> str:
+        auto p = query.query_params("DescribeNetworkInterfaces", "2016-11-15")
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.IncludeManagedResources.is_some():
+            auto t0 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t1 = input.NetworkInterfaceIds.unwrap_or([])
+        p = query.query_flat_list(p, "NetworkInterfaceId", t1)
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeOutpostLags
+    def describe_outpost_lags(self, DescribeOutpostLagsRequest input) -> str:
+        auto p = query.query_params("DescribeOutpostLags", "2016-11-15")
+        p = query.query_flat_list(p, "OutpostLagId", input.OutpostLagIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribePlacementGroups
+    def describe_placement_groups(self, DescribePlacementGroupsRequest input) -> str:
+        auto p = query.query_params("DescribePlacementGroups", "2016-11-15")
+        p = query.query_flat_list(p, "GroupId", input.GroupIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "GroupName", input.GroupNames.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribePrefixLists
+    def describe_prefix_lists(self, DescribePrefixListsRequest input) -> str:
+        auto p = query.query_params("DescribePrefixLists", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "PrefixListId", input.PrefixListIds.unwrap_or([]))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribePrincipalIdFormat
     def describe_principal_id_format(self, DescribePrincipalIdFormatRequest input) -> str:
         auto p = query.query_params("DescribePrincipalIdFormat", "2016-11-15")
@@ -23471,12 +31572,376 @@ struct EC2Client:
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribePublicIpv4Pools
+    def describe_public_ipv4_pools(self, DescribePublicIpv4PoolsRequest input) -> str:
+        auto p = query.query_params("DescribePublicIpv4Pools", "2016-11-15")
+        p = query.query_flat_list(p, "PoolId", input.PoolIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeRegions
+    def describe_regions(self, DescribeRegionsRequest input) -> str:
+        auto p = query.query_params("DescribeRegions", "2016-11-15")
+        p = query.query_flat_list(p, "RegionName", input.RegionNames.unwrap_or([]))
+        if input.AllRegions.is_some():
+            auto t0 = query.query_bool(input.AllRegions.unwrap())
+            p = query.query_scalar(p, "AllRegions", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeReplaceRootVolumeTasks
+    def describe_replace_root_volume_tasks(self, DescribeReplaceRootVolumeTasksRequest input) -> str:
+        auto p = query.query_params("DescribeReplaceRootVolumeTasks", "2016-11-15")
+        auto t0 = input.ReplaceRootVolumeTaskIds.unwrap_or([])
+        p = query.query_flat_list(p, "ReplaceRootVolumeTaskId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeReservedInstances
+    def describe_reserved_instances(self, DescribeReservedInstancesRequest input) -> str:
+        auto p = query.query_params("DescribeReservedInstances", "2016-11-15")
+        if input.OfferingClass.is_some():
+            p = query.query_scalar(p, "OfferingClass", input.OfferingClass.unwrap())
+        auto t0 = input.ReservedInstancesIds.unwrap_or([])
+        p = query.query_flat_list(p, "ReservedInstancesId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.OfferingType.is_some():
+            p = query.query_scalar(p, "OfferingType", input.OfferingType.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeReservedInstancesListings
+    def describe_reserved_instances_listings(self, DescribeReservedInstancesListingsRequest input) -> str:
+        auto p = query.query_params("DescribeReservedInstancesListings", "2016-11-15")
+        if input.ReservedInstancesId.is_some():
+            auto t0 = input.ReservedInstancesId.unwrap()
+            p = query.query_scalar(p, "ReservedInstancesId", t0)
+        if input.ReservedInstancesListingId.is_some():
+            auto t1 = input.ReservedInstancesListingId.unwrap()
+            p = query.query_scalar(p, "ReservedInstancesListingId", t1)
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeReservedInstancesModifications
+    def describe_reserved_instances_modifications(self, DescribeReservedInstancesModificationsRequest input) -> str:
+        auto p = query.query_params("DescribeReservedInstancesModifications", "2016-11-15")
+        auto t0 = input.ReservedInstancesModificationIds.unwrap_or([])
+        p = query.query_flat_list(p, "ReservedInstancesModificationId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeReservedInstancesOfferings
+    def describe_reserved_instances_offerings(self, DescribeReservedInstancesOfferingsRequest input) -> str:
+        auto p = query.query_params("DescribeReservedInstancesOfferings", "2016-11-15")
+        if input.AvailabilityZone.is_some():
+            auto t0 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t0)
+        if input.IncludeMarketplace.is_some():
+            auto t1 = query.query_bool(input.IncludeMarketplace.unwrap())
+            p = query.query_scalar(p, "IncludeMarketplace", t1)
+        if input.InstanceType.is_some():
+            p = query.query_scalar(p, "InstanceType", input.InstanceType.unwrap())
+        if input.MaxDuration.is_some():
+            p = query.query_scalar(p, "MaxDuration", str(input.MaxDuration.unwrap()))
+        if input.MaxInstanceCount.is_some():
+            auto t2 = str(input.MaxInstanceCount.unwrap())
+            p = query.query_scalar(p, "MaxInstanceCount", t2)
+        if input.MinDuration.is_some():
+            p = query.query_scalar(p, "MinDuration", str(input.MinDuration.unwrap()))
+        if input.OfferingClass.is_some():
+            p = query.query_scalar(p, "OfferingClass", input.OfferingClass.unwrap())
+        if input.ProductDescription.is_some():
+            auto t3 = input.ProductDescription.unwrap()
+            p = query.query_scalar(p, "ProductDescription", t3)
+        auto t4 = input.ReservedInstancesOfferingIds.unwrap_or([])
+        p = query.query_flat_list(p, "ReservedInstancesOfferingId", t4)
+        if input.AvailabilityZoneId.is_some():
+            auto t5 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t5)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi6 = 1
+        for qe7 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        if input.InstanceTenancy.is_some():
+            p = query.query_scalar(p, "InstanceTenancy", input.InstanceTenancy.unwrap())
+        if input.OfferingType.is_some():
+            p = query.query_scalar(p, "OfferingType", input.OfferingType.unwrap())
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeRouteServerEndpoints
+    def describe_route_server_endpoints(self, DescribeRouteServerEndpointsRequest input) -> str:
+        auto p = query.query_params("DescribeRouteServerEndpoints", "2016-11-15")
+        auto t0 = input.RouteServerEndpointIds.unwrap_or([])
+        p = query.query_flat_list(p, "RouteServerEndpointId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeRouteServerPeers
+    def describe_route_server_peers(self, DescribeRouteServerPeersRequest input) -> str:
+        auto p = query.query_params("DescribeRouteServerPeers", "2016-11-15")
+        auto t0 = input.RouteServerPeerIds.unwrap_or([])
+        p = query.query_flat_list(p, "RouteServerPeerId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeRouteServers
+    def describe_route_servers(self, DescribeRouteServersRequest input) -> str:
+        auto p = query.query_params("DescribeRouteServers", "2016-11-15")
+        auto t0 = input.RouteServerIds.unwrap_or([])
+        p = query.query_flat_list(p, "RouteServerId", t0)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeRouteTables
+    def describe_route_tables(self, DescribeRouteTablesRequest input) -> str:
+        auto p = query.query_params("DescribeRouteTables", "2016-11-15")
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "RouteTableId", input.RouteTableIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeScheduledInstanceAvailability
+    def describe_scheduled_instance_availability(self, DescribeScheduledInstanceAvailabilityRequest input) -> str:
+        auto p = query.query_params("DescribeScheduledInstanceAvailability", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.FirstSlotStartTimeRange
+        p = slot_date_time_range_request_to_query(p, "FirstSlotStartTimeRange", t2)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.MaxSlotDurationInHours.is_some():
+            auto t3 = str(input.MaxSlotDurationInHours.unwrap())
+            p = query.query_scalar(p, "MaxSlotDurationInHours", t3)
+        if input.MinSlotDurationInHours.is_some():
+            auto t4 = str(input.MinSlotDurationInHours.unwrap())
+            p = query.query_scalar(p, "MinSlotDurationInHours", t4)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t5 = input.Recurrence
+        p = scheduled_instance_recurrence_request_to_query(p, "Recurrence", t5)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeScheduledInstances
+    def describe_scheduled_instances(self, DescribeScheduledInstancesRequest input) -> str:
+        auto p = query.query_params("DescribeScheduledInstances", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t2 = input.ScheduledInstanceIds.unwrap_or([])
+        p = query.query_flat_list(p, "ScheduledInstanceId", t2)
+        if input.SlotStartTimeRange.is_some():
+            auto t3 = input.SlotStartTimeRange.unwrap()
+            p = slot_start_time_range_request_to_query(p, "SlotStartTimeRange", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSecondaryInterfaces
+    def describe_secondary_interfaces(self, DescribeSecondaryInterfacesRequest input) -> str:
+        auto p = query.query_params("DescribeSecondaryInterfaces", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t2 = input.SecondaryInterfaceIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecondaryInterfaceId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSecondaryNetworks
+    def describe_secondary_networks(self, DescribeSecondaryNetworksRequest input) -> str:
+        auto p = query.query_params("DescribeSecondaryNetworks", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t2 = input.SecondaryNetworkIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecondaryNetworkId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSecondarySubnets
+    def describe_secondary_subnets(self, DescribeSecondarySubnetsRequest input) -> str:
+        auto p = query.query_params("DescribeSecondarySubnets", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t2 = input.SecondarySubnetIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecondarySubnetId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeSecurityGroupReferences
     def describe_security_group_references(self, DescribeSecurityGroupReferencesRequest input) -> str:
         auto p = query.query_params("DescribeSecurityGroupReferences", "2016-11-15")
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         p = query.query_flat_list(p, "GroupId", input.GroupId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSecurityGroupRules
+    def describe_security_group_rules(self, DescribeSecurityGroupRulesRequest input) -> str:
+        auto p = query.query_params("DescribeSecurityGroupRules", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.SecurityGroupRuleIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupRuleId", t2)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSecurityGroupVpcAssociations
+    def describe_security_group_vpc_associations(self, DescribeSecurityGroupVpcAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeSecurityGroupVpcAssociations", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSecurityGroups
+    def describe_security_groups(self, DescribeSecurityGroupsRequest input) -> str:
+        auto p = query.query_params("DescribeSecurityGroups", "2016-11-15")
+        p = query.query_flat_list(p, "GroupId", input.GroupIds.unwrap_or([]))
+        p = query.query_flat_list(p, "GroupName", input.GroupNames.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeServiceLinkVirtualInterfaces
+    def describe_service_link_virtual_interfaces(self, DescribeServiceLinkVirtualInterfacesRequest input) -> str:
+        auto p = query.query_params("DescribeServiceLinkVirtualInterfaces", "2016-11-15")
+        auto t0 = input.ServiceLinkVirtualInterfaceIds.unwrap_or([])
+        p = query.query_flat_list(p, "ServiceLinkVirtualInterfaceId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeSnapshotAttribute
@@ -23486,6 +31951,40 @@ struct EC2Client:
         p = query.query_scalar(p, "SnapshotId", input.SnapshotId)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSnapshotTierStatus
+    def describe_snapshot_tier_status(self, DescribeSnapshotTierStatusRequest input) -> str:
+        auto p = query.query_params("DescribeSnapshotTierStatus", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSnapshots
+    def describe_snapshots(self, DescribeSnapshotsRequest input) -> str:
+        auto p = query.query_params("DescribeSnapshots", "2016-11-15")
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "Owner", input.OwnerIds.unwrap_or([]))
+        auto t0 = input.RestorableByUserIds.unwrap_or([])
+        p = query.query_flat_list(p, "RestorableBy", t0)
+        p = query.query_flat_list(p, "SnapshotId", input.SnapshotIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeSpotDatafeedSubscription
@@ -23536,6 +32035,53 @@ struct EC2Client:
             p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeSpotInstanceRequests
+    def describe_spot_instance_requests(self, DescribeSpotInstanceRequestsRequest input) -> str:
+        auto p = query.query_params("DescribeSpotInstanceRequests", "2016-11-15")
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.SpotInstanceRequestIds.unwrap_or([])
+        p = query.query_flat_list(p, "SpotInstanceRequestId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSpotPriceHistory
+    def describe_spot_price_history(self, DescribeSpotPriceHistoryRequest input) -> str:
+        auto p = query.query_params("DescribeSpotPriceHistory", "2016-11-15")
+        if input.AvailabilityZoneId.is_some():
+            auto t0 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.StartTime.is_some():
+            auto t1 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t1)
+        if input.EndTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t2)
+        p = query.query_flat_list(p, "InstanceType", input.InstanceTypes.unwrap_or([]))
+        auto t3 = input.ProductDescriptions.unwrap_or([])
+        p = query.query_flat_list(p, "ProductDescription", t3)
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.AvailabilityZone.is_some():
+            auto t6 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t6)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeStaleSecurityGroups
     def describe_stale_security_groups(self, DescribeStaleSecurityGroupsRequest input) -> str:
         auto p = query.query_params("DescribeStaleSecurityGroups", "2016-11-15")
@@ -23548,6 +32094,422 @@ struct EC2Client:
         p = query.query_scalar(p, "VpcId", input.VpcId)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeStoreImageTasks
+    def describe_store_image_tasks(self, DescribeStoreImageTasksRequest input) -> str:
+        auto p = query.query_params("DescribeStoreImageTasks", "2016-11-15")
+        p = query.query_flat_list(p, "ImageId", input.ImageIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeSubnets
+    def describe_subnets(self, DescribeSubnetsRequest input) -> str:
+        auto p = query.query_params("DescribeSubnets", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "SubnetId", input.SubnetIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTags
+    def describe_tags(self, DescribeTagsRequest input) -> str:
+        auto p = query.query_params("DescribeTags", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTrafficMirrorFilterRules
+    def describe_traffic_mirror_filter_rules(self, DescribeTrafficMirrorFilterRulesRequest input) -> str:
+        auto p = query.query_params("DescribeTrafficMirrorFilterRules", "2016-11-15")
+        auto t0 = input.TrafficMirrorFilterRuleIds.unwrap_or([])
+        p = query.query_flat_list(p, "TrafficMirrorFilterRuleId", t0)
+        if input.TrafficMirrorFilterId.is_some():
+            auto t1 = input.TrafficMirrorFilterId.unwrap()
+            p = query.query_scalar(p, "TrafficMirrorFilterId", t1)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTrafficMirrorFilters
+    def describe_traffic_mirror_filters(self, DescribeTrafficMirrorFiltersRequest input) -> str:
+        auto p = query.query_params("DescribeTrafficMirrorFilters", "2016-11-15")
+        auto t0 = input.TrafficMirrorFilterIds.unwrap_or([])
+        p = query.query_flat_list(p, "TrafficMirrorFilterId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTrafficMirrorSessions
+    def describe_traffic_mirror_sessions(self, DescribeTrafficMirrorSessionsRequest input) -> str:
+        auto p = query.query_params("DescribeTrafficMirrorSessions", "2016-11-15")
+        auto t0 = input.TrafficMirrorSessionIds.unwrap_or([])
+        p = query.query_flat_list(p, "TrafficMirrorSessionId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTrafficMirrorTargets
+    def describe_traffic_mirror_targets(self, DescribeTrafficMirrorTargetsRequest input) -> str:
+        auto p = query.query_params("DescribeTrafficMirrorTargets", "2016-11-15")
+        auto t0 = input.TrafficMirrorTargetIds.unwrap_or([])
+        p = query.query_flat_list(p, "TrafficMirrorTargetId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayAttachments
+    def describe_transit_gateway_attachments(self, DescribeTransitGatewayAttachmentsRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayAttachments", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayAttachmentIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayConnectPeers
+    def describe_transit_gateway_connect_peers(self, DescribeTransitGatewayConnectPeersRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayConnectPeers", "2016-11-15")
+        auto t0 = input.TransitGatewayConnectPeerIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayConnectPeerIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayConnects
+    def describe_transit_gateway_connects(self, DescribeTransitGatewayConnectsRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayConnects", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayAttachmentIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayMeteringPolicies
+    def describe_transit_gateway_metering_policies(self, DescribeTransitGatewayMeteringPoliciesRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayMeteringPolicies", "2016-11-15")
+        auto t0 = input.TransitGatewayMeteringPolicyIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayMeteringPolicyIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayMulticastDomains
+    def describe_transit_gateway_multicast_domains(self, DescribeTransitGatewayMulticastDomainsRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayMulticastDomains", "2016-11-15")
+        auto t0 = input.TransitGatewayMulticastDomainIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayMulticastDomainIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayPeeringAttachments
+    def describe_transit_gateway_peering_attachments(self, DescribeTransitGatewayPeeringAttachmentsRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayPeeringAttachments", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayAttachmentIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayPolicyTables
+    def describe_transit_gateway_policy_tables(self, DescribeTransitGatewayPolicyTablesRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayPolicyTables", "2016-11-15")
+        auto t0 = input.TransitGatewayPolicyTableIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayPolicyTableIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayRouteTableAnnouncements
+    def describe_transit_gateway_route_table_announcements(self, DescribeTransitGatewayRouteTableAnnouncementsRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayRouteTableAnnouncements", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableAnnouncementIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayRouteTableAnnouncementIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayRouteTables
+    def describe_transit_gateway_route_tables(self, DescribeTransitGatewayRouteTablesRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayRouteTables", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayRouteTableIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGatewayVpcAttachments
+    def describe_transit_gateway_vpc_attachments(self, DescribeTransitGatewayVpcAttachmentsRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGatewayVpcAttachments", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayAttachmentIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTransitGateways
+    def describe_transit_gateways(self, DescribeTransitGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeTransitGateways", "2016-11-15")
+        auto t0 = input.TransitGatewayIds.unwrap_or([])
+        p = query.query_flat_list(p, "TransitGatewayIds", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeTrunkInterfaceAssociations
+    def describe_trunk_interface_associations(self, DescribeTrunkInterfaceAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeTrunkInterfaceAssociations", "2016-11-15")
+        auto t0 = input.AssociationIds.unwrap_or([])
+        p = query.query_flat_list(p, "AssociationId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVerifiedAccessEndpoints
+    def describe_verified_access_endpoints(self, DescribeVerifiedAccessEndpointsRequest input) -> str:
+        auto p = query.query_params("DescribeVerifiedAccessEndpoints", "2016-11-15")
+        auto t0 = input.VerifiedAccessEndpointIds.unwrap_or([])
+        p = query.query_flat_list(p, "VerifiedAccessEndpointId", t0)
+        if input.VerifiedAccessInstanceId.is_some():
+            auto t1 = input.VerifiedAccessInstanceId.unwrap()
+            p = query.query_scalar(p, "VerifiedAccessInstanceId", t1)
+        if input.VerifiedAccessGroupId.is_some():
+            auto t2 = input.VerifiedAccessGroupId.unwrap()
+            p = query.query_scalar(p, "VerifiedAccessGroupId", t2)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi3 = 1
+        for qe4 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVerifiedAccessGroups
+    def describe_verified_access_groups(self, DescribeVerifiedAccessGroupsRequest input) -> str:
+        auto p = query.query_params("DescribeVerifiedAccessGroups", "2016-11-15")
+        auto t0 = input.VerifiedAccessGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "VerifiedAccessGroupId", t0)
+        if input.VerifiedAccessInstanceId.is_some():
+            auto t1 = input.VerifiedAccessInstanceId.unwrap()
+            p = query.query_scalar(p, "VerifiedAccessInstanceId", t1)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVerifiedAccessInstanceLoggingConfigurations
+    def describe_verified_access_instance_logging_configurations(self, DescribeVerifiedAccessInstanceLoggingConfigurationsRequest input) -> str:
+        auto p = query.query_params("DescribeVerifiedAccessInstanceLoggingConfigurations", "2016-11-15")
+        auto t0 = input.VerifiedAccessInstanceIds.unwrap_or([])
+        p = query.query_flat_list(p, "VerifiedAccessInstanceId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVerifiedAccessInstances
+    def describe_verified_access_instances(self, DescribeVerifiedAccessInstancesRequest input) -> str:
+        auto p = query.query_params("DescribeVerifiedAccessInstances", "2016-11-15")
+        auto t0 = input.VerifiedAccessInstanceIds.unwrap_or([])
+        p = query.query_flat_list(p, "VerifiedAccessInstanceId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVerifiedAccessTrustProviders
+    def describe_verified_access_trust_providers(self, DescribeVerifiedAccessTrustProvidersRequest input) -> str:
+        auto p = query.query_params("DescribeVerifiedAccessTrustProviders", "2016-11-15")
+        auto t0 = input.VerifiedAccessTrustProviderIds.unwrap_or([])
+        p = query.query_flat_list(p, "VerifiedAccessTrustProviderId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeVolumeAttribute
     def describe_volume_attribute(self, DescribeVolumeAttributeRequest input) -> str:
         auto p = query.query_params("DescribeVolumeAttribute", "2016-11-15")
@@ -23555,6 +32517,63 @@ struct EC2Client:
         p = query.query_scalar(p, "VolumeId", input.VolumeId)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVolumeStatus
+    def describe_volume_status(self, DescribeVolumeStatusRequest input) -> str:
+        auto p = query.query_params("DescribeVolumeStatus", "2016-11-15")
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_flat_list(p, "VolumeId", input.VolumeIds.unwrap_or([]))
+        if input.IncludeManagedResources.is_some():
+            auto t0 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVolumes
+    def describe_volumes(self, DescribeVolumesRequest input) -> str:
+        auto p = query.query_params("DescribeVolumes", "2016-11-15")
+        p = query.query_flat_list(p, "VolumeId", input.VolumeIds.unwrap_or([]))
+        if input.IncludeManagedResources.is_some():
+            auto t0 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVolumesModifications
+    def describe_volumes_modifications(self, DescribeVolumesModificationsRequest input) -> str:
+        auto p = query.query_params("DescribeVolumesModifications", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "VolumeId", input.VolumeIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.IncludeManagedResources.is_some():
+            auto t2 = query.query_bool(input.IncludeManagedResources.unwrap())
+            p = query.query_scalar(p, "IncludeManagedResources", t2)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeVpcAttribute
@@ -23566,11 +32585,39 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DescribeVpcBlockPublicAccessExclusions
+    def describe_vpc_block_public_access_exclusions(self, DescribeVpcBlockPublicAccessExclusionsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcBlockPublicAccessExclusions", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "ExclusionId", input.ExclusionIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DescribeVpcBlockPublicAccessOptions
     def describe_vpc_block_public_access_options(self, DescribeVpcBlockPublicAccessOptionsRequest input) -> str:
         auto p = query.query_params("DescribeVpcBlockPublicAccessOptions", "2016-11-15")
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcClassicLink
+    def describe_vpc_classic_link(self, DescribeVpcClassicLinkRequest input) -> str:
+        auto p = query.query_params("DescribeVpcClassicLink", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "VpcId", input.VpcIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DescribeVpcClassicLinkDnsSupport
@@ -23581,6 +32628,216 @@ struct EC2Client:
             p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEncryptionControls
+    def describe_vpc_encryption_controls(self, DescribeVpcEncryptionControlsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEncryptionControls", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.VpcEncryptionControlIds.unwrap_or([])
+        p = query.query_flat_list(p, "VpcEncryptionControlId", t2)
+        p = query.query_flat_list(p, "VpcId", input.VpcIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEndpointAssociations
+    def describe_vpc_endpoint_associations(self, DescribeVpcEndpointAssociationsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEndpointAssociations", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.VpcEndpointIds.unwrap_or([])
+        p = query.query_flat_list(p, "VpcEndpointId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEndpointConnectionNotifications
+    def describe_vpc_endpoint_connection_notifications(self, DescribeVpcEndpointConnectionNotificationsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEndpointConnectionNotifications", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ConnectionNotificationId.is_some():
+            auto t0 = input.ConnectionNotificationId.unwrap()
+            p = query.query_scalar(p, "ConnectionNotificationId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEndpointConnections
+    def describe_vpc_endpoint_connections(self, DescribeVpcEndpointConnectionsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEndpointConnections", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEndpointServiceConfigurations
+    def describe_vpc_endpoint_service_configurations(self, DescribeVpcEndpointServiceConfigurationsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEndpointServiceConfigurations", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "ServiceId", input.ServiceIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEndpointServicePermissions
+    def describe_vpc_endpoint_service_permissions(self, DescribeVpcEndpointServicePermissionsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEndpointServicePermissions", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "ServiceId", input.ServiceId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEndpointServices
+    def describe_vpc_endpoint_services(self, DescribeVpcEndpointServicesRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEndpointServices", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "ServiceName", input.ServiceNames.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto t2 = input.ServiceRegions.unwrap_or([])
+        p = query.query_flat_list(p, "ServiceRegion", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcEndpoints
+    def describe_vpc_endpoints(self, DescribeVpcEndpointsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcEndpoints", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.VpcEndpointIds.unwrap_or([])
+        p = query.query_flat_list(p, "VpcEndpointId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcPeeringConnections
+    def describe_vpc_peering_connections(self, DescribeVpcPeeringConnectionsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcPeeringConnections", "2016-11-15")
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.VpcPeeringConnectionIds.unwrap_or([])
+        p = query.query_flat_list(p, "VpcPeeringConnectionId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpcs
+    def describe_vpcs(self, DescribeVpcsRequest input) -> str:
+        auto p = query.query_params("DescribeVpcs", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "VpcId", input.VpcIds.unwrap_or([]))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpnConcentrators
+    def describe_vpn_concentrators(self, DescribeVpnConcentratorsRequest input) -> str:
+        auto p = query.query_params("DescribeVpnConcentrators", "2016-11-15")
+        auto t0 = input.VpnConcentratorIds.unwrap_or([])
+        p = query.query_flat_list(p, "VpnConcentratorId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpnConnections
+    def describe_vpn_connections(self, DescribeVpnConnectionsRequest input) -> str:
+        auto p = query.query_params("DescribeVpnConnections", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.VpnConnectionIds.unwrap_or([])
+        p = query.query_flat_list(p, "VpnConnectionId", t2)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DescribeVpnGateways
+    def describe_vpn_gateways(self, DescribeVpnGatewaysRequest input) -> str:
+        auto p = query.query_params("DescribeVpnGateways", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_flat_list(p, "VpnGatewayId", input.VpnGatewayIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DetachClassicLinkVpc
@@ -23866,6 +33123,23 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # DisassociateApplicationStatusCheck
+    def disassociate_application_status_check(self, DisassociateApplicationStatusCheckRequest input) -> str:
+        auto p = query.query_params("DisassociateApplicationStatusCheck", "2016-11-15")
+        auto t0 = input.ApplicationStatusCheckId
+        p = query.query_scalar(p, "ApplicationStatusCheckId", t0)
+        auto qi1 = 1
+        for qe2 in input.TargetTagAssociations.unwrap_or([]):
+            auto t3 = qe2
+            p = custom_tag_key_value_request_pair_to_query(p, "TargetTagAssociation." + str(qi1), t3)
+            qi1 = qi1 + 1
+        p = query.query_flat_list(p, "InstanceId", input.InstanceIds.unwrap_or([]))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # DisassociateCapacityReservationBillingOwner
     def disassociate_capacity_reservation_billing_owner(self, DisassociateCapacityReservationBillingOwnerRequest input) -> str:
         auto p = query.query_params("DisassociateCapacityReservationBillingOwner", "2016-11-15")
@@ -23898,6 +33172,16 @@ struct EC2Client:
     def disassociate_iam_instance_profile(self, DisassociateIamInstanceProfileRequest input) -> str:
         auto p = query.query_params("DisassociateIamInstanceProfile", "2016-11-15")
         p = query.query_scalar(p, "AssociationId", input.AssociationId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # DisassociateInstanceEventWindow
+    def disassociate_instance_event_window(self, DisassociateInstanceEventWindowRequest input) -> str:
+        auto p = query.query_params("DisassociateInstanceEventWindow", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "InstanceEventWindowId", input.InstanceEventWindowId)
+        auto t0 = input.AssociationTarget
+        p = instance_event_window_disassociation_request_to_query(p, "AssociationTarget", t0)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # DisassociateIpamByoasn
@@ -24073,6 +33357,25 @@ struct EC2Client:
     # EnableEbsEncryptionByDefault
     def enable_ebs_encryption_by_default(self, EnableEbsEncryptionByDefaultRequest input) -> str:
         auto p = query.query_params("EnableEbsEncryptionByDefault", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # EnableFastLaunch
+    def enable_fast_launch(self, EnableFastLaunchRequest input) -> str:
+        auto p = query.query_params("EnableFastLaunch", "2016-11-15")
+        p = query.query_scalar(p, "ImageId", input.ImageId)
+        if input.ResourceType.is_some():
+            p = query.query_scalar(p, "ResourceType", input.ResourceType.unwrap())
+        if input.SnapshotConfiguration.is_some():
+            auto t0 = input.SnapshotConfiguration.unwrap()
+            p = fast_launch_snapshot_configuration_request_to_query(p, "SnapshotConfiguration", t0)
+        if input.LaunchTemplate.is_some():
+            auto t1 = input.LaunchTemplate.unwrap()
+            p = fast_launch_launch_template_specification_request_to_query(p, "LaunchTemplate", t1)
+        if input.MaxParallelLaunches.is_some():
+            auto t2 = str(input.MaxParallelLaunches.unwrap())
+            p = query.query_scalar(p, "MaxParallelLaunches", t2)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -24268,6 +33571,41 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ExportImage
+    def export_image(self, ExportImageRequest input) -> str:
+        auto p = query.query_params("ExportImage", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        p = query.query_scalar(p, "DiskImageFormat", input.DiskImageFormat)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "ImageId", input.ImageId)
+        auto t0 = input.S3ExportLocation
+        p = export_task_s3_location_request_to_query(p, "S3ExportLocation", t0)
+        if input.RoleName.is_some():
+            p = query.query_scalar(p, "RoleName", input.RoleName.unwrap())
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ExportTransitGatewayRoutes
+    def export_transit_gateway_routes(self, ExportTransitGatewayRoutesRequest input) -> str:
+        auto p = query.query_params("ExportTransitGatewayRoutes", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableId
+        p = query.query_scalar(p, "TransitGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        p = query.query_scalar(p, "S3Bucket", input.S3Bucket)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ExportVerifiedAccessInstanceClientConfiguration
     def export_verified_access_instance_client_configuration(self, ExportVerifiedAccessInstanceClientConfigurationRequest input) -> str:
         auto p = query.query_params("ExportVerifiedAccessInstanceClientConfiguration", "2016-11-15")
@@ -24314,9 +33652,73 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetAwsNetworkPerformanceData
+    def get_aws_network_performance_data(self, GetAwsNetworkPerformanceDataRequest input) -> str:
+        auto p = query.query_params("GetAwsNetworkPerformanceData", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.DataQueries.unwrap_or([]):
+            p = data_query_to_query(p, "DataQuery." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.StartTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t2)
+        if input.EndTime.is_some():
+            auto t3 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t3)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetCapacityManagerAttributes
     def get_capacity_manager_attributes(self, GetCapacityManagerAttributesRequest input) -> str:
         auto p = query.query_params("GetCapacityManagerAttributes", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetCapacityManagerMetricData
+    def get_capacity_manager_metric_data(self, GetCapacityManagerMetricDataRequest input) -> str:
+        auto p = query.query_params("GetCapacityManagerMetricData", "2016-11-15")
+        p = query.query_flat_list(p, "MetricName", input.MetricNames)
+        auto t0 = query.query_timestamp_iso8601(input.StartTime)
+        p = query.query_scalar(p, "StartTime", t0)
+        auto t1 = query.query_timestamp_iso8601(input.EndTime)
+        p = query.query_scalar(p, "EndTime", t1)
+        p = query.query_scalar(p, "Period", str(input.Period))
+        p = query.query_flat_list(p, "GroupBy", input.GroupBy.unwrap_or([]))
+        auto qi2 = 1
+        for qe3 in input.FilterBy.unwrap_or([]):
+            p = capacity_manager_condition_to_query(p, "FilterBy." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetCapacityManagerMetricDimensions
+    def get_capacity_manager_metric_dimensions(self, GetCapacityManagerMetricDimensionsRequest input) -> str:
+        auto p = query.query_params("GetCapacityManagerMetricDimensions", "2016-11-15")
+        p = query.query_flat_list(p, "GroupBy", input.GroupBy)
+        auto qi0 = 1
+        for qe1 in input.FilterBy.unwrap_or([]):
+            p = capacity_manager_condition_to_query(p, "FilterBy." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = query.query_timestamp_iso8601(input.StartTime)
+        p = query.query_scalar(p, "StartTime", t2)
+        auto t3 = query.query_timestamp_iso8601(input.EndTime)
+        p = query.query_scalar(p, "EndTime", t3)
+        p = query.query_flat_list(p, "MetricName", input.MetricNames)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -24328,6 +33730,22 @@ struct EC2Client:
             p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetCapacityManagerSupportabilityScores
+    def get_capacity_manager_supportability_scores(self, GetCapacityManagerSupportabilityScoresRequest input) -> str:
+        auto p = query.query_params("GetCapacityManagerSupportabilityScores", "2016-11-15")
+        p = query.query_scalar(p, "MarketType", input.MarketType)
+        p = query.query_scalar(p, "CapacityAmount", str(input.CapacityAmount))
+        p = query.query_scalar(p, "CapacityUnit", input.CapacityUnit)
+        auto t0 = input.CapacityAvailabilityZoneIds
+        p = query.query_flat_list(p, "CapacityAvailabilityZoneId", t0)
+        p = query.query_flat_list(p, "InstanceType", input.InstanceTypes.unwrap_or([]))
+        if input.InstanceRequirementsWithMetadata.is_some():
+            auto t1 = input.InstanceRequirementsWithMetadata.unwrap()
+            p = instance_requirements_with_metadata_request_to_query(p, "InstanceRequirementsWithMetadata", t1)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -24348,6 +33766,22 @@ struct EC2Client:
     def get_client_vpn_endpoint_authorization_policy(self, GetClientVpnEndpointAuthorizationPolicyRequest input) -> str:
         auto p = query.query_params("GetClientVpnEndpointAuthorizationPolicy", "2016-11-15")
         p = query.query_scalar(p, "ClientVpnEndpointId", input.ClientVpnEndpointId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetCoipPoolUsage
+    def get_coip_pool_usage(self, GetCoipPoolUsageRequest input) -> str:
+        auto p = query.query_params("GetCoipPoolUsage", "2016-11-15")
+        p = query.query_scalar(p, "PoolId", input.PoolId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -24407,6 +33841,17 @@ struct EC2Client:
         auto p = query.query_params("GetEnabledIpamPolicy", "2016-11-15")
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetFlowLogsIntegrationTemplate
+    def get_flow_logs_integration_template(self, GetFlowLogsIntegrationTemplateRequest input) -> str:
+        auto p = query.query_params("GetFlowLogsIntegrationTemplate", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "FlowLogId", input.FlowLogId)
+        auto t0 = input.ConfigDeliveryS3DestinationArn
+        p = query.query_scalar(p, "ConfigDeliveryS3DestinationArn", t0)
+        p = integrate_services_to_query(p, "IntegrateService", input.IntegrateServices)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # GetGroupsForCapacityReservation
@@ -24472,6 +33917,23 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetInstanceTypesFromInstanceRequirements
+    def get_instance_types_from_instance_requirements(self, GetInstanceTypesFromInstanceRequirementsRequest input) -> str:
+        auto p = query.query_params("GetInstanceTypesFromInstanceRequirements", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "ArchitectureType", input.ArchitectureTypes)
+        p = query.query_flat_list(p, "VirtualizationType", input.VirtualizationTypes)
+        auto t0 = input.InstanceRequirements
+        p = instance_requirements_request_to_query(p, "InstanceRequirements", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.Context.is_some():
+            p = query.query_scalar(p, "Context", input.Context.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetInstanceUefiData
     def get_instance_uefi_data(self, GetInstanceUefiDataRequest input) -> str:
         auto p = query.query_params("GetInstanceUefiData", "2016-11-15")
@@ -24501,6 +33963,200 @@ struct EC2Client:
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetIpamDiscoveredAccounts
+    def get_ipam_discovered_accounts(self, GetIpamDiscoveredAccountsRequest input) -> str:
+        auto p = query.query_params("GetIpamDiscoveredAccounts", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamResourceDiscoveryId
+        p = query.query_scalar(p, "IpamResourceDiscoveryId", t0)
+        p = query.query_scalar(p, "DiscoveryRegion", input.DiscoveryRegion)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamDiscoveredPublicAddresses
+    def get_ipam_discovered_public_addresses(self, GetIpamDiscoveredPublicAddressesRequest input) -> str:
+        auto p = query.query_params("GetIpamDiscoveredPublicAddresses", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamResourceDiscoveryId
+        p = query.query_scalar(p, "IpamResourceDiscoveryId", t0)
+        p = query.query_scalar(p, "AddressRegion", input.AddressRegion)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamDiscoveredResourceCidrs
+    def get_ipam_discovered_resource_cidrs(self, GetIpamDiscoveredResourceCidrsRequest input) -> str:
+        auto p = query.query_params("GetIpamDiscoveredResourceCidrs", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamResourceDiscoveryId
+        p = query.query_scalar(p, "IpamResourceDiscoveryId", t0)
+        p = query.query_scalar(p, "ResourceRegion", input.ResourceRegion)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamDiscoveredRoutes
+    def get_ipam_discovered_routes(self, GetIpamDiscoveredRoutesRequest input) -> str:
+        auto p = query.query_params("GetIpamDiscoveredRoutes", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamResourceDiscoveryId
+        p = query.query_scalar(p, "IpamResourceDiscoveryId", t0)
+        p = query.query_scalar(p, "ResourceRegion", input.ResourceRegion)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamInternetRegistryAssociationAsns
+    def get_ipam_internet_registry_association_asns(self, GetIpamInternetRegistryAssociationAsnsRequest input) -> str:
+        auto p = query.query_params("GetIpamInternetRegistryAssociationAsns", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamInternetRegistryAssociationId
+        p = query.query_scalar(p, "IpamInternetRegistryAssociationId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamInternetRegistryAssociationCidrs
+    def get_ipam_internet_registry_association_cidrs(self, GetIpamInternetRegistryAssociationCidrsRequest input) -> str:
+        auto p = query.query_params("GetIpamInternetRegistryAssociationCidrs", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamInternetRegistryAssociationId
+        p = query.query_scalar(p, "IpamInternetRegistryAssociationId", t0)
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamPolicyAllocationRules
+    def get_ipam_policy_allocation_rules(self, GetIpamPolicyAllocationRulesRequest input) -> str:
+        auto p = query.query_params("GetIpamPolicyAllocationRules", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamPolicyId", input.IpamPolicyId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Locale.is_some():
+            p = query.query_scalar(p, "Locale", input.Locale.unwrap())
+        if input.ResourceType.is_some():
+            p = query.query_scalar(p, "ResourceType", input.ResourceType.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamPolicyOrganizationTargets
+    def get_ipam_policy_organization_targets(self, GetIpamPolicyOrganizationTargetsRequest input) -> str:
+        auto p = query.query_params("GetIpamPolicyOrganizationTargets", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_scalar(p, "IpamPolicyId", input.IpamPolicyId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamPoolAllocations
+    def get_ipam_pool_allocations(self, GetIpamPoolAllocationsRequest input) -> str:
+        auto p = query.query_params("GetIpamPoolAllocations", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamPoolId", input.IpamPoolId)
+        if input.IpamPoolAllocationId.is_some():
+            auto t0 = input.IpamPoolAllocationId.unwrap()
+            p = query.query_scalar(p, "IpamPoolAllocationId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamPoolCidrs
+    def get_ipam_pool_cidrs(self, GetIpamPoolCidrsRequest input) -> str:
+        auto p = query.query_params("GetIpamPoolCidrs", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamPoolId", input.IpamPoolId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamPrefixListResolverRules
+    def get_ipam_prefix_list_resolver_rules(self, GetIpamPrefixListResolverRulesRequest input) -> str:
+        auto p = query.query_params("GetIpamPrefixListResolverRules", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamPrefixListResolverId
+        p = query.query_scalar(p, "IpamPrefixListResolverId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetIpamPrefixListResolverVersionEntries
     def get_ipam_prefix_list_resolver_version_entries(self, GetIpamPrefixListResolverVersionEntriesRequest input) -> str:
         auto p = query.query_params("GetIpamPrefixListResolverVersionEntries", "2016-11-15")
@@ -24516,6 +34172,55 @@ struct EC2Client:
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetIpamPrefixListResolverVersions
+    def get_ipam_prefix_list_resolver_versions(self, GetIpamPrefixListResolverVersionsRequest input) -> str:
+        auto p = query.query_params("GetIpamPrefixListResolverVersions", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamPrefixListResolverId
+        p = query.query_scalar(p, "IpamPrefixListResolverId", t0)
+        auto qi1 = 1
+        for qe2 in input.IpamPrefixListResolverVersions.unwrap_or([]):
+            auto t3 = str(qe2)
+            p = query.query_scalar(p, "IpamPrefixListResolverVersion." + str(qi1), t3)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamResourceCidrs
+    def get_ipam_resource_cidrs(self, GetIpamResourceCidrsRequest input) -> str:
+        auto p = query.query_params("GetIpamResourceCidrs", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        p = query.query_scalar(p, "IpamScopeId", input.IpamScopeId)
+        if input.IpamPoolId.is_some():
+            p = query.query_scalar(p, "IpamPoolId", input.IpamPoolId.unwrap())
+        if input.ResourceId.is_some():
+            p = query.query_scalar(p, "ResourceId", input.ResourceId.unwrap())
+        if input.ResourceType.is_some():
+            p = query.query_scalar(p, "ResourceType", input.ResourceType.unwrap())
+        if input.ResourceTag.is_some():
+            auto t2 = input.ResourceTag.unwrap()
+            p = request_ipam_resource_tag_to_query(p, "ResourceTag", t2)
+        if input.ResourceOwner.is_some():
+            p = query.query_scalar(p, "ResourceOwner", input.ResourceOwner.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetIpamRouteOriginAuthorizations
     def get_ipam_route_origin_authorizations(self, GetIpamRouteOriginAuthorizationsRequest input) -> str:
         auto p = query.query_params("GetIpamRouteOriginAuthorizations", "2016-11-15")
@@ -24529,6 +34234,22 @@ struct EC2Client:
             p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetIpamRouteProtectionFindings
+    def get_ipam_route_protection_findings(self, GetIpamRouteProtectionFindingsRequest input) -> str:
+        auto p = query.query_params("GetIpamRouteProtectionFindings", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # GetIpamRoutingPolicyRegistrationDeltas
@@ -24642,6 +34363,19 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetReservedInstancesExchangeQuote
+    def get_reserved_instances_exchange_quote(self, GetReservedInstancesExchangeQuoteRequest input) -> str:
+        auto p = query.query_params("GetReservedInstancesExchangeQuote", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_flat_list(p, "ReservedInstanceId", input.ReservedInstanceIds)
+        auto qi0 = 1
+        for qe1 in input.TargetConfigurations.unwrap_or([]):
+            auto t2 = qe1
+            p = target_configuration_request_to_query(p, "TargetConfiguration." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetRouteServerAssociations
     def get_route_server_associations(self, GetRouteServerAssociationsRequest input) -> str:
         auto p = query.query_params("GetRouteServerAssociations", "2016-11-15")
@@ -24660,6 +34394,38 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetRouteServerRoutingDatabase
+    def get_route_server_routing_database(self, GetRouteServerRoutingDatabaseRequest input) -> str:
+        auto p = query.query_params("GetRouteServerRoutingDatabase", "2016-11-15")
+        p = query.query_scalar(p, "RouteServerId", input.RouteServerId)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetSecurityGroupsForVpc
+    def get_security_groups_for_vpc(self, GetSecurityGroupsForVpcRequest input) -> str:
+        auto p = query.query_params("GetSecurityGroupsForVpc", "2016-11-15")
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetSerialConsoleAccessStatus
     def get_serial_console_access_status(self, GetSerialConsoleAccessStatusRequest input) -> str:
         auto p = query.query_params("GetSerialConsoleAccessStatus", "2016-11-15")
@@ -24674,11 +34440,189 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # GetSpotPlacementScores
+    def get_spot_placement_scores(self, GetSpotPlacementScoresRequest input) -> str:
+        auto p = query.query_params("GetSpotPlacementScores", "2016-11-15")
+        p = query.query_flat_list(p, "InstanceType", input.InstanceTypes.unwrap_or([]))
+        p = query.query_scalar(p, "TargetCapacity", str(input.TargetCapacity))
+        if input.TargetCapacityUnitType.is_some():
+            auto t0 = input.TargetCapacityUnitType.unwrap()
+            p = query.query_scalar(p, "TargetCapacityUnitType", t0)
+        if input.SingleAvailabilityZone.is_some():
+            auto t1 = query.query_bool(input.SingleAvailabilityZone.unwrap())
+            p = query.query_scalar(p, "SingleAvailabilityZone", t1)
+        p = query.query_flat_list(p, "RegionName", input.RegionNames.unwrap_or([]))
+        if input.InstanceRequirementsWithMetadata.is_some():
+            auto t2 = input.InstanceRequirementsWithMetadata.unwrap()
+            p = instance_requirements_with_metadata_request_to_query(p, "InstanceRequirementsWithMetadata", t2)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.IncludeLocalZones.is_some():
+            auto t3 = query.query_bool(input.IncludeLocalZones.unwrap())
+            p = query.query_scalar(p, "IncludeLocalZones", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetSubnetCidrReservations
+    def get_subnet_cidr_reservations(self, GetSubnetCidrReservationsRequest input) -> str:
+        auto p = query.query_params("GetSubnetCidrReservations", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_scalar(p, "SubnetId", input.SubnetId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # GetTransitGatewayAttachmentNatConfiguration
     def get_transit_gateway_attachment_nat_configuration(self, GetTransitGatewayAttachmentNatConfigurationRequest input) -> str:
         auto p = query.query_params("GetTransitGatewayAttachmentNatConfiguration", "2016-11-15")
         auto t0 = input.TransitGatewayAttachmentId
         p = query.query_scalar(p, "TransitGatewayAttachmentId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayAttachmentPropagations
+    def get_transit_gateway_attachment_propagations(self, GetTransitGatewayAttachmentPropagationsRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayAttachmentPropagations", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentId
+        p = query.query_scalar(p, "TransitGatewayAttachmentId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayMeteringPolicyEntries
+    def get_transit_gateway_metering_policy_entries(self, GetTransitGatewayMeteringPolicyEntriesRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayMeteringPolicyEntries", "2016-11-15")
+        auto t0 = input.TransitGatewayMeteringPolicyId
+        p = query.query_scalar(p, "TransitGatewayMeteringPolicyId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayMulticastDomainAssociations
+    def get_transit_gateway_multicast_domain_associations(self, GetTransitGatewayMulticastDomainAssociationsRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayMulticastDomainAssociations", "2016-11-15")
+        auto t0 = input.TransitGatewayMulticastDomainId
+        p = query.query_scalar(p, "TransitGatewayMulticastDomainId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayPolicyTableAssociations
+    def get_transit_gateway_policy_table_associations(self, GetTransitGatewayPolicyTableAssociationsRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayPolicyTableAssociations", "2016-11-15")
+        auto t0 = input.TransitGatewayPolicyTableId
+        p = query.query_scalar(p, "TransitGatewayPolicyTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayPolicyTableEntries
+    def get_transit_gateway_policy_table_entries(self, GetTransitGatewayPolicyTableEntriesRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayPolicyTableEntries", "2016-11-15")
+        auto t0 = input.TransitGatewayPolicyTableId
+        p = query.query_scalar(p, "TransitGatewayPolicyTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayPrefixListReferences
+    def get_transit_gateway_prefix_list_references(self, GetTransitGatewayPrefixListReferencesRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayPrefixListReferences", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableId
+        p = query.query_scalar(p, "TransitGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayRouteTableAssociations
+    def get_transit_gateway_route_table_associations(self, GetTransitGatewayRouteTableAssociationsRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayRouteTableAssociations", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableId
+        p = query.query_scalar(p, "TransitGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # GetTransitGatewayRouteTablePropagations
+    def get_transit_gateway_route_table_propagations(self, GetTransitGatewayRouteTablePropagationsRequest input) -> str:
+        auto p = query.query_params("GetTransitGatewayRouteTablePropagations", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableId
+        p = query.query_scalar(p, "TransitGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -24769,6 +34713,126 @@ struct EC2Client:
         p = query.query_scalar(p, "CertificateRevocationList", t0)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ImportImage
+    def import_image(self, ImportImageRequest input) -> str:
+        auto p = query.query_params("ImportImage", "2016-11-15")
+        if input.Architecture.is_some():
+            p = query.query_scalar(p, "Architecture", input.Architecture.unwrap())
+        if input.ClientData.is_some():
+            p = client_data_to_query(p, "ClientData", input.ClientData.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.DiskContainers.unwrap_or([]):
+            p = image_disk_container_to_query(p, "DiskContainer." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Encrypted.is_some():
+            auto t2 = query.query_bool(input.Encrypted.unwrap())
+            p = query.query_scalar(p, "Encrypted", t2)
+        if input.Hypervisor.is_some():
+            p = query.query_scalar(p, "Hypervisor", input.Hypervisor.unwrap())
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.LicenseType.is_some():
+            p = query.query_scalar(p, "LicenseType", input.LicenseType.unwrap())
+        if input.Platform.is_some():
+            p = query.query_scalar(p, "Platform", input.Platform.unwrap())
+        if input.RoleName.is_some():
+            p = query.query_scalar(p, "RoleName", input.RoleName.unwrap())
+        auto qi3 = 1
+        for qe4 in input.LicenseSpecifications.unwrap_or([]):
+            auto t5 = qe4
+            p = import_image_license_configuration_request_to_query(p, "LicenseSpecifications." + str(qi3), t5)
+            qi3 = qi3 + 1
+        auto qi6 = 1
+        for qe7 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        if input.UsageOperation.is_some():
+            p = query.query_scalar(p, "UsageOperation", input.UsageOperation.unwrap())
+        if input.BootMode.is_some():
+            p = query.query_scalar(p, "BootMode", input.BootMode.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ImportInstance
+    def import_instance(self, ImportInstanceRequest input) -> str:
+        auto p = query.query_params("ImportInstance", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.LaunchSpecification.is_some():
+            auto t0 = input.LaunchSpecification.unwrap()
+            p = import_instance_launch_specification_to_query(p, "LaunchSpecification", t0)
+        auto qi1 = 1
+        for qe2 in input.DiskImages.unwrap_or([]):
+            p = disk_image_to_query(p, "DiskImage." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        p = query.query_scalar(p, "Platform", input.Platform)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ImportKeyPair
+    def import_key_pair(self, ImportKeyPairRequest input) -> str:
+        auto p = query.query_params("ImportKeyPair", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "KeyName", input.KeyName)
+        auto t2 = query.query_blob(input.PublicKeyMaterial)
+        p = query.query_scalar(p, "PublicKeyMaterial", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ImportSnapshot
+    def import_snapshot(self, ImportSnapshotRequest input) -> str:
+        auto p = query.query_params("ImportSnapshot", "2016-11-15")
+        if input.ClientData.is_some():
+            p = client_data_to_query(p, "ClientData", input.ClientData.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.DiskContainer.is_some():
+            auto t0 = input.DiskContainer.unwrap()
+            p = snapshot_disk_container_to_query(p, "DiskContainer", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Encrypted.is_some():
+            auto t1 = query.query_bool(input.Encrypted.unwrap())
+            p = query.query_scalar(p, "Encrypted", t1)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.RoleName.is_some():
+            p = query.query_scalar(p, "RoleName", input.RoleName.unwrap())
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ImportVolume
+    def import_volume(self, ImportVolumeRequest input) -> str:
+        auto p = query.query_params("ImportVolume", "2016-11-15")
+        if input.AvailabilityZoneId.is_some():
+            auto t0 = input.AvailabilityZoneId.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.AvailabilityZone.is_some():
+            auto t1 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t1)
+        p = disk_image_detail_to_query(p, "Image", input.Image)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        p = volume_detail_to_query(p, "Volume", input.Volume)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ListImagesInRecycleBin
@@ -24862,6 +34926,52 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyApplicationStatusCheck
+    def modify_application_status_check(self, ModifyApplicationStatusCheckRequest input) -> str:
+        auto p = query.query_params("ModifyApplicationStatusCheck", "2016-11-15")
+        auto t0 = input.ApplicationStatusCheckId
+        p = query.query_scalar(p, "ApplicationStatusCheckId", t0)
+        if input.Aggregation.is_some():
+            p = query.query_scalar(p, "Aggregation", input.Aggregation.unwrap())
+        auto qi1 = 1
+        for qe2 in input.HealthCheckPaths.unwrap_or([]):
+            auto t3 = qe2
+            p = health_check_path_request_object_to_query(p, "HealthCheckPath." + str(qi1), t3)
+            qi1 = qi1 + 1
+        if input.Protocol.is_some():
+            p = query.query_scalar(p, "Protocol", input.Protocol.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        if input.DeviceIndex.is_some():
+            p = query.query_scalar(p, "DeviceIndex", str(input.DeviceIndex.unwrap()))
+        if input.IpVersion.is_some():
+            p = query.query_scalar(p, "IpVersion", input.IpVersion.unwrap())
+        if input.IpScope.is_some():
+            p = query.query_scalar(p, "IpScope", input.IpScope.unwrap())
+        if input.Interval.is_some():
+            p = query.query_scalar(p, "Interval", str(input.Interval.unwrap()))
+        if input.Timeout.is_some():
+            p = query.query_scalar(p, "Timeout", str(input.Timeout.unwrap()))
+        if input.FailureThreshold.is_some():
+            auto t4 = str(input.FailureThreshold.unwrap())
+            p = query.query_scalar(p, "FailureThreshold", t4)
+        if input.SuccessThreshold.is_some():
+            auto t5 = str(input.SuccessThreshold.unwrap())
+            p = query.query_scalar(p, "SuccessThreshold", t5)
+        if input.StatusCodeMatcher.is_some():
+            auto t6 = input.StatusCodeMatcher.unwrap()
+            p = query.query_scalar(p, "StatusCodeMatcher", t6)
+        if input.InitializationGracePeriodSeconds.is_some():
+            auto t7 = str(input.InitializationGracePeriodSeconds.unwrap())
+            p = query.query_scalar(p, "InitializationGracePeriodSeconds", t7)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyAvailabilityZoneGroup
     def modify_availability_zone_group(self, ModifyAvailabilityZoneGroupRequest input) -> str:
         auto p = query.query_params("ModifyAvailabilityZoneGroup", "2016-11-15")
@@ -24920,6 +35030,58 @@ struct EC2Client:
             p = query.query_scalar(p, "RemoveEndDate", t3)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyClientVpnEndpoint
+    def modify_client_vpn_endpoint(self, ModifyClientVpnEndpointRequest input) -> str:
+        auto p = query.query_params("ModifyClientVpnEndpoint", "2016-11-15")
+        p = query.query_scalar(p, "ClientVpnEndpointId", input.ClientVpnEndpointId)
+        if input.ServerCertificateArn.is_some():
+            auto t0 = input.ServerCertificateArn.unwrap()
+            p = query.query_scalar(p, "ServerCertificateArn", t0)
+        if input.ConnectionLogOptions.is_some():
+            auto t1 = input.ConnectionLogOptions.unwrap()
+            p = connection_log_options_to_query(p, "ConnectionLogOptions", t1)
+        if input.DnsServers.is_some():
+            auto t2 = input.DnsServers.unwrap()
+            p = dns_servers_options_modify_structure_to_query(p, "DnsServers", t2)
+        if input.VpnPort.is_some():
+            p = query.query_scalar(p, "VpnPort", str(input.VpnPort.unwrap()))
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.SplitTunnel.is_some():
+            auto t3 = query.query_bool(input.SplitTunnel.unwrap())
+            p = query.query_scalar(p, "SplitTunnel", t3)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t4 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupId", t4)
+        if input.VpcId.is_some():
+            p = query.query_scalar(p, "VpcId", input.VpcId.unwrap())
+        if input.SelfServicePortal.is_some():
+            auto t5 = input.SelfServicePortal.unwrap()
+            p = query.query_scalar(p, "SelfServicePortal", t5)
+        if input.ClientConnectOptions.is_some():
+            auto t6 = input.ClientConnectOptions.unwrap()
+            p = client_connect_options_to_query(p, "ClientConnectOptions", t6)
+        if input.SessionTimeoutHours.is_some():
+            auto t7 = str(input.SessionTimeoutHours.unwrap())
+            p = query.query_scalar(p, "SessionTimeoutHours", t7)
+        if input.ClientLoginBannerOptions.is_some():
+            auto t8 = input.ClientLoginBannerOptions.unwrap()
+            p = client_login_banner_options_to_query(p, "ClientLoginBannerOptions", t8)
+        if input.ClientRouteEnforcementOptions.is_some():
+            auto t9 = input.ClientRouteEnforcementOptions.unwrap()
+            p = client_route_enforcement_options_to_query(p, "ClientRouteEnforcementOptions", t9)
+        if input.DisconnectOnSessionTimeout.is_some():
+            auto t10 = query.query_bool(input.DisconnectOnSessionTimeout.unwrap())
+            p = query.query_scalar(p, "DisconnectOnSessionTimeout", t10)
+        if input.TransitGatewayConfiguration.is_some():
+            auto t11 = input.TransitGatewayConfiguration.unwrap()
+            p = transit_gateway_configuration_input_structure_to_query(p, "TransitGatewayConfiguration", t11)
+        if input.DevicePostureOptions.is_some():
+            auto t12 = input.DevicePostureOptions.unwrap()
+            p = device_posture_options_to_query(p, "DevicePostureOptions", t12)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyClientVpnEndpointAuthorizationPolicy
     def modify_client_vpn_endpoint_authorization_policy(self, ModifyClientVpnEndpointAuthorizationPolicyRequest input) -> str:
         auto p = query.query_params("ModifyClientVpnEndpointAuthorizationPolicy", "2016-11-15")
@@ -24953,6 +35115,49 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyFleet
+    def modify_fleet(self, ModifyFleetRequest input) -> str:
+        auto p = query.query_params("ModifyFleet", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ExcessCapacityTerminationPolicy.is_some():
+            auto t0 = input.ExcessCapacityTerminationPolicy.unwrap()
+            p = query.query_scalar(p, "ExcessCapacityTerminationPolicy", t0)
+        auto qi1 = 1
+        for qe2 in input.LaunchTemplateConfigs.unwrap_or([]):
+            auto t3 = qe2
+            p = fleet_launch_template_config_request_to_query(p, "LaunchTemplateConfig." + str(qi1), t3)
+            qi1 = qi1 + 1
+        p = query.query_scalar(p, "FleetId", input.FleetId)
+        if input.TargetCapacitySpecification.is_some():
+            auto t4 = input.TargetCapacitySpecification.unwrap()
+            p = target_capacity_specification_request_to_query(p, "TargetCapacitySpecification", t4)
+        if input.Context.is_some():
+            p = query.query_scalar(p, "Context", input.Context.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyFpgaImageAttribute
+    def modify_fpga_image_attribute(self, ModifyFpgaImageAttributeRequest input) -> str:
+        auto p = query.query_params("ModifyFpgaImageAttribute", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "FpgaImageId", input.FpgaImageId)
+        if input.Attribute.is_some():
+            p = query.query_scalar(p, "Attribute", input.Attribute.unwrap())
+        if input.OperationType.is_some():
+            p = query.query_scalar(p, "OperationType", input.OperationType.unwrap())
+        p = query.query_flat_list(p, "UserId", input.UserIds.unwrap_or([]))
+        p = query.query_flat_list(p, "UserGroup", input.UserGroups.unwrap_or([]))
+        p = query.query_flat_list(p, "ProductCode", input.ProductCodes.unwrap_or([]))
+        if input.LoadPermission.is_some():
+            auto t0 = input.LoadPermission.unwrap()
+            p = load_permission_modifications_to_query(p, "LoadPermission", t0)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Name.is_some():
+            p = query.query_scalar(p, "Name", input.Name.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyHosts
     def modify_hosts(self, ModifyHostsRequest input) -> str:
         auto p = query.query_params("ModifyHosts", "2016-11-15")
@@ -24982,6 +35187,95 @@ struct EC2Client:
         p = query.query_scalar(p, "Resource", input.Resource)
         p = query.query_scalar(p, "UseLongIds", query.query_bool(input.UseLongIds))
         p = query.query_scalar(p, "PrincipalArn", input.PrincipalArn)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyImageAttribute
+    def modify_image_attribute(self, ModifyImageAttributeRequest input) -> str:
+        auto p = query.query_params("ModifyImageAttribute", "2016-11-15")
+        if input.Attribute.is_some():
+            p = query.query_scalar(p, "Attribute", input.Attribute.unwrap())
+        if input.Description.is_some():
+            p = attribute_value_to_query(p, "Description", input.Description.unwrap())
+        p = query.query_scalar(p, "ImageId", input.ImageId)
+        if input.LaunchPermission.is_some():
+            auto t0 = input.LaunchPermission.unwrap()
+            p = launch_permission_modifications_to_query(p, "LaunchPermission", t0)
+        if input.OperationType.is_some():
+            p = query.query_scalar(p, "OperationType", input.OperationType.unwrap())
+        p = query.query_flat_list(p, "ProductCode", input.ProductCodes.unwrap_or([]))
+        p = query.query_flat_list(p, "UserGroup", input.UserGroups.unwrap_or([]))
+        p = query.query_flat_list(p, "UserId", input.UserIds.unwrap_or([]))
+        if input.Value.is_some():
+            p = query.query_scalar(p, "Value", input.Value.unwrap())
+        auto t1 = input.OrganizationArns.unwrap_or([])
+        p = query.query_flat_list(p, "OrganizationArn", t1)
+        auto t2 = input.OrganizationalUnitArns.unwrap_or([])
+        p = query.query_flat_list(p, "OrganizationalUnitArn", t2)
+        if input.ImdsSupport.is_some():
+            p = attribute_value_to_query(p, "ImdsSupport", input.ImdsSupport.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyInstanceAttribute
+    def modify_instance_attribute(self, ModifyInstanceAttributeRequest input) -> str:
+        auto p = query.query_params("ModifyInstanceAttribute", "2016-11-15")
+        if input.SourceDestCheck.is_some():
+            auto t0 = input.SourceDestCheck.unwrap()
+            p = attribute_boolean_value_to_query(p, "SourceDestCheck", t0)
+        if input.EnclaveOptions.is_some():
+            auto t1 = input.EnclaveOptions.unwrap()
+            p = enclave_options_request_to_query(p, "EnclaveOptions", t1)
+        if input.DisableApiStop.is_some():
+            auto t2 = input.DisableApiStop.unwrap()
+            p = attribute_boolean_value_to_query(p, "DisableApiStop", t2)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        if input.Attribute.is_some():
+            p = query.query_scalar(p, "Attribute", input.Attribute.unwrap())
+        if input.Value.is_some():
+            p = query.query_scalar(p, "Value", input.Value.unwrap())
+        auto qi3 = 1
+        for qe4 in input.BlockDeviceMappings.unwrap_or([]):
+            auto t5 = qe4
+            p = instance_block_device_mapping_specification_to_query(p, "BlockDeviceMapping." + str(qi3), t5)
+            qi3 = qi3 + 1
+        if input.DisableApiTermination.is_some():
+            auto t6 = input.DisableApiTermination.unwrap()
+            p = attribute_boolean_value_to_query(p, "DisableApiTermination", t6)
+        if input.InstanceType.is_some():
+            p = attribute_value_to_query(p, "InstanceType", input.InstanceType.unwrap())
+        if input.Kernel.is_some():
+            p = attribute_value_to_query(p, "Kernel", input.Kernel.unwrap())
+        if input.Ramdisk.is_some():
+            p = attribute_value_to_query(p, "Ramdisk", input.Ramdisk.unwrap())
+        if input.UserData.is_some():
+            auto t7 = input.UserData.unwrap()
+            p = secure_blob_attribute_value_to_query(p, "UserData", t7)
+        if input.InstanceInitiatedShutdownBehavior.is_some():
+            auto t8 = input.InstanceInitiatedShutdownBehavior.unwrap()
+            p = attribute_value_to_query(p, "InstanceInitiatedShutdownBehavior", t8)
+        p = query.query_flat_list(p, "GroupId", input.Groups.unwrap_or([]))
+        if input.EbsOptimized.is_some():
+            auto t9 = input.EbsOptimized.unwrap()
+            p = attribute_boolean_value_to_query(p, "EbsOptimized", t9)
+        if input.SriovNetSupport.is_some():
+            auto t10 = input.SriovNetSupport.unwrap()
+            p = attribute_value_to_query(p, "SriovNetSupport", t10)
+        if input.EnaSupport.is_some():
+            auto t11 = input.EnaSupport.unwrap()
+            p = attribute_boolean_value_to_query(p, "EnaSupport", t11)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyInstanceCapacityReservationAttributes
+    def modify_instance_capacity_reservation_attributes(self, ModifyInstanceCapacityReservationAttributesRequest input) -> str:
+        auto p = query.query_params("ModifyInstanceCapacityReservationAttributes", "2016-11-15")
+        p = query.query_scalar(p, "InstanceId", input.InstanceId)
+        auto t0 = input.CapacityReservationSpecification
+        p = capacity_reservation_specification_to_query(p, "CapacityReservationSpecification", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyInstanceConnectEndpoint
@@ -25016,6 +35310,20 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyInstanceCreditSpecification
+    def modify_instance_credit_specification(self, ModifyInstanceCreditSpecificationRequest input) -> str:
+        auto p = query.query_params("ModifyInstanceCreditSpecification", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.InstanceCreditSpecifications:
+            auto t2 = qe1
+            p = instance_credit_specification_request_to_query(p, "InstanceCreditSpecification." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyInstanceEventStartTime
     def modify_instance_event_start_time(self, ModifyInstanceEventStartTimeRequest input) -> str:
         auto p = query.query_params("ModifyInstanceEventStartTime", "2016-11-15")
@@ -25025,6 +35333,23 @@ struct EC2Client:
         p = query.query_scalar(p, "InstanceEventId", input.InstanceEventId)
         auto t0 = query.query_timestamp_iso8601(input.NotBefore)
         p = query.query_scalar(p, "NotBefore", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyInstanceEventWindow
+    def modify_instance_event_window(self, ModifyInstanceEventWindowRequest input) -> str:
+        auto p = query.query_params("ModifyInstanceEventWindow", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.Name.is_some():
+            p = query.query_scalar(p, "Name", input.Name.unwrap())
+        p = query.query_scalar(p, "InstanceEventWindowId", input.InstanceEventWindowId)
+        auto qi0 = 1
+        for qe1 in input.TimeRanges.unwrap_or([]):
+            auto t2 = qe1
+            p = instance_event_window_time_range_request_to_query(p, "TimeRange." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.CronExpression.is_some():
+            p = query.query_scalar(p, "CronExpression", input.CronExpression.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyInstanceMaintenanceOptions
@@ -25111,6 +35436,83 @@ struct EC2Client:
             p = query.query_scalar(p, "HostId", input.HostId.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyIpam
+    def modify_ipam(self, ModifyIpamRequest input) -> str:
+        auto p = query.query_params("ModifyIpam", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.AddOperatingRegions.unwrap_or([]):
+            auto t2 = qe1
+            p = add_ipam_operating_region_to_query(p, "AddOperatingRegion." + str(qi0), t2)
+            qi0 = qi0 + 1
+        auto qi3 = 1
+        for qe4 in input.RemoveOperatingRegions.unwrap_or([]):
+            auto t5 = qe4
+            p = remove_ipam_operating_region_to_query(p, "RemoveOperatingRegion." + str(qi3), t5)
+            qi3 = qi3 + 1
+        if input.Tier.is_some():
+            p = query.query_scalar(p, "Tier", input.Tier.unwrap())
+        if input.EnablePrivateGua.is_some():
+            auto t6 = query.query_bool(input.EnablePrivateGua.unwrap())
+            p = query.query_scalar(p, "EnablePrivateGua", t6)
+        if input.MeteredAccount.is_some():
+            p = query.query_scalar(p, "MeteredAccount", input.MeteredAccount.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyIpamPolicyAllocationRules
+    def modify_ipam_policy_allocation_rules(self, ModifyIpamPolicyAllocationRulesRequest input) -> str:
+        auto p = query.query_params("ModifyIpamPolicyAllocationRules", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamPolicyId", input.IpamPolicyId)
+        p = query.query_scalar(p, "Locale", input.Locale)
+        p = query.query_scalar(p, "ResourceType", input.ResourceType)
+        auto qi0 = 1
+        for qe1 in input.AllocationRules.unwrap_or([]):
+            auto t2 = qe1
+            p = ipam_policy_allocation_rule_request_to_query(p, "AllocationRule." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyIpamPool
+    def modify_ipam_pool(self, ModifyIpamPoolRequest input) -> str:
+        auto p = query.query_params("ModifyIpamPool", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamPoolId", input.IpamPoolId)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.AutoImport.is_some():
+            auto t0 = query.query_bool(input.AutoImport.unwrap())
+            p = query.query_scalar(p, "AutoImport", t0)
+        if input.AllocationMinNetmaskLength.is_some():
+            auto t1 = str(input.AllocationMinNetmaskLength.unwrap())
+            p = query.query_scalar(p, "AllocationMinNetmaskLength", t1)
+        if input.AllocationMaxNetmaskLength.is_some():
+            auto t2 = str(input.AllocationMaxNetmaskLength.unwrap())
+            p = query.query_scalar(p, "AllocationMaxNetmaskLength", t2)
+        if input.AllocationDefaultNetmaskLength.is_some():
+            auto t3 = str(input.AllocationDefaultNetmaskLength.unwrap())
+            p = query.query_scalar(p, "AllocationDefaultNetmaskLength", t3)
+        if input.ClearAllocationDefaultNetmaskLength.is_some():
+            auto t4 = query.query_bool(input.ClearAllocationDefaultNetmaskLength.unwrap())
+            p = query.query_scalar(p, "ClearAllocationDefaultNetmaskLength", t4)
+        auto qi5 = 1
+        for qe6 in input.AddAllocationResourceTags.unwrap_or([]):
+            auto t7 = qe6
+            p = request_ipam_resource_tag_to_query(p, "AddAllocationResourceTag." + str(qi5), t7)
+            qi5 = qi5 + 1
+        auto qi8 = 1
+        for qe9 in input.RemoveAllocationResourceTags.unwrap_or([]):
+            auto t10 = qe9
+            p = request_ipam_resource_tag_to_query(p, "RemoveAllocationResourceTag." + str(qi8), t10)
+            qi8 = qi8 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyIpamPoolAllocation
     def modify_ipam_pool_allocation(self, ModifyIpamPoolAllocationRequest input) -> str:
         auto p = query.query_params("ModifyIpamPoolAllocation", "2016-11-15")
@@ -25119,6 +35521,22 @@ struct EC2Client:
         p = query.query_scalar(p, "IpamPoolAllocationId", input.IpamPoolAllocationId)
         if input.Description.is_some():
             p = query.query_scalar(p, "Description", input.Description.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyIpamPrefixListResolver
+    def modify_ipam_prefix_list_resolver(self, ModifyIpamPrefixListResolverRequest input) -> str:
+        auto p = query.query_params("ModifyIpamPrefixListResolver", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamPrefixListResolverId
+        p = query.query_scalar(p, "IpamPrefixListResolverId", t0)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Rules.unwrap_or([]):
+            auto t3 = qe2
+            p = ipam_prefix_list_resolver_rule_request_to_query(p, "Rule." + str(qi1), t3)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyIpamPrefixListResolverTarget
@@ -25153,6 +35571,37 @@ struct EC2Client:
         p = query.query_scalar(p, "Monitored", query.query_bool(input.Monitored))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyIpamResourceDiscovery
+    def modify_ipam_resource_discovery(self, ModifyIpamResourceDiscoveryRequest input) -> str:
+        auto p = query.query_params("ModifyIpamResourceDiscovery", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.IpamResourceDiscoveryId
+        p = query.query_scalar(p, "IpamResourceDiscoveryId", t0)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi1 = 1
+        for qe2 in input.AddOperatingRegions.unwrap_or([]):
+            auto t3 = qe2
+            p = add_ipam_operating_region_to_query(p, "AddOperatingRegion." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto qi4 = 1
+        for qe5 in input.RemoveOperatingRegions.unwrap_or([]):
+            auto t6 = qe5
+            p = remove_ipam_operating_region_to_query(p, "RemoveOperatingRegion." + str(qi4), t6)
+            qi4 = qi4 + 1
+        auto qi7 = 1
+        for qe8 in input.AddOrganizationalUnitExclusions.unwrap_or([]):
+            auto t9 = qe8
+            p = add_ipam_organizational_unit_exclusion_to_query(p, "AddOrganizationalUnitExclusion." + str(qi7), t9)
+            qi7 = qi7 + 1
+        auto qi10 = 1
+        for qe11 in input.RemoveOrganizationalUnitExclusions.unwrap_or([]):
+            auto t12 = qe11
+            p = remove_ipam_organizational_unit_exclusion_to_query(p, "RemoveOrganizationalUnitExclusion." + str(qi10), t12)
+            qi10 = qi10 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyIpamRoutingPolicyRegistration
     def modify_ipam_routing_policy_registration(self, ModifyIpamRoutingPolicyRegistrationRequest input) -> str:
         auto p = query.query_params("ModifyIpamRoutingPolicyRegistration", "2016-11-15")
@@ -25173,6 +35622,22 @@ struct EC2Client:
             p = query.query_scalar(p, "Force", query.query_bool(input.Force.unwrap()))
         if input.ClientToken.is_some():
             p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyIpamScope
+    def modify_ipam_scope(self, ModifyIpamScopeRequest input) -> str:
+        auto p = query.query_params("ModifyIpamScope", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamScopeId", input.IpamScopeId)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.ExternalAuthorityConfiguration.is_some():
+            auto t0 = input.ExternalAuthorityConfiguration.unwrap()
+            p = external_authority_configuration_to_query(p, "ExternalAuthorityConfiguration", t0)
+        if input.RemoveExternalAuthorityConfiguration.is_some():
+            auto t1 = query.query_bool(input.RemoveExternalAuthorityConfiguration.unwrap())
+            p = query.query_scalar(p, "RemoveExternalAuthorityConfiguration", t1)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyLaunchTemplate
@@ -25214,12 +35679,69 @@ struct EC2Client:
             p = query.query_scalar(p, "DestinationPrefixListId", t4)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyManagedPrefixList
+    def modify_managed_prefix_list(self, ModifyManagedPrefixListRequest input) -> str:
+        auto p = query.query_params("ModifyManagedPrefixList", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "PrefixListId", input.PrefixListId)
+        if input.CurrentVersion.is_some():
+            auto t0 = str(input.CurrentVersion.unwrap())
+            p = query.query_scalar(p, "CurrentVersion", t0)
+        if input.PrefixListName.is_some():
+            p = query.query_scalar(p, "PrefixListName", input.PrefixListName.unwrap())
+        auto qi1 = 1
+        for qe2 in input.AddEntries.unwrap_or([]):
+            p = add_prefix_list_entry_to_query(p, "AddEntry." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        auto qi3 = 1
+        for qe4 in input.RemoveEntries.unwrap_or([]):
+            p = remove_prefix_list_entry_to_query(p, "RemoveEntry." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.MaxEntries.is_some():
+            p = query.query_scalar(p, "MaxEntries", str(input.MaxEntries.unwrap()))
+        if input.IpamPrefixListResolverSyncEnabled.is_some():
+            auto t5 = query.query_bool(input.IpamPrefixListResolverSyncEnabled.unwrap())
+            p = query.query_scalar(p, "IpamPrefixListResolverSyncEnabled", t5)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyManagedResourceVisibility
     def modify_managed_resource_visibility(self, ModifyManagedResourceVisibilityRequest input) -> str:
         auto p = query.query_params("ModifyManagedResourceVisibility", "2016-11-15")
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         p = query.query_scalar(p, "DefaultVisibility", input.DefaultVisibility)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyNetworkInterfaceAttribute
+    def modify_network_interface_attribute(self, ModifyNetworkInterfaceAttributeRequest input) -> str:
+        auto p = query.query_params("ModifyNetworkInterfaceAttribute", "2016-11-15")
+        if input.EnaSrdSpecification.is_some():
+            auto t0 = input.EnaSrdSpecification.unwrap()
+            p = ena_srd_specification_to_query(p, "EnaSrdSpecification", t0)
+        if input.EnablePrimaryIpv6.is_some():
+            auto t1 = query.query_bool(input.EnablePrimaryIpv6.unwrap())
+            p = query.query_scalar(p, "EnablePrimaryIpv6", t1)
+        if input.ConnectionTrackingSpecification.is_some():
+            auto t2 = input.ConnectionTrackingSpecification.unwrap()
+            p = connection_tracking_specification_request_to_query(p, "ConnectionTrackingSpecification", t2)
+        if input.AssociatePublicIpAddress.is_some():
+            auto t3 = query.query_bool(input.AssociatePublicIpAddress.unwrap())
+            p = query.query_scalar(p, "AssociatePublicIpAddress", t3)
+        auto t4 = input.AssociatedSubnetIds.unwrap_or([])
+        p = query.query_flat_list(p, "AssociatedSubnetId", t4)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "NetworkInterfaceId", input.NetworkInterfaceId)
+        if input.Description.is_some():
+            p = attribute_value_to_query(p, "Description", input.Description.unwrap())
+        if input.SourceDestCheck.is_some():
+            auto t5 = input.SourceDestCheck.unwrap()
+            p = attribute_boolean_value_to_query(p, "SourceDestCheck", t5)
+        p = query.query_flat_list(p, "SecurityGroupId", input.Groups.unwrap_or([]))
+        if input.Attachment.is_some():
+            auto t6 = input.Attachment.unwrap()
+            p = network_interface_attachment_changes_to_query(p, "Attachment", t6)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyPrivateDnsNameOptions
@@ -25248,6 +35770,19 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyReservedInstances
+    def modify_reserved_instances(self, ModifyReservedInstancesRequest input) -> str:
+        auto p = query.query_params("ModifyReservedInstances", "2016-11-15")
+        p = query.query_flat_list(p, "ReservedInstancesId", input.ReservedInstancesIds)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TargetConfigurations:
+            auto t2 = qe1
+            p = reserved_instances_configuration_to_query(p, "ReservedInstancesConfigurationSetItemType." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyRouteServer
     def modify_route_server(self, ModifyRouteServerRequest input) -> str:
         auto p = query.query_params("ModifyRouteServer", "2016-11-15")
@@ -25264,6 +35799,36 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifySecurityGroupRules
+    def modify_security_group_rules(self, ModifySecurityGroupRulesRequest input) -> str:
+        auto p = query.query_params("ModifySecurityGroupRules", "2016-11-15")
+        p = query.query_scalar(p, "GroupId", input.GroupId)
+        auto qi0 = 1
+        for qe1 in input.SecurityGroupRules:
+            auto t2 = qe1
+            p = security_group_rule_update_to_query(p, "SecurityGroupRule." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifySnapshotAttribute
+    def modify_snapshot_attribute(self, ModifySnapshotAttributeRequest input) -> str:
+        auto p = query.query_params("ModifySnapshotAttribute", "2016-11-15")
+        if input.Attribute.is_some():
+            p = query.query_scalar(p, "Attribute", input.Attribute.unwrap())
+        if input.CreateVolumePermission.is_some():
+            auto t0 = input.CreateVolumePermission.unwrap()
+            p = create_volume_permission_modifications_to_query(p, "CreateVolumePermission", t0)
+        p = query.query_flat_list(p, "UserGroup", input.GroupNames.unwrap_or([]))
+        if input.OperationType.is_some():
+            p = query.query_scalar(p, "OperationType", input.OperationType.unwrap())
+        p = query.query_scalar(p, "SnapshotId", input.SnapshotId)
+        p = query.query_flat_list(p, "UserId", input.UserIds.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifySnapshotTier
     def modify_snapshot_tier(self, ModifySnapshotTierRequest input) -> str:
         auto p = query.query_params("ModifySnapshotTier", "2016-11-15")
@@ -25274,6 +35839,64 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifySpotFleetRequest
+    def modify_spot_fleet_request(self, ModifySpotFleetRequestRequest input) -> str:
+        auto p = query.query_params("ModifySpotFleetRequest", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.LaunchTemplateConfigs.unwrap_or([]):
+            auto t2 = qe1
+            p = launch_template_config_to_query(p, "LaunchTemplateConfig." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.OnDemandTargetCapacity.is_some():
+            auto t3 = str(input.OnDemandTargetCapacity.unwrap())
+            p = query.query_scalar(p, "OnDemandTargetCapacity", t3)
+        if input.Context.is_some():
+            p = query.query_scalar(p, "Context", input.Context.unwrap())
+        p = query.query_scalar(p, "SpotFleetRequestId", input.SpotFleetRequestId)
+        if input.TargetCapacity.is_some():
+            auto t4 = str(input.TargetCapacity.unwrap())
+            p = query.query_scalar(p, "TargetCapacity", t4)
+        if input.ExcessCapacityTerminationPolicy.is_some():
+            auto t5 = input.ExcessCapacityTerminationPolicy.unwrap()
+            p = query.query_scalar(p, "ExcessCapacityTerminationPolicy", t5)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifySubnetAttribute
+    def modify_subnet_attribute(self, ModifySubnetAttributeRequest input) -> str:
+        auto p = query.query_params("ModifySubnetAttribute", "2016-11-15")
+        if input.AssignIpv6AddressOnCreation.is_some():
+            auto t0 = input.AssignIpv6AddressOnCreation.unwrap()
+            p = attribute_boolean_value_to_query(p, "AssignIpv6AddressOnCreation", t0)
+        if input.MapPublicIpOnLaunch.is_some():
+            auto t1 = input.MapPublicIpOnLaunch.unwrap()
+            p = attribute_boolean_value_to_query(p, "MapPublicIpOnLaunch", t1)
+        p = query.query_scalar(p, "SubnetId", input.SubnetId)
+        if input.MapCustomerOwnedIpOnLaunch.is_some():
+            auto t2 = input.MapCustomerOwnedIpOnLaunch.unwrap()
+            p = attribute_boolean_value_to_query(p, "MapCustomerOwnedIpOnLaunch", t2)
+        if input.CustomerOwnedIpv4Pool.is_some():
+            auto t3 = input.CustomerOwnedIpv4Pool.unwrap()
+            p = query.query_scalar(p, "CustomerOwnedIpv4Pool", t3)
+        if input.EnableDns64.is_some():
+            auto t4 = input.EnableDns64.unwrap()
+            p = attribute_boolean_value_to_query(p, "EnableDns64", t4)
+        if input.PrivateDnsHostnameTypeOnLaunch.is_some():
+            auto t5 = input.PrivateDnsHostnameTypeOnLaunch.unwrap()
+            p = query.query_scalar(p, "PrivateDnsHostnameTypeOnLaunch", t5)
+        if input.EnableResourceNameDnsARecordOnLaunch.is_some():
+            auto t6 = input.EnableResourceNameDnsARecordOnLaunch.unwrap()
+            p = attribute_boolean_value_to_query(p, "EnableResourceNameDnsARecordOnLaunch", t6)
+        if input.EnableResourceNameDnsAAAARecordOnLaunch.is_some():
+            auto t7 = input.EnableResourceNameDnsAAAARecordOnLaunch.unwrap()
+            p = attribute_boolean_value_to_query(p, "EnableResourceNameDnsAAAARecordOnLaunch", t7)
+        if input.EnableLniAtDeviceIndex.is_some():
+            auto t8 = str(input.EnableLniAtDeviceIndex.unwrap())
+            p = query.query_scalar(p, "EnableLniAtDeviceIndex", t8)
+        if input.DisableLniAtDeviceIndex.is_some():
+            auto t9 = input.DisableLniAtDeviceIndex.unwrap()
+            p = attribute_boolean_value_to_query(p, "DisableLniAtDeviceIndex", t9)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyTrafficMirrorFilterNetworkServices
     def modify_traffic_mirror_filter_network_services(self, ModifyTrafficMirrorFilterNetworkServicesRequest input) -> str:
         auto p = query.query_params("ModifyTrafficMirrorFilterNetworkServices", "2016-11-15")
@@ -25282,6 +35905,38 @@ struct EC2Client:
         p = query.query_flat_list(p, "AddNetworkService", t0)
         auto t1 = input.RemoveNetworkServices.unwrap_or([])
         p = query.query_flat_list(p, "RemoveNetworkService", t1)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyTrafficMirrorFilterRule
+    def modify_traffic_mirror_filter_rule(self, ModifyTrafficMirrorFilterRuleRequest input) -> str:
+        auto p = query.query_params("ModifyTrafficMirrorFilterRule", "2016-11-15")
+        auto t0 = input.TrafficMirrorFilterRuleId
+        p = query.query_scalar(p, "TrafficMirrorFilterRuleId", t0)
+        if input.TrafficDirection.is_some():
+            auto t1 = input.TrafficDirection.unwrap()
+            p = query.query_scalar(p, "TrafficDirection", t1)
+        if input.RuleNumber.is_some():
+            p = query.query_scalar(p, "RuleNumber", str(input.RuleNumber.unwrap()))
+        if input.RuleAction.is_some():
+            p = query.query_scalar(p, "RuleAction", input.RuleAction.unwrap())
+        if input.DestinationPortRange.is_some():
+            auto t2 = input.DestinationPortRange.unwrap()
+            p = traffic_mirror_port_range_request_to_query(p, "DestinationPortRange", t2)
+        if input.SourcePortRange.is_some():
+            auto t3 = input.SourcePortRange.unwrap()
+            p = traffic_mirror_port_range_request_to_query(p, "SourcePortRange", t3)
+        if input.Protocol.is_some():
+            p = query.query_scalar(p, "Protocol", str(input.Protocol.unwrap()))
+        if input.DestinationCidrBlock.is_some():
+            auto t4 = input.DestinationCidrBlock.unwrap()
+            p = query.query_scalar(p, "DestinationCidrBlock", t4)
+        if input.SourceCidrBlock.is_some():
+            p = query.query_scalar(p, "SourceCidrBlock", input.SourceCidrBlock.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        p = query.query_flat_list(p, "RemoveField", input.RemoveFields.unwrap_or([]))
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -25312,6 +35967,42 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyTransitGateway
+    def modify_transit_gateway(self, ModifyTransitGatewayRequest input) -> str:
+        auto p = query.query_params("ModifyTransitGateway", "2016-11-15")
+        p = query.query_scalar(p, "TransitGatewayId", input.TransitGatewayId)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Options.is_some():
+            auto t0 = input.Options.unwrap()
+            p = modify_transit_gateway_options_to_query(p, "Options", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyTransitGatewayAttachmentNatConfiguration
+    def modify_transit_gateway_attachment_nat_configuration(self, ModifyTransitGatewayAttachmentNatConfigurationRequest input) -> str:
+        auto p = query.query_params("ModifyTransitGatewayAttachmentNatConfiguration", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentId
+        p = query.query_scalar(p, "TransitGatewayAttachmentId", t0)
+        if input.NatGatewaySupport.is_some():
+            auto t1 = input.NatGatewaySupport.unwrap()
+            p = query.query_scalar(p, "NatGatewaySupport", t1)
+        if input.NatSystemRouteSupport.is_some():
+            auto t2 = input.NatSystemRouteSupport.unwrap()
+            p = query.query_scalar(p, "NatSystemRouteSupport", t2)
+        auto qi3 = 1
+        for qe4 in input.NatGatewayRules.unwrap_or([]):
+            auto t5 = qe4
+            p = transit_gateway_nat_rule_request_to_query(p, "NatGatewayRule." + str(qi3), t5)
+            qi3 = qi3 + 1
+        if input.ResetNatGatewayRules.is_some():
+            auto t6 = query.query_bool(input.ResetNatGatewayRules.unwrap())
+            p = query.query_scalar(p, "ResetNatGatewayRules", t6)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyTransitGatewayMeteringPolicy
     def modify_transit_gateway_metering_policy(self, ModifyTransitGatewayMeteringPolicyRequest input) -> str:
         auto p = query.query_params("ModifyTransitGatewayMeteringPolicy", "2016-11-15")
@@ -25321,6 +36012,22 @@ struct EC2Client:
         p = query.query_flat_list(p, "AddMiddleboxAttachmentId", t1)
         auto t2 = input.RemoveMiddleboxAttachmentIds.unwrap_or([])
         p = query.query_flat_list(p, "RemoveMiddleboxAttachmentId", t2)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyTransitGatewayPolicyTableEntry
+    def modify_transit_gateway_policy_table_entry(self, ModifyTransitGatewayPolicyTableEntryRequest input) -> str:
+        auto p = query.query_params("ModifyTransitGatewayPolicyTableEntry", "2016-11-15")
+        auto t0 = input.TransitGatewayPolicyTableId
+        p = query.query_scalar(p, "TransitGatewayPolicyTableId", t0)
+        p = query.query_scalar(p, "PolicyRuleNumber", input.PolicyRuleNumber)
+        if input.PolicyRule.is_some():
+            auto t1 = input.PolicyRule.unwrap()
+            p = transit_gateway_request_policy_rule_to_query(p, "PolicyRule", t1)
+        if input.TargetRouteTableId.is_some():
+            auto t2 = input.TargetRouteTableId.unwrap()
+            p = query.query_scalar(p, "TargetRouteTableId", t2)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
@@ -25341,6 +36048,68 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyTransitGatewayVpcAttachment
+    def modify_transit_gateway_vpc_attachment(self, ModifyTransitGatewayVpcAttachmentRequest input) -> str:
+        auto p = query.query_params("ModifyTransitGatewayVpcAttachment", "2016-11-15")
+        auto t0 = input.TransitGatewayAttachmentId
+        p = query.query_scalar(p, "TransitGatewayAttachmentId", t0)
+        p = query.query_flat_list(p, "AddSubnetIds", input.AddSubnetIds.unwrap_or([]))
+        auto t1 = input.RemoveSubnetIds.unwrap_or([])
+        p = query.query_flat_list(p, "RemoveSubnetIds", t1)
+        if input.Options.is_some():
+            auto t2 = input.Options.unwrap()
+            p = modify_transit_gateway_vpc_attachment_request_options_to_query(p, "Options", t2)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVerifiedAccessEndpoint
+    def modify_verified_access_endpoint(self, ModifyVerifiedAccessEndpointRequest input) -> str:
+        auto p = query.query_params("ModifyVerifiedAccessEndpoint", "2016-11-15")
+        auto t0 = input.VerifiedAccessEndpointId
+        p = query.query_scalar(p, "VerifiedAccessEndpointId", t0)
+        if input.VerifiedAccessGroupId.is_some():
+            auto t1 = input.VerifiedAccessGroupId.unwrap()
+            p = query.query_scalar(p, "VerifiedAccessGroupId", t1)
+        if input.LoadBalancerOptions.is_some():
+            auto t2 = input.LoadBalancerOptions.unwrap()
+            p = modify_verified_access_endpoint_load_balancer_options_to_query(p, "LoadBalancerOptions", t2)
+        if input.NetworkInterfaceOptions.is_some():
+            auto t3 = input.NetworkInterfaceOptions.unwrap()
+            p = modify_verified_access_endpoint_eni_options_to_query(p, "NetworkInterfaceOptions", t3)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.RdsOptions.is_some():
+            auto t4 = input.RdsOptions.unwrap()
+            p = modify_verified_access_endpoint_rds_options_to_query(p, "RdsOptions", t4)
+        if input.CidrOptions.is_some():
+            auto t5 = input.CidrOptions.unwrap()
+            p = modify_verified_access_endpoint_cidr_options_to_query(p, "CidrOptions", t5)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVerifiedAccessEndpointPolicy
+    def modify_verified_access_endpoint_policy(self, ModifyVerifiedAccessEndpointPolicyRequest input) -> str:
+        auto p = query.query_params("ModifyVerifiedAccessEndpointPolicy", "2016-11-15")
+        auto t0 = input.VerifiedAccessEndpointId
+        p = query.query_scalar(p, "VerifiedAccessEndpointId", t0)
+        if input.PolicyEnabled.is_some():
+            auto t1 = query.query_bool(input.PolicyEnabled.unwrap())
+            p = query.query_scalar(p, "PolicyEnabled", t1)
+        if input.PolicyDocument.is_some():
+            p = query.query_scalar(p, "PolicyDocument", input.PolicyDocument.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SseSpecification.is_some():
+            auto t2 = input.SseSpecification.unwrap()
+            p = verified_access_sse_specification_request_to_query(p, "SseSpecification", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyVerifiedAccessGroup
     def modify_verified_access_group(self, ModifyVerifiedAccessGroupRequest input) -> str:
         auto p = query.query_params("ModifyVerifiedAccessGroup", "2016-11-15")
@@ -25354,6 +36123,24 @@ struct EC2Client:
             p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVerifiedAccessGroupPolicy
+    def modify_verified_access_group_policy(self, ModifyVerifiedAccessGroupPolicyRequest input) -> str:
+        auto p = query.query_params("ModifyVerifiedAccessGroupPolicy", "2016-11-15")
+        p = query.query_scalar(p, "VerifiedAccessGroupId", input.VerifiedAccessGroupId)
+        if input.PolicyEnabled.is_some():
+            auto t0 = query.query_bool(input.PolicyEnabled.unwrap())
+            p = query.query_scalar(p, "PolicyEnabled", t0)
+        if input.PolicyDocument.is_some():
+            p = query.query_scalar(p, "PolicyDocument", input.PolicyDocument.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SseSpecification.is_some():
+            auto t1 = input.SseSpecification.unwrap()
+            p = verified_access_sse_specification_request_to_query(p, "SseSpecification", t1)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyVerifiedAccessInstance
@@ -25370,6 +36157,43 @@ struct EC2Client:
         if input.CidrEndpointsCustomSubDomain.is_some():
             auto t1 = input.CidrEndpointsCustomSubDomain.unwrap()
             p = query.query_scalar(p, "CidrEndpointsCustomSubDomain", t1)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVerifiedAccessInstanceLoggingConfiguration
+    def modify_verified_access_instance_logging_configuration(self, ModifyVerifiedAccessInstanceLoggingConfigurationRequest input) -> str:
+        auto p = query.query_params("ModifyVerifiedAccessInstanceLoggingConfiguration", "2016-11-15")
+        auto t0 = input.VerifiedAccessInstanceId
+        p = query.query_scalar(p, "VerifiedAccessInstanceId", t0)
+        p = verified_access_log_options_to_query(p, "AccessLogs", input.AccessLogs)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVerifiedAccessTrustProvider
+    def modify_verified_access_trust_provider(self, ModifyVerifiedAccessTrustProviderRequest input) -> str:
+        auto p = query.query_params("ModifyVerifiedAccessTrustProvider", "2016-11-15")
+        auto t0 = input.VerifiedAccessTrustProviderId
+        p = query.query_scalar(p, "VerifiedAccessTrustProviderId", t0)
+        if input.OidcOptions.is_some():
+            auto t1 = input.OidcOptions.unwrap()
+            p = modify_verified_access_trust_provider_oidc_options_to_query(p, "OidcOptions", t1)
+        if input.DeviceOptions.is_some():
+            auto t2 = input.DeviceOptions.unwrap()
+            p = modify_verified_access_trust_provider_device_options_to_query(p, "DeviceOptions", t2)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.SseSpecification.is_some():
+            auto t3 = input.SseSpecification.unwrap()
+            p = verified_access_sse_specification_request_to_query(p, "SseSpecification", t3)
+        if input.NativeApplicationOidcOptions.is_some():
+            auto t4 = input.NativeApplicationOidcOptions.unwrap()
+            p = modify_verified_access_native_application_oidc_options_to_query(p, "NativeApplicationOidcOptions", t4)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyVolume
@@ -25389,6 +36213,32 @@ struct EC2Client:
         if input.MultiAttachEnabled.is_some():
             auto t0 = query.query_bool(input.MultiAttachEnabled.unwrap())
             p = query.query_scalar(p, "MultiAttachEnabled", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVolumeAttribute
+    def modify_volume_attribute(self, ModifyVolumeAttributeRequest input) -> str:
+        auto p = query.query_params("ModifyVolumeAttribute", "2016-11-15")
+        if input.AutoEnableIO.is_some():
+            auto t0 = input.AutoEnableIO.unwrap()
+            p = attribute_boolean_value_to_query(p, "AutoEnableIO", t0)
+        p = query.query_scalar(p, "VolumeId", input.VolumeId)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVpcAttribute
+    def modify_vpc_attribute(self, ModifyVpcAttributeRequest input) -> str:
+        auto p = query.query_params("ModifyVpcAttribute", "2016-11-15")
+        if input.EnableDnsHostnames.is_some():
+            auto t0 = input.EnableDnsHostnames.unwrap()
+            p = attribute_boolean_value_to_query(p, "EnableDnsHostnames", t0)
+        if input.EnableDnsSupport.is_some():
+            auto t1 = input.EnableDnsSupport.unwrap()
+            p = attribute_boolean_value_to_query(p, "EnableDnsSupport", t1)
+        p = query.query_scalar(p, "VpcId", input.VpcId)
+        if input.EnableNetworkAddressUsageMetrics.is_some():
+            auto t2 = input.EnableNetworkAddressUsageMetrics.unwrap()
+            p = attribute_boolean_value_to_query(p, "EnableNetworkAddressUsageMetrics", t2)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyVpcBlockPublicAccessExclusion
@@ -25442,6 +36292,42 @@ struct EC2Client:
         if input.ElasticFileSystemExclusion.is_some():
             auto t7 = input.ElasticFileSystemExclusion.unwrap()
             p = query.query_scalar(p, "ElasticFileSystemExclusion", t7)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ModifyVpcEndpoint
+    def modify_vpc_endpoint(self, ModifyVpcEndpointRequest input) -> str:
+        auto p = query.query_params("ModifyVpcEndpoint", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "VpcEndpointId", input.VpcEndpointId)
+        if input.ResetPolicy.is_some():
+            auto t0 = query.query_bool(input.ResetPolicy.unwrap())
+            p = query.query_scalar(p, "ResetPolicy", t0)
+        if input.PolicyDocument.is_some():
+            p = query.query_scalar(p, "PolicyDocument", input.PolicyDocument.unwrap())
+        auto t1 = input.AddRouteTableIds.unwrap_or([])
+        p = query.query_flat_list(p, "AddRouteTableId", t1)
+        auto t2 = input.RemoveRouteTableIds.unwrap_or([])
+        p = query.query_flat_list(p, "RemoveRouteTableId", t2)
+        p = query.query_flat_list(p, "AddSubnetId", input.AddSubnetIds.unwrap_or([]))
+        auto t3 = input.RemoveSubnetIds.unwrap_or([])
+        p = query.query_flat_list(p, "RemoveSubnetId", t3)
+        auto t4 = input.AddSecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "AddSecurityGroupId", t4)
+        auto t5 = input.RemoveSecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "RemoveSecurityGroupId", t5)
+        if input.IpAddressType.is_some():
+            p = query.query_scalar(p, "IpAddressType", input.IpAddressType.unwrap())
+        if input.DnsOptions.is_some():
+            auto t6 = input.DnsOptions.unwrap()
+            p = dns_options_specification_to_query(p, "DnsOptions", t6)
+        if input.PrivateDnsEnabled.is_some():
+            auto t7 = query.query_bool(input.PrivateDnsEnabled.unwrap())
+            p = query.query_scalar(p, "PrivateDnsEnabled", t7)
+        auto qi8 = 1
+        for qe9 in input.SubnetConfigurations.unwrap_or([]):
+            p = subnet_configuration_to_query(p, "SubnetConfiguration." + str(qi8), qe9)
+            qi8 = qi8 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ModifyVpcEndpointConnectionNotification
@@ -25523,6 +36409,21 @@ struct EC2Client:
         p = query.query_flat_list(p, "RemoveAllowedPrincipals", t1)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyVpcPeeringConnectionOptions
+    def modify_vpc_peering_connection_options(self, ModifyVpcPeeringConnectionOptionsRequest input) -> str:
+        auto p = query.query_params("ModifyVpcPeeringConnectionOptions", "2016-11-15")
+        if input.AccepterPeeringConnectionOptions.is_some():
+            auto t0 = input.AccepterPeeringConnectionOptions.unwrap()
+            p = peering_connection_options_request_to_query(p, "AccepterPeeringConnectionOptions", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.RequesterPeeringConnectionOptions.is_some():
+            auto t1 = input.RequesterPeeringConnectionOptions.unwrap()
+            p = peering_connection_options_request_to_query(p, "RequesterPeeringConnectionOptions", t1)
+        auto t2 = input.VpcPeeringConnectionId
+        p = query.query_scalar(p, "VpcPeeringConnectionId", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ModifyVpcTenancy
     def modify_vpc_tenancy(self, ModifyVpcTenancyRequest input) -> str:
         auto p = query.query_params("ModifyVpcTenancy", "2016-11-15")
@@ -25580,6 +36481,24 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ModifyVpnTunnelOptions
+    def modify_vpn_tunnel_options(self, ModifyVpnTunnelOptionsRequest input) -> str:
+        auto p = query.query_params("ModifyVpnTunnelOptions", "2016-11-15")
+        p = query.query_scalar(p, "VpnConnectionId", input.VpnConnectionId)
+        auto t0 = input.VpnTunnelOutsideIpAddress
+        p = query.query_scalar(p, "VpnTunnelOutsideIpAddress", t0)
+        auto t1 = input.TunnelOptions
+        p = modify_vpn_tunnel_options_specification_to_query(p, "TunnelOptions", t1)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SkipTunnelReplacement.is_some():
+            auto t2 = query.query_bool(input.SkipTunnelReplacement.unwrap())
+            p = query.query_scalar(p, "SkipTunnelReplacement", t2)
+        if input.PreSharedKeyStorage.is_some():
+            auto t3 = input.PreSharedKeyStorage.unwrap()
+            p = query.query_scalar(p, "PreSharedKeyStorage", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # MonitorInstances
     def monitor_instances(self, MonitorInstancesRequest input) -> str:
         auto p = query.query_params("MonitorInstances", "2016-11-15")
@@ -25620,6 +36539,67 @@ struct EC2Client:
         p = query.query_scalar(p, "InstanceCount", str(input.InstanceCount))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ProvisionByoipCidr
+    def provision_byoip_cidr(self, ProvisionByoipCidrRequest input) -> str:
+        auto p = query.query_params("ProvisionByoipCidr", "2016-11-15")
+        p = query.query_scalar(p, "Cidr", input.Cidr)
+        if input.CidrAuthorizationContext.is_some():
+            auto t0 = input.CidrAuthorizationContext.unwrap()
+            p = cidr_authorization_context_to_query(p, "CidrAuthorizationContext", t0)
+        if input.PubliclyAdvertisable.is_some():
+            auto t1 = query.query_bool(input.PubliclyAdvertisable.unwrap())
+            p = query.query_scalar(p, "PubliclyAdvertisable", t1)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi2 = 1
+        for qe3 in input.PoolTagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "PoolTagSpecification." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MultiRegion.is_some():
+            auto t4 = query.query_bool(input.MultiRegion.unwrap())
+            p = query.query_scalar(p, "MultiRegion", t4)
+        if input.NetworkBorderGroup.is_some():
+            auto t5 = input.NetworkBorderGroup.unwrap()
+            p = query.query_scalar(p, "NetworkBorderGroup", t5)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ProvisionIpamByoasn
+    def provision_ipam_byoasn(self, ProvisionIpamByoasnRequest input) -> str:
+        auto p = query.query_params("ProvisionIpamByoasn", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamId", input.IpamId)
+        p = query.query_scalar(p, "Asn", input.Asn)
+        auto t0 = input.AsnAuthorizationContext
+        p = asn_authorization_context_to_query(p, "AsnAuthorizationContext", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ProvisionIpamPoolCidr
+    def provision_ipam_pool_cidr(self, ProvisionIpamPoolCidrRequest input) -> str:
+        auto p = query.query_params("ProvisionIpamPoolCidr", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "IpamPoolId", input.IpamPoolId)
+        if input.Cidr.is_some():
+            p = query.query_scalar(p, "Cidr", input.Cidr.unwrap())
+        if input.CidrAuthorizationContext.is_some():
+            auto t0 = input.CidrAuthorizationContext.unwrap()
+            p = ipam_cidr_authorization_context_to_query(p, "CidrAuthorizationContext", t0)
+        if input.NetmaskLength.is_some():
+            auto t1 = str(input.NetmaskLength.unwrap())
+            p = query.query_scalar(p, "NetmaskLength", t1)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.VerificationMethod.is_some():
+            auto t2 = input.VerificationMethod.unwrap()
+            p = query.query_scalar(p, "VerificationMethod", t2)
+        if input.IpamExternalResourceVerificationTokenId.is_some():
+            auto t3 = input.IpamExternalResourceVerificationTokenId.unwrap()
+            p = query.query_scalar(p, "IpamExternalResourceVerificationTokenId", t3)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ProvisionPublicIpv4PoolCidr
     def provision_public_ipv4_pool_cidr(self, ProvisionPublicIpv4PoolCidrRequest input) -> str:
         auto p = query.query_params("ProvisionPublicIpv4PoolCidr", "2016-11-15")
@@ -25633,6 +36613,20 @@ struct EC2Client:
             p = query.query_scalar(p, "NetworkBorderGroup", t0)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # PurchaseCapacityBlock
+    def purchase_capacity_block(self, PurchaseCapacityBlockRequest input) -> str:
+        auto p = query.query_params("PurchaseCapacityBlock", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.CapacityBlockOfferingId
+        p = query.query_scalar(p, "CapacityBlockOfferingId", t2)
+        p = query.query_scalar(p, "InstancePlatform", input.InstancePlatform)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # PurchaseCapacityBlockExtension
     def purchase_capacity_block_extension(self, PurchaseCapacityBlockExtensionRequest input) -> str:
         auto p = query.query_params("PurchaseCapacityBlockExtension", "2016-11-15")
@@ -25643,12 +36637,113 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # PurchaseHostReservation
+    def purchase_host_reservation(self, PurchaseHostReservationRequest input) -> str:
+        auto p = query.query_params("PurchaseHostReservation", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.CurrencyCode.is_some():
+            p = query.query_scalar(p, "CurrencyCode", input.CurrencyCode.unwrap())
+        p = query.query_flat_list(p, "HostIdSet", input.HostIdSet)
+        if input.LimitPrice.is_some():
+            p = query.query_scalar(p, "LimitPrice", input.LimitPrice.unwrap())
+        p = query.query_scalar(p, "OfferingId", input.OfferingId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # PurchaseReservedInstancesOffering
+    def purchase_reserved_instances_offering(self, PurchaseReservedInstancesOfferingRequest input) -> str:
+        auto p = query.query_params("PurchaseReservedInstancesOffering", "2016-11-15")
+        p = query.query_scalar(p, "InstanceCount", str(input.InstanceCount))
+        auto t0 = input.ReservedInstancesOfferingId
+        p = query.query_scalar(p, "ReservedInstancesOfferingId", t0)
+        if input.PurchaseTime.is_some():
+            auto t1 = query.query_timestamp_iso8601(input.PurchaseTime.unwrap())
+            p = query.query_scalar(p, "PurchaseTime", t1)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.LimitPrice.is_some():
+            auto t2 = input.LimitPrice.unwrap()
+            p = reserved_instance_limit_price_to_query(p, "LimitPrice", t2)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # PurchaseScheduledInstances
+    def purchase_scheduled_instances(self, PurchaseScheduledInstancesRequest input) -> str:
+        auto p = query.query_params("PurchaseScheduledInstances", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.PurchaseRequests:
+            p = purchase_request_to_query(p, "PurchaseRequest." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # RebootInstances
     def reboot_instances(self, RebootInstancesRequest input) -> str:
         auto p = query.query_params("RebootInstances", "2016-11-15")
         p = query.query_flat_list(p, "InstanceId", input.InstanceIds)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # RegisterImage
+    def register_image(self, RegisterImageRequest input) -> str:
+        auto p = query.query_params("RegisterImage", "2016-11-15")
+        if input.ImageLocation.is_some():
+            p = query.query_scalar(p, "ImageLocation", input.ImageLocation.unwrap())
+        auto t0 = input.BillingProducts.unwrap_or([])
+        p = query.query_flat_list(p, "BillingProduct", t0)
+        if input.BootMode.is_some():
+            p = query.query_scalar(p, "BootMode", input.BootMode.unwrap())
+        if input.TpmSupport.is_some():
+            p = query.query_scalar(p, "TpmSupport", input.TpmSupport.unwrap())
+        if input.UefiData.is_some():
+            p = query.query_scalar(p, "UefiData", input.UefiData.unwrap())
+        if input.ImdsSupport.is_some():
+            p = query.query_scalar(p, "ImdsSupport", input.ImdsSupport.unwrap())
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "Name", input.Name)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Architecture.is_some():
+            p = query.query_scalar(p, "Architecture", input.Architecture.unwrap())
+        if input.KernelId.is_some():
+            p = query.query_scalar(p, "KernelId", input.KernelId.unwrap())
+        if input.RamdiskId.is_some():
+            p = query.query_scalar(p, "RamdiskId", input.RamdiskId.unwrap())
+        if input.RootDeviceName.is_some():
+            p = query.query_scalar(p, "RootDeviceName", input.RootDeviceName.unwrap())
+        auto qi3 = 1
+        for qe4 in input.BlockDeviceMappings.unwrap_or([]):
+            p = block_device_mapping_to_query(p, "BlockDeviceMapping." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.VirtualizationType.is_some():
+            auto t5 = input.VirtualizationType.unwrap()
+            p = query.query_scalar(p, "VirtualizationType", t5)
+        if input.SriovNetSupport.is_some():
+            p = query.query_scalar(p, "SriovNetSupport", input.SriovNetSupport.unwrap())
+        if input.EnaSupport.is_some():
+            auto t6 = query.query_bool(input.EnaSupport.unwrap())
+            p = query.query_scalar(p, "EnaSupport", t6)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # RegisterInstanceEventNotificationAttributes
+    def register_instance_event_notification_attributes(self, RegisterInstanceEventNotificationAttributesRequest input) -> str:
+        auto p = query.query_params("RegisterInstanceEventNotificationAttributes", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.InstanceTagAttribute
+        p = register_instance_tag_attribute_request_to_query(p, "InstanceTagAttribute", t0)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # RegisterTransitGatewayMulticastGroupMembers
@@ -25772,6 +36867,36 @@ struct EC2Client:
         p = query.query_scalar(p, "IpamPoolAllocationId", input.IpamPoolAllocationId)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # ReplaceIamInstanceProfileAssociation
+    def replace_iam_instance_profile_association(self, ReplaceIamInstanceProfileAssociationRequest input) -> str:
+        auto p = query.query_params("ReplaceIamInstanceProfileAssociation", "2016-11-15")
+        auto t0 = input.IamInstanceProfile
+        p = iam_instance_profile_specification_to_query(p, "IamInstanceProfile", t0)
+        p = query.query_scalar(p, "AssociationId", input.AssociationId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ReplaceImageCriteriaInAllowedImagesSettings
+    def replace_image_criteria_in_allowed_images_settings(self, ReplaceImageCriteriaInAllowedImagesSettingsRequest input) -> str:
+        auto p = query.query_params("ReplaceImageCriteriaInAllowedImagesSettings", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.ImageCriteria.unwrap_or([]):
+            p = image_criterion_request_to_query(p, "ImageCriterion." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ReplaceImageInstanceTypeSpecification
+    def replace_image_instance_type_specification(self, ReplaceImageInstanceTypeSpecificationRequest input) -> str:
+        auto p = query.query_params("ReplaceImageInstanceTypeSpecification", "2016-11-15")
+        p = query.query_scalar(p, "ImageId", input.ImageId)
+        if input.InstanceTypeSpecification.is_some():
+            auto t0 = input.InstanceTypeSpecification.unwrap()
+            p = instance_type_specification_request_to_query(p, "InstanceTypeSpecification", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # ReplaceNetworkAclAssociation
     def replace_network_acl_association(self, ReplaceNetworkAclAssociationRequest input) -> str:
         auto p = query.query_params("ReplaceNetworkAclAssociation", "2016-11-15")
@@ -25779,6 +36904,26 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         p = query.query_scalar(p, "AssociationId", input.AssociationId)
         p = query.query_scalar(p, "NetworkAclId", input.NetworkAclId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # ReplaceNetworkAclEntry
+    def replace_network_acl_entry(self, ReplaceNetworkAclEntryRequest input) -> str:
+        auto p = query.query_params("ReplaceNetworkAclEntry", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "NetworkAclId", input.NetworkAclId)
+        p = query.query_scalar(p, "RuleNumber", str(input.RuleNumber))
+        p = query.query_scalar(p, "Protocol", input.Protocol)
+        p = query.query_scalar(p, "RuleAction", input.RuleAction)
+        p = query.query_scalar(p, "Egress", query.query_bool(input.Egress))
+        if input.CidrBlock.is_some():
+            p = query.query_scalar(p, "CidrBlock", input.CidrBlock.unwrap())
+        if input.Ipv6CidrBlock.is_some():
+            p = query.query_scalar(p, "Ipv6CidrBlock", input.Ipv6CidrBlock.unwrap())
+        if input.IcmpTypeCode.is_some():
+            p = icmp_type_code_to_query(p, "Icmp", input.IcmpTypeCode.unwrap())
+        if input.PortRange.is_some():
+            p = port_range_to_query(p, "PortRange", input.PortRange.unwrap())
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ReplaceRoute
@@ -25884,6 +37029,55 @@ struct EC2Client:
         p = query.query_flat_list(p, "ReasonCode", input.ReasonCodes)
         if input.Description.is_some():
             p = query.query_scalar(p, "Description", input.Description.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # RequestSpotFleet
+    def request_spot_fleet(self, RequestSpotFleetRequest input) -> str:
+        auto p = query.query_params("RequestSpotFleet", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto t0 = input.SpotFleetRequestConfig
+        p = spot_fleet_request_config_data_to_query(p, "SpotFleetRequestConfig", t0)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # RequestSpotInstances
+    def request_spot_instances(self, RequestSpotInstancesRequest input) -> str:
+        auto p = query.query_params("RequestSpotInstances", "2016-11-15")
+        if input.LaunchSpecification.is_some():
+            auto t0 = input.LaunchSpecification.unwrap()
+            p = request_spot_launch_specification_to_query(p, "LaunchSpecification", t0)
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.InstanceInterruptionBehavior.is_some():
+            auto t3 = input.InstanceInterruptionBehavior.unwrap()
+            p = query.query_scalar(p, "InstanceInterruptionBehavior", t3)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.SpotPrice.is_some():
+            p = query.query_scalar(p, "SpotPrice", input.SpotPrice.unwrap())
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.InstanceCount.is_some():
+            auto t4 = str(input.InstanceCount.unwrap())
+            p = query.query_scalar(p, "InstanceCount", t4)
+        if input.Type.is_some():
+            p = query.query_scalar(p, "Type", input.Type.unwrap())
+        if input.ValidFrom.is_some():
+            auto t5 = query.query_timestamp_iso8601(input.ValidFrom.unwrap())
+            p = query.query_scalar(p, "ValidFrom", t5)
+        if input.ValidUntil.is_some():
+            auto t6 = query.query_timestamp_iso8601(input.ValidUntil.unwrap())
+            p = query.query_scalar(p, "ValidUntil", t6)
+        if input.LaunchGroup.is_some():
+            p = query.query_scalar(p, "LaunchGroup", input.LaunchGroup.unwrap())
+        if input.AvailabilityZoneGroup.is_some():
+            auto t7 = input.AvailabilityZoneGroup.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneGroup", t7)
+        if input.BlockDurationMinutes.is_some():
+            auto t8 = str(input.BlockDurationMinutes.unwrap())
+            p = query.query_scalar(p, "BlockDurationMinutes", t8)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ResetAddressAttribute
@@ -26019,12 +37213,283 @@ struct EC2Client:
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
+    # RevokeSecurityGroupEgress
+    def revoke_security_group_egress(self, RevokeSecurityGroupEgressRequest input) -> str:
+        auto p = query.query_params("RevokeSecurityGroupEgress", "2016-11-15")
+        auto t0 = input.SecurityGroupRuleIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupRuleId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "GroupId", input.GroupId)
+        if input.SourceSecurityGroupName.is_some():
+            auto t1 = input.SourceSecurityGroupName.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupName", t1)
+        if input.SourceSecurityGroupOwnerId.is_some():
+            auto t2 = input.SourceSecurityGroupOwnerId.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupOwnerId", t2)
+        if input.IpProtocol.is_some():
+            p = query.query_scalar(p, "IpProtocol", input.IpProtocol.unwrap())
+        if input.FromPort.is_some():
+            p = query.query_scalar(p, "FromPort", str(input.FromPort.unwrap()))
+        if input.ToPort.is_some():
+            p = query.query_scalar(p, "ToPort", str(input.ToPort.unwrap()))
+        if input.CidrIp.is_some():
+            p = query.query_scalar(p, "CidrIp", input.CidrIp.unwrap())
+        auto qi3 = 1
+        for qe4 in input.IpPermissions.unwrap_or([]):
+            p = ip_permission_to_query(p, "IpPermissions." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # RevokeSecurityGroupIngress
+    def revoke_security_group_ingress(self, RevokeSecurityGroupIngressRequest input) -> str:
+        auto p = query.query_params("RevokeSecurityGroupIngress", "2016-11-15")
+        if input.CidrIp.is_some():
+            p = query.query_scalar(p, "CidrIp", input.CidrIp.unwrap())
+        if input.FromPort.is_some():
+            p = query.query_scalar(p, "FromPort", str(input.FromPort.unwrap()))
+        if input.GroupId.is_some():
+            p = query.query_scalar(p, "GroupId", input.GroupId.unwrap())
+        if input.GroupName.is_some():
+            p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.IpPermissions.unwrap_or([]):
+            p = ip_permission_to_query(p, "IpPermissions." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.IpProtocol.is_some():
+            p = query.query_scalar(p, "IpProtocol", input.IpProtocol.unwrap())
+        if input.SourceSecurityGroupName.is_some():
+            auto t2 = input.SourceSecurityGroupName.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupName", t2)
+        if input.SourceSecurityGroupOwnerId.is_some():
+            auto t3 = input.SourceSecurityGroupOwnerId.unwrap()
+            p = query.query_scalar(p, "SourceSecurityGroupOwnerId", t3)
+        if input.ToPort.is_some():
+            p = query.query_scalar(p, "ToPort", str(input.ToPort.unwrap()))
+        auto t4 = input.SecurityGroupRuleIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupRuleId", t4)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # RunInstances
+    def run_instances(self, RunInstancesRequest input) -> str:
+        auto p = query.query_params("RunInstances", "2016-11-15")
+        auto qi0 = 1
+        for qe1 in input.BlockDeviceMappings.unwrap_or([]):
+            p = block_device_mapping_to_query(p, "BlockDeviceMapping." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.ImageId.is_some():
+            p = query.query_scalar(p, "ImageId", input.ImageId.unwrap())
+        if input.InstanceType.is_some():
+            p = query.query_scalar(p, "InstanceType", input.InstanceType.unwrap())
+        if input.Ipv6AddressCount.is_some():
+            auto t2 = str(input.Ipv6AddressCount.unwrap())
+            p = query.query_scalar(p, "Ipv6AddressCount", t2)
+        auto qi3 = 1
+        for qe4 in input.Ipv6Addresses.unwrap_or([]):
+            p = instance_ipv6_address_to_query(p, "Ipv6Address." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.KernelId.is_some():
+            p = query.query_scalar(p, "KernelId", input.KernelId.unwrap())
+        if input.KeyName.is_some():
+            p = query.query_scalar(p, "KeyName", input.KeyName.unwrap())
+        p = query.query_scalar(p, "MaxCount", str(input.MaxCount))
+        p = query.query_scalar(p, "MinCount", str(input.MinCount))
+        if input.Monitoring.is_some():
+            auto t5 = input.Monitoring.unwrap()
+            p = run_instances_monitoring_enabled_to_query(p, "Monitoring", t5)
+        if input.Placement.is_some():
+            p = placement_to_query(p, "Placement", input.Placement.unwrap())
+        if input.RamdiskId.is_some():
+            p = query.query_scalar(p, "RamdiskId", input.RamdiskId.unwrap())
+        auto t6 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroupId", t6)
+        auto t7 = input.SecurityGroups.unwrap_or([])
+        p = query.query_flat_list(p, "SecurityGroup", t7)
+        if input.SubnetId.is_some():
+            p = query.query_scalar(p, "SubnetId", input.SubnetId.unwrap())
+        if input.UserData.is_some():
+            p = query.query_scalar(p, "UserData", input.UserData.unwrap())
+        auto qi8 = 1
+        for qe9 in input.ElasticGpuSpecification.unwrap_or([]):
+            auto t10 = qe9
+            p = elastic_gpu_specification_to_query(p, "ElasticGpuSpecification." + str(qi8), t10)
+            qi8 = qi8 + 1
+        auto qi11 = 1
+        for qe12 in input.ElasticInferenceAccelerators.unwrap_or([]):
+            auto t13 = qe12
+            p = elastic_inference_accelerator_to_query(p, "ElasticInferenceAccelerator." + str(qi11), t13)
+            qi11 = qi11 + 1
+        auto qi14 = 1
+        for qe15 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi14), qe15)
+            qi14 = qi14 + 1
+        if input.LaunchTemplate.is_some():
+            auto t16 = input.LaunchTemplate.unwrap()
+            p = launch_template_specification_to_query(p, "LaunchTemplate", t16)
+        if input.InstanceMarketOptions.is_some():
+            auto t17 = input.InstanceMarketOptions.unwrap()
+            p = instance_market_options_request_to_query(p, "InstanceMarketOptions", t17)
+        if input.CreditSpecification.is_some():
+            auto t18 = input.CreditSpecification.unwrap()
+            p = credit_specification_request_to_query(p, "CreditSpecification", t18)
+        if input.CpuOptions.is_some():
+            p = cpu_options_request_to_query(p, "CpuOptions", input.CpuOptions.unwrap())
+        if input.CapacityReservationSpecification.is_some():
+            auto t19 = input.CapacityReservationSpecification.unwrap()
+            p = capacity_reservation_specification_to_query(p, "CapacityReservationSpecification", t19)
+        if input.HibernationOptions.is_some():
+            auto t20 = input.HibernationOptions.unwrap()
+            p = hibernation_options_request_to_query(p, "HibernationOptions", t20)
+        auto qi21 = 1
+        for qe22 in input.LicenseSpecifications.unwrap_or([]):
+            auto t23 = qe22
+            p = license_configuration_request_to_query(p, "LicenseSpecification." + str(qi21), t23)
+            qi21 = qi21 + 1
+        if input.MetadataOptions.is_some():
+            auto t24 = input.MetadataOptions.unwrap()
+            p = instance_metadata_options_request_to_query(p, "MetadataOptions", t24)
+        if input.EnclaveOptions.is_some():
+            auto t25 = input.EnclaveOptions.unwrap()
+            p = enclave_options_request_to_query(p, "EnclaveOptions", t25)
+        if input.PrivateDnsNameOptions.is_some():
+            auto t26 = input.PrivateDnsNameOptions.unwrap()
+            p = private_dns_name_options_request_to_query(p, "PrivateDnsNameOptions", t26)
+        if input.MaintenanceOptions.is_some():
+            auto t27 = input.MaintenanceOptions.unwrap()
+            p = instance_maintenance_options_request_to_query(p, "MaintenanceOptions", t27)
+        if input.DisableApiStop.is_some():
+            auto t28 = query.query_bool(input.DisableApiStop.unwrap())
+            p = query.query_scalar(p, "DisableApiStop", t28)
+        if input.EnablePrimaryIpv6.is_some():
+            auto t29 = query.query_bool(input.EnablePrimaryIpv6.unwrap())
+            p = query.query_scalar(p, "EnablePrimaryIpv6", t29)
+        if input.NetworkPerformanceOptions.is_some():
+            auto t30 = input.NetworkPerformanceOptions.unwrap()
+            p = instance_network_performance_options_request_to_query(p, "NetworkPerformanceOptions", t30)
+        if input.Operator.is_some():
+            p = operator_request_to_query(p, "Operator", input.Operator.unwrap())
+        auto qi31 = 1
+        for qe32 in input.SecondaryInterfaces.unwrap_or([]):
+            auto t33 = qe32
+            p = instance_secondary_interface_specification_request_to_query(p, "SecondaryInterface." + str(qi31), t33)
+            qi31 = qi31 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.DisableApiTermination.is_some():
+            auto t34 = query.query_bool(input.DisableApiTermination.unwrap())
+            p = query.query_scalar(p, "DisableApiTermination", t34)
+        if input.InstanceInitiatedShutdownBehavior.is_some():
+            auto t35 = input.InstanceInitiatedShutdownBehavior.unwrap()
+            p = query.query_scalar(p, "InstanceInitiatedShutdownBehavior", t35)
+        if input.PrivateIpAddress.is_some():
+            auto t36 = input.PrivateIpAddress.unwrap()
+            p = query.query_scalar(p, "PrivateIpAddress", t36)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.AdditionalInfo.is_some():
+            p = query.query_scalar(p, "AdditionalInfo", input.AdditionalInfo.unwrap())
+        auto qi37 = 1
+        for qe38 in input.NetworkInterfaces.unwrap_or([]):
+            auto t39 = qe38
+            p = instance_network_interface_specification_to_query(p, "NetworkInterface." + str(qi37), t39)
+            qi37 = qi37 + 1
+        if input.IamInstanceProfile.is_some():
+            auto t40 = input.IamInstanceProfile.unwrap()
+            p = iam_instance_profile_specification_to_query(p, "IamInstanceProfile", t40)
+        if input.EbsOptimized.is_some():
+            auto t41 = query.query_bool(input.EbsOptimized.unwrap())
+            p = query.query_scalar(p, "EbsOptimized", t41)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # RunScheduledInstances
+    def run_scheduled_instances(self, RunScheduledInstancesRequest input) -> str:
+        auto p = query.query_params("RunScheduledInstances", "2016-11-15")
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.InstanceCount.is_some():
+            auto t0 = str(input.InstanceCount.unwrap())
+            p = query.query_scalar(p, "InstanceCount", t0)
+        auto t1 = input.LaunchSpecification
+        p = scheduled_instances_launch_specification_to_query(p, "LaunchSpecification", t1)
+        p = query.query_scalar(p, "ScheduledInstanceId", input.ScheduledInstanceId)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # SearchLocalGatewayRoutes
+    def search_local_gateway_routes(self, SearchLocalGatewayRoutesRequest input) -> str:
+        auto p = query.query_params("SearchLocalGatewayRoutes", "2016-11-15")
+        auto t0 = input.LocalGatewayRouteTableId
+        p = query.query_scalar(p, "LocalGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # SearchTransitGatewayMulticastGroups
+    def search_transit_gateway_multicast_groups(self, SearchTransitGatewayMulticastGroupsRequest input) -> str:
+        auto p = query.query_params("SearchTransitGatewayMulticastGroups", "2016-11-15")
+        auto t0 = input.TransitGatewayMulticastDomainId
+        p = query.query_scalar(p, "TransitGatewayMulticastDomainId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # SearchTransitGatewayRoutes
+    def search_transit_gateway_routes(self, SearchTransitGatewayRoutesRequest input) -> str:
+        auto p = query.query_params("SearchTransitGatewayRoutes", "2016-11-15")
+        auto t0 = input.TransitGatewayRouteTableId
+        p = query.query_scalar(p, "TransitGatewayRouteTableId", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters:
+            p = filter_to_query(p, "Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
     # SendDiagnosticInterrupt
     def send_diagnostic_interrupt(self, SendDiagnosticInterruptRequest input) -> str:
         auto p = query.query_params("SendDiagnosticInterrupt", "2016-11-15")
         p = query.query_scalar(p, "InstanceId", input.InstanceId)
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # StartDeclarativePoliciesReport
+    def start_declarative_policies_report(self, StartDeclarativePoliciesReportRequest input) -> str:
+        auto p = query.query_params("StartDeclarativePoliciesReport", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        p = query.query_scalar(p, "S3Bucket", input.S3Bucket)
+        if input.S3Prefix.is_some():
+            p = query.query_scalar(p, "S3Prefix", input.S3Prefix.unwrap())
+        p = query.query_scalar(p, "TargetId", input.TargetId)
+        auto qi0 = 1
+        for qe1 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # StartInstances
@@ -26035,6 +37500,37 @@ struct EC2Client:
             p = query.query_scalar(p, "AdditionalInfo", input.AdditionalInfo.unwrap())
         if input.DryRun.is_some():
             p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # StartNetworkInsightsAccessScopeAnalysis
+    def start_network_insights_access_scope_analysis(self, StartNetworkInsightsAccessScopeAnalysisRequest input) -> str:
+        auto p = query.query_params("StartNetworkInsightsAccessScopeAnalysis", "2016-11-15")
+        auto t0 = input.NetworkInsightsAccessScopeId
+        p = query.query_scalar(p, "NetworkInsightsAccessScopeId", t0)
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        p = query.query_scalar(p, "ClientToken", input.ClientToken)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # StartNetworkInsightsAnalysis
+    def start_network_insights_analysis(self, StartNetworkInsightsAnalysisRequest input) -> str:
+        auto p = query.query_params("StartNetworkInsightsAnalysis", "2016-11-15")
+        p = query.query_scalar(p, "NetworkInsightsPathId", input.NetworkInsightsPathId)
+        auto t0 = input.AdditionalAccounts.unwrap_or([])
+        p = query.query_flat_list(p, "AdditionalAccount", t0)
+        p = query.query_flat_list(p, "FilterInArn", input.FilterInArns.unwrap_or([]))
+        p = query.query_flat_list(p, "FilterOutArn", input.FilterOutArns.unwrap_or([]))
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecification." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        p = query.query_scalar(p, "ClientToken", input.ClientToken)
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # StartVpcEndpointServicePrivateDnsVerification
@@ -26167,6 +37663,46 @@ struct EC2Client:
         if input.ZeroSizePreference.is_some():
             auto t1 = input.ZeroSizePreference.unwrap()
             p = query.query_scalar(p, "ZeroSizePreference", t1)
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # UpdateSecurityGroupRuleDescriptionsEgress
+    def update_security_group_rule_descriptions_egress(self, UpdateSecurityGroupRuleDescriptionsEgressRequest input) -> str:
+        auto p = query.query_params("UpdateSecurityGroupRuleDescriptionsEgress", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.GroupId.is_some():
+            p = query.query_scalar(p, "GroupId", input.GroupId.unwrap())
+        if input.GroupName.is_some():
+            p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.IpPermissions.unwrap_or([]):
+            p = ip_permission_to_query(p, "IpPermissions." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto qi2 = 1
+        for qe3 in input.SecurityGroupRuleDescriptions.unwrap_or([]):
+            auto t4 = qe3
+            p = security_group_rule_description_to_query(p, "SecurityGroupRuleDescription." + str(qi2), t4)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, ec2_service(), self.region, p)
+
+    # UpdateSecurityGroupRuleDescriptionsIngress
+    def update_security_group_rule_descriptions_ingress(self, UpdateSecurityGroupRuleDescriptionsIngressRequest input) -> str:
+        auto p = query.query_params("UpdateSecurityGroupRuleDescriptionsIngress", "2016-11-15")
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.GroupId.is_some():
+            p = query.query_scalar(p, "GroupId", input.GroupId.unwrap())
+        if input.GroupName.is_some():
+            p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.IpPermissions.unwrap_or([]):
+            p = ip_permission_to_query(p, "IpPermissions." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto qi2 = 1
+        for qe3 in input.SecurityGroupRuleDescriptions.unwrap_or([]):
+            auto t4 = qe3
+            p = security_group_rule_description_to_query(p, "SecurityGroupRuleDescription." + str(qi2), t4)
+            qi2 = qi2 + 1
         return query.query_request(self.creds, ec2_service(), self.region, p)
 
     # ValidateSecurityGroupQuotasForInterface

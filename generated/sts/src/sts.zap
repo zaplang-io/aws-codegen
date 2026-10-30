@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 11 operations — 5 with a generated method,
-#   6 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 11 operations — 11 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   40 structs (plain carriers), 0 enums, 12 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -290,19 +290,131 @@ def sts_error_from_code(str code) -> STSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AssumeRole (member `PolicyArns` is a list of PolicyDescriptorType (only scalar lists in v0))
-#   AssumeRoleWithSAML (member `PolicyArns` is a list of PolicyDescriptorType (only scalar lists in v0))
-#   AssumeRoleWithWebIdentity (member `PolicyArns` is a list of PolicyDescriptorType (only scalar lists in v0))
-#   AssumeRoot (member `TaskPolicyArn` is a nested structure (query nesting is a v0 follow-up))
-#   GetFederationToken (member `PolicyArns` is a list of PolicyDescriptorType (only scalar lists in v0))
-#   GetWebIdentityToken (member `Tags` is a list of Tag (only scalar lists in v0))
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize PolicyDescriptorType into the query form parameters under `prefix`.
+def policy_descriptor_type_to_query(list[query.QueryPair] p, str prefix, PolicyDescriptorType v) -> list[query.QueryPair]:
+    if v.arn.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "arn"), v.arn.unwrap())
+    return p
+
+# Serialize ProvidedContext into the query form parameters under `prefix`.
+def provided_context_to_query(list[query.QueryPair] p, str prefix, ProvidedContext v) -> list[query.QueryPair]:
+    if v.ProviderArn.is_some():
+        auto t0 = v.ProviderArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ProviderArn"), t0)
+    if v.ContextAssertion.is_some():
+        auto t1 = v.ContextAssertion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ContextAssertion"), t1)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    return p
 
 # A bound STS client: credentials + region, threaded into every operation.
 struct STSClient:
     core.Credentials creds
     str region
+
+    # AssumeRole
+    # errors: ExpiredTokenException, MalformedPolicyDocumentException, PackedPolicyTooLargeException, RegionDisabledException
+    def assume_role(self, AssumeRoleRequest input) -> str:
+        auto p = query.query_params("AssumeRole", "2011-06-15")
+        p = query.query_scalar(p, "RoleArn", input.RoleArn)
+        p = query.query_scalar(p, "RoleSessionName", input.RoleSessionName)
+        auto qi0 = 1
+        for qe1 in input.PolicyArns.unwrap_or([]):
+            p = policy_descriptor_type_to_query(p, "PolicyArns.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Policy.is_some():
+            p = query.query_scalar(p, "Policy", input.Policy.unwrap())
+        if input.DurationSeconds.is_some():
+            auto t2 = str(input.DurationSeconds.unwrap())
+            p = query.query_scalar(p, "DurationSeconds", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        auto t5 = input.TransitiveTagKeys.unwrap_or([])
+        p = query.query_list(p, "TransitiveTagKeys", "member", t5)
+        if input.ExternalId.is_some():
+            p = query.query_scalar(p, "ExternalId", input.ExternalId.unwrap())
+        if input.SerialNumber.is_some():
+            p = query.query_scalar(p, "SerialNumber", input.SerialNumber.unwrap())
+        if input.TokenCode.is_some():
+            p = query.query_scalar(p, "TokenCode", input.TokenCode.unwrap())
+        if input.SourceIdentity.is_some():
+            p = query.query_scalar(p, "SourceIdentity", input.SourceIdentity.unwrap())
+        auto qi6 = 1
+        for qe7 in input.ProvidedContexts.unwrap_or([]):
+            p = provided_context_to_query(p, "ProvidedContexts.member." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        if input.MinimumSessionTokenSize.is_some():
+            auto t8 = str(input.MinimumSessionTokenSize.unwrap())
+            p = query.query_scalar(p, "MinimumSessionTokenSize", t8)
+        return query.query_request(self.creds, sts_service(), self.region, p)
+
+    # AssumeRoleWithSAML
+    # errors: ExpiredTokenException, IDPRejectedClaimException, InvalidIdentityTokenException, MalformedPolicyDocumentException, PackedPolicyTooLargeException, RegionDisabledException
+    def assume_role_with_saml(self, AssumeRoleWithSAMLRequest input) -> str:
+        auto p = query.query_params("AssumeRoleWithSAML", "2011-06-15")
+        p = query.query_scalar(p, "RoleArn", input.RoleArn)
+        p = query.query_scalar(p, "PrincipalArn", input.PrincipalArn)
+        p = query.query_scalar(p, "SAMLAssertion", input.SAMLAssertion)
+        auto qi0 = 1
+        for qe1 in input.PolicyArns.unwrap_or([]):
+            p = policy_descriptor_type_to_query(p, "PolicyArns.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Policy.is_some():
+            p = query.query_scalar(p, "Policy", input.Policy.unwrap())
+        if input.DurationSeconds.is_some():
+            auto t2 = str(input.DurationSeconds.unwrap())
+            p = query.query_scalar(p, "DurationSeconds", t2)
+        if input.MinimumSessionTokenSize.is_some():
+            auto t3 = str(input.MinimumSessionTokenSize.unwrap())
+            p = query.query_scalar(p, "MinimumSessionTokenSize", t3)
+        return query.query_request(self.creds, sts_service(), self.region, p)
+
+    # AssumeRoleWithWebIdentity
+    # errors: ExpiredTokenException, IDPCommunicationErrorException, IDPRejectedClaimException, InvalidIdentityTokenException, MalformedPolicyDocumentException, PackedPolicyTooLargeException, RegionDisabledException
+    def assume_role_with_web_identity(self, AssumeRoleWithWebIdentityRequest input) -> str:
+        auto p = query.query_params("AssumeRoleWithWebIdentity", "2011-06-15")
+        p = query.query_scalar(p, "RoleArn", input.RoleArn)
+        p = query.query_scalar(p, "RoleSessionName", input.RoleSessionName)
+        p = query.query_scalar(p, "WebIdentityToken", input.WebIdentityToken)
+        if input.ProviderId.is_some():
+            p = query.query_scalar(p, "ProviderId", input.ProviderId.unwrap())
+        auto qi0 = 1
+        for qe1 in input.PolicyArns.unwrap_or([]):
+            p = policy_descriptor_type_to_query(p, "PolicyArns.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Policy.is_some():
+            p = query.query_scalar(p, "Policy", input.Policy.unwrap())
+        if input.DurationSeconds.is_some():
+            auto t2 = str(input.DurationSeconds.unwrap())
+            p = query.query_scalar(p, "DurationSeconds", t2)
+        if input.MinimumSessionTokenSize.is_some():
+            auto t3 = str(input.MinimumSessionTokenSize.unwrap())
+            p = query.query_scalar(p, "MinimumSessionTokenSize", t3)
+        return query.query_request(self.creds, sts_service(), self.region, p)
+
+    # AssumeRoot
+    # errors: ExpiredTokenException, RegionDisabledException
+    def assume_root(self, AssumeRootRequest input) -> str:
+        auto p = query.query_params("AssumeRoot", "2011-06-15")
+        p = query.query_scalar(p, "TargetPrincipal", input.TargetPrincipal)
+        p = policy_descriptor_type_to_query(p, "TaskPolicyArn", input.TaskPolicyArn)
+        if input.DurationSeconds.is_some():
+            auto t0 = str(input.DurationSeconds.unwrap())
+            p = query.query_scalar(p, "DurationSeconds", t0)
+        if input.MinimumSessionTokenSize.is_some():
+            auto t1 = str(input.MinimumSessionTokenSize.unwrap())
+            p = query.query_scalar(p, "MinimumSessionTokenSize", t1)
+        return query.query_request(self.creds, sts_service(), self.region, p)
 
     # DecodeAuthorizationMessage
     # errors: InvalidAuthorizationMessageException
@@ -329,6 +441,29 @@ struct STSClient:
         p = query.query_scalar(p, "TradeInToken", input.TradeInToken)
         return query.query_request(self.creds, sts_service(), self.region, p)
 
+    # GetFederationToken
+    # errors: MalformedPolicyDocumentException, PackedPolicyTooLargeException, RegionDisabledException
+    def get_federation_token(self, GetFederationTokenRequest input) -> str:
+        auto p = query.query_params("GetFederationToken", "2011-06-15")
+        p = query.query_scalar(p, "Name", input.Name)
+        if input.Policy.is_some():
+            p = query.query_scalar(p, "Policy", input.Policy.unwrap())
+        auto qi0 = 1
+        for qe1 in input.PolicyArns.unwrap_or([]):
+            p = policy_descriptor_type_to_query(p, "PolicyArns.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DurationSeconds.is_some():
+            auto t2 = str(input.DurationSeconds.unwrap())
+            p = query.query_scalar(p, "DurationSeconds", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.MinimumSessionTokenSize.is_some():
+            auto t5 = str(input.MinimumSessionTokenSize.unwrap())
+            p = query.query_scalar(p, "MinimumSessionTokenSize", t5)
+        return query.query_request(self.creds, sts_service(), self.region, p)
+
     # GetSessionToken
     # errors: RegionDisabledException
     def get_session_token(self, GetSessionTokenRequest input) -> str:
@@ -343,6 +478,21 @@ struct STSClient:
         if input.MinimumSessionTokenSize.is_some():
             auto t1 = str(input.MinimumSessionTokenSize.unwrap())
             p = query.query_scalar(p, "MinimumSessionTokenSize", t1)
+        return query.query_request(self.creds, sts_service(), self.region, p)
+
+    # GetWebIdentityToken
+    # errors: JWTPayloadSizeExceededException, OutboundWebIdentityFederationDisabledException, SessionDurationEscalationException
+    def get_web_identity_token(self, GetWebIdentityTokenRequest input) -> str:
+        auto p = query.query_params("GetWebIdentityToken", "2011-06-15")
+        p = query.query_list(p, "Audience", "member", input.Audience)
+        if input.DurationSeconds.is_some():
+            auto t0 = str(input.DurationSeconds.unwrap())
+            p = query.query_scalar(p, "DurationSeconds", t0)
+        p = query.query_scalar(p, "SigningAlgorithm", input.SigningAlgorithm)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, sts_service(), self.region, p)
 
 # Construct a STSClient bound to credentials + region.

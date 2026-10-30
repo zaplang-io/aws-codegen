@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 77 operations — 47 with a generated method,
-#   30 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 77 operations — 77 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   295 structs (plain carriers), 31 enums, 79 error variants.
 #   0 paginators generated (19 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -2216,39 +2216,6 @@ def elasticache_error_from_code(str code) -> ElastiCacheError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AddTagsToResource (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CopyServerlessCacheSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CopySnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateCacheCluster (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateCacheParameterGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateCacheSecurityGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateCacheSubnetGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateGlobalReplicationGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateReplicationGroup (member `NodeGroupConfiguration` is a list of NodeGroupConfiguration (only scalar lists in v0))
-#   CreateServerlessCache (member `CacheUsageLimits` is a nested structure (query nesting is a v0 follow-up))
-#   CreateServerlessCacheSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateUser (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateUserGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   DecreaseReplicaCount (member `ReplicaConfiguration` is a list of ConfigureShard (only scalar lists in v0))
-#   DescribeUpdateActions (member `ServiceUpdateTimeRange` is a nested structure (query nesting is a v0 follow-up))
-#   DescribeUsers (member `Filters` is a list of Filter (only scalar lists in v0))
-#   IncreaseNodeGroupsInGlobalReplicationGroup (member `RegionalConfigurations` is a list of RegionalConfiguration (only scalar lists in v0))
-#   IncreaseReplicaCount (member `ReplicaConfiguration` is a list of ConfigureShard (only scalar lists in v0))
-#   ModifyCacheCluster (member `LogDeliveryConfigurations` is a list of LogDeliveryConfigurationRequest (only scalar lists in v0))
-#   ModifyCacheParameterGroup (member `ParameterNameValues` is a list of ParameterNameValue (only scalar lists in v0))
-#   ModifyReplicationGroup (member `LogDeliveryConfigurations` is a list of LogDeliveryConfigurationRequest (only scalar lists in v0))
-#   ModifyReplicationGroupShardConfiguration (member `ReshardingConfiguration` is a list of ReshardingConfiguration (only scalar lists in v0))
-#   ModifyServerlessCache (member `CacheUsageLimits` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyUser (member `AuthenticationMode` is a nested structure (query nesting is a v0 follow-up))
-#   PrepareMigration (member `CustomerNodeEndpointList` is a list of CustomerNodeEndpoint (only scalar lists in v0))
-#   PurchaseReservedCacheNodesOffering (member `Tags` is a list of Tag (only scalar lists in v0))
-#   ResetCacheParameterGroup (member `ParameterNameValues` is a list of ParameterNameValue (only scalar lists in v0))
-#   StartMigration (member `CustomerNodeEndpointList` is a list of CustomerNodeEndpoint (only scalar lists in v0))
-#   TestMigration (member `CustomerNodeEndpointList` is a list of CustomerNodeEndpoint (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeCacheClusters
@@ -2271,10 +2238,238 @@ def elasticache_error_from_code(str code) -> ElastiCacheError:
 #   DescribeUserGroups
 #   DescribeUsers
 
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AuthenticationMode into the query form parameters under `prefix`.
+def authentication_mode_to_query(list[query.QueryPair] p, str prefix, AuthenticationMode v) -> list[query.QueryPair]:
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    auto t0 = v.Passwords.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Passwords"), "member", t0)
+    return p
+
+# Serialize CacheUsageLimits into the query form parameters under `prefix`.
+def cache_usage_limits_to_query(list[query.QueryPair] p, str prefix, CacheUsageLimits v) -> list[query.QueryPair]:
+    if v.DataStorage.is_some():
+        auto t0 = v.DataStorage.unwrap()
+        p = data_storage_to_query(p, query.query_key(prefix, "DataStorage"), t0)
+    if v.ECPUPerSecond.is_some():
+        auto t1 = v.ECPUPerSecond.unwrap()
+        p = ecpu_per_second_to_query(p, query.query_key(prefix, "ECPUPerSecond"), t1)
+    return p
+
+# Serialize CloudWatchLogsDestinationDetails into the query form parameters under `prefix`.
+def cloud_watch_logs_destination_details_to_query(list[query.QueryPair] p, str prefix, CloudWatchLogsDestinationDetails v) -> list[query.QueryPair]:
+    if v.LogGroup.is_some():
+        auto t0 = v.LogGroup.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogGroup"), t0)
+    return p
+
+# Serialize ConfigureShard into the query form parameters under `prefix`.
+def configure_shard_to_query(list[query.QueryPair] p, str prefix, ConfigureShard v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "NodeGroupId"), v.NodeGroupId)
+    auto t0 = str(v.NewReplicaCount)
+    p = query.query_scalar(p, query.query_key(prefix, "NewReplicaCount"), t0)
+    auto t1 = v.PreferredAvailabilityZones.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "PreferredAvailabilityZones"), "PreferredAvailabilityZone", t1)
+    auto t2 = v.PreferredOutpostArns.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "PreferredOutpostArns"), "PreferredOutpostArn", t2)
+    return p
+
+# Serialize CustomerNodeEndpoint into the query form parameters under `prefix`.
+def customer_node_endpoint_to_query(list[query.QueryPair] p, str prefix, CustomerNodeEndpoint v) -> list[query.QueryPair]:
+    if v.Address.is_some():
+        auto t0 = v.Address.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Address"), t0)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    return p
+
+# Serialize DataStorage into the query form parameters under `prefix`.
+def data_storage_to_query(list[query.QueryPair] p, str prefix, DataStorage v) -> list[query.QueryPair]:
+    if v.Maximum.is_some():
+        auto t0 = str(v.Maximum.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Maximum"), t0)
+    if v.Minimum.is_some():
+        auto t1 = str(v.Minimum.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Minimum"), t1)
+    p = query.query_scalar(p, query.query_key(prefix, "Unit"), v.Unit)
+    return p
+
+# Serialize DestinationDetails into the query form parameters under `prefix`.
+def destination_details_to_query(list[query.QueryPair] p, str prefix, DestinationDetails v) -> list[query.QueryPair]:
+    if v.CloudWatchLogsDetails.is_some():
+        auto t0 = v.CloudWatchLogsDetails.unwrap()
+        p = cloud_watch_logs_destination_details_to_query(p, query.query_key(prefix, "CloudWatchLogsDetails"), t0)
+    if v.KinesisFirehoseDetails.is_some():
+        auto t1 = v.KinesisFirehoseDetails.unwrap()
+        p = kinesis_firehose_destination_details_to_query(p, query.query_key(prefix, "KinesisFirehoseDetails"), t1)
+    return p
+
+# Serialize ECPUPerSecond into the query form parameters under `prefix`.
+def ecpu_per_second_to_query(list[query.QueryPair] p, str prefix, ECPUPerSecond v) -> list[query.QueryPair]:
+    if v.Maximum.is_some():
+        auto t0 = str(v.Maximum.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Maximum"), t0)
+    if v.Minimum.is_some():
+        auto t1 = str(v.Minimum.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Minimum"), t1)
+    return p
+
+# Serialize Filter into the query form parameters under `prefix`.
+def filter_to_query(list[query.QueryPair] p, str prefix, Filter v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", v.Values)
+    return p
+
+# Serialize KinesisFirehoseDestinationDetails into the query form parameters under `prefix`.
+def kinesis_firehose_destination_details_to_query(list[query.QueryPair] p, str prefix, KinesisFirehoseDestinationDetails v) -> list[query.QueryPair]:
+    if v.DeliveryStream.is_some():
+        auto t0 = v.DeliveryStream.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeliveryStream"), t0)
+    return p
+
+# Serialize LogDeliveryConfigurationRequest into the query form parameters under `prefix`.
+def log_delivery_configuration_request_to_query(list[query.QueryPair] p, str prefix, LogDeliveryConfigurationRequest v) -> list[query.QueryPair]:
+    if v.LogType.is_some():
+        auto t0 = v.LogType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogType"), t0)
+    if v.DestinationType.is_some():
+        auto t1 = v.DestinationType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DestinationType"), t1)
+    if v.DestinationDetails.is_some():
+        auto t2 = v.DestinationDetails.unwrap()
+        p = destination_details_to_query(p, query.query_key(prefix, "DestinationDetails"), t2)
+    if v.LogFormat.is_some():
+        auto t3 = v.LogFormat.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogFormat"), t3)
+    if v.Enabled.is_some():
+        auto t4 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t4)
+    return p
+
+# Serialize NodeGroupConfiguration into the query form parameters under `prefix`.
+def node_group_configuration_to_query(list[query.QueryPair] p, str prefix, NodeGroupConfiguration v) -> list[query.QueryPair]:
+    if v.NodeGroupId.is_some():
+        auto t0 = v.NodeGroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NodeGroupId"), t0)
+    if v.Slots.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Slots"), v.Slots.unwrap())
+    if v.ReplicaCount.is_some():
+        auto t1 = str(v.ReplicaCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReplicaCount"), t1)
+    if v.PrimaryAvailabilityZone.is_some():
+        auto t2 = v.PrimaryAvailabilityZone.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrimaryAvailabilityZone"), t2)
+    auto t3 = v.ReplicaAvailabilityZones.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "ReplicaAvailabilityZones"), "AvailabilityZone", t3)
+    if v.PrimaryOutpostArn.is_some():
+        auto t4 = v.PrimaryOutpostArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PrimaryOutpostArn"), t4)
+    auto t5 = v.ReplicaOutpostArns.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "ReplicaOutpostArns"), "OutpostArn", t5)
+    return p
+
+# Serialize ParameterNameValue into the query form parameters under `prefix`.
+def parameter_name_value_to_query(list[query.QueryPair] p, str prefix, ParameterNameValue v) -> list[query.QueryPair]:
+    if v.ParameterName.is_some():
+        auto t0 = v.ParameterName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterName"), t0)
+    if v.ParameterValue.is_some():
+        auto t1 = v.ParameterValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterValue"), t1)
+    return p
+
+# Serialize RegionalConfiguration into the query form parameters under `prefix`.
+def regional_configuration_to_query(list[query.QueryPair] p, str prefix, RegionalConfiguration v) -> list[query.QueryPair]:
+    auto t0 = v.ReplicationGroupId
+    p = query.query_scalar(p, query.query_key(prefix, "ReplicationGroupId"), t0)
+    auto t1 = v.ReplicationGroupRegion
+    p = query.query_scalar(p, query.query_key(prefix, "ReplicationGroupRegion"), t1)
+    auto qi2 = 1
+    for qe3 in v.ReshardingConfiguration:
+        auto t4 = qe3
+        p = resharding_configuration_to_query(p, query.query_key(prefix, "ReshardingConfiguration") + ".ReshardingConfiguration" + "." + str(qi2), t4)
+        qi2 = qi2 + 1
+    return p
+
+# Serialize ReshardingConfiguration into the query form parameters under `prefix`.
+def resharding_configuration_to_query(list[query.QueryPair] p, str prefix, ReshardingConfiguration v) -> list[query.QueryPair]:
+    if v.NodeGroupId.is_some():
+        auto t0 = v.NodeGroupId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NodeGroupId"), t0)
+    auto t1 = v.PreferredAvailabilityZones.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "PreferredAvailabilityZones"), "AvailabilityZone", t1)
+    return p
+
+# Serialize ScaleConfig into the query form parameters under `prefix`.
+def scale_config_to_query(list[query.QueryPair] p, str prefix, ScaleConfig v) -> list[query.QueryPair]:
+    if v.ScalePercentage.is_some():
+        auto t0 = str(v.ScalePercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ScalePercentage"), t0)
+    if v.ScaleIntervalMinutes.is_some():
+        auto t1 = str(v.ScaleIntervalMinutes.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ScaleIntervalMinutes"), t1)
+    return p
+
+# Serialize SecretManagerAuthConfig into the query form parameters under `prefix`.
+def secret_manager_auth_config_to_query(list[query.QueryPair] p, str prefix, SecretManagerAuthConfig v) -> list[query.QueryPair]:
+    if v.SecretArn.is_some():
+        auto t0 = v.SecretArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecretArn"), t0)
+    return p
+
+# Serialize SourceAuthenticationConfiguration into the query form parameters under `prefix`.
+def source_authentication_configuration_to_query(list[query.QueryPair] p, str prefix, SourceAuthenticationConfiguration v) -> list[query.QueryPair]:
+    if v.SecretManagerConfig.is_some():
+        auto t0 = v.SecretManagerConfig.unwrap()
+        p = secret_manager_auth_config_to_query(p, query.query_key(prefix, "SecretManagerConfig"), t0)
+    return p
+
+# Serialize SourceTlsConfiguration into the query form parameters under `prefix`.
+def source_tls_configuration_to_query(list[query.QueryPair] p, str prefix, SourceTlsConfiguration v) -> list[query.QueryPair]:
+    if v.SourceTlsMode.is_some():
+        auto t0 = v.SourceTlsMode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceTlsMode"), t0)
+    if v.SourceTlsCertificate.is_some():
+        auto t1 = v.SourceTlsCertificate.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceTlsCertificate"), t1)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize TimeRangeFilter into the query form parameters under `prefix`.
+def time_range_filter_to_query(list[query.QueryPair] p, str prefix, TimeRangeFilter v) -> list[query.QueryPair]:
+    if v.StartTime.is_some():
+        auto t0 = query.query_timestamp_iso8601(v.StartTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "StartTime"), t0)
+    if v.EndTime.is_some():
+        auto t1 = query.query_timestamp_iso8601(v.EndTime.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EndTime"), t1)
+    return p
+
 # A bound ElastiCache client: credentials + region, threaded into every operation.
 struct ElastiCacheClient:
     core.Credentials creds
     str region
+
+    # AddTagsToResource
+    # errors: CacheClusterNotFoundFault, CacheParameterGroupNotFoundFault, CacheSecurityGroupNotFoundFault, CacheSubnetGroupNotFoundFault, GlobalReplicationGroupNotFoundFault, InvalidARNFault, InvalidParameterValueException, InvalidReplicationGroupStateFault, InvalidServerlessCacheSnapshotStateFault, InvalidServerlessCacheStateFault, ReplicationGroupNotFoundFault, ReservedCacheNodeNotFoundFault, ServerlessCacheNotFoundFault, ServerlessCacheSnapshotNotFoundFault, SnapshotNotFoundFault, TagQuotaPerResourceExceeded, UserGroupNotFoundFault, UserNotFoundFault
+    def add_tags_to_resource(self, AddTagsToResourceMessage input) -> str:
+        auto p = query.query_params("AddTagsToResource", "2015-02-02")
+        p = query.query_scalar(p, "ResourceName", input.ResourceName)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
 
     # AuthorizeCacheSecurityGroupIngress
     # errors: AuthorizationAlreadyExistsFault, CacheSecurityGroupNotFoundFault, InvalidCacheSecurityGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException
@@ -2323,6 +2518,395 @@ struct ElastiCacheClient:
             p = query.query_scalar(p, "Force", query.query_bool(input.Force.unwrap()))
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
+    # CopyServerlessCacheSnapshot
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidServerlessCacheSnapshotStateFault, ServerlessCacheSnapshotAlreadyExistsFault, ServerlessCacheSnapshotNotFoundFault, ServerlessCacheSnapshotQuotaExceededFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
+    def copy_serverless_cache_snapshot(self, CopyServerlessCacheSnapshotRequest input) -> str:
+        auto p = query.query_params("CopyServerlessCacheSnapshot", "2015-02-02")
+        auto t0 = input.SourceServerlessCacheSnapshotName
+        p = query.query_scalar(p, "SourceServerlessCacheSnapshotName", t0)
+        auto t1 = input.TargetServerlessCacheSnapshotName
+        p = query.query_scalar(p, "TargetServerlessCacheSnapshotName", t1)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CopySnapshot
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidSnapshotStateFault, SnapshotAlreadyExistsFault, SnapshotNotFoundFault, SnapshotQuotaExceededFault, TagQuotaPerResourceExceeded
+    def copy_snapshot(self, CopySnapshotMessage input) -> str:
+        auto p = query.query_params("CopySnapshot", "2015-02-02")
+        p = query.query_scalar(p, "SourceSnapshotName", input.SourceSnapshotName)
+        p = query.query_scalar(p, "TargetSnapshotName", input.TargetSnapshotName)
+        if input.TargetBucket.is_some():
+            p = query.query_scalar(p, "TargetBucket", input.TargetBucket.unwrap())
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateCacheCluster
+    # errors: CacheClusterAlreadyExistsFault, CacheParameterGroupNotFoundFault, CacheSecurityGroupNotFoundFault, CacheSubnetGroupNotFoundFault, ClusterQuotaForCustomerExceededFault, InsufficientCacheClusterCapacityFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, InvalidVPCNetworkStateFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ReplicationGroupNotFoundFault, TagQuotaPerResourceExceeded
+    def create_cache_cluster(self, CreateCacheClusterMessage input) -> str:
+        auto p = query.query_params("CreateCacheCluster", "2015-02-02")
+        p = query.query_scalar(p, "CacheClusterId", input.CacheClusterId)
+        if input.ReplicationGroupId.is_some():
+            auto t0 = input.ReplicationGroupId.unwrap()
+            p = query.query_scalar(p, "ReplicationGroupId", t0)
+        if input.AZMode.is_some():
+            p = query.query_scalar(p, "AZMode", input.AZMode.unwrap())
+        if input.PreferredAvailabilityZone.is_some():
+            auto t1 = input.PreferredAvailabilityZone.unwrap()
+            p = query.query_scalar(p, "PreferredAvailabilityZone", t1)
+        auto t2 = input.PreferredAvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "PreferredAvailabilityZones", "PreferredAvailabilityZone", t2)
+        if input.NumCacheNodes.is_some():
+            auto t3 = str(input.NumCacheNodes.unwrap())
+            p = query.query_scalar(p, "NumCacheNodes", t3)
+        if input.CacheNodeType.is_some():
+            p = query.query_scalar(p, "CacheNodeType", input.CacheNodeType.unwrap())
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.CacheParameterGroupName.is_some():
+            auto t4 = input.CacheParameterGroupName.unwrap()
+            p = query.query_scalar(p, "CacheParameterGroupName", t4)
+        if input.CacheSubnetGroupName.is_some():
+            auto t5 = input.CacheSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "CacheSubnetGroupName", t5)
+        auto t6 = input.CacheSecurityGroupNames.unwrap_or([])
+        p = query.query_list(p, "CacheSecurityGroupNames", "CacheSecurityGroupName", t6)
+        auto t7 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "SecurityGroupIds", "SecurityGroupId", t7)
+        auto qi8 = 1
+        for qe9 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi8), qe9)
+            qi8 = qi8 + 1
+        auto t10 = input.SnapshotArns.unwrap_or([])
+        p = query.query_list(p, "SnapshotArns", "SnapshotArn", t10)
+        if input.SnapshotName.is_some():
+            p = query.query_scalar(p, "SnapshotName", input.SnapshotName.unwrap())
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t11 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t11)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.NotificationTopicArn.is_some():
+            auto t12 = input.NotificationTopicArn.unwrap()
+            p = query.query_scalar(p, "NotificationTopicArn", t12)
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t13 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t13)
+        if input.SnapshotRetentionLimit.is_some():
+            auto t14 = str(input.SnapshotRetentionLimit.unwrap())
+            p = query.query_scalar(p, "SnapshotRetentionLimit", t14)
+        if input.SnapshotWindow.is_some():
+            p = query.query_scalar(p, "SnapshotWindow", input.SnapshotWindow.unwrap())
+        if input.AuthToken.is_some():
+            p = query.query_scalar(p, "AuthToken", input.AuthToken.unwrap())
+        if input.OutpostMode.is_some():
+            p = query.query_scalar(p, "OutpostMode", input.OutpostMode.unwrap())
+        if input.PreferredOutpostArn.is_some():
+            auto t15 = input.PreferredOutpostArn.unwrap()
+            p = query.query_scalar(p, "PreferredOutpostArn", t15)
+        auto t16 = input.PreferredOutpostArns.unwrap_or([])
+        p = query.query_list(p, "PreferredOutpostArns", "PreferredOutpostArn", t16)
+        auto qi17 = 1
+        for qe18 in input.LogDeliveryConfigurations.unwrap_or([]):
+            auto t19 = qe18
+            p = log_delivery_configuration_request_to_query(p, "LogDeliveryConfigurations.LogDeliveryConfigurationRequest." + str(qi17), t19)
+            qi17 = qi17 + 1
+        if input.TransitEncryptionEnabled.is_some():
+            auto t20 = query.query_bool(input.TransitEncryptionEnabled.unwrap())
+            p = query.query_scalar(p, "TransitEncryptionEnabled", t20)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.IpDiscovery.is_some():
+            p = query.query_scalar(p, "IpDiscovery", input.IpDiscovery.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateCacheParameterGroup
+    # errors: CacheParameterGroupAlreadyExistsFault, CacheParameterGroupQuotaExceededFault, InvalidCacheParameterGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException, TagQuotaPerResourceExceeded
+    def create_cache_parameter_group(self, CreateCacheParameterGroupMessage input) -> str:
+        auto p = query.query_params("CreateCacheParameterGroup", "2015-02-02")
+        auto t0 = input.CacheParameterGroupName
+        p = query.query_scalar(p, "CacheParameterGroupName", t0)
+        auto t1 = input.CacheParameterGroupFamily
+        p = query.query_scalar(p, "CacheParameterGroupFamily", t1)
+        p = query.query_scalar(p, "Description", input.Description)
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateCacheSecurityGroup
+    # errors: CacheSecurityGroupAlreadyExistsFault, CacheSecurityGroupQuotaExceededFault, InvalidParameterCombinationException, InvalidParameterValueException, TagQuotaPerResourceExceeded
+    def create_cache_security_group(self, CreateCacheSecurityGroupMessage input) -> str:
+        auto p = query.query_params("CreateCacheSecurityGroup", "2015-02-02")
+        auto t0 = input.CacheSecurityGroupName
+        p = query.query_scalar(p, "CacheSecurityGroupName", t0)
+        p = query.query_scalar(p, "Description", input.Description)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateCacheSubnetGroup
+    # errors: CacheSubnetGroupAlreadyExistsFault, CacheSubnetGroupQuotaExceededFault, CacheSubnetQuotaExceededFault, InvalidSubnet, SubnetNotAllowedFault, TagQuotaPerResourceExceeded
+    def create_cache_subnet_group(self, CreateCacheSubnetGroupMessage input) -> str:
+        auto p = query.query_params("CreateCacheSubnetGroup", "2015-02-02")
+        p = query.query_scalar(p, "CacheSubnetGroupName", input.CacheSubnetGroupName)
+        auto t0 = input.CacheSubnetGroupDescription
+        p = query.query_scalar(p, "CacheSubnetGroupDescription", t0)
+        p = query.query_list(p, "SubnetIds", "SubnetIdentifier", input.SubnetIds)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateGlobalReplicationGroup
+    # errors: GlobalReplicationGroupAlreadyExistsFault, InvalidParameterValueException, InvalidReplicationGroupStateFault, ReplicationGroupNotFoundFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
+    def create_global_replication_group(self, CreateGlobalReplicationGroupMessage input) -> str:
+        auto p = query.query_params("CreateGlobalReplicationGroup", "2015-02-02")
+        auto t0 = input.GlobalReplicationGroupIdSuffix
+        p = query.query_scalar(p, "GlobalReplicationGroupIdSuffix", t0)
+        if input.GlobalReplicationGroupDescription.is_some():
+            auto t1 = input.GlobalReplicationGroupDescription.unwrap()
+            p = query.query_scalar(p, "GlobalReplicationGroupDescription", t1)
+        auto t2 = input.PrimaryReplicationGroupId
+        p = query.query_scalar(p, "PrimaryReplicationGroupId", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateReplicationGroup
+    # errors: CacheClusterNotFoundFault, CacheParameterGroupNotFoundFault, CacheSecurityGroupNotFoundFault, CacheSubnetGroupNotFoundFault, ClusterQuotaForCustomerExceededFault, GlobalReplicationGroupNotFoundFault, InsufficientCacheClusterCapacityFault, InvalidCacheClusterStateFault, InvalidGlobalReplicationGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidUserGroupStateFault, InvalidVPCNetworkStateFault, NodeGroupsPerReplicationGroupQuotaExceededFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ReplicationGroupAlreadyExistsFault, TagQuotaPerResourceExceeded, UserGroupNotFoundFault
+    def create_replication_group(self, CreateReplicationGroupMessage input) -> str:
+        auto p = query.query_params("CreateReplicationGroup", "2015-02-02")
+        p = query.query_scalar(p, "ReplicationGroupId", input.ReplicationGroupId)
+        auto t0 = input.ReplicationGroupDescription
+        p = query.query_scalar(p, "ReplicationGroupDescription", t0)
+        if input.GlobalReplicationGroupId.is_some():
+            auto t1 = input.GlobalReplicationGroupId.unwrap()
+            p = query.query_scalar(p, "GlobalReplicationGroupId", t1)
+        if input.PrimaryClusterId.is_some():
+            auto t2 = input.PrimaryClusterId.unwrap()
+            p = query.query_scalar(p, "PrimaryClusterId", t2)
+        if input.AutomaticFailoverEnabled.is_some():
+            auto t3 = query.query_bool(input.AutomaticFailoverEnabled.unwrap())
+            p = query.query_scalar(p, "AutomaticFailoverEnabled", t3)
+        if input.MultiAZEnabled.is_some():
+            auto t4 = query.query_bool(input.MultiAZEnabled.unwrap())
+            p = query.query_scalar(p, "MultiAZEnabled", t4)
+        if input.NumCacheClusters.is_some():
+            auto t5 = str(input.NumCacheClusters.unwrap())
+            p = query.query_scalar(p, "NumCacheClusters", t5)
+        auto t6 = input.PreferredCacheClusterAZs.unwrap_or([])
+        p = query.query_list(p, "PreferredCacheClusterAZs", "AvailabilityZone", t6)
+        if input.NumNodeGroups.is_some():
+            auto t7 = str(input.NumNodeGroups.unwrap())
+            p = query.query_scalar(p, "NumNodeGroups", t7)
+        if input.ReplicasPerNodeGroup.is_some():
+            auto t8 = str(input.ReplicasPerNodeGroup.unwrap())
+            p = query.query_scalar(p, "ReplicasPerNodeGroup", t8)
+        auto qi9 = 1
+        for qe10 in input.NodeGroupConfiguration.unwrap_or([]):
+            auto t11 = qe10
+            p = node_group_configuration_to_query(p, "NodeGroupConfiguration.NodeGroupConfiguration." + str(qi9), t11)
+            qi9 = qi9 + 1
+        if input.CacheNodeType.is_some():
+            p = query.query_scalar(p, "CacheNodeType", input.CacheNodeType.unwrap())
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.CacheParameterGroupName.is_some():
+            auto t12 = input.CacheParameterGroupName.unwrap()
+            p = query.query_scalar(p, "CacheParameterGroupName", t12)
+        if input.CacheSubnetGroupName.is_some():
+            auto t13 = input.CacheSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "CacheSubnetGroupName", t13)
+        auto t14 = input.CacheSecurityGroupNames.unwrap_or([])
+        p = query.query_list(p, "CacheSecurityGroupNames", "CacheSecurityGroupName", t14)
+        auto t15 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "SecurityGroupIds", "SecurityGroupId", t15)
+        auto qi16 = 1
+        for qe17 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi16), qe17)
+            qi16 = qi16 + 1
+        auto t18 = input.SnapshotArns.unwrap_or([])
+        p = query.query_list(p, "SnapshotArns", "SnapshotArn", t18)
+        if input.SnapshotName.is_some():
+            p = query.query_scalar(p, "SnapshotName", input.SnapshotName.unwrap())
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t19 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t19)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.NotificationTopicArn.is_some():
+            auto t20 = input.NotificationTopicArn.unwrap()
+            p = query.query_scalar(p, "NotificationTopicArn", t20)
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t21 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t21)
+        if input.SnapshotRetentionLimit.is_some():
+            auto t22 = str(input.SnapshotRetentionLimit.unwrap())
+            p = query.query_scalar(p, "SnapshotRetentionLimit", t22)
+        if input.SnapshotWindow.is_some():
+            p = query.query_scalar(p, "SnapshotWindow", input.SnapshotWindow.unwrap())
+        if input.AuthToken.is_some():
+            p = query.query_scalar(p, "AuthToken", input.AuthToken.unwrap())
+        if input.TransitEncryptionEnabled.is_some():
+            auto t23 = query.query_bool(input.TransitEncryptionEnabled.unwrap())
+            p = query.query_scalar(p, "TransitEncryptionEnabled", t23)
+        if input.AtRestEncryptionEnabled.is_some():
+            auto t24 = query.query_bool(input.AtRestEncryptionEnabled.unwrap())
+            p = query.query_scalar(p, "AtRestEncryptionEnabled", t24)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto t25 = input.UserGroupIds.unwrap_or([])
+        p = query.query_list(p, "UserGroupIds", "member", t25)
+        auto qi26 = 1
+        for qe27 in input.LogDeliveryConfigurations.unwrap_or([]):
+            auto t28 = qe27
+            p = log_delivery_configuration_request_to_query(p, "LogDeliveryConfigurations.LogDeliveryConfigurationRequest." + str(qi26), t28)
+            qi26 = qi26 + 1
+        if input.DataTieringEnabled.is_some():
+            auto t29 = query.query_bool(input.DataTieringEnabled.unwrap())
+            p = query.query_scalar(p, "DataTieringEnabled", t29)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.IpDiscovery.is_some():
+            p = query.query_scalar(p, "IpDiscovery", input.IpDiscovery.unwrap())
+        if input.TransitEncryptionMode.is_some():
+            auto t30 = input.TransitEncryptionMode.unwrap()
+            p = query.query_scalar(p, "TransitEncryptionMode", t30)
+        if input.ClusterMode.is_some():
+            p = query.query_scalar(p, "ClusterMode", input.ClusterMode.unwrap())
+        if input.ServerlessCacheSnapshotName.is_some():
+            auto t31 = input.ServerlessCacheSnapshotName.unwrap()
+            p = query.query_scalar(p, "ServerlessCacheSnapshotName", t31)
+        if input.Durability.is_some():
+            p = query.query_scalar(p, "Durability", input.Durability.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateServerlessCache
+    # errors: InvalidCredentialsException, InvalidParameterCombinationException, InvalidParameterValueException, InvalidServerlessCacheStateFault, InvalidUserGroupStateFault, ServerlessCacheAlreadyExistsFault, ServerlessCacheNotFoundFault, ServerlessCacheQuotaForCustomerExceededFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded, UserGroupNotFoundFault
+    def create_serverless_cache(self, CreateServerlessCacheRequest input) -> str:
+        auto p = query.query_params("CreateServerlessCache", "2015-02-02")
+        p = query.query_scalar(p, "ServerlessCacheName", input.ServerlessCacheName)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        p = query.query_scalar(p, "Engine", input.Engine)
+        if input.MajorEngineVersion.is_some():
+            auto t0 = input.MajorEngineVersion.unwrap()
+            p = query.query_scalar(p, "MajorEngineVersion", t0)
+        if input.CacheUsageLimits.is_some():
+            auto t1 = input.CacheUsageLimits.unwrap()
+            p = cache_usage_limits_to_query(p, "CacheUsageLimits", t1)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto t2 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "SecurityGroupIds", "SecurityGroupId", t2)
+        auto t3 = input.SnapshotArnsToRestore.unwrap_or([])
+        p = query.query_list(p, "SnapshotArnsToRestore", "SnapshotArn", t3)
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.UserGroupId.is_some():
+            p = query.query_scalar(p, "UserGroupId", input.UserGroupId.unwrap())
+        p = query.query_list(p, "SubnetIds", "SubnetId", input.SubnetIds.unwrap_or([]))
+        if input.SnapshotRetentionLimit.is_some():
+            auto t6 = str(input.SnapshotRetentionLimit.unwrap())
+            p = query.query_scalar(p, "SnapshotRetentionLimit", t6)
+        if input.DailySnapshotTime.is_some():
+            auto t7 = input.DailySnapshotTime.unwrap()
+            p = query.query_scalar(p, "DailySnapshotTime", t7)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.ConnectionType.is_some():
+            p = query.query_scalar(p, "ConnectionType", input.ConnectionType.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateServerlessCacheSnapshot
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidServerlessCacheStateFault, ServerlessCacheNotFoundFault, ServerlessCacheSnapshotAlreadyExistsFault, ServerlessCacheSnapshotQuotaExceededFault, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded
+    def create_serverless_cache_snapshot(self, CreateServerlessCacheSnapshotRequest input) -> str:
+        auto p = query.query_params("CreateServerlessCacheSnapshot", "2015-02-02")
+        auto t0 = input.ServerlessCacheSnapshotName
+        p = query.query_scalar(p, "ServerlessCacheSnapshotName", t0)
+        p = query.query_scalar(p, "ServerlessCacheName", input.ServerlessCacheName)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateSnapshot
+    # errors: CacheClusterNotFoundFault, InvalidCacheClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, ReplicationGroupNotFoundFault, SnapshotAlreadyExistsFault, SnapshotFeatureNotSupportedFault, SnapshotQuotaExceededFault, TagQuotaPerResourceExceeded
+    def create_snapshot(self, CreateSnapshotMessage input) -> str:
+        auto p = query.query_params("CreateSnapshot", "2015-02-02")
+        if input.ReplicationGroupId.is_some():
+            auto t0 = input.ReplicationGroupId.unwrap()
+            p = query.query_scalar(p, "ReplicationGroupId", t0)
+        if input.CacheClusterId.is_some():
+            p = query.query_scalar(p, "CacheClusterId", input.CacheClusterId.unwrap())
+        p = query.query_scalar(p, "SnapshotName", input.SnapshotName)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateUser
+    # errors: DuplicateUserNameFault, InvalidParameterCombinationException, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded, UserAlreadyExistsFault, UserQuotaExceededFault
+    def create_user(self, CreateUserMessage input) -> str:
+        auto p = query.query_params("CreateUser", "2015-02-02")
+        p = query.query_scalar(p, "UserId", input.UserId)
+        p = query.query_scalar(p, "UserName", input.UserName)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        p = query.query_list(p, "Passwords", "member", input.Passwords.unwrap_or([]))
+        p = query.query_scalar(p, "AccessString", input.AccessString)
+        if input.NoPasswordRequired.is_some():
+            auto t0 = query.query_bool(input.NoPasswordRequired.unwrap())
+            p = query.query_scalar(p, "NoPasswordRequired", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.AuthenticationMode.is_some():
+            auto t3 = input.AuthenticationMode.unwrap()
+            p = authentication_mode_to_query(p, "AuthenticationMode", t3)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # CreateUserGroup
+    # errors: DefaultUserRequired, DuplicateUserNameFault, InvalidParameterValueException, ServiceLinkedRoleNotFoundFault, TagQuotaPerResourceExceeded, UserGroupAlreadyExistsFault, UserGroupQuotaExceededFault, UserNotFoundFault
+    def create_user_group(self, CreateUserGroupMessage input) -> str:
+        auto p = query.query_params("CreateUserGroup", "2015-02-02")
+        p = query.query_scalar(p, "UserGroupId", input.UserGroupId)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        p = query.query_list(p, "UserIds", "member", input.UserIds.unwrap_or([]))
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
     # DecreaseNodeGroupsInGlobalReplicationGroup
     # errors: GlobalReplicationGroupNotFoundFault, InvalidGlobalReplicationGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException
     def decrease_node_groups_in_global_replication_group(self, DecreaseNodeGroupsInGlobalReplicationGroupMessage input) -> str:
@@ -2336,6 +2920,25 @@ struct ElastiCacheClient:
         p = query.query_list(p, "GlobalNodeGroupsToRetain", "GlobalNodeGroupId", t2)
         auto t3 = query.query_bool(input.ApplyImmediately)
         p = query.query_scalar(p, "ApplyImmediately", t3)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # DecreaseReplicaCount
+    # errors: ClusterQuotaForCustomerExceededFault, InsufficientCacheClusterCapacityFault, InvalidCacheClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, InvalidVPCNetworkStateFault, NoOperationFault, NodeGroupsPerReplicationGroupQuotaExceededFault, NodeQuotaForCustomerExceededFault, ReplicationGroupNotFoundFault, ServiceLinkedRoleNotFoundFault
+    def decrease_replica_count(self, DecreaseReplicaCountMessage input) -> str:
+        auto p = query.query_params("DecreaseReplicaCount", "2015-02-02")
+        p = query.query_scalar(p, "ReplicationGroupId", input.ReplicationGroupId)
+        if input.NewReplicaCount.is_some():
+            auto t0 = str(input.NewReplicaCount.unwrap())
+            p = query.query_scalar(p, "NewReplicaCount", t0)
+        auto qi1 = 1
+        for qe2 in input.ReplicaConfiguration.unwrap_or([]):
+            auto t3 = qe2
+            p = configure_shard_to_query(p, "ReplicaConfiguration.ConfigureShard." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto t4 = input.ReplicasToRemove.unwrap_or([])
+        p = query.query_list(p, "ReplicasToRemove", "member", t4)
+        auto t5 = query.query_bool(input.ApplyImmediately)
+        p = query.query_scalar(p, "ApplyImmediately", t5)
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
     # DeleteCacheCluster
@@ -2702,12 +3305,59 @@ struct ElastiCacheClient:
             p = query.query_scalar(p, "ShowNodeGroupConfig", t1)
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
+    # DescribeUpdateActions
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException
+    def describe_update_actions(self, DescribeUpdateActionsMessage input) -> str:
+        auto p = query.query_params("DescribeUpdateActions", "2015-02-02")
+        if input.ServiceUpdateName.is_some():
+            auto t0 = input.ServiceUpdateName.unwrap()
+            p = query.query_scalar(p, "ServiceUpdateName", t0)
+        auto t1 = input.ReplicationGroupIds.unwrap_or([])
+        p = query.query_list(p, "ReplicationGroupIds", "member", t1)
+        auto t2 = input.CacheClusterIds.unwrap_or([])
+        p = query.query_list(p, "CacheClusterIds", "member", t2)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        auto t3 = input.ServiceUpdateStatus.unwrap_or([])
+        p = query.query_list(p, "ServiceUpdateStatus", "member", t3)
+        if input.ServiceUpdateTimeRange.is_some():
+            auto t4 = input.ServiceUpdateTimeRange.unwrap()
+            p = time_range_filter_to_query(p, "ServiceUpdateTimeRange", t4)
+        auto t5 = input.UpdateActionStatus.unwrap_or([])
+        p = query.query_list(p, "UpdateActionStatus", "member", t5)
+        if input.ShowNodeLevelUpdateStatus.is_some():
+            auto t6 = query.query_bool(input.ShowNodeLevelUpdateStatus.unwrap())
+            p = query.query_scalar(p, "ShowNodeLevelUpdateStatus", t6)
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
     # DescribeUserGroups
     # errors: InvalidParameterCombinationException, ServiceLinkedRoleNotFoundFault, UserGroupNotFoundFault
     def describe_user_groups(self, DescribeUserGroupsMessage input) -> str:
         auto p = query.query_params("DescribeUserGroups", "2015-02-02")
         if input.UserGroupId.is_some():
             p = query.query_scalar(p, "UserGroupId", input.UserGroupId.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # DescribeUsers
+    # errors: InvalidParameterCombinationException, ServiceLinkedRoleNotFoundFault, UserNotFoundFault
+    def describe_users(self, DescribeUsersMessage input) -> str:
+        auto p = query.query_params("DescribeUsers", "2015-02-02")
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.UserId.is_some():
+            p = query.query_scalar(p, "UserId", input.UserId.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         if input.MaxRecords.is_some():
             p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         if input.Marker.is_some():
@@ -2745,6 +3395,39 @@ struct ElastiCacheClient:
         p = query.query_scalar(p, "PrimaryReplicationGroupId", t1)
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
+    # IncreaseNodeGroupsInGlobalReplicationGroup
+    # errors: GlobalReplicationGroupNotFoundFault, InvalidGlobalReplicationGroupStateFault, InvalidParameterValueException
+    def increase_node_groups_in_global_replication_group(self, IncreaseNodeGroupsInGlobalReplicationGroupMessage input) -> str:
+        auto p = query.query_params("IncreaseNodeGroupsInGlobalReplicationGroup", "2015-02-02")
+        auto t0 = input.GlobalReplicationGroupId
+        p = query.query_scalar(p, "GlobalReplicationGroupId", t0)
+        p = query.query_scalar(p, "NodeGroupCount", str(input.NodeGroupCount))
+        auto qi1 = 1
+        for qe2 in input.RegionalConfigurations.unwrap_or([]):
+            auto t3 = qe2
+            p = regional_configuration_to_query(p, "RegionalConfigurations.RegionalConfiguration." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto t4 = query.query_bool(input.ApplyImmediately)
+        p = query.query_scalar(p, "ApplyImmediately", t4)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # IncreaseReplicaCount
+    # errors: ClusterQuotaForCustomerExceededFault, InsufficientCacheClusterCapacityFault, InvalidCacheClusterStateFault, InvalidKMSKeyFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, InvalidVPCNetworkStateFault, NoOperationFault, NodeGroupsPerReplicationGroupQuotaExceededFault, NodeQuotaForCustomerExceededFault, ReplicationGroupNotFoundFault
+    def increase_replica_count(self, IncreaseReplicaCountMessage input) -> str:
+        auto p = query.query_params("IncreaseReplicaCount", "2015-02-02")
+        p = query.query_scalar(p, "ReplicationGroupId", input.ReplicationGroupId)
+        if input.NewReplicaCount.is_some():
+            auto t0 = str(input.NewReplicaCount.unwrap())
+            p = query.query_scalar(p, "NewReplicaCount", t0)
+        auto qi1 = 1
+        for qe2 in input.ReplicaConfiguration.unwrap_or([]):
+            auto t3 = qe2
+            p = configure_shard_to_query(p, "ReplicaConfiguration.ConfigureShard." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto t4 = query.query_bool(input.ApplyImmediately)
+        p = query.query_scalar(p, "ApplyImmediately", t4)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
     # ListAllowedNodeTypeModifications
     # errors: CacheClusterNotFoundFault, InvalidParameterCombinationException, InvalidParameterValueException, ReplicationGroupNotFoundFault
     def list_allowed_node_type_modifications(self, ListAllowedNodeTypeModificationsMessage input) -> str:
@@ -2761,6 +3444,82 @@ struct ElastiCacheClient:
     def list_tags_for_resource(self, ListTagsForResourceMessage input) -> str:
         auto p = query.query_params("ListTagsForResource", "2015-02-02")
         p = query.query_scalar(p, "ResourceName", input.ResourceName)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # ModifyCacheCluster
+    # errors: CacheClusterNotFoundFault, CacheParameterGroupNotFoundFault, CacheSecurityGroupNotFoundFault, InsufficientCacheClusterCapacityFault, InvalidCacheClusterStateFault, InvalidCacheSecurityGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidVPCNetworkStateFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault
+    def modify_cache_cluster(self, ModifyCacheClusterMessage input) -> str:
+        auto p = query.query_params("ModifyCacheCluster", "2015-02-02")
+        p = query.query_scalar(p, "CacheClusterId", input.CacheClusterId)
+        if input.NumCacheNodes.is_some():
+            auto t0 = str(input.NumCacheNodes.unwrap())
+            p = query.query_scalar(p, "NumCacheNodes", t0)
+        auto t1 = input.CacheNodeIdsToRemove.unwrap_or([])
+        p = query.query_list(p, "CacheNodeIdsToRemove", "CacheNodeId", t1)
+        if input.AZMode.is_some():
+            p = query.query_scalar(p, "AZMode", input.AZMode.unwrap())
+        auto t2 = input.NewAvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "NewAvailabilityZones", "PreferredAvailabilityZone", t2)
+        auto t3 = input.CacheSecurityGroupNames.unwrap_or([])
+        p = query.query_list(p, "CacheSecurityGroupNames", "CacheSecurityGroupName", t3)
+        auto t4 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "SecurityGroupIds", "SecurityGroupId", t4)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t5 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t5)
+        if input.NotificationTopicArn.is_some():
+            auto t6 = input.NotificationTopicArn.unwrap()
+            p = query.query_scalar(p, "NotificationTopicArn", t6)
+        if input.CacheParameterGroupName.is_some():
+            auto t7 = input.CacheParameterGroupName.unwrap()
+            p = query.query_scalar(p, "CacheParameterGroupName", t7)
+        if input.NotificationTopicStatus.is_some():
+            auto t8 = input.NotificationTopicStatus.unwrap()
+            p = query.query_scalar(p, "NotificationTopicStatus", t8)
+        if input.ApplyImmediately.is_some():
+            auto t9 = query.query_bool(input.ApplyImmediately.unwrap())
+            p = query.query_scalar(p, "ApplyImmediately", t9)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t10 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t10)
+        if input.SnapshotRetentionLimit.is_some():
+            auto t11 = str(input.SnapshotRetentionLimit.unwrap())
+            p = query.query_scalar(p, "SnapshotRetentionLimit", t11)
+        if input.SnapshotWindow.is_some():
+            p = query.query_scalar(p, "SnapshotWindow", input.SnapshotWindow.unwrap())
+        if input.CacheNodeType.is_some():
+            p = query.query_scalar(p, "CacheNodeType", input.CacheNodeType.unwrap())
+        if input.AuthToken.is_some():
+            p = query.query_scalar(p, "AuthToken", input.AuthToken.unwrap())
+        if input.AuthTokenUpdateStrategy.is_some():
+            auto t12 = input.AuthTokenUpdateStrategy.unwrap()
+            p = query.query_scalar(p, "AuthTokenUpdateStrategy", t12)
+        auto qi13 = 1
+        for qe14 in input.LogDeliveryConfigurations.unwrap_or([]):
+            auto t15 = qe14
+            p = log_delivery_configuration_request_to_query(p, "LogDeliveryConfigurations.LogDeliveryConfigurationRequest." + str(qi13), t15)
+            qi13 = qi13 + 1
+        if input.IpDiscovery.is_some():
+            p = query.query_scalar(p, "IpDiscovery", input.IpDiscovery.unwrap())
+        if input.ScaleConfig.is_some():
+            p = scale_config_to_query(p, "ScaleConfig", input.ScaleConfig.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # ModifyCacheParameterGroup
+    # errors: CacheParameterGroupNotFoundFault, InvalidCacheParameterGroupStateFault, InvalidGlobalReplicationGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException
+    def modify_cache_parameter_group(self, ModifyCacheParameterGroupMessage input) -> str:
+        auto p = query.query_params("ModifyCacheParameterGroup", "2015-02-02")
+        auto t0 = input.CacheParameterGroupName
+        p = query.query_scalar(p, "CacheParameterGroupName", t0)
+        auto qi1 = 1
+        for qe2 in input.ParameterNameValues:
+            auto t3 = qe2
+            p = parameter_name_value_to_query(p, "ParameterNameValues.ParameterNameValue." + str(qi1), t3)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
     # ModifyCacheSubnetGroup
@@ -2800,6 +3559,162 @@ struct ElastiCacheClient:
             p = query.query_scalar(p, "AutomaticFailoverEnabled", t4)
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
+    # ModifyReplicationGroup
+    # errors: CacheClusterNotFoundFault, CacheParameterGroupNotFoundFault, CacheSecurityGroupNotFoundFault, InsufficientCacheClusterCapacityFault, InvalidCacheClusterStateFault, InvalidCacheSecurityGroupStateFault, InvalidKMSKeyFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, InvalidUserGroupStateFault, InvalidVPCNetworkStateFault, NodeQuotaForClusterExceededFault, NodeQuotaForCustomerExceededFault, ReplicationGroupNotFoundFault, UserGroupNotFoundFault
+    def modify_replication_group(self, ModifyReplicationGroupMessage input) -> str:
+        auto p = query.query_params("ModifyReplicationGroup", "2015-02-02")
+        p = query.query_scalar(p, "ReplicationGroupId", input.ReplicationGroupId)
+        if input.ReplicationGroupDescription.is_some():
+            auto t0 = input.ReplicationGroupDescription.unwrap()
+            p = query.query_scalar(p, "ReplicationGroupDescription", t0)
+        if input.PrimaryClusterId.is_some():
+            auto t1 = input.PrimaryClusterId.unwrap()
+            p = query.query_scalar(p, "PrimaryClusterId", t1)
+        if input.SnapshottingClusterId.is_some():
+            auto t2 = input.SnapshottingClusterId.unwrap()
+            p = query.query_scalar(p, "SnapshottingClusterId", t2)
+        if input.AutomaticFailoverEnabled.is_some():
+            auto t3 = query.query_bool(input.AutomaticFailoverEnabled.unwrap())
+            p = query.query_scalar(p, "AutomaticFailoverEnabled", t3)
+        if input.MultiAZEnabled.is_some():
+            auto t4 = query.query_bool(input.MultiAZEnabled.unwrap())
+            p = query.query_scalar(p, "MultiAZEnabled", t4)
+        if input.NodeGroupId.is_some():
+            p = query.query_scalar(p, "NodeGroupId", input.NodeGroupId.unwrap())
+        auto t5 = input.CacheSecurityGroupNames.unwrap_or([])
+        p = query.query_list(p, "CacheSecurityGroupNames", "CacheSecurityGroupName", t5)
+        auto t6 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "SecurityGroupIds", "SecurityGroupId", t6)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t7 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t7)
+        if input.NotificationTopicArn.is_some():
+            auto t8 = input.NotificationTopicArn.unwrap()
+            p = query.query_scalar(p, "NotificationTopicArn", t8)
+        if input.CacheParameterGroupName.is_some():
+            auto t9 = input.CacheParameterGroupName.unwrap()
+            p = query.query_scalar(p, "CacheParameterGroupName", t9)
+        if input.NotificationTopicStatus.is_some():
+            auto t10 = input.NotificationTopicStatus.unwrap()
+            p = query.query_scalar(p, "NotificationTopicStatus", t10)
+        if input.ApplyImmediately.is_some():
+            auto t11 = query.query_bool(input.ApplyImmediately.unwrap())
+            p = query.query_scalar(p, "ApplyImmediately", t11)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t12 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t12)
+        if input.SnapshotRetentionLimit.is_some():
+            auto t13 = str(input.SnapshotRetentionLimit.unwrap())
+            p = query.query_scalar(p, "SnapshotRetentionLimit", t13)
+        if input.SnapshotWindow.is_some():
+            p = query.query_scalar(p, "SnapshotWindow", input.SnapshotWindow.unwrap())
+        if input.CacheNodeType.is_some():
+            p = query.query_scalar(p, "CacheNodeType", input.CacheNodeType.unwrap())
+        if input.AuthToken.is_some():
+            p = query.query_scalar(p, "AuthToken", input.AuthToken.unwrap())
+        if input.AuthTokenUpdateStrategy.is_some():
+            auto t14 = input.AuthTokenUpdateStrategy.unwrap()
+            p = query.query_scalar(p, "AuthTokenUpdateStrategy", t14)
+        auto t15 = input.UserGroupIdsToAdd.unwrap_or([])
+        p = query.query_list(p, "UserGroupIdsToAdd", "member", t15)
+        auto t16 = input.UserGroupIdsToRemove.unwrap_or([])
+        p = query.query_list(p, "UserGroupIdsToRemove", "member", t16)
+        if input.RemoveUserGroups.is_some():
+            auto t17 = query.query_bool(input.RemoveUserGroups.unwrap())
+            p = query.query_scalar(p, "RemoveUserGroups", t17)
+        auto qi18 = 1
+        for qe19 in input.LogDeliveryConfigurations.unwrap_or([]):
+            auto t20 = qe19
+            p = log_delivery_configuration_request_to_query(p, "LogDeliveryConfigurations.LogDeliveryConfigurationRequest." + str(qi18), t20)
+            qi18 = qi18 + 1
+        if input.IpDiscovery.is_some():
+            p = query.query_scalar(p, "IpDiscovery", input.IpDiscovery.unwrap())
+        if input.TransitEncryptionEnabled.is_some():
+            auto t21 = query.query_bool(input.TransitEncryptionEnabled.unwrap())
+            p = query.query_scalar(p, "TransitEncryptionEnabled", t21)
+        if input.TransitEncryptionMode.is_some():
+            auto t22 = input.TransitEncryptionMode.unwrap()
+            p = query.query_scalar(p, "TransitEncryptionMode", t22)
+        if input.ClusterMode.is_some():
+            p = query.query_scalar(p, "ClusterMode", input.ClusterMode.unwrap())
+        if input.Durability.is_some():
+            p = query.query_scalar(p, "Durability", input.Durability.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # ModifyReplicationGroupShardConfiguration
+    # errors: InsufficientCacheClusterCapacityFault, InvalidCacheClusterStateFault, InvalidKMSKeyFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, InvalidVPCNetworkStateFault, NodeGroupsPerReplicationGroupQuotaExceededFault, NodeQuotaForCustomerExceededFault, ReplicationGroupNotFoundFault
+    def modify_replication_group_shard_configuration(self, ModifyReplicationGroupShardConfigurationMessage input) -> str:
+        auto p = query.query_params("ModifyReplicationGroupShardConfiguration", "2015-02-02")
+        p = query.query_scalar(p, "ReplicationGroupId", input.ReplicationGroupId)
+        p = query.query_scalar(p, "NodeGroupCount", str(input.NodeGroupCount))
+        auto t0 = query.query_bool(input.ApplyImmediately)
+        p = query.query_scalar(p, "ApplyImmediately", t0)
+        auto qi1 = 1
+        for qe2 in input.ReshardingConfiguration.unwrap_or([]):
+            auto t3 = qe2
+            p = resharding_configuration_to_query(p, "ReshardingConfiguration.ReshardingConfiguration." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto t4 = input.NodeGroupsToRemove.unwrap_or([])
+        p = query.query_list(p, "NodeGroupsToRemove", "NodeGroupToRemove", t4)
+        auto t5 = input.NodeGroupsToRetain.unwrap_or([])
+        p = query.query_list(p, "NodeGroupsToRetain", "NodeGroupToRetain", t5)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # ModifyServerlessCache
+    # errors: InvalidCredentialsException, InvalidParameterCombinationException, InvalidParameterValueException, InvalidServerlessCacheStateFault, InvalidUserGroupStateFault, ServerlessCacheNotFoundFault, ServiceLinkedRoleNotFoundFault, UserGroupNotFoundFault
+    def modify_serverless_cache(self, ModifyServerlessCacheRequest input) -> str:
+        auto p = query.query_params("ModifyServerlessCache", "2015-02-02")
+        p = query.query_scalar(p, "ServerlessCacheName", input.ServerlessCacheName)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.CacheUsageLimits.is_some():
+            auto t0 = input.CacheUsageLimits.unwrap()
+            p = cache_usage_limits_to_query(p, "CacheUsageLimits", t0)
+        if input.RemoveUserGroup.is_some():
+            auto t1 = query.query_bool(input.RemoveUserGroup.unwrap())
+            p = query.query_scalar(p, "RemoveUserGroup", t1)
+        if input.UserGroupId.is_some():
+            p = query.query_scalar(p, "UserGroupId", input.UserGroupId.unwrap())
+        auto t2 = input.SecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "SecurityGroupIds", "SecurityGroupId", t2)
+        if input.SnapshotRetentionLimit.is_some():
+            auto t3 = str(input.SnapshotRetentionLimit.unwrap())
+            p = query.query_scalar(p, "SnapshotRetentionLimit", t3)
+        if input.DailySnapshotTime.is_some():
+            auto t4 = input.DailySnapshotTime.unwrap()
+            p = query.query_scalar(p, "DailySnapshotTime", t4)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.MajorEngineVersion.is_some():
+            auto t5 = input.MajorEngineVersion.unwrap()
+            p = query.query_scalar(p, "MajorEngineVersion", t5)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # ModifyUser
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, InvalidUserStateFault, ServiceLinkedRoleNotFoundFault, UserNotFoundFault
+    def modify_user(self, ModifyUserMessage input) -> str:
+        auto p = query.query_params("ModifyUser", "2015-02-02")
+        p = query.query_scalar(p, "UserId", input.UserId)
+        if input.AccessString.is_some():
+            p = query.query_scalar(p, "AccessString", input.AccessString.unwrap())
+        if input.AppendAccessString.is_some():
+            auto t0 = input.AppendAccessString.unwrap()
+            p = query.query_scalar(p, "AppendAccessString", t0)
+        p = query.query_list(p, "Passwords", "member", input.Passwords.unwrap_or([]))
+        if input.NoPasswordRequired.is_some():
+            auto t1 = query.query_bool(input.NoPasswordRequired.unwrap())
+            p = query.query_scalar(p, "NoPasswordRequired", t1)
+        if input.AuthenticationMode.is_some():
+            auto t2 = input.AuthenticationMode.unwrap()
+            p = authentication_mode_to_query(p, "AuthenticationMode", t2)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
     # ModifyUserGroup
     # errors: DefaultUserRequired, DuplicateUserNameFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidUserGroupStateFault, ServiceLinkedRoleNotFoundFault, UserGroupNotFoundFault, UserNotFoundFault
     def modify_user_group(self, ModifyUserGroupMessage input) -> str:
@@ -2811,6 +3726,42 @@ struct ElastiCacheClient:
         p = query.query_list(p, "UserIdsToRemove", "member", t1)
         if input.Engine.is_some():
             p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # PrepareMigration
+    # errors: InvalidParameterValueException, InvalidServerlessCacheStateFault, ServerlessCacheAlreadyUnderMigrationFault, ServerlessCacheNotFoundFault
+    def prepare_migration(self, PrepareMigrationRequest input) -> str:
+        auto p = query.query_params("PrepareMigration", "2015-02-02")
+        p = query.query_scalar(p, "ServerlessCacheName", input.ServerlessCacheName)
+        auto qi0 = 1
+        for qe1 in input.CustomerNodeEndpointList:
+            auto t2 = qe1
+            p = customer_node_endpoint_to_query(p, "CustomerNodeEndpointList.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.SourceAuthenticationConfiguration.is_some():
+            auto t3 = input.SourceAuthenticationConfiguration.unwrap()
+            p = source_authentication_configuration_to_query(p, "SourceAuthenticationConfiguration", t3)
+        if input.SourceTlsConfiguration.is_some():
+            auto t4 = input.SourceTlsConfiguration.unwrap()
+            p = source_tls_configuration_to_query(p, "SourceTlsConfiguration", t4)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # PurchaseReservedCacheNodesOffering
+    # errors: InvalidParameterCombinationException, InvalidParameterValueException, ReservedCacheNodeAlreadyExistsFault, ReservedCacheNodeQuotaExceededFault, ReservedCacheNodesOfferingNotFoundFault, TagQuotaPerResourceExceeded
+    def purchase_reserved_cache_nodes_offering(self, PurchaseReservedCacheNodesOfferingMessage input) -> str:
+        auto p = query.query_params("PurchaseReservedCacheNodesOffering", "2015-02-02")
+        auto t0 = input.ReservedCacheNodesOfferingId
+        p = query.query_scalar(p, "ReservedCacheNodesOfferingId", t0)
+        if input.ReservedCacheNodeId.is_some():
+            auto t1 = input.ReservedCacheNodeId.unwrap()
+            p = query.query_scalar(p, "ReservedCacheNodeId", t1)
+        if input.CacheNodeCount.is_some():
+            auto t2 = str(input.CacheNodeCount.unwrap())
+            p = query.query_scalar(p, "CacheNodeCount", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
     # RebalanceSlotsInGlobalReplicationGroup
@@ -2840,6 +3791,22 @@ struct ElastiCacheClient:
         p = query.query_list(p, "TagKeys", "member", input.TagKeys)
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
+    # ResetCacheParameterGroup
+    # errors: CacheParameterGroupNotFoundFault, InvalidCacheParameterGroupStateFault, InvalidGlobalReplicationGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException
+    def reset_cache_parameter_group(self, ResetCacheParameterGroupMessage input) -> str:
+        auto p = query.query_params("ResetCacheParameterGroup", "2015-02-02")
+        auto t0 = input.CacheParameterGroupName
+        p = query.query_scalar(p, "CacheParameterGroupName", t0)
+        if input.ResetAllParameters.is_some():
+            auto t1 = query.query_bool(input.ResetAllParameters.unwrap())
+            p = query.query_scalar(p, "ResetAllParameters", t1)
+        auto qi2 = 1
+        for qe3 in input.ParameterNameValues.unwrap_or([]):
+            auto t4 = qe3
+            p = parameter_name_value_to_query(p, "ParameterNameValues.ParameterNameValue." + str(qi2), t4)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
     # RevokeCacheSecurityGroupIngress
     # errors: AuthorizationNotFoundFault, CacheSecurityGroupNotFoundFault, InvalidCacheSecurityGroupStateFault, InvalidParameterCombinationException, InvalidParameterValueException
     def revoke_cache_security_group_ingress(self, RevokeCacheSecurityGroupIngressMessage input) -> str:
@@ -2849,6 +3816,29 @@ struct ElastiCacheClient:
         p = query.query_scalar(p, "EC2SecurityGroupName", input.EC2SecurityGroupName)
         auto t1 = input.EC2SecurityGroupOwnerId
         p = query.query_scalar(p, "EC2SecurityGroupOwnerId", t1)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # StartMigration
+    # errors: InvalidCacheClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, InvalidServerlessCacheStateFault, MigrationHealthFault, ReplicationGroupAlreadyUnderMigrationFault, ReplicationGroupNotFoundFault, ServerlessCacheNotFoundFault, ServerlessCacheNotUnderMigrationFault
+    def start_migration(self, StartMigrationMessage input) -> str:
+        auto p = query.query_params("StartMigration", "2015-02-02")
+        if input.ServerlessCacheName.is_some():
+            auto t0 = input.ServerlessCacheName.unwrap()
+            p = query.query_scalar(p, "ServerlessCacheName", t0)
+        if input.ReplicationGroupId.is_some():
+            auto t1 = input.ReplicationGroupId.unwrap()
+            p = query.query_scalar(p, "ReplicationGroupId", t1)
+        auto qi2 = 1
+        for qe3 in input.CustomerNodeEndpointList.unwrap_or([]):
+            auto t4 = qe3
+            p = customer_node_endpoint_to_query(p, "CustomerNodeEndpointList.member." + str(qi2), t4)
+            qi2 = qi2 + 1
+        if input.AutoCutover.is_some():
+            auto t5 = query.query_bool(input.AutoCutover.unwrap())
+            p = query.query_scalar(p, "AutoCutover", t5)
+        if input.ClearTargetCacheData.is_some():
+            auto t6 = query.query_bool(input.ClearTargetCacheData.unwrap())
+            p = query.query_scalar(p, "ClearTargetCacheData", t6)
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
     # StopMigration
@@ -2864,6 +3854,18 @@ struct ElastiCacheClient:
         auto p = query.query_params("TestFailover", "2015-02-02")
         p = query.query_scalar(p, "ReplicationGroupId", input.ReplicationGroupId)
         p = query.query_scalar(p, "NodeGroupId", input.NodeGroupId)
+        return query.query_request(self.creds, elasticache_service(), self.region, p)
+
+    # TestMigration
+    # errors: InvalidCacheClusterStateFault, InvalidParameterCombinationException, InvalidParameterValueException, InvalidReplicationGroupStateFault, ReplicationGroupAlreadyUnderMigrationFault, ReplicationGroupNotFoundFault
+    def test_migration(self, TestMigrationMessage input) -> str:
+        auto p = query.query_params("TestMigration", "2015-02-02")
+        p = query.query_scalar(p, "ReplicationGroupId", input.ReplicationGroupId)
+        auto qi0 = 1
+        for qe1 in input.CustomerNodeEndpointList:
+            auto t2 = qe1
+            p = customer_node_endpoint_to_query(p, "CustomerNodeEndpointList.member." + str(qi0), t2)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, elasticache_service(), self.region, p)
 
 # Construct a ElastiCacheClient bound to credentials + region.

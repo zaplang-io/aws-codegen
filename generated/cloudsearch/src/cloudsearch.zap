@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 26 operations — 20 with a generated method,
-#   6 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 26 operations — 26 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   90 structs (plain carriers), 7 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -588,14 +588,355 @@ def cloudsearch_error_from_code(str code) -> CloudSearchError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   DefineAnalysisScheme (member `AnalysisScheme` is a nested structure (query nesting is a v0 follow-up))
-#   DefineExpression (member `Expression` is a nested structure (query nesting is a v0 follow-up))
-#   DefineIndexField (member `IndexField` is a nested structure (query nesting is a v0 follow-up))
-#   DefineSuggester (member `Suggester` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateDomainEndpointOptions (member `DomainEndpointOptions` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateScalingParameters (member `ScalingParameters` is a nested structure (query nesting is a v0 follow-up))
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AnalysisOptions into the query form parameters under `prefix`.
+def analysis_options_to_query(list[query.QueryPair] p, str prefix, AnalysisOptions v) -> list[query.QueryPair]:
+    if v.Synonyms.is_some():
+        auto t0 = v.Synonyms.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Synonyms"), t0)
+    if v.Stopwords.is_some():
+        auto t1 = v.Stopwords.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Stopwords"), t1)
+    if v.StemmingDictionary.is_some():
+        auto t2 = v.StemmingDictionary.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StemmingDictionary"), t2)
+    if v.JapaneseTokenizationDictionary.is_some():
+        auto t3 = v.JapaneseTokenizationDictionary.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "JapaneseTokenizationDictionary"), t3)
+    if v.AlgorithmicStemming.is_some():
+        auto t4 = v.AlgorithmicStemming.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AlgorithmicStemming"), t4)
+    return p
+
+# Serialize AnalysisScheme into the query form parameters under `prefix`.
+def analysis_scheme_to_query(list[query.QueryPair] p, str prefix, AnalysisScheme v) -> list[query.QueryPair]:
+    auto t0 = v.AnalysisSchemeName
+    p = query.query_scalar(p, query.query_key(prefix, "AnalysisSchemeName"), t0)
+    auto t1 = v.AnalysisSchemeLanguage
+    p = query.query_scalar(p, query.query_key(prefix, "AnalysisSchemeLanguage"), t1)
+    if v.AnalysisOptions.is_some():
+        auto t2 = v.AnalysisOptions.unwrap()
+        p = analysis_options_to_query(p, query.query_key(prefix, "AnalysisOptions"), t2)
+    return p
+
+# Serialize DateArrayOptions into the query form parameters under `prefix`.
+def date_array_options_to_query(list[query.QueryPair] p, str prefix, DateArrayOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceFields.is_some():
+        auto t1 = v.SourceFields.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceFields"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    return p
+
+# Serialize DateOptions into the query form parameters under `prefix`.
+def date_options_to_query(list[query.QueryPair] p, str prefix, DateOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceField.is_some():
+        auto t1 = v.SourceField.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceField"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    if v.SortEnabled.is_some():
+        auto t5 = query.query_bool(v.SortEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SortEnabled"), t5)
+    return p
+
+# Serialize DocumentSuggesterOptions into the query form parameters under `prefix`.
+def document_suggester_options_to_query(list[query.QueryPair] p, str prefix, DocumentSuggesterOptions v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "SourceField"), v.SourceField)
+    if v.FuzzyMatching.is_some():
+        auto t0 = v.FuzzyMatching.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "FuzzyMatching"), t0)
+    if v.SortExpression.is_some():
+        auto t1 = v.SortExpression.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SortExpression"), t1)
+    return p
+
+# Serialize DomainEndpointOptions into the query form parameters under `prefix`.
+def domain_endpoint_options_to_query(list[query.QueryPair] p, str prefix, DomainEndpointOptions v) -> list[query.QueryPair]:
+    if v.EnforceHTTPS.is_some():
+        auto t0 = query.query_bool(v.EnforceHTTPS.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EnforceHTTPS"), t0)
+    if v.TLSSecurityPolicy.is_some():
+        auto t1 = v.TLSSecurityPolicy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TLSSecurityPolicy"), t1)
+    return p
+
+# Serialize DoubleArrayOptions into the query form parameters under `prefix`.
+def double_array_options_to_query(list[query.QueryPair] p, str prefix, DoubleArrayOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = str(v.DefaultValue.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceFields.is_some():
+        auto t1 = v.SourceFields.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceFields"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    return p
+
+# Serialize DoubleOptions into the query form parameters under `prefix`.
+def double_options_to_query(list[query.QueryPair] p, str prefix, DoubleOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = str(v.DefaultValue.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceField.is_some():
+        auto t1 = v.SourceField.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceField"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    if v.SortEnabled.is_some():
+        auto t5 = query.query_bool(v.SortEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SortEnabled"), t5)
+    return p
+
+# Serialize Expression into the query form parameters under `prefix`.
+def expression_to_query(list[query.QueryPair] p, str prefix, Expression v) -> list[query.QueryPair]:
+    auto t0 = v.ExpressionName
+    p = query.query_scalar(p, query.query_key(prefix, "ExpressionName"), t0)
+    auto t1 = v.ExpressionValue
+    p = query.query_scalar(p, query.query_key(prefix, "ExpressionValue"), t1)
+    return p
+
+# Serialize IndexField into the query form parameters under `prefix`.
+def index_field_to_query(list[query.QueryPair] p, str prefix, IndexField v) -> list[query.QueryPair]:
+    auto t0 = v.IndexFieldName
+    p = query.query_scalar(p, query.query_key(prefix, "IndexFieldName"), t0)
+    auto t1 = v.IndexFieldType
+    p = query.query_scalar(p, query.query_key(prefix, "IndexFieldType"), t1)
+    if v.IntOptions.is_some():
+        auto t2 = v.IntOptions.unwrap()
+        p = int_options_to_query(p, query.query_key(prefix, "IntOptions"), t2)
+    if v.DoubleOptions.is_some():
+        auto t3 = v.DoubleOptions.unwrap()
+        p = double_options_to_query(p, query.query_key(prefix, "DoubleOptions"), t3)
+    if v.LiteralOptions.is_some():
+        auto t4 = v.LiteralOptions.unwrap()
+        p = literal_options_to_query(p, query.query_key(prefix, "LiteralOptions"), t4)
+    if v.TextOptions.is_some():
+        auto t5 = v.TextOptions.unwrap()
+        p = text_options_to_query(p, query.query_key(prefix, "TextOptions"), t5)
+    if v.DateOptions.is_some():
+        auto t6 = v.DateOptions.unwrap()
+        p = date_options_to_query(p, query.query_key(prefix, "DateOptions"), t6)
+    if v.LatLonOptions.is_some():
+        auto t7 = v.LatLonOptions.unwrap()
+        p = lat_lon_options_to_query(p, query.query_key(prefix, "LatLonOptions"), t7)
+    if v.IntArrayOptions.is_some():
+        auto t8 = v.IntArrayOptions.unwrap()
+        p = int_array_options_to_query(p, query.query_key(prefix, "IntArrayOptions"), t8)
+    if v.DoubleArrayOptions.is_some():
+        auto t9 = v.DoubleArrayOptions.unwrap()
+        p = double_array_options_to_query(p, query.query_key(prefix, "DoubleArrayOptions"), t9)
+    if v.LiteralArrayOptions.is_some():
+        auto t10 = v.LiteralArrayOptions.unwrap()
+        p = literal_array_options_to_query(p, query.query_key(prefix, "LiteralArrayOptions"), t10)
+    if v.TextArrayOptions.is_some():
+        auto t11 = v.TextArrayOptions.unwrap()
+        p = text_array_options_to_query(p, query.query_key(prefix, "TextArrayOptions"), t11)
+    if v.DateArrayOptions.is_some():
+        auto t12 = v.DateArrayOptions.unwrap()
+        p = date_array_options_to_query(p, query.query_key(prefix, "DateArrayOptions"), t12)
+    return p
+
+# Serialize IntArrayOptions into the query form parameters under `prefix`.
+def int_array_options_to_query(list[query.QueryPair] p, str prefix, IntArrayOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = str(v.DefaultValue.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceFields.is_some():
+        auto t1 = v.SourceFields.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceFields"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    return p
+
+# Serialize IntOptions into the query form parameters under `prefix`.
+def int_options_to_query(list[query.QueryPair] p, str prefix, IntOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = str(v.DefaultValue.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceField.is_some():
+        auto t1 = v.SourceField.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceField"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    if v.SortEnabled.is_some():
+        auto t5 = query.query_bool(v.SortEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SortEnabled"), t5)
+    return p
+
+# Serialize LatLonOptions into the query form parameters under `prefix`.
+def lat_lon_options_to_query(list[query.QueryPair] p, str prefix, LatLonOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceField.is_some():
+        auto t1 = v.SourceField.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceField"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    if v.SortEnabled.is_some():
+        auto t5 = query.query_bool(v.SortEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SortEnabled"), t5)
+    return p
+
+# Serialize LiteralArrayOptions into the query form parameters under `prefix`.
+def literal_array_options_to_query(list[query.QueryPair] p, str prefix, LiteralArrayOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceFields.is_some():
+        auto t1 = v.SourceFields.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceFields"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    return p
+
+# Serialize LiteralOptions into the query form parameters under `prefix`.
+def literal_options_to_query(list[query.QueryPair] p, str prefix, LiteralOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceField.is_some():
+        auto t1 = v.SourceField.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceField"), t1)
+    if v.FacetEnabled.is_some():
+        auto t2 = query.query_bool(v.FacetEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FacetEnabled"), t2)
+    if v.SearchEnabled.is_some():
+        auto t3 = query.query_bool(v.SearchEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SearchEnabled"), t3)
+    if v.ReturnEnabled.is_some():
+        auto t4 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t4)
+    if v.SortEnabled.is_some():
+        auto t5 = query.query_bool(v.SortEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SortEnabled"), t5)
+    return p
+
+# Serialize ScalingParameters into the query form parameters under `prefix`.
+def scaling_parameters_to_query(list[query.QueryPair] p, str prefix, ScalingParameters v) -> list[query.QueryPair]:
+    if v.DesiredInstanceType.is_some():
+        auto t0 = v.DesiredInstanceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DesiredInstanceType"), t0)
+    if v.DesiredReplicationCount.is_some():
+        auto t1 = str(v.DesiredReplicationCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DesiredReplicationCount"), t1)
+    if v.DesiredPartitionCount.is_some():
+        auto t2 = str(v.DesiredPartitionCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DesiredPartitionCount"), t2)
+    return p
+
+# Serialize Suggester into the query form parameters under `prefix`.
+def suggester_to_query(list[query.QueryPair] p, str prefix, Suggester v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "SuggesterName"), v.SuggesterName)
+    auto t0 = v.DocumentSuggesterOptions
+    p = document_suggester_options_to_query(p, query.query_key(prefix, "DocumentSuggesterOptions"), t0)
+    return p
+
+# Serialize TextArrayOptions into the query form parameters under `prefix`.
+def text_array_options_to_query(list[query.QueryPair] p, str prefix, TextArrayOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceFields.is_some():
+        auto t1 = v.SourceFields.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceFields"), t1)
+    if v.ReturnEnabled.is_some():
+        auto t2 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t2)
+    if v.HighlightEnabled.is_some():
+        auto t3 = query.query_bool(v.HighlightEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HighlightEnabled"), t3)
+    if v.AnalysisScheme.is_some():
+        auto t4 = v.AnalysisScheme.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AnalysisScheme"), t4)
+    return p
+
+# Serialize TextOptions into the query form parameters under `prefix`.
+def text_options_to_query(list[query.QueryPair] p, str prefix, TextOptions v) -> list[query.QueryPair]:
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.SourceField.is_some():
+        auto t1 = v.SourceField.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SourceField"), t1)
+    if v.ReturnEnabled.is_some():
+        auto t2 = query.query_bool(v.ReturnEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ReturnEnabled"), t2)
+    if v.SortEnabled.is_some():
+        auto t3 = query.query_bool(v.SortEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SortEnabled"), t3)
+    if v.HighlightEnabled.is_some():
+        auto t4 = query.query_bool(v.HighlightEnabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "HighlightEnabled"), t4)
+    if v.AnalysisScheme.is_some():
+        auto t5 = v.AnalysisScheme.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AnalysisScheme"), t5)
+    return p
 
 # A bound CloudSearch client: credentials + region, threaded into every operation.
 struct CloudSearchClient:
@@ -614,6 +955,38 @@ struct CloudSearchClient:
     def create_domain(self, CreateDomainRequest input) -> str:
         auto p = query.query_params("CreateDomain", "2013-01-01")
         p = query.query_scalar(p, "DomainName", input.DomainName)
+        return query.query_request(self.creds, cloudsearch_service(), self.region, p)
+
+    # DefineAnalysisScheme
+    # errors: BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def define_analysis_scheme(self, DefineAnalysisSchemeRequest input) -> str:
+        auto p = query.query_params("DefineAnalysisScheme", "2013-01-01")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        p = analysis_scheme_to_query(p, "AnalysisScheme", input.AnalysisScheme)
+        return query.query_request(self.creds, cloudsearch_service(), self.region, p)
+
+    # DefineExpression
+    # errors: BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def define_expression(self, DefineExpressionRequest input) -> str:
+        auto p = query.query_params("DefineExpression", "2013-01-01")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        p = expression_to_query(p, "Expression", input.Expression)
+        return query.query_request(self.creds, cloudsearch_service(), self.region, p)
+
+    # DefineIndexField
+    # errors: BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def define_index_field(self, DefineIndexFieldRequest input) -> str:
+        auto p = query.query_params("DefineIndexField", "2013-01-01")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        p = index_field_to_query(p, "IndexField", input.IndexField)
+        return query.query_request(self.creds, cloudsearch_service(), self.region, p)
+
+    # DefineSuggester
+    # errors: BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def define_suggester(self, DefineSuggesterRequest input) -> str:
+        auto p = query.query_params("DefineSuggester", "2013-01-01")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        p = suggester_to_query(p, "Suggester", input.Suggester)
         return query.query_request(self.creds, cloudsearch_service(), self.region, p)
 
     # DeleteAnalysisScheme
@@ -766,6 +1139,23 @@ struct CloudSearchClient:
         auto p = query.query_params("UpdateAvailabilityOptions", "2013-01-01")
         p = query.query_scalar(p, "DomainName", input.DomainName)
         p = query.query_scalar(p, "MultiAZ", query.query_bool(input.MultiAZ))
+        return query.query_request(self.creds, cloudsearch_service(), self.region, p)
+
+    # UpdateDomainEndpointOptions
+    # errors: BaseException, DisabledOperationException, InternalException, InvalidTypeException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def update_domain_endpoint_options(self, UpdateDomainEndpointOptionsRequest input) -> str:
+        auto p = query.query_params("UpdateDomainEndpointOptions", "2013-01-01")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        auto t0 = input.DomainEndpointOptions
+        p = domain_endpoint_options_to_query(p, "DomainEndpointOptions", t0)
+        return query.query_request(self.creds, cloudsearch_service(), self.region, p)
+
+    # UpdateScalingParameters
+    # errors: BaseException, InternalException, InvalidTypeException, LimitExceededException, ResourceNotFoundException, ValidationException
+    def update_scaling_parameters(self, UpdateScalingParametersRequest input) -> str:
+        auto p = query.query_params("UpdateScalingParameters", "2013-01-01")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        p = scaling_parameters_to_query(p, "ScalingParameters", input.ScalingParameters)
         return query.query_request(self.creds, cloudsearch_service(), self.region, p)
 
     # UpdateServiceAccessPolicies

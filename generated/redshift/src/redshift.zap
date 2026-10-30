@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 145 operations — 118 with a generated method,
-#   27 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 145 operations — 145 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   488 structs (plain carriers), 37 enums, 145 error variants.
 #   0 paginators generated (38 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -3347,36 +3347,6 @@ def redshift_error_from_code(str code) -> RedshiftError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   BatchDeleteClusterSnapshots (member `Identifiers` is a list of DeleteClusterSnapshotMessage (only scalar lists in v0))
-#   CreateCluster (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateClusterParameterGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateClusterSecurityGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateClusterSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateClusterSubnetGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateEventSubscription (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateHsmClientCertificate (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateHsmConfiguration (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateIntegration (member `TagList` is a list of Tag (only scalar lists in v0))
-#   CreateQev2IdcApplication (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateRedshiftIdcApplication (member `AuthorizedTokenIssuerList` is a list of AuthorizedTokenIssuer (only scalar lists in v0))
-#   CreateScheduledAction (member `TargetAction` is a nested structure (query nesting is a v0 follow-up))
-#   CreateSnapshotCopyGrant (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateSnapshotSchedule (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateTags (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateUsageLimit (member `Tags` is a list of Tag (only scalar lists in v0))
-#   DeregisterNamespace (member `NamespaceIdentifier` is a nested structure (query nesting is a v0 follow-up))
-#   DescribeClusterSnapshots (member `SortingEntities` is a list of SnapshotSortingEntity (only scalar lists in v0))
-#   DescribeIntegrations (member `Filters` is a list of DescribeIntegrationsFilter (only scalar lists in v0))
-#   DescribeNodeConfigurationOptions (member `Filters` is a list of NodeConfigurationOptionsFilter (only scalar lists in v0))
-#   DescribeScheduledActions (member `Filters` is a list of ScheduledActionFilter (only scalar lists in v0))
-#   ModifyClusterParameterGroup (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   ModifyRedshiftIdcApplication (member `AuthorizedTokenIssuerList` is a list of AuthorizedTokenIssuer (only scalar lists in v0))
-#   ModifyScheduledAction (member `TargetAction` is a nested structure (query nesting is a v0 follow-up))
-#   RegisterNamespace (member `NamespaceIdentifier` is a nested structure (query nesting is a v0 follow-up))
-#   ResetClusterParameterGroup (member `Parameters` is a list of Parameter (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeClusterDbRevisions
@@ -3417,6 +3387,223 @@ def redshift_error_from_code(str code) -> RedshiftError:
 #   GetReservedNodeExchangeConfigurationOptions
 #   GetReservedNodeExchangeOfferings
 #   ListRecommendations
+
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AuthorizedTokenIssuer into the query form parameters under `prefix`.
+def authorized_token_issuer_to_query(list[query.QueryPair] p, str prefix, AuthorizedTokenIssuer v) -> list[query.QueryPair]:
+    if v.TrustedTokenIssuerArn.is_some():
+        auto t0 = v.TrustedTokenIssuerArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TrustedTokenIssuerArn"), t0)
+    auto t1 = v.AuthorizedAudiencesList.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "AuthorizedAudiencesList"), "member", t1)
+    return p
+
+# Serialize Connect into the query form parameters under `prefix`.
+def connect_to_query(list[query.QueryPair] p, str prefix, Connect v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Authorization"), v.Authorization)
+    return p
+
+# Serialize DeleteClusterSnapshotMessage into the query form parameters under `prefix`.
+def delete_cluster_snapshot_message_to_query(list[query.QueryPair] p, str prefix, DeleteClusterSnapshotMessage v) -> list[query.QueryPair]:
+    auto t0 = v.SnapshotIdentifier
+    p = query.query_scalar(p, query.query_key(prefix, "SnapshotIdentifier"), t0)
+    if v.SnapshotClusterIdentifier.is_some():
+        auto t1 = v.SnapshotClusterIdentifier.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SnapshotClusterIdentifier"), t1)
+    return p
+
+# Serialize DescribeIntegrationsFilter into the query form parameters under `prefix`.
+def describe_integrations_filter_to_query(list[query.QueryPair] p, str prefix, DescribeIntegrationsFilter v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_list(p, query.query_key(prefix, "Values"), "Value", v.Values)
+    return p
+
+# Serialize LakeFormationQuery into the query form parameters under `prefix`.
+def lake_formation_query_to_query(list[query.QueryPair] p, str prefix, LakeFormationQuery v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Authorization"), v.Authorization)
+    return p
+
+# Serialize LakeFormationScopeUnion into the query form parameters under `prefix`.
+def lake_formation_scope_union_to_query(list[query.QueryPair] p, str prefix, LakeFormationScopeUnion v) -> list[query.QueryPair]:
+    if v.LakeFormationQuery.is_some():
+        auto t0 = v.LakeFormationQuery.unwrap()
+        p = lake_formation_query_to_query(p, query.query_key(prefix, "LakeFormationQuery"), t0)
+    return p
+
+# Serialize NamespaceIdentifierUnion into the query form parameters under `prefix`.
+def namespace_identifier_union_to_query(list[query.QueryPair] p, str prefix, NamespaceIdentifierUnion v) -> list[query.QueryPair]:
+    if v.ServerlessIdentifier.is_some():
+        auto t0 = v.ServerlessIdentifier.unwrap()
+        p = serverless_identifier_to_query(p, query.query_key(prefix, "ServerlessIdentifier"), t0)
+    if v.ProvisionedIdentifier.is_some():
+        auto t1 = v.ProvisionedIdentifier.unwrap()
+        p = provisioned_identifier_to_query(p, query.query_key(prefix, "ProvisionedIdentifier"), t1)
+    return p
+
+# Serialize NodeConfigurationOptionsFilter into the query form parameters under `prefix`.
+def node_configuration_options_filter_to_query(list[query.QueryPair] p, str prefix, NodeConfigurationOptionsFilter v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    if v.Operator.is_some():
+        auto t0 = v.Operator.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Operator"), t0)
+    auto t1 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Value"), "item", t1)
+    return p
+
+# Serialize Parameter into the query form parameters under `prefix`.
+def parameter_to_query(list[query.QueryPair] p, str prefix, Parameter v) -> list[query.QueryPair]:
+    if v.ParameterName.is_some():
+        auto t0 = v.ParameterName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterName"), t0)
+    if v.ParameterValue.is_some():
+        auto t1 = v.ParameterValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterValue"), t1)
+    if v.Description.is_some():
+        auto t2 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t2)
+    if v.Source.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Source"), v.Source.unwrap())
+    if v.DataType.is_some():
+        auto t3 = v.DataType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DataType"), t3)
+    if v.AllowedValues.is_some():
+        auto t4 = v.AllowedValues.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllowedValues"), t4)
+    if v.ApplyType.is_some():
+        auto t5 = v.ApplyType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApplyType"), t5)
+    if v.IsModifiable.is_some():
+        auto t6 = query.query_bool(v.IsModifiable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IsModifiable"), t6)
+    if v.MinimumEngineVersion.is_some():
+        auto t7 = v.MinimumEngineVersion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MinimumEngineVersion"), t7)
+    return p
+
+# Serialize PauseClusterMessage into the query form parameters under `prefix`.
+def pause_cluster_message_to_query(list[query.QueryPair] p, str prefix, PauseClusterMessage v) -> list[query.QueryPair]:
+    auto t0 = v.ClusterIdentifier
+    p = query.query_scalar(p, query.query_key(prefix, "ClusterIdentifier"), t0)
+    return p
+
+# Serialize ProvisionedIdentifier into the query form parameters under `prefix`.
+def provisioned_identifier_to_query(list[query.QueryPair] p, str prefix, ProvisionedIdentifier v) -> list[query.QueryPair]:
+    auto t0 = v.ClusterIdentifier
+    p = query.query_scalar(p, query.query_key(prefix, "ClusterIdentifier"), t0)
+    return p
+
+# Serialize ReadWriteAccess into the query form parameters under `prefix`.
+def read_write_access_to_query(list[query.QueryPair] p, str prefix, ReadWriteAccess v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Authorization"), v.Authorization)
+    return p
+
+# Serialize RedshiftScopeUnion into the query form parameters under `prefix`.
+def redshift_scope_union_to_query(list[query.QueryPair] p, str prefix, RedshiftScopeUnion v) -> list[query.QueryPair]:
+    if v.Connect.is_some():
+        p = connect_to_query(p, query.query_key(prefix, "Connect"), v.Connect.unwrap())
+    return p
+
+# Serialize ResizeClusterMessage into the query form parameters under `prefix`.
+def resize_cluster_message_to_query(list[query.QueryPair] p, str prefix, ResizeClusterMessage v) -> list[query.QueryPair]:
+    auto t0 = v.ClusterIdentifier
+    p = query.query_scalar(p, query.query_key(prefix, "ClusterIdentifier"), t0)
+    if v.ClusterType.is_some():
+        auto t1 = v.ClusterType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClusterType"), t1)
+    if v.NodeType.is_some():
+        auto t2 = v.NodeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "NodeType"), t2)
+    if v.NumberOfNodes.is_some():
+        auto t3 = str(v.NumberOfNodes.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "NumberOfNodes"), t3)
+    if v.Classic.is_some():
+        auto t4 = query.query_bool(v.Classic.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Classic"), t4)
+    if v.ReservedNodeId.is_some():
+        auto t5 = v.ReservedNodeId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ReservedNodeId"), t5)
+    if v.TargetReservedNodeOfferingId.is_some():
+        auto t6 = v.TargetReservedNodeOfferingId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TargetReservedNodeOfferingId"), t6)
+    return p
+
+# Serialize ResumeClusterMessage into the query form parameters under `prefix`.
+def resume_cluster_message_to_query(list[query.QueryPair] p, str prefix, ResumeClusterMessage v) -> list[query.QueryPair]:
+    auto t0 = v.ClusterIdentifier
+    p = query.query_scalar(p, query.query_key(prefix, "ClusterIdentifier"), t0)
+    return p
+
+# Serialize S3AccessGrantsScopeUnion into the query form parameters under `prefix`.
+def s3_access_grants_scope_union_to_query(list[query.QueryPair] p, str prefix, S3AccessGrantsScopeUnion v) -> list[query.QueryPair]:
+    if v.ReadWriteAccess.is_some():
+        auto t0 = v.ReadWriteAccess.unwrap()
+        p = read_write_access_to_query(p, query.query_key(prefix, "ReadWriteAccess"), t0)
+    return p
+
+# Serialize ScheduledActionFilter into the query form parameters under `prefix`.
+def scheduled_action_filter_to_query(list[query.QueryPair] p, str prefix, ScheduledActionFilter v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_list(p, query.query_key(prefix, "Values"), "item", v.Values)
+    return p
+
+# Serialize ScheduledActionType into the query form parameters under `prefix`.
+def scheduled_action_type_to_query(list[query.QueryPair] p, str prefix, ScheduledActionType v) -> list[query.QueryPair]:
+    if v.ResizeCluster.is_some():
+        auto t0 = v.ResizeCluster.unwrap()
+        p = resize_cluster_message_to_query(p, query.query_key(prefix, "ResizeCluster"), t0)
+    if v.PauseCluster.is_some():
+        auto t1 = v.PauseCluster.unwrap()
+        p = pause_cluster_message_to_query(p, query.query_key(prefix, "PauseCluster"), t1)
+    if v.ResumeCluster.is_some():
+        auto t2 = v.ResumeCluster.unwrap()
+        p = resume_cluster_message_to_query(p, query.query_key(prefix, "ResumeCluster"), t2)
+    return p
+
+# Serialize ServerlessIdentifier into the query form parameters under `prefix`.
+def serverless_identifier_to_query(list[query.QueryPair] p, str prefix, ServerlessIdentifier v) -> list[query.QueryPair]:
+    auto t0 = v.NamespaceIdentifier
+    p = query.query_scalar(p, query.query_key(prefix, "NamespaceIdentifier"), t0)
+    auto t1 = v.WorkgroupIdentifier
+    p = query.query_scalar(p, query.query_key(prefix, "WorkgroupIdentifier"), t1)
+    return p
+
+# Serialize ServiceIntegrationsUnion into the query form parameters under `prefix`.
+def service_integrations_union_to_query(list[query.QueryPair] p, str prefix, ServiceIntegrationsUnion v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.LakeFormation.unwrap_or([]):
+        auto t2 = qe1
+        p = lake_formation_scope_union_to_query(p, query.query_key(prefix, "LakeFormation") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    auto qi3 = 1
+    for qe4 in v.S3AccessGrants.unwrap_or([]):
+        auto t5 = qe4
+        p = s3_access_grants_scope_union_to_query(p, query.query_key(prefix, "S3AccessGrants") + ".member" + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    auto qi6 = 1
+    for qe7 in v.Redshift.unwrap_or([]):
+        auto t8 = qe7
+        p = redshift_scope_union_to_query(p, query.query_key(prefix, "Redshift") + ".member" + "." + str(qi6), t8)
+        qi6 = qi6 + 1
+    return p
+
+# Serialize SnapshotSortingEntity into the query form parameters under `prefix`.
+def snapshot_sorting_entity_to_query(list[query.QueryPair] p, str prefix, SnapshotSortingEntity v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Attribute"), v.Attribute)
+    if v.SortOrder.is_some():
+        auto t0 = v.SortOrder.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SortOrder"), t0)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
 
 # A bound Redshift client: credentials + region, threaded into every operation.
 struct RedshiftClient:
@@ -3513,6 +3700,17 @@ struct RedshiftClient:
         p = query.query_scalar(p, "AccountWithRestoreAccess", t2)
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
+    # BatchDeleteClusterSnapshots
+    # errors: BatchDeleteRequestSizeExceededFault
+    def batch_delete_cluster_snapshots(self, BatchDeleteClusterSnapshotsRequest input) -> str:
+        auto p = query.query_params("BatchDeleteClusterSnapshots", "2012-12-01")
+        auto qi0 = 1
+        for qe1 in input.Identifiers:
+            auto t2 = qe1
+            p = delete_cluster_snapshot_message_to_query(p, "Identifiers.DeleteClusterSnapshotMessage." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
     # BatchModifyClusterSnapshots
     # errors: BatchModifyClusterSnapshotsLimitExceededFault, InvalidRetentionPeriodFault
     def batch_modify_cluster_snapshots(self, BatchModifyClusterSnapshotsMessage input) -> str:
@@ -3559,6 +3757,171 @@ struct RedshiftClient:
         p = query.query_scalar(p, "AuthenticationProfileContent", t1)
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
+    # CreateCluster
+    # errors: ClusterAlreadyExistsFault, ClusterParameterGroupNotFoundFault, ClusterQuotaExceededFault, ClusterSecurityGroupNotFoundFault, ClusterSubnetGroupNotFoundFault, DependentServiceAccessDeniedFault, DependentServiceRequestThrottlingFault, DependentServiceUnavailableFault, HsmClientCertificateNotFoundFault, HsmConfigurationNotFoundFault, InsufficientClusterCapacityFault, InvalidClusterSubnetGroupStateFault, InvalidClusterTrackFault, InvalidElasticIpFault, InvalidRetentionPeriodFault, InvalidSubnet, InvalidTagFault, InvalidVPCNetworkStateFault, Ipv6CidrBlockNotFoundFault, LimitExceededFault, NumberOfNodesPerClusterLimitExceededFault, NumberOfNodesQuotaExceededFault, RedshiftIdcApplicationNotExistsFault, SnapshotScheduleNotFoundFault, TagLimitExceededFault, UnauthorizedOperation, UnsupportedOperationFault
+    def create_cluster(self, CreateClusterMessage input) -> str:
+        auto p = query.query_params("CreateCluster", "2012-12-01")
+        if input.DBName.is_some():
+            p = query.query_scalar(p, "DBName", input.DBName.unwrap())
+        p = query.query_scalar(p, "ClusterIdentifier", input.ClusterIdentifier)
+        if input.ClusterType.is_some():
+            p = query.query_scalar(p, "ClusterType", input.ClusterType.unwrap())
+        p = query.query_scalar(p, "NodeType", input.NodeType)
+        p = query.query_scalar(p, "MasterUsername", input.MasterUsername)
+        if input.MasterUserPassword.is_some():
+            auto t0 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t0)
+        auto t1 = input.ClusterSecurityGroups.unwrap_or([])
+        p = query.query_list(p, "ClusterSecurityGroups", "ClusterSecurityGroupName", t1)
+        auto t2 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t2)
+        if input.ClusterSubnetGroupName.is_some():
+            auto t3 = input.ClusterSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "ClusterSubnetGroupName", t3)
+        if input.AvailabilityZone.is_some():
+            auto t4 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t4)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t5 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t5)
+        if input.ClusterParameterGroupName.is_some():
+            auto t6 = input.ClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "ClusterParameterGroupName", t6)
+        if input.AutomatedSnapshotRetentionPeriod.is_some():
+            auto t7 = str(input.AutomatedSnapshotRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "AutomatedSnapshotRetentionPeriod", t7)
+        if input.ManualSnapshotRetentionPeriod.is_some():
+            auto t8 = str(input.ManualSnapshotRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "ManualSnapshotRetentionPeriod", t8)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.ClusterVersion.is_some():
+            p = query.query_scalar(p, "ClusterVersion", input.ClusterVersion.unwrap())
+        if input.AllowVersionUpgrade.is_some():
+            auto t9 = query.query_bool(input.AllowVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AllowVersionUpgrade", t9)
+        if input.NumberOfNodes.is_some():
+            auto t10 = str(input.NumberOfNodes.unwrap())
+            p = query.query_scalar(p, "NumberOfNodes", t10)
+        if input.PubliclyAccessible.is_some():
+            auto t11 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t11)
+        if input.Encrypted.is_some():
+            auto t12 = query.query_bool(input.Encrypted.unwrap())
+            p = query.query_scalar(p, "Encrypted", t12)
+        if input.HsmClientCertificateIdentifier.is_some():
+            auto t13 = input.HsmClientCertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "HsmClientCertificateIdentifier", t13)
+        if input.HsmConfigurationIdentifier.is_some():
+            auto t14 = input.HsmConfigurationIdentifier.unwrap()
+            p = query.query_scalar(p, "HsmConfigurationIdentifier", t14)
+        if input.ElasticIp.is_some():
+            p = query.query_scalar(p, "ElasticIp", input.ElasticIp.unwrap())
+        auto qi15 = 1
+        for qe16 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi15), qe16)
+            qi15 = qi15 + 1
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.EnhancedVpcRouting.is_some():
+            auto t17 = query.query_bool(input.EnhancedVpcRouting.unwrap())
+            p = query.query_scalar(p, "EnhancedVpcRouting", t17)
+        if input.AdditionalInfo.is_some():
+            p = query.query_scalar(p, "AdditionalInfo", input.AdditionalInfo.unwrap())
+        p = query.query_list(p, "IamRoles", "IamRoleArn", input.IamRoles.unwrap_or([]))
+        if input.MaintenanceTrackName.is_some():
+            auto t18 = input.MaintenanceTrackName.unwrap()
+            p = query.query_scalar(p, "MaintenanceTrackName", t18)
+        if input.SnapshotScheduleIdentifier.is_some():
+            auto t19 = input.SnapshotScheduleIdentifier.unwrap()
+            p = query.query_scalar(p, "SnapshotScheduleIdentifier", t19)
+        if input.AvailabilityZoneRelocation.is_some():
+            auto t20 = query.query_bool(input.AvailabilityZoneRelocation.unwrap())
+            p = query.query_scalar(p, "AvailabilityZoneRelocation", t20)
+        if input.AquaConfigurationStatus.is_some():
+            auto t21 = input.AquaConfigurationStatus.unwrap()
+            p = query.query_scalar(p, "AquaConfigurationStatus", t21)
+        if input.DefaultIamRoleArn.is_some():
+            auto t22 = input.DefaultIamRoleArn.unwrap()
+            p = query.query_scalar(p, "DefaultIamRoleArn", t22)
+        if input.LoadSampleData.is_some():
+            p = query.query_scalar(p, "LoadSampleData", input.LoadSampleData.unwrap())
+        if input.ManageMasterPassword.is_some():
+            auto t23 = query.query_bool(input.ManageMasterPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterPassword", t23)
+        if input.MasterPasswordSecretKmsKeyId.is_some():
+            auto t24 = input.MasterPasswordSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterPasswordSecretKmsKeyId", t24)
+        if input.IpAddressType.is_some():
+            p = query.query_scalar(p, "IpAddressType", input.IpAddressType.unwrap())
+        if input.MultiAZ.is_some():
+            auto t25 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t25)
+        if input.RedshiftIdcApplicationArn.is_some():
+            auto t26 = input.RedshiftIdcApplicationArn.unwrap()
+            p = query.query_scalar(p, "RedshiftIdcApplicationArn", t26)
+        if input.CatalogName.is_some():
+            p = query.query_scalar(p, "CatalogName", input.CatalogName.unwrap())
+        if input.ExtraComputeForAutomaticOptimization.is_some():
+            auto t27 = query.query_bool(input.ExtraComputeForAutomaticOptimization.unwrap())
+            p = query.query_scalar(p, "ExtraComputeForAutomaticOptimization", t27)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateClusterParameterGroup
+    # errors: ClusterParameterGroupAlreadyExistsFault, ClusterParameterGroupQuotaExceededFault, InvalidTagFault, TagLimitExceededFault
+    def create_cluster_parameter_group(self, CreateClusterParameterGroupMessage input) -> str:
+        auto p = query.query_params("CreateClusterParameterGroup", "2012-12-01")
+        p = query.query_scalar(p, "ParameterGroupName", input.ParameterGroupName)
+        p = query.query_scalar(p, "ParameterGroupFamily", input.ParameterGroupFamily)
+        p = query.query_scalar(p, "Description", input.Description)
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateClusterSecurityGroup
+    # errors: ClusterSecurityGroupAlreadyExistsFault, ClusterSecurityGroupQuotaExceededFault, InvalidTagFault, TagLimitExceededFault
+    def create_cluster_security_group(self, CreateClusterSecurityGroupMessage input) -> str:
+        auto p = query.query_params("CreateClusterSecurityGroup", "2012-12-01")
+        auto t0 = input.ClusterSecurityGroupName
+        p = query.query_scalar(p, "ClusterSecurityGroupName", t0)
+        p = query.query_scalar(p, "Description", input.Description)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateClusterSnapshot
+    # errors: ClusterNotFoundFault, ClusterSnapshotAlreadyExistsFault, ClusterSnapshotQuotaExceededFault, InvalidClusterStateFault, InvalidRetentionPeriodFault, InvalidTagFault, TagLimitExceededFault
+    def create_cluster_snapshot(self, CreateClusterSnapshotMessage input) -> str:
+        auto p = query.query_params("CreateClusterSnapshot", "2012-12-01")
+        p = query.query_scalar(p, "SnapshotIdentifier", input.SnapshotIdentifier)
+        p = query.query_scalar(p, "ClusterIdentifier", input.ClusterIdentifier)
+        if input.ManualSnapshotRetentionPeriod.is_some():
+            auto t0 = str(input.ManualSnapshotRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "ManualSnapshotRetentionPeriod", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateClusterSubnetGroup
+    # errors: ClusterSubnetGroupAlreadyExistsFault, ClusterSubnetGroupQuotaExceededFault, ClusterSubnetQuotaExceededFault, DependentServiceRequestThrottlingFault, InvalidSubnet, InvalidTagFault, TagLimitExceededFault, UnauthorizedOperation
+    def create_cluster_subnet_group(self, CreateClusterSubnetGroupMessage input) -> str:
+        auto p = query.query_params("CreateClusterSubnetGroup", "2012-12-01")
+        auto t0 = input.ClusterSubnetGroupName
+        p = query.query_scalar(p, "ClusterSubnetGroupName", t0)
+        p = query.query_scalar(p, "Description", input.Description)
+        p = query.query_list(p, "SubnetIds", "SubnetIdentifier", input.SubnetIds)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
     # CreateCustomDomainAssociation
     # errors: ClusterNotFoundFault, CustomCnameAssociationFault, UnsupportedOperationFault
     def create_custom_domain_association(self, CreateCustomDomainAssociationMessage input) -> str:
@@ -3582,6 +3945,213 @@ struct RedshiftClient:
         p = query.query_scalar(p, "SubnetGroupName", input.SubnetGroupName)
         auto t1 = input.VpcSecurityGroupIds.unwrap_or([])
         p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t1)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateEventSubscription
+    # errors: EventSubscriptionQuotaExceededFault, InvalidTagFault, SNSInvalidTopicFault, SNSNoAuthorizationFault, SNSTopicArnNotFoundFault, SourceNotFoundFault, SubscriptionAlreadyExistFault, SubscriptionCategoryNotFoundFault, SubscriptionEventIdNotFoundFault, SubscriptionSeverityNotFoundFault, TagLimitExceededFault
+    def create_event_subscription(self, CreateEventSubscriptionMessage input) -> str:
+        auto p = query.query_params("CreateEventSubscription", "2012-12-01")
+        p = query.query_scalar(p, "SubscriptionName", input.SubscriptionName)
+        p = query.query_scalar(p, "SnsTopicArn", input.SnsTopicArn)
+        if input.SourceType.is_some():
+            p = query.query_scalar(p, "SourceType", input.SourceType.unwrap())
+        p = query.query_list(p, "SourceIds", "SourceId", input.SourceIds.unwrap_or([]))
+        auto t0 = input.EventCategories.unwrap_or([])
+        p = query.query_list(p, "EventCategories", "EventCategory", t0)
+        if input.Severity.is_some():
+            p = query.query_scalar(p, "Severity", input.Severity.unwrap())
+        if input.Enabled.is_some():
+            auto t1 = query.query_bool(input.Enabled.unwrap())
+            p = query.query_scalar(p, "Enabled", t1)
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateHsmClientCertificate
+    # errors: HsmClientCertificateAlreadyExistsFault, HsmClientCertificateQuotaExceededFault, InvalidTagFault, TagLimitExceededFault
+    def create_hsm_client_certificate(self, CreateHsmClientCertificateMessage input) -> str:
+        auto p = query.query_params("CreateHsmClientCertificate", "2012-12-01")
+        auto t0 = input.HsmClientCertificateIdentifier
+        p = query.query_scalar(p, "HsmClientCertificateIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateHsmConfiguration
+    # errors: HsmConfigurationAlreadyExistsFault, HsmConfigurationQuotaExceededFault, InvalidTagFault, TagLimitExceededFault
+    def create_hsm_configuration(self, CreateHsmConfigurationMessage input) -> str:
+        auto p = query.query_params("CreateHsmConfiguration", "2012-12-01")
+        auto t0 = input.HsmConfigurationIdentifier
+        p = query.query_scalar(p, "HsmConfigurationIdentifier", t0)
+        p = query.query_scalar(p, "Description", input.Description)
+        p = query.query_scalar(p, "HsmIpAddress", input.HsmIpAddress)
+        p = query.query_scalar(p, "HsmPartitionName", input.HsmPartitionName)
+        p = query.query_scalar(p, "HsmPartitionPassword", input.HsmPartitionPassword)
+        auto t1 = input.HsmServerPublicCertificate
+        p = query.query_scalar(p, "HsmServerPublicCertificate", t1)
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateIntegration
+    # errors: IntegrationAlreadyExistsFault, IntegrationConflictOperationFault, IntegrationQuotaExceededFault, IntegrationSourceNotFoundFault, IntegrationTargetNotFoundFault, InvalidClusterStateFault, InvalidTagFault, TagLimitExceededFault, UnsupportedOperationFault
+    def create_integration(self, CreateIntegrationMessage input) -> str:
+        auto p = query.query_params("CreateIntegration", "2012-12-01")
+        p = query.query_scalar(p, "SourceArn", input.SourceArn)
+        p = query.query_scalar(p, "TargetArn", input.TargetArn)
+        p = query.query_scalar(p, "IntegrationName", input.IntegrationName)
+        if input.KMSKeyId.is_some():
+            p = query.query_scalar(p, "KMSKeyId", input.KMSKeyId.unwrap())
+        auto qi0 = 1
+        for qe1 in input.TagList.unwrap_or([]):
+            p = tag_to_query(p, "TagList.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        list[str] qks3 = []
+        list[str] qvs4 = []
+        for qk2 in sorted(input.AdditionalEncryptionContext.unwrap_or({}).keys()):
+            qks3.append(qk2)
+            qvs4.append(input.AdditionalEncryptionContext.unwrap_or({})[qk2])
+        auto t5 = qvs4
+        p = query.query_map(p, "AdditionalEncryptionContext", "key", "value", qks3, t5)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateQev2IdcApplication
+    # errors: DependentServiceAccessDeniedFault, DependentServiceUnavailableFault, Qev2IdcApplicationAlreadyExistsFault, UnsupportedOperationFault
+    def create_qev2_idc_application(self, CreateQev2IdcApplicationMessage input) -> str:
+        auto p = query.query_params("CreateQev2IdcApplication", "2012-12-01")
+        p = query.query_scalar(p, "IdcInstanceArn", input.IdcInstanceArn)
+        auto t0 = input.Qev2IdcApplicationName
+        p = query.query_scalar(p, "Qev2IdcApplicationName", t0)
+        p = query.query_scalar(p, "IdcDisplayName", input.IdcDisplayName)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateRedshiftIdcApplication
+    # errors: DependentServiceAccessDeniedFault, DependentServiceUnavailableFault, InvalidTagFault, RedshiftIdcApplicationAlreadyExistsFault, RedshiftIdcApplicationQuotaExceededFault, TagLimitExceededFault, UnsupportedOperationFault
+    def create_redshift_idc_application(self, CreateRedshiftIdcApplicationMessage input) -> str:
+        auto p = query.query_params("CreateRedshiftIdcApplication", "2012-12-01")
+        p = query.query_scalar(p, "IdcInstanceArn", input.IdcInstanceArn)
+        auto t0 = input.RedshiftIdcApplicationName
+        p = query.query_scalar(p, "RedshiftIdcApplicationName", t0)
+        if input.IdentityNamespace.is_some():
+            auto t1 = input.IdentityNamespace.unwrap()
+            p = query.query_scalar(p, "IdentityNamespace", t1)
+        p = query.query_scalar(p, "IdcDisplayName", input.IdcDisplayName)
+        p = query.query_scalar(p, "IamRoleArn", input.IamRoleArn)
+        auto qi2 = 1
+        for qe3 in input.AuthorizedTokenIssuerList.unwrap_or([]):
+            auto t4 = qe3
+            p = authorized_token_issuer_to_query(p, "AuthorizedTokenIssuerList.member." + str(qi2), t4)
+            qi2 = qi2 + 1
+        auto qi5 = 1
+        for qe6 in input.ServiceIntegrations.unwrap_or([]):
+            auto t7 = qe6
+            p = service_integrations_union_to_query(p, "ServiceIntegrations.member." + str(qi5), t7)
+            qi5 = qi5 + 1
+        if input.ApplicationType.is_some():
+            p = query.query_scalar(p, "ApplicationType", input.ApplicationType.unwrap())
+        auto qi8 = 1
+        for qe9 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi8), qe9)
+            qi8 = qi8 + 1
+        p = query.query_list(p, "SsoTagKeys", "TagKey", input.SsoTagKeys.unwrap_or([]))
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateScheduledAction
+    # errors: ClusterNotFoundFault, InvalidScheduleFault, InvalidScheduledActionFault, ScheduledActionAlreadyExistsFault, ScheduledActionQuotaExceededFault, ScheduledActionTypeUnsupportedFault, UnauthorizedOperation, UnsupportedOperationFault
+    def create_scheduled_action(self, CreateScheduledActionMessage input) -> str:
+        auto p = query.query_params("CreateScheduledAction", "2012-12-01")
+        p = query.query_scalar(p, "ScheduledActionName", input.ScheduledActionName)
+        p = scheduled_action_type_to_query(p, "TargetAction", input.TargetAction)
+        p = query.query_scalar(p, "Schedule", input.Schedule)
+        p = query.query_scalar(p, "IamRole", input.IamRole)
+        if input.ScheduledActionDescription.is_some():
+            auto t0 = input.ScheduledActionDescription.unwrap()
+            p = query.query_scalar(p, "ScheduledActionDescription", t0)
+        if input.StartTime.is_some():
+            auto t1 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t1)
+        if input.EndTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t2)
+        if input.Enable.is_some():
+            p = query.query_scalar(p, "Enable", query.query_bool(input.Enable.unwrap()))
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateSnapshotCopyGrant
+    # errors: DependentServiceRequestThrottlingFault, InvalidTagFault, LimitExceededFault, SnapshotCopyGrantAlreadyExistsFault, SnapshotCopyGrantQuotaExceededFault, TagLimitExceededFault
+    def create_snapshot_copy_grant(self, CreateSnapshotCopyGrantMessage input) -> str:
+        auto p = query.query_params("CreateSnapshotCopyGrant", "2012-12-01")
+        p = query.query_scalar(p, "SnapshotCopyGrantName", input.SnapshotCopyGrantName)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateSnapshotSchedule
+    # errors: InvalidScheduleFault, InvalidTagFault, ScheduleDefinitionTypeUnsupportedFault, SnapshotScheduleAlreadyExistsFault, SnapshotScheduleQuotaExceededFault, TagLimitExceededFault
+    def create_snapshot_schedule(self, CreateSnapshotScheduleMessage input) -> str:
+        auto p = query.query_params("CreateSnapshotSchedule", "2012-12-01")
+        auto t0 = input.ScheduleDefinitions.unwrap_or([])
+        p = query.query_list(p, "ScheduleDefinitions", "ScheduleDefinition", t0)
+        if input.ScheduleIdentifier.is_some():
+            auto t1 = input.ScheduleIdentifier.unwrap()
+            p = query.query_scalar(p, "ScheduleIdentifier", t1)
+        if input.ScheduleDescription.is_some():
+            auto t2 = input.ScheduleDescription.unwrap()
+            p = query.query_scalar(p, "ScheduleDescription", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.DryRun.is_some():
+            p = query.query_scalar(p, "DryRun", query.query_bool(input.DryRun.unwrap()))
+        if input.NextInvocations.is_some():
+            auto t5 = str(input.NextInvocations.unwrap())
+            p = query.query_scalar(p, "NextInvocations", t5)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateTags
+    # errors: InvalidClusterStateFault, InvalidTagFault, ResourceNotFoundFault, TagLimitExceededFault
+    def create_tags(self, CreateTagsMessage input) -> str:
+        auto p = query.query_params("CreateTags", "2012-12-01")
+        p = query.query_scalar(p, "ResourceName", input.ResourceName)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # CreateUsageLimit
+    # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidUsageLimitFault, LimitExceededFault, TagLimitExceededFault, UnsupportedOperationFault, UsageLimitAlreadyExistsFault
+    def create_usage_limit(self, CreateUsageLimitMessage input) -> str:
+        auto p = query.query_params("CreateUsageLimit", "2012-12-01")
+        p = query.query_scalar(p, "ClusterIdentifier", input.ClusterIdentifier)
+        p = query.query_scalar(p, "FeatureType", input.FeatureType)
+        p = query.query_scalar(p, "LimitType", input.LimitType)
+        p = query.query_scalar(p, "Amount", str(input.Amount))
+        if input.Period.is_some():
+            p = query.query_scalar(p, "Period", input.Period.unwrap())
+        if input.BreachAction.is_some():
+            p = query.query_scalar(p, "BreachAction", input.BreachAction.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
     # DeauthorizeDataShare
@@ -3762,6 +4332,16 @@ struct RedshiftClient:
         p = query.query_scalar(p, "UsageLimitId", input.UsageLimitId)
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
+    # DeregisterNamespace
+    # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidNamespaceFault
+    def deregister_namespace(self, DeregisterNamespaceInputMessage input) -> str:
+        auto p = query.query_params("DeregisterNamespace", "2012-12-01")
+        auto t0 = input.NamespaceIdentifier
+        p = namespace_identifier_union_to_query(p, "NamespaceIdentifier", t0)
+        auto t1 = input.ConsumerIdentifiers
+        p = query.query_list(p, "ConsumerIdentifiers", "member", t1)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
     # DescribeAccountAttributes
     def describe_account_attributes(self, DescribeAccountAttributesMessage input) -> str:
         auto p = query.query_params("DescribeAccountAttributes", "2012-12-01")
@@ -3832,6 +4412,44 @@ struct RedshiftClient:
             p = query.query_scalar(p, "Marker", input.Marker.unwrap())
         p = query.query_list(p, "TagKeys", "TagKey", input.TagKeys.unwrap_or([]))
         p = query.query_list(p, "TagValues", "TagValue", input.TagValues.unwrap_or([]))
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # DescribeClusterSnapshots
+    # errors: ClusterNotFoundFault, ClusterSnapshotNotFoundFault, InvalidTagFault, UnsupportedOperationFault
+    def describe_cluster_snapshots(self, DescribeClusterSnapshotsMessage input) -> str:
+        auto p = query.query_params("DescribeClusterSnapshots", "2012-12-01")
+        if input.ClusterIdentifier.is_some():
+            auto t0 = input.ClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "ClusterIdentifier", t0)
+        if input.SnapshotIdentifier.is_some():
+            auto t1 = input.SnapshotIdentifier.unwrap()
+            p = query.query_scalar(p, "SnapshotIdentifier", t1)
+        if input.SnapshotArn.is_some():
+            p = query.query_scalar(p, "SnapshotArn", input.SnapshotArn.unwrap())
+        if input.SnapshotType.is_some():
+            p = query.query_scalar(p, "SnapshotType", input.SnapshotType.unwrap())
+        if input.StartTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t2)
+        if input.EndTime.is_some():
+            auto t3 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t3)
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.OwnerAccount.is_some():
+            p = query.query_scalar(p, "OwnerAccount", input.OwnerAccount.unwrap())
+        p = query.query_list(p, "TagKeys", "TagKey", input.TagKeys.unwrap_or([]))
+        p = query.query_list(p, "TagValues", "TagValue", input.TagValues.unwrap_or([]))
+        if input.ClusterExists.is_some():
+            auto t4 = query.query_bool(input.ClusterExists.unwrap())
+            p = query.query_scalar(p, "ClusterExists", t4)
+        auto qi5 = 1
+        for qe6 in input.SortingEntities.unwrap_or([]):
+            auto t7 = qe6
+            p = snapshot_sorting_entity_to_query(p, "SortingEntities.SnapshotSortingEntity." + str(qi5), t7)
+            qi5 = qi5 + 1
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
     # DescribeClusterSubnetGroups
@@ -4082,11 +4700,54 @@ struct RedshiftClient:
             p = query.query_scalar(p, "Marker", input.Marker.unwrap())
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
+    # DescribeIntegrations
+    # errors: IntegrationNotFoundFault, UnsupportedOperationFault
+    def describe_integrations(self, DescribeIntegrationsMessage input) -> str:
+        auto p = query.query_params("DescribeIntegrations", "2012-12-01")
+        if input.IntegrationArn.is_some():
+            p = query.query_scalar(p, "IntegrationArn", input.IntegrationArn.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            auto t2 = qe1
+            p = describe_integrations_filter_to_query(p, "Filters.DescribeIntegrationsFilter." + str(qi0), t2)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
     # DescribeLoggingStatus
     # errors: ClusterNotFoundFault, UnsupportedOperationFault
     def describe_logging_status(self, DescribeLoggingStatusMessage input) -> str:
         auto p = query.query_params("DescribeLoggingStatus", "2012-12-01")
         p = query.query_scalar(p, "ClusterIdentifier", input.ClusterIdentifier)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # DescribeNodeConfigurationOptions
+    # errors: AccessToSnapshotDeniedFault, ClusterNotFoundFault, ClusterSnapshotNotFoundFault, InvalidClusterSnapshotStateFault, UnsupportedOperationFault
+    def describe_node_configuration_options(self, DescribeNodeConfigurationOptionsMessage input) -> str:
+        auto p = query.query_params("DescribeNodeConfigurationOptions", "2012-12-01")
+        p = query.query_scalar(p, "ActionType", input.ActionType)
+        if input.ClusterIdentifier.is_some():
+            auto t0 = input.ClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "ClusterIdentifier", t0)
+        if input.SnapshotIdentifier.is_some():
+            auto t1 = input.SnapshotIdentifier.unwrap()
+            p = query.query_scalar(p, "SnapshotIdentifier", t1)
+        if input.SnapshotArn.is_some():
+            p = query.query_scalar(p, "SnapshotArn", input.SnapshotArn.unwrap())
+        if input.OwnerAccount.is_some():
+            p = query.query_scalar(p, "OwnerAccount", input.OwnerAccount.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            auto t4 = qe3
+            p = node_configuration_options_filter_to_query(p, "Filter.NodeConfigurationOptionsFilter." + str(qi2), t4)
+            qi2 = qi2 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
     # DescribeOrderableClusterOptions
@@ -4185,6 +4846,35 @@ struct RedshiftClient:
     def describe_resize(self, DescribeResizeMessage input) -> str:
         auto p = query.query_params("DescribeResize", "2012-12-01")
         p = query.query_scalar(p, "ClusterIdentifier", input.ClusterIdentifier)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # DescribeScheduledActions
+    # errors: ScheduledActionNotFoundFault, UnauthorizedOperation
+    def describe_scheduled_actions(self, DescribeScheduledActionsMessage input) -> str:
+        auto p = query.query_params("DescribeScheduledActions", "2012-12-01")
+        if input.ScheduledActionName.is_some():
+            auto t0 = input.ScheduledActionName.unwrap()
+            p = query.query_scalar(p, "ScheduledActionName", t0)
+        if input.TargetActionType.is_some():
+            auto t1 = input.TargetActionType.unwrap()
+            p = query.query_scalar(p, "TargetActionType", t1)
+        if input.StartTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t2)
+        if input.EndTime.is_some():
+            auto t3 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t3)
+        if input.Active.is_some():
+            p = query.query_scalar(p, "Active", query.query_bool(input.Active.unwrap()))
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            auto t6 = qe5
+            p = scheduled_action_filter_to_query(p, "Filters.ScheduledActionFilter." + str(qi4), t6)
+            qi4 = qi4 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
     # DescribeSnapshotCopyGrants
@@ -4596,6 +5286,17 @@ struct RedshiftClient:
             p = query.query_scalar(p, "DeferMaintenanceDuration", t4)
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
+    # ModifyClusterParameterGroup
+    # errors: ClusterParameterGroupNotFoundFault, InvalidClusterParameterGroupStateFault
+    def modify_cluster_parameter_group(self, ModifyClusterParameterGroupMessage input) -> str:
+        auto p = query.query_params("ModifyClusterParameterGroup", "2012-12-01")
+        p = query.query_scalar(p, "ParameterGroupName", input.ParameterGroupName)
+        auto qi0 = 1
+        for qe1 in input.Parameters:
+            p = parameter_to_query(p, "Parameters.Parameter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
     # ModifyClusterSnapshot
     # errors: ClusterSnapshotNotFoundFault, InvalidClusterSnapshotStateFault, InvalidRetentionPeriodFault
     def modify_cluster_snapshot(self, ModifyClusterSnapshotMessage input) -> str:
@@ -4710,6 +5411,56 @@ struct RedshiftClient:
             p = query.query_scalar(p, "IdcDisplayName", input.IdcDisplayName.unwrap())
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
+    # ModifyRedshiftIdcApplication
+    # errors: DependentServiceAccessDeniedFault, DependentServiceUnavailableFault, RedshiftIdcApplicationNotExistsFault, UnsupportedOperationFault
+    def modify_redshift_idc_application(self, ModifyRedshiftIdcApplicationMessage input) -> str:
+        auto p = query.query_params("ModifyRedshiftIdcApplication", "2012-12-01")
+        auto t0 = input.RedshiftIdcApplicationArn
+        p = query.query_scalar(p, "RedshiftIdcApplicationArn", t0)
+        if input.IdentityNamespace.is_some():
+            auto t1 = input.IdentityNamespace.unwrap()
+            p = query.query_scalar(p, "IdentityNamespace", t1)
+        if input.IamRoleArn.is_some():
+            p = query.query_scalar(p, "IamRoleArn", input.IamRoleArn.unwrap())
+        if input.IdcDisplayName.is_some():
+            p = query.query_scalar(p, "IdcDisplayName", input.IdcDisplayName.unwrap())
+        auto qi2 = 1
+        for qe3 in input.AuthorizedTokenIssuerList.unwrap_or([]):
+            auto t4 = qe3
+            p = authorized_token_issuer_to_query(p, "AuthorizedTokenIssuerList.member." + str(qi2), t4)
+            qi2 = qi2 + 1
+        auto qi5 = 1
+        for qe6 in input.ServiceIntegrations.unwrap_or([]):
+            auto t7 = qe6
+            p = service_integrations_union_to_query(p, "ServiceIntegrations.member." + str(qi5), t7)
+            qi5 = qi5 + 1
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # ModifyScheduledAction
+    # errors: ClusterNotFoundFault, InvalidScheduleFault, InvalidScheduledActionFault, ScheduledActionNotFoundFault, ScheduledActionTypeUnsupportedFault, UnauthorizedOperation, UnsupportedOperationFault
+    def modify_scheduled_action(self, ModifyScheduledActionMessage input) -> str:
+        auto p = query.query_params("ModifyScheduledAction", "2012-12-01")
+        p = query.query_scalar(p, "ScheduledActionName", input.ScheduledActionName)
+        if input.TargetAction.is_some():
+            auto t0 = input.TargetAction.unwrap()
+            p = scheduled_action_type_to_query(p, "TargetAction", t0)
+        if input.Schedule.is_some():
+            p = query.query_scalar(p, "Schedule", input.Schedule.unwrap())
+        if input.IamRole.is_some():
+            p = query.query_scalar(p, "IamRole", input.IamRole.unwrap())
+        if input.ScheduledActionDescription.is_some():
+            auto t1 = input.ScheduledActionDescription.unwrap()
+            p = query.query_scalar(p, "ScheduledActionDescription", t1)
+        if input.StartTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t2)
+        if input.EndTime.is_some():
+            auto t3 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t3)
+        if input.Enable.is_some():
+            p = query.query_scalar(p, "Enable", query.query_bool(input.Enable.unwrap()))
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
     # ModifySnapshotCopyRetentionPeriod
     # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidRetentionPeriodFault, SnapshotCopyDisabledFault, UnauthorizedOperation
     def modify_snapshot_copy_retention_period(self, ModifySnapshotCopyRetentionPeriodMessage input) -> str:
@@ -4772,11 +5523,35 @@ struct RedshiftClient:
         p = query.query_scalar(p, "ClusterIdentifier", input.ClusterIdentifier)
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
+    # RegisterNamespace
+    # errors: ClusterNotFoundFault, InvalidClusterStateFault, InvalidNamespaceFault
+    def register_namespace(self, RegisterNamespaceInputMessage input) -> str:
+        auto p = query.query_params("RegisterNamespace", "2012-12-01")
+        auto t0 = input.NamespaceIdentifier
+        p = namespace_identifier_union_to_query(p, "NamespaceIdentifier", t0)
+        auto t1 = input.ConsumerIdentifiers
+        p = query.query_list(p, "ConsumerIdentifiers", "member", t1)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
     # RejectDataShare
     # errors: InvalidDataShareFault
     def reject_data_share(self, RejectDataShareMessage input) -> str:
         auto p = query.query_params("RejectDataShare", "2012-12-01")
         p = query.query_scalar(p, "DataShareArn", input.DataShareArn)
+        return query.query_request(self.creds, redshift_service(), self.region, p)
+
+    # ResetClusterParameterGroup
+    # errors: ClusterParameterGroupNotFoundFault, InvalidClusterParameterGroupStateFault
+    def reset_cluster_parameter_group(self, ResetClusterParameterGroupMessage input) -> str:
+        auto p = query.query_params("ResetClusterParameterGroup", "2012-12-01")
+        p = query.query_scalar(p, "ParameterGroupName", input.ParameterGroupName)
+        if input.ResetAllParameters.is_some():
+            auto t0 = query.query_bool(input.ResetAllParameters.unwrap())
+            p = query.query_scalar(p, "ResetAllParameters", t0)
+        auto qi1 = 1
+        for qe2 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.Parameter." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, redshift_service(), self.region, p)
 
     # ResizeCluster

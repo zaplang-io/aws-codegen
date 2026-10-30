@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 90 operations — 64 with a generated method,
-#   26 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 90 operations — 90 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   291 structs (plain carriers), 80 enums, 29 error variants.
 #   0 paginators generated (21 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -2673,35 +2673,6 @@ def cloudformation_error_from_code(str code) -> CloudFormationError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   ActivateType (member `LoggingConfig` is a nested structure (query nesting is a v0 follow-up))
-#   BatchDescribeTypeConfigurations (member `TypeConfigurationIdentifiers` is a list of TypeConfigurationIdentifier (only scalar lists in v0))
-#   CreateChangeSet (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   CreateGeneratedTemplate (member `Resources` is a list of ResourceDefinition (only scalar lists in v0))
-#   CreateStack (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   CreateStackInstances (member `DeploymentTargets` is a nested structure (query nesting is a v0 follow-up))
-#   CreateStackRefactor (member `ResourceMappings` is a list of ResourceMapping (only scalar lists in v0))
-#   CreateStackSet (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   DeleteStack (member `DeploymentConfig` is a nested structure (query nesting is a v0 follow-up))
-#   DeleteStackInstances (member `DeploymentTargets` is a nested structure (query nesting is a v0 follow-up))
-#   DescribeEvents (member `Filters` is a nested structure (query nesting is a v0 follow-up))
-#   DetectStackSetDrift (member `OperationPreferences` is a nested structure (query nesting is a v0 follow-up))
-#   EstimateTemplateCost (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   GetTemplateSummary (member `TemplateSummaryConfig` is a nested structure (query nesting is a v0 follow-up))
-#   ImportStacksToStackSet (member `OperationPreferences` is a nested structure (query nesting is a v0 follow-up))
-#   ListResourceScanRelatedResources (member `Resources` is a list of ScannedResourceIdentifier (only scalar lists in v0))
-#   ListStackInstances (member `Filters` is a list of StackInstanceFilter (only scalar lists in v0))
-#   ListStackSetOperationResults (member `Filters` is a list of OperationResultFilter (only scalar lists in v0))
-#   ListTypes (member `Filters` is a nested structure (query nesting is a v0 follow-up))
-#   RegisterType (member `LoggingConfig` is a nested structure (query nesting is a v0 follow-up))
-#   RollbackStack (member `DeploymentConfig` is a nested structure (query nesting is a v0 follow-up))
-#   StartResourceScan (member `ScanFilters` is a list of ScanFilter (only scalar lists in v0))
-#   UpdateGeneratedTemplate (member `AddResources` is a list of ResourceDefinition (only scalar lists in v0))
-#   UpdateStack (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   UpdateStackInstances (member `DeploymentTargets` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateStackSet (member `Parameters` is a list of Parameter (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeAccountLimits
@@ -2726,6 +2697,266 @@ def cloudformation_error_from_code(str code) -> CloudFormationError:
 #   ListStacks
 #   ListTypes
 
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AutoDeployment into the query form parameters under `prefix`.
+def auto_deployment_to_query(list[query.QueryPair] p, str prefix, AutoDeployment v) -> list[query.QueryPair]:
+    if v.Enabled.is_some():
+        auto t0 = query.query_bool(v.Enabled.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.RetainStacksOnAccountRemoval.is_some():
+        auto t1 = query.query_bool(v.RetainStacksOnAccountRemoval.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "RetainStacksOnAccountRemoval"), t1)
+    auto t2 = v.DependsOn.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "DependsOn"), "member", t2)
+    return p
+
+# Serialize DeploymentConfig into the query form parameters under `prefix`.
+def deployment_config_to_query(list[query.QueryPair] p, str prefix, DeploymentConfig v) -> list[query.QueryPair]:
+    if v.Mode.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Mode"), v.Mode.unwrap())
+    if v.DisableRollback.is_some():
+        auto t0 = query.query_bool(v.DisableRollback.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DisableRollback"), t0)
+    return p
+
+# Serialize DeploymentTargets into the query form parameters under `prefix`.
+def deployment_targets_to_query(list[query.QueryPair] p, str prefix, DeploymentTargets v) -> list[query.QueryPair]:
+    auto t0 = v.Accounts.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Accounts"), "member", t0)
+    if v.AccountsUrl.is_some():
+        auto t1 = v.AccountsUrl.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AccountsUrl"), t1)
+    auto t2 = v.OrganizationalUnitIds.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "OrganizationalUnitIds"), "member", t2)
+    if v.AccountFilterType.is_some():
+        auto t3 = v.AccountFilterType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AccountFilterType"), t3)
+    return p
+
+# Serialize EventFilter into the query form parameters under `prefix`.
+def event_filter_to_query(list[query.QueryPair] p, str prefix, EventFilter v) -> list[query.QueryPair]:
+    if v.FailedEvents.is_some():
+        auto t0 = query.query_bool(v.FailedEvents.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FailedEvents"), t0)
+    return p
+
+# Serialize LoggingConfig into the query form parameters under `prefix`.
+def logging_config_to_query(list[query.QueryPair] p, str prefix, LoggingConfig v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "LogRoleArn"), v.LogRoleArn)
+    p = query.query_scalar(p, query.query_key(prefix, "LogGroupName"), v.LogGroupName)
+    return p
+
+# Serialize ManagedExecution into the query form parameters under `prefix`.
+def managed_execution_to_query(list[query.QueryPair] p, str prefix, ManagedExecution v) -> list[query.QueryPair]:
+    if v.Active.is_some():
+        auto t0 = query.query_bool(v.Active.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Active"), t0)
+    return p
+
+# Serialize OperationResultFilter into the query form parameters under `prefix`.
+def operation_result_filter_to_query(list[query.QueryPair] p, str prefix, OperationResultFilter v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    if v.Values.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Values"), v.Values.unwrap())
+    return p
+
+# Serialize Parameter into the query form parameters under `prefix`.
+def parameter_to_query(list[query.QueryPair] p, str prefix, Parameter v) -> list[query.QueryPair]:
+    if v.ParameterKey.is_some():
+        auto t0 = v.ParameterKey.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterKey"), t0)
+    if v.ParameterValue.is_some():
+        auto t1 = v.ParameterValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterValue"), t1)
+    if v.UsePreviousValue.is_some():
+        auto t2 = query.query_bool(v.UsePreviousValue.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "UsePreviousValue"), t2)
+    if v.ResolvedValue.is_some():
+        auto t3 = v.ResolvedValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResolvedValue"), t3)
+    return p
+
+# Serialize ResourceDefinition into the query form parameters under `prefix`.
+def resource_definition_to_query(list[query.QueryPair] p, str prefix, ResourceDefinition v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), v.ResourceType)
+    if v.LogicalResourceId.is_some():
+        auto t0 = v.LogicalResourceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "LogicalResourceId"), t0)
+    list[str] qks2 = []
+    list[str] qvs3 = []
+    for qk1 in sorted(v.ResourceIdentifier.keys()):
+        qks2.append(qk1)
+        qvs3.append(v.ResourceIdentifier[qk1])
+    auto t4 = qvs3
+    p = query.query_map(p, query.query_key(prefix, "ResourceIdentifier"), "key", "value", qks2, t4)
+    return p
+
+# Serialize ResourceLocation into the query form parameters under `prefix`.
+def resource_location_to_query(list[query.QueryPair] p, str prefix, ResourceLocation v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "StackName"), v.StackName)
+    auto t0 = v.LogicalResourceId
+    p = query.query_scalar(p, query.query_key(prefix, "LogicalResourceId"), t0)
+    return p
+
+# Serialize ResourceMapping into the query form parameters under `prefix`.
+def resource_mapping_to_query(list[query.QueryPair] p, str prefix, ResourceMapping v) -> list[query.QueryPair]:
+    p = resource_location_to_query(p, query.query_key(prefix, "Source"), v.Source)
+    auto t0 = v.Destination
+    p = resource_location_to_query(p, query.query_key(prefix, "Destination"), t0)
+    return p
+
+# Serialize ResourceToImport into the query form parameters under `prefix`.
+def resource_to_import_to_query(list[query.QueryPair] p, str prefix, ResourceToImport v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), v.ResourceType)
+    auto t0 = v.LogicalResourceId
+    p = query.query_scalar(p, query.query_key(prefix, "LogicalResourceId"), t0)
+    list[str] qks2 = []
+    list[str] qvs3 = []
+    for qk1 in sorted(v.ResourceIdentifier.keys()):
+        qks2.append(qk1)
+        qvs3.append(v.ResourceIdentifier[qk1])
+    auto t4 = qvs3
+    p = query.query_map(p, query.query_key(prefix, "ResourceIdentifier"), "key", "value", qks2, t4)
+    return p
+
+# Serialize RollbackConfiguration into the query form parameters under `prefix`.
+def rollback_configuration_to_query(list[query.QueryPair] p, str prefix, RollbackConfiguration v) -> list[query.QueryPair]:
+    auto qi0 = 1
+    for qe1 in v.RollbackTriggers.unwrap_or([]):
+        auto t2 = qe1
+        p = rollback_trigger_to_query(p, query.query_key(prefix, "RollbackTriggers") + ".member" + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    if v.MonitoringTimeInMinutes.is_some():
+        auto t3 = str(v.MonitoringTimeInMinutes.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MonitoringTimeInMinutes"), t3)
+    return p
+
+# Serialize RollbackTrigger into the query form parameters under `prefix`.
+def rollback_trigger_to_query(list[query.QueryPair] p, str prefix, RollbackTrigger v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Arn"), v.Arn)
+    p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type)
+    return p
+
+# Serialize ScanFilter into the query form parameters under `prefix`.
+def scan_filter_to_query(list[query.QueryPair] p, str prefix, ScanFilter v) -> list[query.QueryPair]:
+    auto t0 = v.Types.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Types"), "member", t0)
+    return p
+
+# Serialize ScannedResourceIdentifier into the query form parameters under `prefix`.
+def scanned_resource_identifier_to_query(list[query.QueryPair] p, str prefix, ScannedResourceIdentifier v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), v.ResourceType)
+    list[str] qks1 = []
+    list[str] qvs2 = []
+    for qk0 in sorted(v.ResourceIdentifier.keys()):
+        qks1.append(qk0)
+        qvs2.append(v.ResourceIdentifier[qk0])
+    auto t3 = qvs2
+    p = query.query_map(p, query.query_key(prefix, "ResourceIdentifier"), "key", "value", qks1, t3)
+    return p
+
+# Serialize StackDefinition into the query form parameters under `prefix`.
+def stack_definition_to_query(list[query.QueryPair] p, str prefix, StackDefinition v) -> list[query.QueryPair]:
+    if v.StackName.is_some():
+        auto t0 = v.StackName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StackName"), t0)
+    if v.TemplateBody.is_some():
+        auto t1 = v.TemplateBody.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TemplateBody"), t1)
+    if v.TemplateURL.is_some():
+        auto t2 = v.TemplateURL.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TemplateURL"), t2)
+    return p
+
+# Serialize StackInstanceFilter into the query form parameters under `prefix`.
+def stack_instance_filter_to_query(list[query.QueryPair] p, str prefix, StackInstanceFilter v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    if v.Values.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Values"), v.Values.unwrap())
+    return p
+
+# Serialize StackSetOperationPreferences into the query form parameters under `prefix`.
+def stack_set_operation_preferences_to_query(list[query.QueryPair] p, str prefix, StackSetOperationPreferences v) -> list[query.QueryPair]:
+    if v.RegionConcurrencyType.is_some():
+        auto t0 = v.RegionConcurrencyType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "RegionConcurrencyType"), t0)
+    auto t1 = v.RegionOrder.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "RegionOrder"), "member", t1)
+    if v.FailureToleranceCount.is_some():
+        auto t2 = str(v.FailureToleranceCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FailureToleranceCount"), t2)
+    if v.FailureTolerancePercentage.is_some():
+        auto t3 = str(v.FailureTolerancePercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "FailureTolerancePercentage"), t3)
+    if v.MaxConcurrentCount.is_some():
+        auto t4 = str(v.MaxConcurrentCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxConcurrentCount"), t4)
+    if v.MaxConcurrentPercentage.is_some():
+        auto t5 = str(v.MaxConcurrentPercentage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxConcurrentPercentage"), t5)
+    if v.ConcurrencyMode.is_some():
+        auto t6 = v.ConcurrencyMode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ConcurrencyMode"), t6)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    return p
+
+# Serialize TemplateConfiguration into the query form parameters under `prefix`.
+def template_configuration_to_query(list[query.QueryPair] p, str prefix, TemplateConfiguration v) -> list[query.QueryPair]:
+    if v.DeletionPolicy.is_some():
+        auto t0 = v.DeletionPolicy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DeletionPolicy"), t0)
+    if v.UpdateReplacePolicy.is_some():
+        auto t1 = v.UpdateReplacePolicy.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UpdateReplacePolicy"), t1)
+    return p
+
+# Serialize TemplateSummaryConfig into the query form parameters under `prefix`.
+def template_summary_config_to_query(list[query.QueryPair] p, str prefix, TemplateSummaryConfig v) -> list[query.QueryPair]:
+    if v.TreatUnrecognizedResourceTypesAsWarnings.is_some():
+        auto t0 = query.query_bool(v.TreatUnrecognizedResourceTypesAsWarnings.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TreatUnrecognizedResourceTypesAsWarnings"), t0)
+    return p
+
+# Serialize TypeConfigurationIdentifier into the query form parameters under `prefix`.
+def type_configuration_identifier_to_query(list[query.QueryPair] p, str prefix, TypeConfigurationIdentifier v) -> list[query.QueryPair]:
+    if v.TypeArn.is_some():
+        auto t0 = v.TypeArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TypeArn"), t0)
+    if v.TypeConfigurationAlias.is_some():
+        auto t1 = v.TypeConfigurationAlias.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TypeConfigurationAlias"), t1)
+    if v.TypeConfigurationArn.is_some():
+        auto t2 = v.TypeConfigurationArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TypeConfigurationArn"), t2)
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    if v.TypeName.is_some():
+        auto t3 = v.TypeName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TypeName"), t3)
+    return p
+
+# Serialize TypeFilters into the query form parameters under `prefix`.
+def type_filters_to_query(list[query.QueryPair] p, str prefix, TypeFilters v) -> list[query.QueryPair]:
+    if v.Category.is_some():
+        auto t0 = v.Category.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Category"), t0)
+    if v.PublisherId.is_some():
+        auto t1 = v.PublisherId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PublisherId"), t1)
+    if v.TypeNamePrefix.is_some():
+        auto t2 = v.TypeNamePrefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TypeNamePrefix"), t2)
+    return p
+
 # A bound CloudFormation client: credentials + region, threaded into every operation.
 struct CloudFormationClient:
     core.Credentials creds
@@ -2735,6 +2966,46 @@ struct CloudFormationClient:
     # errors: InvalidOperationException, OperationNotFoundException
     def activate_organizations_access(self) -> str:
         auto p = query.query_params("ActivateOrganizationsAccess", "2010-05-15")
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # ActivateType
+    # errors: CFNRegistryException, TypeNotFoundException
+    def activate_type(self, ActivateTypeInput input) -> str:
+        auto p = query.query_params("ActivateType", "2010-05-15")
+        if input.Type.is_some():
+            p = query.query_scalar(p, "Type", input.Type.unwrap())
+        if input.PublicTypeArn.is_some():
+            p = query.query_scalar(p, "PublicTypeArn", input.PublicTypeArn.unwrap())
+        if input.PublisherId.is_some():
+            p = query.query_scalar(p, "PublisherId", input.PublisherId.unwrap())
+        if input.TypeName.is_some():
+            p = query.query_scalar(p, "TypeName", input.TypeName.unwrap())
+        if input.TypeNameAlias.is_some():
+            p = query.query_scalar(p, "TypeNameAlias", input.TypeNameAlias.unwrap())
+        if input.AutoUpdate.is_some():
+            auto t0 = query.query_bool(input.AutoUpdate.unwrap())
+            p = query.query_scalar(p, "AutoUpdate", t0)
+        if input.LoggingConfig.is_some():
+            auto t1 = input.LoggingConfig.unwrap()
+            p = logging_config_to_query(p, "LoggingConfig", t1)
+        if input.ExecutionRoleArn.is_some():
+            auto t2 = input.ExecutionRoleArn.unwrap()
+            p = query.query_scalar(p, "ExecutionRoleArn", t2)
+        if input.VersionBump.is_some():
+            p = query.query_scalar(p, "VersionBump", input.VersionBump.unwrap())
+        if input.MajorVersion.is_some():
+            p = query.query_scalar(p, "MajorVersion", str(input.MajorVersion.unwrap()))
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # BatchDescribeTypeConfigurations
+    # errors: CFNRegistryException, TypeConfigurationNotFoundException
+    def batch_describe_type_configurations(self, BatchDescribeTypeConfigurationsInput input) -> str:
+        auto p = query.query_params("BatchDescribeTypeConfigurations", "2010-05-15")
+        auto qi0 = 1
+        for qe1 in input.TypeConfigurationIdentifiers:
+            auto t2 = qe1
+            p = type_configuration_identifier_to_query(p, "TypeConfigurationIdentifiers.member." + str(qi0), t2)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # CancelUpdateStack
@@ -2762,6 +3033,225 @@ struct CloudFormationClient:
         if input.ForceRollback.is_some():
             auto t2 = query.query_bool(input.ForceRollback.unwrap())
             p = query.query_scalar(p, "ForceRollback", t2)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # CreateChangeSet
+    # errors: AlreadyExistsException, InsufficientCapabilitiesException, LimitExceededException
+    def create_change_set(self, CreateChangeSetInput input) -> str:
+        auto p = query.query_params("CreateChangeSet", "2010-05-15")
+        p = query.query_scalar(p, "StackName", input.StackName)
+        if input.TemplateBody.is_some():
+            p = query.query_scalar(p, "TemplateBody", input.TemplateBody.unwrap())
+        if input.TemplateURL.is_some():
+            p = query.query_scalar(p, "TemplateURL", input.TemplateURL.unwrap())
+        if input.UsePreviousTemplate.is_some():
+            auto t0 = query.query_bool(input.UsePreviousTemplate.unwrap())
+            p = query.query_scalar(p, "UsePreviousTemplate", t0)
+        auto qi1 = 1
+        for qe2 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        auto t3 = input.Capabilities.unwrap_or([])
+        p = query.query_list(p, "Capabilities", "member", t3)
+        auto t4 = input.ResourceTypes.unwrap_or([])
+        p = query.query_list(p, "ResourceTypes", "member", t4)
+        if input.RoleARN.is_some():
+            p = query.query_scalar(p, "RoleARN", input.RoleARN.unwrap())
+        if input.RollbackConfiguration.is_some():
+            auto t5 = input.RollbackConfiguration.unwrap()
+            p = rollback_configuration_to_query(p, "RollbackConfiguration", t5)
+        auto t6 = input.NotificationARNs.unwrap_or([])
+        p = query.query_list(p, "NotificationARNs", "member", t6)
+        auto qi7 = 1
+        for qe8 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi7), qe8)
+            qi7 = qi7 + 1
+        p = query.query_scalar(p, "ChangeSetName", input.ChangeSetName)
+        if input.ClientToken.is_some():
+            p = query.query_scalar(p, "ClientToken", input.ClientToken.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.ChangeSetType.is_some():
+            p = query.query_scalar(p, "ChangeSetType", input.ChangeSetType.unwrap())
+        auto qi9 = 1
+        for qe10 in input.ResourcesToImport.unwrap_or([]):
+            auto t11 = qe10
+            p = resource_to_import_to_query(p, "ResourcesToImport.member." + str(qi9), t11)
+            qi9 = qi9 + 1
+        if input.IncludeNestedStacks.is_some():
+            auto t12 = query.query_bool(input.IncludeNestedStacks.unwrap())
+            p = query.query_scalar(p, "IncludeNestedStacks", t12)
+        if input.OnStackFailure.is_some():
+            p = query.query_scalar(p, "OnStackFailure", input.OnStackFailure.unwrap())
+        if input.ImportExistingResources.is_some():
+            auto t13 = query.query_bool(input.ImportExistingResources.unwrap())
+            p = query.query_scalar(p, "ImportExistingResources", t13)
+        if input.DeploymentMode.is_some():
+            p = query.query_scalar(p, "DeploymentMode", input.DeploymentMode.unwrap())
+        if input.DeploymentConfig.is_some():
+            auto t14 = input.DeploymentConfig.unwrap()
+            p = deployment_config_to_query(p, "DeploymentConfig", t14)
+        if input.DisableValidation.is_some():
+            auto t15 = query.query_bool(input.DisableValidation.unwrap())
+            p = query.query_scalar(p, "DisableValidation", t15)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # CreateGeneratedTemplate
+    # errors: AlreadyExistsException, ConcurrentResourcesLimitExceededException, LimitExceededException
+    def create_generated_template(self, CreateGeneratedTemplateInput input) -> str:
+        auto p = query.query_params("CreateGeneratedTemplate", "2010-05-15")
+        auto qi0 = 1
+        for qe1 in input.Resources.unwrap_or([]):
+            p = resource_definition_to_query(p, "Resources.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        p = query.query_scalar(p, "GeneratedTemplateName", input.GeneratedTemplateName)
+        if input.StackName.is_some():
+            p = query.query_scalar(p, "StackName", input.StackName.unwrap())
+        if input.TemplateConfiguration.is_some():
+            auto t2 = input.TemplateConfiguration.unwrap()
+            p = template_configuration_to_query(p, "TemplateConfiguration", t2)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # CreateStack
+    # errors: AlreadyExistsException, InsufficientCapabilitiesException, LimitExceededException, TokenAlreadyExistsException
+    def create_stack(self, CreateStackInput input) -> str:
+        auto p = query.query_params("CreateStack", "2010-05-15")
+        p = query.query_scalar(p, "StackName", input.StackName)
+        if input.TemplateBody.is_some():
+            p = query.query_scalar(p, "TemplateBody", input.TemplateBody.unwrap())
+        if input.TemplateURL.is_some():
+            p = query.query_scalar(p, "TemplateURL", input.TemplateURL.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.DisableRollback.is_some():
+            auto t2 = query.query_bool(input.DisableRollback.unwrap())
+            p = query.query_scalar(p, "DisableRollback", t2)
+        if input.RollbackConfiguration.is_some():
+            auto t3 = input.RollbackConfiguration.unwrap()
+            p = rollback_configuration_to_query(p, "RollbackConfiguration", t3)
+        if input.TimeoutInMinutes.is_some():
+            auto t4 = str(input.TimeoutInMinutes.unwrap())
+            p = query.query_scalar(p, "TimeoutInMinutes", t4)
+        auto t5 = input.NotificationARNs.unwrap_or([])
+        p = query.query_list(p, "NotificationARNs", "member", t5)
+        auto t6 = input.Capabilities.unwrap_or([])
+        p = query.query_list(p, "Capabilities", "member", t6)
+        auto t7 = input.ResourceTypes.unwrap_or([])
+        p = query.query_list(p, "ResourceTypes", "member", t7)
+        if input.RoleARN.is_some():
+            p = query.query_scalar(p, "RoleARN", input.RoleARN.unwrap())
+        if input.OnFailure.is_some():
+            p = query.query_scalar(p, "OnFailure", input.OnFailure.unwrap())
+        if input.StackPolicyBody.is_some():
+            p = query.query_scalar(p, "StackPolicyBody", input.StackPolicyBody.unwrap())
+        if input.StackPolicyURL.is_some():
+            p = query.query_scalar(p, "StackPolicyURL", input.StackPolicyURL.unwrap())
+        auto qi8 = 1
+        for qe9 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi8), qe9)
+            qi8 = qi8 + 1
+        if input.ClientRequestToken.is_some():
+            auto t10 = input.ClientRequestToken.unwrap()
+            p = query.query_scalar(p, "ClientRequestToken", t10)
+        if input.EnableTerminationProtection.is_some():
+            auto t11 = query.query_bool(input.EnableTerminationProtection.unwrap())
+            p = query.query_scalar(p, "EnableTerminationProtection", t11)
+        if input.RetainExceptOnCreate.is_some():
+            auto t12 = query.query_bool(input.RetainExceptOnCreate.unwrap())
+            p = query.query_scalar(p, "RetainExceptOnCreate", t12)
+        if input.DeploymentConfig.is_some():
+            auto t13 = input.DeploymentConfig.unwrap()
+            p = deployment_config_to_query(p, "DeploymentConfig", t13)
+        if input.DisableValidation.is_some():
+            auto t14 = query.query_bool(input.DisableValidation.unwrap())
+            p = query.query_scalar(p, "DisableValidation", t14)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # CreateStackInstances
+    # errors: InvalidOperationException, LimitExceededException, OperationIdAlreadyExistsException, OperationInProgressException, StackSetNotFoundException, StaleRequestException
+    def create_stack_instances(self, CreateStackInstancesInput input) -> str:
+        auto p = query.query_params("CreateStackInstances", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        p = query.query_list(p, "Accounts", "member", input.Accounts.unwrap_or([]))
+        if input.DeploymentTargets.is_some():
+            auto t0 = input.DeploymentTargets.unwrap()
+            p = deployment_targets_to_query(p, "DeploymentTargets", t0)
+        p = query.query_list(p, "Regions", "member", input.Regions)
+        auto qi1 = 1
+        for qe2 in input.ParameterOverrides.unwrap_or([]):
+            p = parameter_to_query(p, "ParameterOverrides.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.OperationPreferences.is_some():
+            auto t3 = input.OperationPreferences.unwrap()
+            p = stack_set_operation_preferences_to_query(p, "OperationPreferences", t3)
+        if input.OperationId.is_some():
+            p = query.query_scalar(p, "OperationId", input.OperationId.unwrap())
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # CreateStackRefactor
+    def create_stack_refactor(self, CreateStackRefactorInput input) -> str:
+        auto p = query.query_params("CreateStackRefactor", "2010-05-15")
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.EnableStackCreation.is_some():
+            auto t0 = query.query_bool(input.EnableStackCreation.unwrap())
+            p = query.query_scalar(p, "EnableStackCreation", t0)
+        auto qi1 = 1
+        for qe2 in input.ResourceMappings.unwrap_or([]):
+            p = resource_mapping_to_query(p, "ResourceMappings.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        auto qi3 = 1
+        for qe4 in input.StackDefinitions:
+            p = stack_definition_to_query(p, "StackDefinitions.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # CreateStackSet
+    # errors: CreatedButModifiedException, LimitExceededException, NameAlreadyExistsException
+    def create_stack_set(self, CreateStackSetInput input) -> str:
+        auto p = query.query_params("CreateStackSet", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.TemplateBody.is_some():
+            p = query.query_scalar(p, "TemplateBody", input.TemplateBody.unwrap())
+        if input.TemplateURL.is_some():
+            p = query.query_scalar(p, "TemplateURL", input.TemplateURL.unwrap())
+        if input.StackId.is_some():
+            p = query.query_scalar(p, "StackId", input.StackId.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.Capabilities.unwrap_or([])
+        p = query.query_list(p, "Capabilities", "member", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.AdministrationRoleARN.is_some():
+            auto t5 = input.AdministrationRoleARN.unwrap()
+            p = query.query_scalar(p, "AdministrationRoleARN", t5)
+        if input.ExecutionRoleName.is_some():
+            auto t6 = input.ExecutionRoleName.unwrap()
+            p = query.query_scalar(p, "ExecutionRoleName", t6)
+        if input.PermissionModel.is_some():
+            p = query.query_scalar(p, "PermissionModel", input.PermissionModel.unwrap())
+        if input.AutoDeployment.is_some():
+            auto t7 = input.AutoDeployment.unwrap()
+            p = auto_deployment_to_query(p, "AutoDeployment", t7)
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        if input.ClientRequestToken.is_some():
+            auto t8 = input.ClientRequestToken.unwrap()
+            p = query.query_scalar(p, "ClientRequestToken", t8)
+        if input.ManagedExecution.is_some():
+            auto t9 = input.ManagedExecution.unwrap()
+            p = managed_execution_to_query(p, "ManagedExecution", t9)
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # DeactivateOrganizationsAccess
@@ -2796,6 +3286,45 @@ struct CloudFormationClient:
     def delete_generated_template(self, DeleteGeneratedTemplateInput input) -> str:
         auto p = query.query_params("DeleteGeneratedTemplate", "2010-05-15")
         p = query.query_scalar(p, "GeneratedTemplateName", input.GeneratedTemplateName)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # DeleteStack
+    # errors: TokenAlreadyExistsException
+    def delete_stack(self, DeleteStackInput input) -> str:
+        auto p = query.query_params("DeleteStack", "2010-05-15")
+        p = query.query_scalar(p, "StackName", input.StackName)
+        auto t0 = input.RetainResources.unwrap_or([])
+        p = query.query_list(p, "RetainResources", "member", t0)
+        if input.RoleARN.is_some():
+            p = query.query_scalar(p, "RoleARN", input.RoleARN.unwrap())
+        if input.ClientRequestToken.is_some():
+            auto t1 = input.ClientRequestToken.unwrap()
+            p = query.query_scalar(p, "ClientRequestToken", t1)
+        if input.DeletionMode.is_some():
+            p = query.query_scalar(p, "DeletionMode", input.DeletionMode.unwrap())
+        if input.DeploymentConfig.is_some():
+            auto t2 = input.DeploymentConfig.unwrap()
+            p = deployment_config_to_query(p, "DeploymentConfig", t2)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # DeleteStackInstances
+    # errors: InvalidOperationException, OperationIdAlreadyExistsException, OperationInProgressException, StackSetNotFoundException, StaleRequestException
+    def delete_stack_instances(self, DeleteStackInstancesInput input) -> str:
+        auto p = query.query_params("DeleteStackInstances", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        p = query.query_list(p, "Accounts", "member", input.Accounts.unwrap_or([]))
+        if input.DeploymentTargets.is_some():
+            auto t0 = input.DeploymentTargets.unwrap()
+            p = deployment_targets_to_query(p, "DeploymentTargets", t0)
+        p = query.query_list(p, "Regions", "member", input.Regions)
+        if input.OperationPreferences.is_some():
+            auto t1 = input.OperationPreferences.unwrap()
+            p = stack_set_operation_preferences_to_query(p, "OperationPreferences", t1)
+        p = query.query_scalar(p, "RetainStacks", query.query_bool(input.RetainStacks))
+        if input.OperationId.is_some():
+            p = query.query_scalar(p, "OperationId", input.OperationId.unwrap())
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # DeleteStackSet
@@ -2854,6 +3383,21 @@ struct CloudFormationClient:
         if input.LogicalResourceId.is_some():
             auto t0 = input.LogicalResourceId.unwrap()
             p = query.query_scalar(p, "LogicalResourceId", t0)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # DescribeEvents
+    def describe_events(self, DescribeEventsInput input) -> str:
+        auto p = query.query_params("DescribeEvents", "2010-05-15")
+        if input.StackName.is_some():
+            p = query.query_scalar(p, "StackName", input.StackName.unwrap())
+        if input.ChangeSetName.is_some():
+            p = query.query_scalar(p, "ChangeSetName", input.ChangeSetName.unwrap())
+        if input.OperationId.is_some():
+            p = query.query_scalar(p, "OperationId", input.OperationId.unwrap())
+        if input.Filters.is_some():
+            p = event_filter_to_query(p, "Filters", input.Filters.unwrap())
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # DescribeGeneratedTemplate
@@ -3019,6 +3563,33 @@ struct CloudFormationClient:
         p = query.query_scalar(p, "LogicalResourceId", input.LogicalResourceId)
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
+    # DetectStackSetDrift
+    # errors: InvalidOperationException, OperationInProgressException, StackSetNotFoundException
+    def detect_stack_set_drift(self, DetectStackSetDriftInput input) -> str:
+        auto p = query.query_params("DetectStackSetDrift", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        if input.OperationPreferences.is_some():
+            auto t0 = input.OperationPreferences.unwrap()
+            p = stack_set_operation_preferences_to_query(p, "OperationPreferences", t0)
+        if input.OperationId.is_some():
+            p = query.query_scalar(p, "OperationId", input.OperationId.unwrap())
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # EstimateTemplateCost
+    def estimate_template_cost(self, EstimateTemplateCostInput input) -> str:
+        auto p = query.query_params("EstimateTemplateCost", "2010-05-15")
+        if input.TemplateBody.is_some():
+            p = query.query_scalar(p, "TemplateBody", input.TemplateBody.unwrap())
+        if input.TemplateURL.is_some():
+            p = query.query_scalar(p, "TemplateURL", input.TemplateURL.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
     # ExecuteChangeSet
     # errors: ChangeSetNotFoundException, InsufficientCapabilitiesException, InvalidChangeSetStatusException, TokenAlreadyExistsException
     def execute_change_set(self, ExecuteChangeSetInput input) -> str:
@@ -3078,6 +3649,44 @@ struct CloudFormationClient:
             p = query.query_scalar(p, "TemplateStage", input.TemplateStage.unwrap())
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
+    # GetTemplateSummary
+    # errors: StackSetNotFoundException
+    def get_template_summary(self, GetTemplateSummaryInput input) -> str:
+        auto p = query.query_params("GetTemplateSummary", "2010-05-15")
+        if input.TemplateBody.is_some():
+            p = query.query_scalar(p, "TemplateBody", input.TemplateBody.unwrap())
+        if input.TemplateURL.is_some():
+            p = query.query_scalar(p, "TemplateURL", input.TemplateURL.unwrap())
+        if input.StackName.is_some():
+            p = query.query_scalar(p, "StackName", input.StackName.unwrap())
+        if input.StackSetName.is_some():
+            p = query.query_scalar(p, "StackSetName", input.StackSetName.unwrap())
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        if input.TemplateSummaryConfig.is_some():
+            auto t0 = input.TemplateSummaryConfig.unwrap()
+            p = template_summary_config_to_query(p, "TemplateSummaryConfig", t0)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # ImportStacksToStackSet
+    # errors: InvalidOperationException, LimitExceededException, OperationIdAlreadyExistsException, OperationInProgressException, StackNotFoundException, StackSetNotFoundException, StaleRequestException
+    def import_stacks_to_stack_set(self, ImportStacksToStackSetInput input) -> str:
+        auto p = query.query_params("ImportStacksToStackSet", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        p = query.query_list(p, "StackIds", "member", input.StackIds.unwrap_or([]))
+        if input.StackIdsUrl.is_some():
+            p = query.query_scalar(p, "StackIdsUrl", input.StackIdsUrl.unwrap())
+        auto t0 = input.OrganizationalUnitIds.unwrap_or([])
+        p = query.query_list(p, "OrganizationalUnitIds", "member", t0)
+        if input.OperationPreferences.is_some():
+            auto t1 = input.OperationPreferences.unwrap()
+            p = stack_set_operation_preferences_to_query(p, "OperationPreferences", t1)
+        if input.OperationId.is_some():
+            p = query.query_scalar(p, "OperationId", input.OperationId.unwrap())
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
     # ListChangeSets
     def list_change_sets(self, ListChangeSetsInput input) -> str:
         auto p = query.query_params("ListChangeSets", "2010-05-15")
@@ -3124,6 +3733,22 @@ struct CloudFormationClient:
         p = query.query_scalar(p, "ExportName", input.ExportName)
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # ListResourceScanRelatedResources
+    # errors: ResourceScanInProgressException, ResourceScanNotFoundException
+    def list_resource_scan_related_resources(self, ListResourceScanRelatedResourcesInput input) -> str:
+        auto p = query.query_params("ListResourceScanRelatedResources", "2010-05-15")
+        p = query.query_scalar(p, "ResourceScanId", input.ResourceScanId)
+        auto qi0 = 1
+        for qe1 in input.Resources:
+            auto t2 = qe1
+            p = scanned_resource_identifier_to_query(p, "Resources.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # ListResourceScanResources
@@ -3176,6 +3801,29 @@ struct CloudFormationClient:
             p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
+    # ListStackInstances
+    # errors: StackSetNotFoundException
+    def list_stack_instances(self, ListStackInstancesInput input) -> str:
+        auto p = query.query_params("ListStackInstances", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = stack_instance_filter_to_query(p, "Filters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.StackInstanceAccount.is_some():
+            auto t2 = input.StackInstanceAccount.unwrap()
+            p = query.query_scalar(p, "StackInstanceAccount", t2)
+        if input.StackInstanceRegion.is_some():
+            auto t3 = input.StackInstanceRegion.unwrap()
+            p = query.query_scalar(p, "StackInstanceRegion", t3)
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
     # ListStackRefactorActions
     def list_stack_refactor_actions(self, ListStackRefactorActionsInput input) -> str:
         auto p = query.query_params("ListStackRefactorActions", "2010-05-15")
@@ -3216,6 +3864,24 @@ struct CloudFormationClient:
             p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
         if input.CallAs.is_some():
             p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # ListStackSetOperationResults
+    # errors: OperationNotFoundException, StackSetNotFoundException
+    def list_stack_set_operation_results(self, ListStackSetOperationResultsInput input) -> str:
+        auto p = query.query_params("ListStackSetOperationResults", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        p = query.query_scalar(p, "OperationId", input.OperationId)
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = operation_result_filter_to_query(p, "Filters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # ListStackSetOperations
@@ -3293,6 +3959,28 @@ struct CloudFormationClient:
             p = query.query_scalar(p, "PublisherId", input.PublisherId.unwrap())
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
+    # ListTypes
+    # errors: CFNRegistryException
+    def list_types(self, ListTypesInput input) -> str:
+        auto p = query.query_params("ListTypes", "2010-05-15")
+        if input.Visibility.is_some():
+            p = query.query_scalar(p, "Visibility", input.Visibility.unwrap())
+        if input.ProvisioningType.is_some():
+            auto t0 = input.ProvisioningType.unwrap()
+            p = query.query_scalar(p, "ProvisioningType", t0)
+        if input.DeprecatedStatus.is_some():
+            auto t1 = input.DeprecatedStatus.unwrap()
+            p = query.query_scalar(p, "DeprecatedStatus", t1)
+        if input.Type.is_some():
+            p = query.query_scalar(p, "Type", input.Type.unwrap())
+        if input.Filters.is_some():
+            p = type_filters_to_query(p, "Filters", input.Filters.unwrap())
+        if input.MaxResults.is_some():
+            p = query.query_scalar(p, "MaxResults", str(input.MaxResults.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
     # PublishType
     # errors: CFNRegistryException, TypeNotFoundException
     def publish_type(self, PublishTypeInput input) -> str:
@@ -3337,6 +4025,43 @@ struct CloudFormationClient:
             p = query.query_scalar(p, "AcceptTermsAndConditions", t0)
         if input.ConnectionArn.is_some():
             p = query.query_scalar(p, "ConnectionArn", input.ConnectionArn.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # RegisterType
+    # errors: CFNRegistryException
+    def register_type(self, RegisterTypeInput input) -> str:
+        auto p = query.query_params("RegisterType", "2010-05-15")
+        if input.Type.is_some():
+            p = query.query_scalar(p, "Type", input.Type.unwrap())
+        p = query.query_scalar(p, "TypeName", input.TypeName)
+        p = query.query_scalar(p, "SchemaHandlerPackage", input.SchemaHandlerPackage)
+        if input.LoggingConfig.is_some():
+            auto t0 = input.LoggingConfig.unwrap()
+            p = logging_config_to_query(p, "LoggingConfig", t0)
+        if input.ExecutionRoleArn.is_some():
+            auto t1 = input.ExecutionRoleArn.unwrap()
+            p = query.query_scalar(p, "ExecutionRoleArn", t1)
+        if input.ClientRequestToken.is_some():
+            auto t2 = input.ClientRequestToken.unwrap()
+            p = query.query_scalar(p, "ClientRequestToken", t2)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # RollbackStack
+    # errors: TokenAlreadyExistsException
+    def rollback_stack(self, RollbackStackInput input) -> str:
+        auto p = query.query_params("RollbackStack", "2010-05-15")
+        p = query.query_scalar(p, "StackName", input.StackName)
+        if input.RoleARN.is_some():
+            p = query.query_scalar(p, "RoleARN", input.RoleARN.unwrap())
+        if input.ClientRequestToken.is_some():
+            auto t0 = input.ClientRequestToken.unwrap()
+            p = query.query_scalar(p, "ClientRequestToken", t0)
+        if input.RetainExceptOnCreate.is_some():
+            auto t1 = query.query_bool(input.RetainExceptOnCreate.unwrap())
+            p = query.query_scalar(p, "RetainExceptOnCreate", t1)
+        if input.DeploymentConfig.is_some():
+            auto t2 = input.DeploymentConfig.unwrap()
+            p = deployment_config_to_query(p, "DeploymentConfig", t2)
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # SetStackPolicy
@@ -3388,6 +4113,19 @@ struct CloudFormationClient:
         p = query.query_scalar(p, "Status", input.Status)
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
+    # StartResourceScan
+    # errors: ResourceScanInProgressException, ResourceScanLimitExceededException
+    def start_resource_scan(self, StartResourceScanInput input) -> str:
+        auto p = query.query_params("StartResourceScan", "2010-05-15")
+        if input.ClientRequestToken.is_some():
+            auto t0 = input.ClientRequestToken.unwrap()
+            p = query.query_scalar(p, "ClientRequestToken", t0)
+        auto qi1 = 1
+        for qe2 in input.ScanFilters.unwrap_or([]):
+            p = scan_filter_to_query(p, "ScanFilters.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
     # StopStackSetOperation
     # errors: InvalidOperationException, OperationNotFoundException, StackSetNotFoundException
     def stop_stack_set_operation(self, StopStackSetOperationInput input) -> str:
@@ -3413,6 +4151,161 @@ struct CloudFormationClient:
         if input.LogDeliveryBucket.is_some():
             auto t0 = input.LogDeliveryBucket.unwrap()
             p = query.query_scalar(p, "LogDeliveryBucket", t0)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # UpdateGeneratedTemplate
+    # errors: AlreadyExistsException, GeneratedTemplateNotFoundException, LimitExceededException
+    def update_generated_template(self, UpdateGeneratedTemplateInput input) -> str:
+        auto p = query.query_params("UpdateGeneratedTemplate", "2010-05-15")
+        p = query.query_scalar(p, "GeneratedTemplateName", input.GeneratedTemplateName)
+        if input.NewGeneratedTemplateName.is_some():
+            auto t0 = input.NewGeneratedTemplateName.unwrap()
+            p = query.query_scalar(p, "NewGeneratedTemplateName", t0)
+        auto qi1 = 1
+        for qe2 in input.AddResources.unwrap_or([]):
+            p = resource_definition_to_query(p, "AddResources.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        auto t3 = input.RemoveResources.unwrap_or([])
+        p = query.query_list(p, "RemoveResources", "member", t3)
+        if input.RefreshAllResources.is_some():
+            auto t4 = query.query_bool(input.RefreshAllResources.unwrap())
+            p = query.query_scalar(p, "RefreshAllResources", t4)
+        if input.TemplateConfiguration.is_some():
+            auto t5 = input.TemplateConfiguration.unwrap()
+            p = template_configuration_to_query(p, "TemplateConfiguration", t5)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # UpdateStack
+    # errors: InsufficientCapabilitiesException, TokenAlreadyExistsException
+    def update_stack(self, UpdateStackInput input) -> str:
+        auto p = query.query_params("UpdateStack", "2010-05-15")
+        p = query.query_scalar(p, "StackName", input.StackName)
+        if input.TemplateBody.is_some():
+            p = query.query_scalar(p, "TemplateBody", input.TemplateBody.unwrap())
+        if input.TemplateURL.is_some():
+            p = query.query_scalar(p, "TemplateURL", input.TemplateURL.unwrap())
+        if input.UsePreviousTemplate.is_some():
+            auto t0 = query.query_bool(input.UsePreviousTemplate.unwrap())
+            p = query.query_scalar(p, "UsePreviousTemplate", t0)
+        if input.StackPolicyDuringUpdateBody.is_some():
+            auto t1 = input.StackPolicyDuringUpdateBody.unwrap()
+            p = query.query_scalar(p, "StackPolicyDuringUpdateBody", t1)
+        if input.StackPolicyDuringUpdateURL.is_some():
+            auto t2 = input.StackPolicyDuringUpdateURL.unwrap()
+            p = query.query_scalar(p, "StackPolicyDuringUpdateURL", t2)
+        auto qi3 = 1
+        for qe4 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        auto t5 = input.Capabilities.unwrap_or([])
+        p = query.query_list(p, "Capabilities", "member", t5)
+        auto t6 = input.ResourceTypes.unwrap_or([])
+        p = query.query_list(p, "ResourceTypes", "member", t6)
+        if input.RoleARN.is_some():
+            p = query.query_scalar(p, "RoleARN", input.RoleARN.unwrap())
+        if input.RollbackConfiguration.is_some():
+            auto t7 = input.RollbackConfiguration.unwrap()
+            p = rollback_configuration_to_query(p, "RollbackConfiguration", t7)
+        if input.StackPolicyBody.is_some():
+            p = query.query_scalar(p, "StackPolicyBody", input.StackPolicyBody.unwrap())
+        if input.StackPolicyURL.is_some():
+            p = query.query_scalar(p, "StackPolicyURL", input.StackPolicyURL.unwrap())
+        auto t8 = input.NotificationARNs.unwrap_or([])
+        p = query.query_list(p, "NotificationARNs", "member", t8)
+        auto qi9 = 1
+        for qe10 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi9), qe10)
+            qi9 = qi9 + 1
+        if input.DisableRollback.is_some():
+            auto t11 = query.query_bool(input.DisableRollback.unwrap())
+            p = query.query_scalar(p, "DisableRollback", t11)
+        if input.ClientRequestToken.is_some():
+            auto t12 = input.ClientRequestToken.unwrap()
+            p = query.query_scalar(p, "ClientRequestToken", t12)
+        if input.RetainExceptOnCreate.is_some():
+            auto t13 = query.query_bool(input.RetainExceptOnCreate.unwrap())
+            p = query.query_scalar(p, "RetainExceptOnCreate", t13)
+        if input.DeploymentConfig.is_some():
+            auto t14 = input.DeploymentConfig.unwrap()
+            p = deployment_config_to_query(p, "DeploymentConfig", t14)
+        if input.DisableValidation.is_some():
+            auto t15 = query.query_bool(input.DisableValidation.unwrap())
+            p = query.query_scalar(p, "DisableValidation", t15)
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # UpdateStackInstances
+    # errors: InvalidOperationException, OperationIdAlreadyExistsException, OperationInProgressException, StackInstanceNotFoundException, StackSetNotFoundException, StaleRequestException
+    def update_stack_instances(self, UpdateStackInstancesInput input) -> str:
+        auto p = query.query_params("UpdateStackInstances", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        p = query.query_list(p, "Accounts", "member", input.Accounts.unwrap_or([]))
+        if input.DeploymentTargets.is_some():
+            auto t0 = input.DeploymentTargets.unwrap()
+            p = deployment_targets_to_query(p, "DeploymentTargets", t0)
+        p = query.query_list(p, "Regions", "member", input.Regions)
+        auto qi1 = 1
+        for qe2 in input.ParameterOverrides.unwrap_or([]):
+            p = parameter_to_query(p, "ParameterOverrides.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.OperationPreferences.is_some():
+            auto t3 = input.OperationPreferences.unwrap()
+            p = stack_set_operation_preferences_to_query(p, "OperationPreferences", t3)
+        if input.OperationId.is_some():
+            p = query.query_scalar(p, "OperationId", input.OperationId.unwrap())
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        return query.query_request(self.creds, cloudformation_service(), self.region, p)
+
+    # UpdateStackSet
+    # errors: InvalidOperationException, OperationIdAlreadyExistsException, OperationInProgressException, StackInstanceNotFoundException, StackSetNotFoundException, StaleRequestException
+    def update_stack_set(self, UpdateStackSetInput input) -> str:
+        auto p = query.query_params("UpdateStackSet", "2010-05-15")
+        p = query.query_scalar(p, "StackSetName", input.StackSetName)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.TemplateBody.is_some():
+            p = query.query_scalar(p, "TemplateBody", input.TemplateBody.unwrap())
+        if input.TemplateURL.is_some():
+            p = query.query_scalar(p, "TemplateURL", input.TemplateURL.unwrap())
+        if input.UsePreviousTemplate.is_some():
+            auto t0 = query.query_bool(input.UsePreviousTemplate.unwrap())
+            p = query.query_scalar(p, "UsePreviousTemplate", t0)
+        auto qi1 = 1
+        for qe2 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        auto t3 = input.Capabilities.unwrap_or([])
+        p = query.query_list(p, "Capabilities", "member", t3)
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.OperationPreferences.is_some():
+            auto t6 = input.OperationPreferences.unwrap()
+            p = stack_set_operation_preferences_to_query(p, "OperationPreferences", t6)
+        if input.AdministrationRoleARN.is_some():
+            auto t7 = input.AdministrationRoleARN.unwrap()
+            p = query.query_scalar(p, "AdministrationRoleARN", t7)
+        if input.ExecutionRoleName.is_some():
+            auto t8 = input.ExecutionRoleName.unwrap()
+            p = query.query_scalar(p, "ExecutionRoleName", t8)
+        if input.DeploymentTargets.is_some():
+            auto t9 = input.DeploymentTargets.unwrap()
+            p = deployment_targets_to_query(p, "DeploymentTargets", t9)
+        if input.PermissionModel.is_some():
+            p = query.query_scalar(p, "PermissionModel", input.PermissionModel.unwrap())
+        if input.AutoDeployment.is_some():
+            auto t10 = input.AutoDeployment.unwrap()
+            p = auto_deployment_to_query(p, "AutoDeployment", t10)
+        if input.OperationId.is_some():
+            p = query.query_scalar(p, "OperationId", input.OperationId.unwrap())
+        p = query.query_list(p, "Accounts", "member", input.Accounts.unwrap_or([]))
+        p = query.query_list(p, "Regions", "member", input.Regions.unwrap_or([]))
+        if input.CallAs.is_some():
+            p = query.query_scalar(p, "CallAs", input.CallAs.unwrap())
+        if input.ManagedExecution.is_some():
+            auto t11 = input.ManagedExecution.unwrap()
+            p = managed_execution_to_query(p, "ManagedExecution", t11)
         return query.query_request(self.creds, cloudformation_service(), self.region, p)
 
     # UpdateTerminationProtection
