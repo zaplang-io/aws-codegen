@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 272 operations — 268 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 272 operations — 270 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   791 structs (553 @derive(Json)), 82 enums, 33 error variants.
 #   64 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -6483,8 +6483,6 @@ def iot_error_from_code(str code) -> IoTError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateTopicRule (httpPayload member `topicRulePayload` is a non-derivable structure)
-#   ReplaceTopicRule (httpPayload member `topicRulePayload` is a non-derivable structure)
 #   UpdateAccountAuditConfiguration (document member `auditCheckConfigurations: dict[str, AuditCheckConfiguration]` is not serializable)
 #   UpdateEventConfigurations (document member `eventConfigurations: dict[EventType, Configuration]` is not serializable)
 
@@ -6837,6 +6835,83 @@ def abort_config_to_json(AbortConfig v) -> str:
     parts.append("\"criteriaList\":" + iot_json_arr(e0))
     return iot_json_obj(parts)
 
+# Serialize Action to a compact JSON object (declaration order).
+def action_to_json(Action v) -> str:
+    list[str] parts = []
+    if v.dynamoDB.is_some():
+        auto u0 = v.dynamoDB.unwrap()
+        parts.append("\"dynamoDB\":" + u0.to_json())
+    if v.dynamoDBv2.is_some():
+        auto u1 = v.dynamoDBv2.unwrap()
+        parts.append("\"dynamoDBv2\":" + u1.to_json())
+    if v.lambda_.is_some():
+        auto u2 = v.lambda_.unwrap()
+        parts.append("\"lambda\":" + u2.to_json())
+    if v.sns.is_some():
+        auto u3 = v.sns.unwrap()
+        parts.append("\"sns\":" + u3.to_json())
+    if v.sqs.is_some():
+        auto u4 = v.sqs.unwrap()
+        parts.append("\"sqs\":" + u4.to_json())
+    if v.kinesis.is_some():
+        auto u5 = v.kinesis.unwrap()
+        parts.append("\"kinesis\":" + u5.to_json())
+    if v.republish.is_some():
+        auto u6 = v.republish.unwrap()
+        parts.append("\"republish\":" + republish_action_to_json(u6))
+    if v.s3.is_some():
+        auto u7 = v.s3.unwrap()
+        parts.append("\"s3\":" + u7.to_json())
+    if v.firehose.is_some():
+        auto u8 = v.firehose.unwrap()
+        parts.append("\"firehose\":" + u8.to_json())
+    if v.cloudwatchMetric.is_some():
+        auto u9 = v.cloudwatchMetric.unwrap()
+        parts.append("\"cloudwatchMetric\":" + u9.to_json())
+    if v.cloudwatchAlarm.is_some():
+        auto u10 = v.cloudwatchAlarm.unwrap()
+        parts.append("\"cloudwatchAlarm\":" + u10.to_json())
+    if v.cloudwatchLogs.is_some():
+        auto u11 = v.cloudwatchLogs.unwrap()
+        parts.append("\"cloudwatchLogs\":" + u11.to_json())
+    if v.elasticsearch.is_some():
+        auto u12 = v.elasticsearch.unwrap()
+        parts.append("\"elasticsearch\":" + u12.to_json())
+    if v.salesforce.is_some():
+        auto u13 = v.salesforce.unwrap()
+        parts.append("\"salesforce\":" + u13.to_json())
+    if v.iotAnalytics.is_some():
+        auto u14 = v.iotAnalytics.unwrap()
+        parts.append("\"iotAnalytics\":" + u14.to_json())
+    if v.iotEvents.is_some():
+        auto u15 = v.iotEvents.unwrap()
+        parts.append("\"iotEvents\":" + u15.to_json())
+    if v.iotSiteWise.is_some():
+        auto u16 = v.iotSiteWise.unwrap()
+        parts.append("\"iotSiteWise\":" + iot_site_wise_action_to_json(u16))
+    if v.stepFunctions.is_some():
+        auto u17 = v.stepFunctions.unwrap()
+        parts.append("\"stepFunctions\":" + u17.to_json())
+    if v.timestream.is_some():
+        auto u18 = v.timestream.unwrap()
+        parts.append("\"timestream\":" + timestream_action_to_json(u18))
+    if v.http.is_some():
+        auto u19 = v.http.unwrap()
+        parts.append("\"http\":" + http_action_to_json(u19))
+    if v.kafka.is_some():
+        auto u20 = v.kafka.unwrap()
+        parts.append("\"kafka\":" + kafka_action_to_json(u20))
+    if v.openSearch.is_some():
+        auto u21 = v.openSearch.unwrap()
+        parts.append("\"openSearch\":" + u21.to_json())
+    if v.location.is_some():
+        auto u22 = v.location.unwrap()
+        parts.append("\"location\":" + u22.to_json())
+    if v.influxDB.is_some():
+        auto u23 = v.influxDB.unwrap()
+        parts.append("\"influxDB\":" + influx_db_action_to_json(u23))
+    return iot_json_obj(parts)
+
 # Serialize AddThingsToThingGroupParams to a compact JSON object (declaration order).
 def add_things_to_thing_group_params_to_json(AddThingsToThingGroupParams v) -> str:
     list[str] parts = []
@@ -7051,6 +7126,30 @@ def detect_mitigation_actions_task_target_to_json(DetectMitigationActionsTaskTar
         parts.append("\"behaviorName\":" + iot_json_str(u3))
     return iot_json_obj(parts)
 
+# Serialize HttpAction to a compact JSON object (declaration order).
+def http_action_to_json(HttpAction v) -> str:
+    list[str] parts = []
+    parts.append("\"url\":" + iot_json_str(v.url))
+    if v.confirmationUrl.is_some():
+        auto u0 = v.confirmationUrl.unwrap()
+        parts.append("\"confirmationUrl\":" + iot_json_str(u0))
+    if v.headers.is_some():
+        auto u1 = v.headers.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"headers\":" + iot_json_arr(e2))
+    if v.auth.is_some():
+        auto u3 = v.auth.unwrap()
+        parts.append("\"auth\":" + u3.to_json())
+    if v.enableBatching.is_some():
+        auto u4 = v.enableBatching.unwrap()
+        parts.append("\"enableBatching\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.batchConfig.is_some():
+        auto u5 = v.batchConfig.unwrap()
+        parts.append("\"batchConfig\":" + u5.to_json())
+    return iot_json_obj(parts)
+
 # Serialize HttpContext to a compact JSON object (declaration order).
 def http_context_to_json(HttpContext v) -> str:
     list[str] parts = []
@@ -7085,6 +7184,40 @@ def indexing_filter_to_json(IndexingFilter v) -> str:
         parts.append("\"connectivity\":" + connectivity_filter_to_json(u4))
     return iot_json_obj(parts)
 
+# Serialize InfluxDBAction to a compact JSON object (declaration order).
+def influx_db_action_to_json(InfluxDBAction v) -> str:
+    list[str] parts = []
+    parts.append("\"destinationArn\":" + iot_json_str(v.destinationArn))
+    parts.append("\"roleArn\":" + iot_json_str(v.roleArn))
+    parts.append("\"databaseName\":" + iot_json_str(v.databaseName))
+    parts.append("\"tableName\":" + iot_json_str(v.tableName))
+    if v.organization.is_some():
+        auto u0 = v.organization.unwrap()
+        parts.append("\"organization\":" + iot_json_str(u0))
+    if v.tags.is_some():
+        auto u1 = v.tags.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(iot_json_str(k2) + ":" + iot_json_str(u1[k2]))
+        parts.append("\"tags\":" + iot_json_obj(m2))
+    if v.timestampUnit.is_some():
+        auto u3 = v.timestampUnit.unwrap()
+        parts.append("\"timestampUnit\":" + u3.to_json())
+    if v.batchConfig.is_some():
+        auto u4 = v.batchConfig.unwrap()
+        parts.append("\"batchConfig\":" + u4.to_json())
+    return iot_json_obj(parts)
+
+# Serialize IotSiteWiseAction to a compact JSON object (declaration order).
+def iot_site_wise_action_to_json(IotSiteWiseAction v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.putAssetPropertyValueEntries:
+        e0.append(put_asset_property_value_entry_to_json(x0))
+    parts.append("\"putAssetPropertyValueEntries\":" + iot_json_arr(e0))
+    parts.append("\"roleArn\":" + iot_json_str(v.roleArn))
+    return iot_json_obj(parts)
+
 # Serialize JobExecutionsRetryConfig to a compact JSON object (declaration order).
 def job_executions_retry_config_to_json(JobExecutionsRetryConfig v) -> str:
     list[str] parts = []
@@ -7092,6 +7225,29 @@ def job_executions_retry_config_to_json(JobExecutionsRetryConfig v) -> str:
     for x0 in v.criteriaList:
         e0.append(x0.to_json())
     parts.append("\"criteriaList\":" + iot_json_arr(e0))
+    return iot_json_obj(parts)
+
+# Serialize KafkaAction to a compact JSON object (declaration order).
+def kafka_action_to_json(KafkaAction v) -> str:
+    list[str] parts = []
+    parts.append("\"destinationArn\":" + iot_json_str(v.destinationArn))
+    parts.append("\"topic\":" + iot_json_str(v.topic))
+    if v.key.is_some():
+        auto u0 = v.key.unwrap()
+        parts.append("\"key\":" + iot_json_str(u0))
+    if v.partition.is_some():
+        auto u1 = v.partition.unwrap()
+        parts.append("\"partition\":" + iot_json_str(u1))
+    list[str] m2 = []
+    for k2 in sorted(v.clientProperties.keys()):
+        m2.append(iot_json_str(k2) + ":" + iot_json_str(v.clientProperties[k2]))
+    parts.append("\"clientProperties\":" + iot_json_obj(m2))
+    if v.headers.is_some():
+        auto u3 = v.headers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"headers\":" + iot_json_arr(e4))
     return iot_json_obj(parts)
 
 # Serialize MetricValue to a compact JSON object (declaration order).
@@ -7163,6 +7319,32 @@ def mqtt5_configuration_to_json(Mqtt5Configuration v) -> str:
         parts.append("\"propagatingAttributes\":" + iot_json_arr(e1))
     return iot_json_obj(parts)
 
+# Serialize MqttHeaders to a compact JSON object (declaration order).
+def mqtt_headers_to_json(MqttHeaders v) -> str:
+    list[str] parts = []
+    if v.payloadFormatIndicator.is_some():
+        auto u0 = v.payloadFormatIndicator.unwrap()
+        parts.append("\"payloadFormatIndicator\":" + iot_json_str(u0))
+    if v.contentType.is_some():
+        auto u1 = v.contentType.unwrap()
+        parts.append("\"contentType\":" + iot_json_str(u1))
+    if v.responseTopic.is_some():
+        auto u2 = v.responseTopic.unwrap()
+        parts.append("\"responseTopic\":" + iot_json_str(u2))
+    if v.correlationData.is_some():
+        auto u3 = v.correlationData.unwrap()
+        parts.append("\"correlationData\":" + iot_json_str(u3))
+    if v.messageExpiry.is_some():
+        auto u4 = v.messageExpiry.unwrap()
+        parts.append("\"messageExpiry\":" + iot_json_str(u4))
+    if v.userProperties.is_some():
+        auto u5 = v.userProperties.unwrap()
+        list[str] e6 = []
+        for x6 in u5:
+            e6.append(x6.to_json())
+        parts.append("\"userProperties\":" + iot_json_arr(e6))
+    return iot_json_obj(parts)
+
 # Serialize OTAUpdateFile to a compact JSON object (declaration order).
 def ota_update_file_to_json(OTAUpdateFile v) -> str:
     list[str] parts = []
@@ -7187,6 +7369,40 @@ def ota_update_file_to_json(OTAUpdateFile v) -> str:
         for k6 in sorted(u5.keys()):
             m6.append(iot_json_str(k6) + ":" + iot_json_str(u5[k6]))
         parts.append("\"attributes\":" + iot_json_obj(m6))
+    return iot_json_obj(parts)
+
+# Serialize PutAssetPropertyValueEntry to a compact JSON object (declaration order).
+def put_asset_property_value_entry_to_json(PutAssetPropertyValueEntry v) -> str:
+    list[str] parts = []
+    if v.entryId.is_some():
+        auto u0 = v.entryId.unwrap()
+        parts.append("\"entryId\":" + iot_json_str(u0))
+    if v.assetId.is_some():
+        auto u1 = v.assetId.unwrap()
+        parts.append("\"assetId\":" + iot_json_str(u1))
+    if v.propertyId.is_some():
+        auto u2 = v.propertyId.unwrap()
+        parts.append("\"propertyId\":" + iot_json_str(u2))
+    if v.propertyAlias.is_some():
+        auto u3 = v.propertyAlias.unwrap()
+        parts.append("\"propertyAlias\":" + iot_json_str(u3))
+    list[str] e4 = []
+    for x4 in v.propertyValues:
+        e4.append(x4.to_json())
+    parts.append("\"propertyValues\":" + iot_json_arr(e4))
+    return iot_json_obj(parts)
+
+# Serialize RepublishAction to a compact JSON object (declaration order).
+def republish_action_to_json(RepublishAction v) -> str:
+    list[str] parts = []
+    parts.append("\"roleArn\":" + iot_json_str(v.roleArn))
+    parts.append("\"topic\":" + iot_json_str(v.topic))
+    if v.qos.is_some():
+        auto u0 = v.qos.unwrap()
+        parts.append("\"qos\":" + str(u0))
+    if v.headers.is_some():
+        auto u1 = v.headers.unwrap()
+        parts.append("\"headers\":" + mqtt_headers_to_json(u1))
     return iot_json_obj(parts)
 
 # Serialize SchedulingConfig to a compact JSON object (declaration order).
@@ -7285,6 +7501,21 @@ def thing_type_properties_to_json(ThingTypeProperties v) -> str:
         parts.append("\"mqtt5Configuration\":" + mqtt5_configuration_to_json(u3))
     return iot_json_obj(parts)
 
+# Serialize TimestreamAction to a compact JSON object (declaration order).
+def timestream_action_to_json(TimestreamAction v) -> str:
+    list[str] parts = []
+    parts.append("\"roleArn\":" + iot_json_str(v.roleArn))
+    parts.append("\"databaseName\":" + iot_json_str(v.databaseName))
+    parts.append("\"tableName\":" + iot_json_str(v.tableName))
+    list[str] e0 = []
+    for x0 in v.dimensions:
+        e0.append(x0.to_json())
+    parts.append("\"dimensions\":" + iot_json_arr(e0))
+    if v.timestamp.is_some():
+        auto u1 = v.timestamp.unwrap()
+        parts.append("\"timestamp\":" + u1.to_json())
+    return iot_json_obj(parts)
+
 # Serialize TopicRuleDestinationConfiguration to a compact JSON object (declaration order).
 def topic_rule_destination_configuration_to_json(TopicRuleDestinationConfiguration v) -> str:
     list[str] parts = []
@@ -7297,6 +7528,28 @@ def topic_rule_destination_configuration_to_json(TopicRuleDestinationConfigurati
     if v.influxDBConfiguration.is_some():
         auto u2 = v.influxDBConfiguration.unwrap()
         parts.append("\"influxDBConfiguration\":" + u2.to_json())
+    return iot_json_obj(parts)
+
+# Serialize TopicRulePayload to a compact JSON object (declaration order).
+def topic_rule_payload_to_json(TopicRulePayload v) -> str:
+    list[str] parts = []
+    parts.append("\"sql\":" + iot_json_str(v.sql))
+    if v.description.is_some():
+        auto u0 = v.description.unwrap()
+        parts.append("\"description\":" + iot_json_str(u0))
+    list[str] e1 = []
+    for x1 in v.actions:
+        e1.append(action_to_json(x1))
+    parts.append("\"actions\":" + iot_json_arr(e1))
+    if v.ruleDisabled.is_some():
+        auto u2 = v.ruleDisabled.unwrap()
+        parts.append("\"ruleDisabled\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.awsIotSqlVersion.is_some():
+        auto u3 = v.awsIotSqlVersion.unwrap()
+        parts.append("\"awsIotSqlVersion\":" + iot_json_str(u3))
+    if v.errorAction.is_some():
+        auto u4 = v.errorAction.unwrap()
+        parts.append("\"errorAction\":" + action_to_json(u4))
     return iot_json_obj(parts)
 
 # Serialize VpcDestinationConfiguration to a compact JSON object (declaration order).
@@ -8365,6 +8618,19 @@ struct IoTClient:
                 e2.append(x2.to_json())
             parts.append("\"tags\":" + iot_json_arr(e2))
         auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CreateTopicRule  POST /rules/{ruleName}
+    # errors: ConflictingResourceUpdateException, InternalException, InvalidRequestException, ResourceAlreadyExistsException, ServiceUnavailableException, SqlParseException, UnauthorizedException
+    def create_topic_rule(self, CreateTopicRuleRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ruleName"] = input.ruleName
+        dict[str, str] headers = {}
+        if input.tags.is_some():
+            headers["x-amz-tagging"] = input.tags.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, topic_rule_payload_to_json(input.topicRulePayload), "application/json")
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # CreateTopicRuleDestination  POST /destinations
@@ -10481,6 +10747,16 @@ struct IoTClient:
         auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/removeThingFromThingGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveThingFromThingGroupDocument(thingGroupName=input.thingGroupName, thingGroupArn=input.thingGroupArn, thingName=input.thingName, thingArn=input.thingArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # ReplaceTopicRule  PATCH /rules/{ruleName}
+    # errors: ConflictingResourceUpdateException, InternalException, InvalidRequestException, ServiceUnavailableException, SqlParseException, UnauthorizedException
+    def replace_topic_rule(self, ReplaceTopicRuleRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ruleName"] = input.ruleName
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{ruleName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, topic_rule_payload_to_json(input.topicRulePayload), "application/json")
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # SearchIndex  POST /indices/search

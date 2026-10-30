@@ -217,7 +217,7 @@ impl<'a> JsonSer<'a> {
     /// The serializer expression for a whole body shape `v` of type `shape_name`
     /// (the client method's `auto body = <this>`): `v.to_json()` for a derivable
     /// shape, else the explicit `<shape>_to_json(v)`.
-    pub fn body_expr(&mut self, shape_name: &str, v: &str) -> String {
+    pub fn body_expr(&self, shape_name: &str, v: &str) -> String {
         if self.needs_explicit(shape_name) {
             format!("{}({v})", self.fn_name(shape_name))
         } else {

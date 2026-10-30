@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 97 operations — 94 with a generated method,
-#   3 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 97 operations — 96 with a generated method,
+#   1 skipped (a body member is not yet serializable by the XML emitter).
 #   319 structs (plain carriers), 49 enums, 12 error variants.
 #   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -2063,9 +2063,7 @@ def s3_control_error_from_code(str code) -> S3_ControlError:
 # (bool/timestamp/list, #425), an optional or non-derivable httpPayload (#427),
 # or a residual XML-body limit — a scalar carrying its own xmlNamespace, a
 # list/map of lists/maps, or a recursive shape graph):
-#   CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional (v0 needs a required body))
 #   ListJobs (httpQuery `JobStatuses` has unsupported type list[JobStatus])
-#   PutBucketLifecycleConfiguration (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
 
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
@@ -2263,6 +2261,42 @@ struct S3_ControlClient:
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateBucket  PUT /v20180820/bucket/{name}
+    # errors: BucketAlreadyExists, BucketAlreadyOwnedByYou
+    def create_bucket(self, CreateBucketRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ACL.is_some():
+            headers["x-amz-acl"] = input.ACL.unwrap_or("")
+        if input.GrantFullControl.is_some():
+            headers["x-amz-grant-full-control"] = input.GrantFullControl.unwrap_or("")
+        if input.GrantRead.is_some():
+            headers["x-amz-grant-read"] = input.GrantRead.unwrap_or("")
+        if input.GrantReadACP.is_some():
+            headers["x-amz-grant-read-acp"] = input.GrantReadACP.unwrap_or("")
+        if input.GrantWrite.is_some():
+            headers["x-amz-grant-write"] = input.GrantWrite.unwrap_or("")
+        if input.GrantWriteACP.is_some():
+            headers["x-amz-grant-write-acp"] = input.GrantWriteACP.unwrap_or("")
+        if input.ObjectLockEnabledForBucket.is_some():
+            auto qt0 = s3_control_bind_bool(input.ObjectLockEnabledForBucket.unwrap_or(False))
+            headers["x-amz-bucket-object-lock-enabled"] = qt0
+        if input.OutpostId.is_some():
+            headers["x-amz-outpost-id"] = input.OutpostId.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.CreateBucketConfiguration.is_some():
+            auto pv = input.CreateBucketConfiguration.unwrap()
+            auto root = restxml.rest_xml_root_ns("CreateBucketConfiguration", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+            if pv.LocationConstraint.is_some():
+                auto t0 = pv.LocationConstraint.unwrap()
+                restxml.rest_xml_scalar(root, "LocationConstraint", t0)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # CreateJob  POST /v20180820/jobs
     # errors: BadRequestException, IdempotencyException, InternalServiceException, TooManyRequestsException
@@ -3603,6 +3637,114 @@ struct S3_ControlClient:
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutBucketLifecycleConfiguration  PUT /v20180820/bucket/{name}/lifecycleconfiguration
+    def put_bucket_lifecycle_configuration(self, PutBucketLifecycleConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Bucket
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/lifecycleconfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.LifecycleConfiguration.is_some():
+            auto pv = input.LifecycleConfiguration.unwrap()
+            auto root = restxml.rest_xml_root_ns("LifecycleConfiguration", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+            if pv.Rules.is_some():
+                auto t0 = pv.Rules.unwrap()
+                auto n1 = restxml.rest_xml_struct(root, "Rules")
+                for t2 in t0:
+                    auto n3 = restxml.rest_xml_struct(n1, "Rule")
+                    if t2.Expiration.is_some():
+                        auto n4 = restxml.rest_xml_struct(n3, "Expiration")
+                        if t2.Expiration.unwrap().Date.is_some():
+                            auto t5 = restxml.xml_timestamp_iso8601(t2.Expiration.unwrap().Date.unwrap())
+                            restxml.rest_xml_scalar(n4, "Date", t5)
+                        if t2.Expiration.unwrap().Days.is_some():
+                            auto t6 = str(t2.Expiration.unwrap().Days.unwrap())
+                            restxml.rest_xml_scalar(n4, "Days", t6)
+                        if t2.Expiration.unwrap().ExpiredObjectDeleteMarker.is_some():
+                            auto t7 = s3_control_xml_bool(t2.Expiration.unwrap().ExpiredObjectDeleteMarker.unwrap())
+                            restxml.rest_xml_scalar(n4, "ExpiredObjectDeleteMarker", t7)
+                    if t2.ID.is_some():
+                        restxml.rest_xml_scalar(n3, "ID", t2.ID.unwrap())
+                    if t2.Filter.is_some():
+                        auto n8 = restxml.rest_xml_struct(n3, "Filter")
+                        if t2.Filter.unwrap().Prefix.is_some():
+                            auto t9 = t2.Filter.unwrap().Prefix.unwrap()
+                            restxml.rest_xml_scalar(n8, "Prefix", t9)
+                        if t2.Filter.unwrap().Tag.is_some():
+                            auto n10 = restxml.rest_xml_struct(n8, "Tag")
+                            auto t11 = t2.Filter.unwrap().Tag.unwrap().Key
+                            restxml.rest_xml_scalar(n10, "Key", t11)
+                            auto t12 = t2.Filter.unwrap().Tag.unwrap().Value
+                            restxml.rest_xml_scalar(n10, "Value", t12)
+                        if t2.Filter.unwrap().And.is_some():
+                            auto n13 = restxml.rest_xml_struct(n8, "And")
+                            if t2.Filter.unwrap().And.unwrap().Prefix.is_some():
+                                auto t14 = t2.Filter.unwrap().And.unwrap().Prefix.unwrap()
+                                restxml.rest_xml_scalar(n13, "Prefix", t14)
+                            if t2.Filter.unwrap().And.unwrap().Tags.is_some():
+                                auto t15 = t2.Filter.unwrap().And.unwrap().Tags.unwrap()
+                                auto n16 = restxml.rest_xml_struct(n13, "Tags")
+                                for t17 in t15:
+                                    auto n18 = restxml.rest_xml_struct(n16, "member")
+                                    restxml.rest_xml_scalar(n18, "Key", t17.Key)
+                                    restxml.rest_xml_scalar(n18, "Value", t17.Value)
+                            if t2.Filter.unwrap().And.unwrap().ObjectSizeGreaterThan.is_some():
+                                auto t19 = str(t2.Filter.unwrap().And.unwrap().ObjectSizeGreaterThan.unwrap())
+                                restxml.rest_xml_scalar(n13, "ObjectSizeGreaterThan", t19)
+                            if t2.Filter.unwrap().And.unwrap().ObjectSizeLessThan.is_some():
+                                auto t20 = str(t2.Filter.unwrap().And.unwrap().ObjectSizeLessThan.unwrap())
+                                restxml.rest_xml_scalar(n13, "ObjectSizeLessThan", t20)
+                        if t2.Filter.unwrap().ObjectSizeGreaterThan.is_some():
+                            auto t21 = str(t2.Filter.unwrap().ObjectSizeGreaterThan.unwrap())
+                            restxml.rest_xml_scalar(n8, "ObjectSizeGreaterThan", t21)
+                        if t2.Filter.unwrap().ObjectSizeLessThan.is_some():
+                            auto t22 = str(t2.Filter.unwrap().ObjectSizeLessThan.unwrap())
+                            restxml.rest_xml_scalar(n8, "ObjectSizeLessThan", t22)
+                    restxml.rest_xml_scalar(n3, "Status", t2.Status)
+                    if t2.Transitions.is_some():
+                        auto t23 = t2.Transitions.unwrap()
+                        auto n24 = restxml.rest_xml_struct(n3, "Transitions")
+                        for t25 in t23:
+                            auto n26 = restxml.rest_xml_struct(n24, "Transition")
+                            if t25.Date.is_some():
+                                auto t27 = restxml.xml_timestamp_iso8601(t25.Date.unwrap())
+                                restxml.rest_xml_scalar(n26, "Date", t27)
+                            if t25.Days.is_some():
+                                auto t28 = str(t25.Days.unwrap())
+                                restxml.rest_xml_scalar(n26, "Days", t28)
+                            if t25.StorageClass.is_some():
+                                auto t29 = t25.StorageClass.unwrap()
+                                restxml.rest_xml_scalar(n26, "StorageClass", t29)
+                    if t2.NoncurrentVersionTransitions.is_some():
+                        auto t30 = t2.NoncurrentVersionTransitions.unwrap()
+                        auto n31 = restxml.rest_xml_struct(n3, "NoncurrentVersionTransitions")
+                        for t32 in t30:
+                            auto n33 = restxml.rest_xml_struct(n31, "NoncurrentVersionTransition")
+                            if t32.NoncurrentDays.is_some():
+                                auto t34 = str(t32.NoncurrentDays.unwrap())
+                                restxml.rest_xml_scalar(n33, "NoncurrentDays", t34)
+                            if t32.StorageClass.is_some():
+                                auto t35 = t32.StorageClass.unwrap()
+                                restxml.rest_xml_scalar(n33, "StorageClass", t35)
+                    if t2.NoncurrentVersionExpiration.is_some():
+                        auto n36 = restxml.rest_xml_struct(n3, "NoncurrentVersionExpiration")
+                        if t2.NoncurrentVersionExpiration.unwrap().NoncurrentDays.is_some():
+                            auto t37 = str(t2.NoncurrentVersionExpiration.unwrap().NoncurrentDays.unwrap())
+                            restxml.rest_xml_scalar(n36, "NoncurrentDays", t37)
+                        if t2.NoncurrentVersionExpiration.unwrap().NewerNoncurrentVersions.is_some():
+                            auto t38 = str(t2.NoncurrentVersionExpiration.unwrap().NewerNoncurrentVersions.unwrap())
+                            restxml.rest_xml_scalar(n36, "NewerNoncurrentVersions", t38)
+                    if t2.AbortIncompleteMultipartUpload.is_some():
+                        auto n39 = restxml.rest_xml_struct(n3, "AbortIncompleteMultipartUpload")
+                        if t2.AbortIncompleteMultipartUpload.unwrap().DaysAfterInitiation.is_some():
+                            auto t40 = str(t2.AbortIncompleteMultipartUpload.unwrap().DaysAfterInitiation.unwrap())
+                            restxml.rest_xml_scalar(n39, "DaysAfterInitiation", t40)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # PutBucketPolicy  PUT /v20180820/bucket/{name}/policy
     def put_bucket_policy(self, PutBucketPolicyRequest input) -> str:

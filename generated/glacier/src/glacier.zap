@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 33 operations — 31 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 33 operations — 33 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   83 structs (64 @derive(Json)), 9 enums, 9 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -735,12 +735,6 @@ def glacier_error_from_code(str code) -> GlacierError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   InitiateJob (httpPayload member `jobParameters` is a non-derivable structure)
-#   SetVaultNotifications (httpPayload member `vaultNotificationConfig` is a non-derivable structure)
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -780,6 +774,101 @@ def data_retrieval_policy_to_json(DataRetrievalPolicy v) -> str:
         for x1 in u0:
             e1.append(x1.to_json())
         parts.append("\"Rules\":" + glacier_json_arr(e1))
+    return glacier_json_obj(parts)
+
+# Serialize JobParameters to a compact JSON object (declaration order).
+def job_parameters_to_json(JobParameters v) -> str:
+    list[str] parts = []
+    if v.Format.is_some():
+        auto u0 = v.Format.unwrap()
+        parts.append("\"Format\":" + glacier_json_str(u0))
+    if v.Type.is_some():
+        auto u1 = v.Type.unwrap()
+        parts.append("\"Type\":" + glacier_json_str(u1))
+    if v.ArchiveId.is_some():
+        auto u2 = v.ArchiveId.unwrap()
+        parts.append("\"ArchiveId\":" + glacier_json_str(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + glacier_json_str(u3))
+    if v.SNSTopic.is_some():
+        auto u4 = v.SNSTopic.unwrap()
+        parts.append("\"SNSTopic\":" + glacier_json_str(u4))
+    if v.RetrievalByteRange.is_some():
+        auto u5 = v.RetrievalByteRange.unwrap()
+        parts.append("\"RetrievalByteRange\":" + glacier_json_str(u5))
+    if v.Tier.is_some():
+        auto u6 = v.Tier.unwrap()
+        parts.append("\"Tier\":" + glacier_json_str(u6))
+    if v.InventoryRetrievalParameters.is_some():
+        auto u7 = v.InventoryRetrievalParameters.unwrap()
+        parts.append("\"InventoryRetrievalParameters\":" + u7.to_json())
+    if v.SelectParameters.is_some():
+        auto u8 = v.SelectParameters.unwrap()
+        parts.append("\"SelectParameters\":" + u8.to_json())
+    if v.OutputLocation.is_some():
+        auto u9 = v.OutputLocation.unwrap()
+        parts.append("\"OutputLocation\":" + output_location_to_json(u9))
+    return glacier_json_obj(parts)
+
+# Serialize OutputLocation to a compact JSON object (declaration order).
+def output_location_to_json(OutputLocation v) -> str:
+    list[str] parts = []
+    if v.S3.is_some():
+        auto u0 = v.S3.unwrap()
+        parts.append("\"S3\":" + s3_location_to_json(u0))
+    return glacier_json_obj(parts)
+
+# Serialize S3Location to a compact JSON object (declaration order).
+def s3_location_to_json(S3Location v) -> str:
+    list[str] parts = []
+    if v.BucketName.is_some():
+        auto u0 = v.BucketName.unwrap()
+        parts.append("\"BucketName\":" + glacier_json_str(u0))
+    if v.Prefix.is_some():
+        auto u1 = v.Prefix.unwrap()
+        parts.append("\"Prefix\":" + glacier_json_str(u1))
+    if v.Encryption.is_some():
+        auto u2 = v.Encryption.unwrap()
+        parts.append("\"Encryption\":" + u2.to_json())
+    if v.CannedACL.is_some():
+        auto u3 = v.CannedACL.unwrap()
+        parts.append("\"CannedACL\":" + u3.to_json())
+    if v.AccessControlList.is_some():
+        auto u4 = v.AccessControlList.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"AccessControlList\":" + glacier_json_arr(e5))
+    if v.Tagging.is_some():
+        auto u6 = v.Tagging.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(glacier_json_str(k7) + ":" + glacier_json_str(u6[k7]))
+        parts.append("\"Tagging\":" + glacier_json_obj(m7))
+    if v.UserMetadata.is_some():
+        auto u8 = v.UserMetadata.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(glacier_json_str(k9) + ":" + glacier_json_str(u8[k9]))
+        parts.append("\"UserMetadata\":" + glacier_json_obj(m9))
+    if v.StorageClass.is_some():
+        auto u10 = v.StorageClass.unwrap()
+        parts.append("\"StorageClass\":" + u10.to_json())
+    return glacier_json_obj(parts)
+
+# Serialize VaultNotificationConfig to a compact JSON object (declaration order).
+def vault_notification_config_to_json(VaultNotificationConfig v) -> str:
+    list[str] parts = []
+    if v.SNSTopic.is_some():
+        auto u0 = v.SNSTopic.unwrap()
+        parts.append("\"SNSTopic\":" + glacier_json_str(u0))
+    if v.Events.is_some():
+        auto u1 = v.Events.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(glacier_json_str(x2))
+        parts.append("\"Events\":" + glacier_json_arr(e2))
     return glacier_json_obj(parts)
 
 # A bound Glacier client: credentials + region, threaded into every operation.
@@ -978,6 +1067,20 @@ struct GlacierClient:
         auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
+    # InitiateJob  POST /{accountId}/vaults/{vaultName}/jobs
+    # errors: InsufficientCapacityException, InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, PolicyEnforcedException, ResourceNotFoundException, ServiceUnavailableException
+    def initiate_job(self, InitiateJobInput input) -> str:
+        auto host = endpoints.regional_host(glacier_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.accountId
+        labels["vaultName"] = input.vaultName
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.jobParameters.is_some():
+            auto pv = input.jobParameters.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, job_parameters_to_json(pv), "application/json")
+            return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
+        return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
+
     # InitiateMultipartUpload  POST /{accountId}/vaults/{vaultName}/multipart-uploads
     # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, ResourceNotFoundException, ServiceUnavailableException
     def initiate_multipart_upload(self, InitiateMultipartUploadInput input) -> str:
@@ -1002,8 +1105,11 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
         auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto bp = restjson.rest_json_raw_payload(b, input.policy.to_json(), "application/json")
-        return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
+        if input.policy.is_some():
+            auto pv = input.policy.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, pv.to_json(), "application/json")
+            return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
+        return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # ListJobs  GET /{accountId}/vaults/{vaultName}/jobs
     # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, ResourceNotFoundException, ServiceUnavailableException
@@ -1137,8 +1243,25 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
         auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}/access-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
-        auto bp = restjson.rest_json_raw_payload(b, input.policy.to_json(), "application/json")
-        return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
+        if input.policy.is_some():
+            auto pv = input.policy.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, pv.to_json(), "application/json")
+            return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
+        return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
+
+    # SetVaultNotifications  PUT /{accountId}/vaults/{vaultName}/notification-configuration
+    # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, ResourceNotFoundException, ServiceUnavailableException
+    def set_vault_notifications(self, SetVaultNotificationsInput input) -> str:
+        auto host = endpoints.regional_host(glacier_service(), self.region)
+        dict[str, str] labels = {}
+        labels["accountId"] = input.accountId
+        labels["vaultName"] = input.vaultName
+        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.vaultNotificationConfig.is_some():
+            auto pv = input.vaultNotificationConfig.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, vault_notification_config_to_json(pv), "application/json")
+            return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
+        return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # UploadArchive  POST /{accountId}/vaults/{vaultName}/archives
     # errors: InvalidParameterValueException, MissingParameterValueException, NoLongerSupportedException, RequestTimeoutException, ResourceNotFoundException, ServiceUnavailableException

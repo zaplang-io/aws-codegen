@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 88 operations — 85 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 88 operations — 87 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   328 structs (227 @derive(Json)), 41 enums, 56 error variants.
 #   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3026,8 +3026,6 @@ def lambda__error_from_code(str code) -> LambdaError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   ListDurableExecutionsByFunction (httpQuery `Statuses` has unsupported type list[ExecutionStatus])
-#   SendDurableExecutionCallbackFailure (httpPayload member `Error` is a non-derivable structure)
-#   StopDurableExecution (httpPayload member `Error` is a non-derivable structure)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -4621,6 +4619,19 @@ struct LambdaClient:
         auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/functions/{FunctionName}/policy/{StatementId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
+    # SendDurableExecutionCallbackFailure  POST /2025-12-01/durable-execution-callbacks/{CallbackId}/fail
+    # errors: CallbackTimeoutException, InvalidParameterValueException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def send_durable_execution_callback_failure(self, SendDurableExecutionCallbackFailureRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["CallbackId"] = input.CallbackId
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-execution-callbacks/{CallbackId}/fail", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.Error.is_some():
+            auto pv = input.Error.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, error_object_to_json(pv), "application/json")
+            return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
     # SendDurableExecutionCallbackHeartbeat  POST /2025-12-01/durable-execution-callbacks/{CallbackId}/heartbeat
     # errors: CallbackTimeoutException, InvalidParameterValueException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def send_durable_execution_callback_heartbeat(self, SendDurableExecutionCallbackHeartbeatRequest input) -> str:
@@ -4639,6 +4650,19 @@ struct LambdaClient:
         auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-execution-callbacks/{CallbackId}/succeed", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Result.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # StopDurableExecution  POST /2025-12-01/durable-executions/{DurableExecutionArn}/stop
+    # errors: InvalidParameterValueException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def stop_durable_execution(self, StopDurableExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["DurableExecutionArn"] = input.DurableExecutionArn
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.Error.is_some():
+            auto pv = input.Error.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, error_object_to_json(pv), "application/json")
+            return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # TagResource  POST /2017-03-31/tags/{Resource}
     # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException

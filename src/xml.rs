@@ -152,7 +152,12 @@ pub enum XmlBody {
         optional: bool,
     },
     /// A `httpPayload` structure member serialized as the XML document body.
-    Struct { field: String, plan: XmlStructPlan },
+    /// When `optional`, an absent member sends no body at all (zaplang-io/zap#427).
+    Struct {
+        field: String,
+        optional: bool,
+        plan: XmlStructPlan,
+    },
     /// An implicit XML document body built from the operation's unbound
     /// (document) members (no `httpPayload`): read off `input` directly, rooted
     /// at the `input` ref's name + namespace (Route53 / S3Control).
@@ -468,16 +473,14 @@ pub fn plan_rest_xml(model: &Model, op: &Operation) -> Result<RestXmlOp, String>
                     }
                 }
                 ZapType::Struct(_) => {
-                    if optional {
-                        return Err(format!(
-                            "httpPayload structure `{mn}` is optional (v0 needs a required body)"
-                        ));
-                    }
+                    // An optional structure payload is no longer skipped: an
+                    // absent member just sends no body (zaplang-io/zap#427).
                     let root = r.xml_wire_name(mn).to_string();
                     let mut stack = Vec::new();
                     let struct_plan = plan_xml_struct(model, &r.shape, Some(r), &root, &mut stack)?;
                     plan.body = XmlBody::Struct {
                         field,
+                        optional,
                         plan: struct_plan,
                     };
                 }
@@ -604,7 +607,9 @@ mod tests {
         "PutThing":{"name":"PutThing","http":{"method":"PUT","requestUri":"/thing/{Id}"},
           "input":{"shape":"PutThingRequest"}},
         "BoolOp":{"name":"BoolOp","http":{"method":"PUT","requestUri":"/b"},
-          "input":{"shape":"BoolRequest"}}
+          "input":{"shape":"BoolRequest"}},
+        "PutThingOpt":{"name":"PutThingOpt","http":{"method":"PUT","requestUri":"/thing/{Id}"},
+          "input":{"shape":"PutThingOptRequest"}}
       },
       "shapes":{
         "S":{"type":"string"},
@@ -631,7 +636,12 @@ mod tests {
             "Config":{"shape":"Config","locationName":"Config"}},
           "payload":"Config"},
         "BoolRequest":{"type":"structure","required":["Flag"],
-          "members":{"Flag":{"shape":"B"}},"payload":"Flag"}
+          "members":{"Flag":{"shape":"B"}},"payload":"Flag"},
+        "PutThingOptRequest":{"type":"structure","required":["Id"],
+          "members":{
+            "Id":{"shape":"S","location":"uri","locationName":"Id"},
+            "Config":{"shape":"Config","locationName":"Config"}},
+          "payload":"Config"}
       }}"#;
 
     #[test]
@@ -692,6 +702,31 @@ mod tests {
         }
         assert!(matches!(&plan.members[6], XmlMember::WrappedList { .. }));
         assert!(matches!(&plan.members[7], XmlMember::FlatList { .. }));
+    }
+
+    #[test]
+    fn optional_struct_payload_is_planned_not_skipped() {
+        // A required struct payload plans a non-optional body; the same payload
+        // made optional plans the identical struct with `optional: true` (an
+        // absent body is emitted by the emitter, zaplang-io/zap#427) — no longer
+        // skipped.
+        let m = Model::from_json_str(M).unwrap();
+        let req = plan_rest_xml(&m, op(&m, "PutThing")).unwrap();
+        match &req.body {
+            XmlBody::Struct { optional, plan, .. } => {
+                assert!(!optional);
+                assert_eq!(plan.root_name, "Config");
+            }
+            other => panic!("expected struct body, got {other:?}"),
+        }
+        let opt = plan_rest_xml(&m, op(&m, "PutThingOpt")).unwrap();
+        match &opt.body {
+            XmlBody::Struct { optional, plan, .. } => {
+                assert!(optional);
+                assert_eq!(plan.root_name, "Config");
+            }
+            other => panic!("expected struct body, got {other:?}"),
+        }
     }
 
     const IMPL: &str = r#"{

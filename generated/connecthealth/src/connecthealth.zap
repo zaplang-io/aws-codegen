@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 15 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   76 structs (57 @derive(Json)), 12 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -664,11 +664,6 @@ def health_agent_error_from_code(str code) -> ConnectHealthError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   StartMedicalScribeListeningSession (httpPayload member `inputStream` is a non-derivable structure)
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -699,6 +694,22 @@ def health_agent_json_arr(list[str] parts) -> str:
 # Explicit JSON serializers for document bodies with collection/nested
 # members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
 
+# Serialize ClinicalNoteGenerationSettings to a compact JSON object (declaration order).
+def clinical_note_generation_settings_to_json(ClinicalNoteGenerationSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"noteTemplateSettings\":" + note_template_settings_to_json(v.noteTemplateSettings))
+    return health_agent_json_obj(parts)
+
+# Serialize CustomTemplate to a compact JSON object (declaration order).
+def custom_template_to_json(CustomTemplate v) -> str:
+    list[str] parts = []
+    parts.append("\"templateType\":" + v.templateType.to_json())
+    list[str] e0 = []
+    for x0 in v.templateInstructions:
+        e0.append(x0.to_json())
+    parts.append("\"templateInstructions\":" + health_agent_json_arr(e0))
+    return health_agent_json_obj(parts)
+
 # Serialize InputDataConfig to a compact JSON object (declaration order).
 def input_data_config_to_json(InputDataConfig v) -> str:
     list[str] parts = []
@@ -711,6 +722,56 @@ def input_data_config_to_json(InputDataConfig v) -> str:
         for x2 in u1:
             e2.append(x2.to_json())
         parts.append("\"s3Sources\":" + health_agent_json_arr(e2))
+    return health_agent_json_obj(parts)
+
+# Serialize MedicalScribeConfigurationEvent to a compact JSON object (declaration order).
+def medical_scribe_configuration_event_to_json(MedicalScribeConfigurationEvent v) -> str:
+    list[str] parts = []
+    parts.append("\"postStreamActionSettings\":" + medical_scribe_post_stream_action_settings_to_json(v.postStreamActionSettings))
+    if v.channelDefinitions.is_some():
+        auto u0 = v.channelDefinitions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"channelDefinitions\":" + health_agent_json_arr(e1))
+    if v.encounterContext.is_some():
+        auto u2 = v.encounterContext.unwrap()
+        parts.append("\"encounterContext\":" + u2.to_json())
+    return health_agent_json_obj(parts)
+
+# Serialize MedicalScribeInputStream to a compact JSON object (declaration order).
+def medical_scribe_input_stream_to_json(MedicalScribeInputStream v) -> str:
+    list[str] parts = []
+    if v.audioEvent.is_some():
+        auto u0 = v.audioEvent.unwrap()
+        parts.append("\"audioEvent\":" + u0.to_json())
+    if v.binaryAudioEvent.is_some():
+        auto u1 = v.binaryAudioEvent.unwrap()
+        parts.append("\"binaryAudioEvent\":" + u1.to_json())
+    if v.sessionControlEvent.is_some():
+        auto u2 = v.sessionControlEvent.unwrap()
+        parts.append("\"sessionControlEvent\":" + u2.to_json())
+    if v.configurationEvent.is_some():
+        auto u3 = v.configurationEvent.unwrap()
+        parts.append("\"configurationEvent\":" + medical_scribe_configuration_event_to_json(u3))
+    return health_agent_json_obj(parts)
+
+# Serialize MedicalScribePostStreamActionSettings to a compact JSON object (declaration order).
+def medical_scribe_post_stream_action_settings_to_json(MedicalScribePostStreamActionSettings v) -> str:
+    list[str] parts = []
+    parts.append("\"outputS3Uri\":" + health_agent_json_str(v.outputS3Uri))
+    parts.append("\"clinicalNoteGenerationSettings\":" + clinical_note_generation_settings_to_json(v.clinicalNoteGenerationSettings))
+    return health_agent_json_obj(parts)
+
+# Serialize NoteTemplateSettings to a compact JSON object (declaration order).
+def note_template_settings_to_json(NoteTemplateSettings v) -> str:
+    list[str] parts = []
+    if v.managedTemplate.is_some():
+        auto u0 = v.managedTemplate.unwrap()
+        parts.append("\"managedTemplate\":" + u0.to_json())
+    if v.customTemplate.is_some():
+        auto u1 = v.customTemplate.unwrap()
+        parts.append("\"customTemplate\":" + custom_template_to_json(u1))
     return health_agent_json_obj(parts)
 
 # A bound ConnectHealth client: credentials + region, threaded into every operation.
@@ -851,6 +912,24 @@ struct ConnectHealthClient:
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
+
+    # StartMedicalScribeListeningSession  POST /medical-scribe-stream/
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_medical_scribe_listening_session(self, StartMedicalScribeListeningSessionInput input) -> str:
+        auto host = endpoints.regional_host(health_agent_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amzn-medscribe-session-id"] = input.sessionId
+        headers["x-amzn-medscribe-domain-id"] = input.domainId
+        headers["x-amzn-medscribe-subscription-id"] = input.subscriptionId
+        headers["x-amzn-medscribe-language-code"] = input.languageCode
+        headers["x-amzn-medscribe-sample-rate"] = str(input.mediaSampleRateHertz)
+        headers["x-amzn-medscribe-media-encoding"] = input.mediaEncoding
+        auto b = binding.HttpBinding(method="POST", path_template="/medical-scribe-stream/", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.inputStream.is_some():
+            auto pv = input.inputStream.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, medical_scribe_input_stream_to_json(pv), "application/json")
+            return restjson.rest_json_request(self.creds, bp, health_agent_service(), self.region, host)
         return restjson.rest_json_request(self.creds, b, health_agent_service(), self.region, host)
 
     # StartPatientInsightsJob  POST /domain/{domainId}/patient-insights-job

@@ -464,15 +464,17 @@ fn s3_restxml_contract_shape() {
     assert!(src.contains(
         "datetime.strftime(input.IfModifiedSince.unwrap(), \"%a, %d %b %Y %H:%M:%S GMT\")"
     ));
-    // Residual #425 skips remain for the deferred sub-cases: a list[str] bound to
-    // a header (ListObjectsV2's `OptionalObjectAttributes`) and an optional
-    // httpPayload structure (#427, CreateBucket).
+    // Residual #425 skips remain for a list[str] bound to a header
+    // (ListObjectsV2's `OptionalObjectAttributes`).
     assert!(src.contains(
         "ListObjectsV2 (httpHeader `OptionalObjectAttributes` has unsupported type list[str])"
     ));
-    assert!(
-        src.contains("CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional")
-    );
+    // zaplang-io/zap#427 closed the optional httpPayload structure gap:
+    // CreateBucket (optional `CreateBucketConfiguration`) now generates a method,
+    // guarding the body on the member being present and sending none otherwise.
+    assert!(src.contains("def create_bucket(self, CreateBucketRequest input) -> str:"));
+    assert!(src.contains("if input.CreateBucketConfiguration.is_some():"));
+    assert!(!src.contains("CreateBucketConfiguration` is optional"));
 }
 
 #[test]
@@ -696,5 +698,66 @@ fn all_checked_in_packages_are_current() {
         "{} generated file(s) are stale — run `make generate`: {:?}",
         stale.len(),
         stale
+    );
+}
+
+// zaplang-io/zap#427: a structured httpPayload body on rest-json. A payload that
+// is serializable-but-not-derivable (nested collection members) is serialized by
+// the explicit #424 serializer and carried as the raw application/json body; an
+// optional one guards the whole body on `is_some()` and sends none when absent.
+const REST_PAYLOAD: &str = r#"{
+  "metadata":{"protocol":"rest-json","endpointPrefix":"svc","serviceId":"Svc","jsonVersion":"1.1"},
+  "operations":{
+    "PutReq":{"name":"PutReq","http":{"method":"POST","requestUri":"/r/{Id}"},
+      "input":{"shape":"PutReqRequest"}},
+    "PutOpt":{"name":"PutOpt","http":{"method":"POST","requestUri":"/o/{Id}"},
+      "input":{"shape":"PutOptRequest"}}},
+  "shapes":{
+    "S":{"type":"string"},
+    "StrList":{"type":"list","member":{"shape":"S"}},
+    "Doc":{"type":"structure","members":{"Name":{"shape":"S"},"Items":{"shape":"StrList"}}},
+    "PutReqRequest":{"type":"structure","required":["Id","Body"],
+      "members":{"Id":{"shape":"S","location":"uri","locationName":"Id"},
+        "Body":{"shape":"Doc"}},"payload":"Body"},
+    "PutOptRequest":{"type":"structure","required":["Id"],
+      "members":{"Id":{"shape":"S","location":"uri","locationName":"Id"},
+        "Body":{"shape":"Doc"}},"payload":"Body"}}}"#;
+
+#[test]
+fn rest_json_structured_payload_required_and_optional() {
+    let (src, cov) = aws_codegen::generate_from_json(REST_PAYLOAD).unwrap();
+    // Both ops now generate — the structured payload is no longer skipped.
+    assert_eq!(cov.operations_skipped, 0, "{src}");
+
+    // `Doc` holds a list -> serializable but not derivable -> explicit serializer.
+    assert!(src.contains("def doc_to_json(Doc v) -> str:"), "{src}");
+
+    // Required payload: serialize straight off `input.Body` into the raw body.
+    assert!(
+        src.contains(
+            "restjson.rest_json_raw_payload(b, doc_to_json(input.Body), \"application/json\")"
+        ),
+        "{src}"
+    );
+
+    // Optional payload: guarded; present -> body off the unwrapped `pv`, absent
+    // -> the bare binding (no body).
+    assert!(src.contains("if input.Body.is_some():"), "{src}");
+    assert!(src.contains("auto pv = input.Body.unwrap()"), "{src}");
+    assert!(
+        src.contains("restjson.rest_json_raw_payload(b, doc_to_json(pv), \"application/json\")"),
+        "{src}"
+    );
+    assert!(
+        src.contains(
+            "return restjson.rest_json_request(self.creds, bp, svc_service(), self.region, host)"
+        ),
+        "{src}"
+    );
+    assert!(
+        src.contains(
+            "return restjson.rest_json_request(self.creds, b, svc_service(), self.region, host)"
+        ),
+        "{src}"
     );
 }

@@ -254,6 +254,72 @@ fn generated_restxml_synthetic_collections_match_golden() {
     assert_eq!(got, read("tests/expected/restxml_synth_collections.http"));
 }
 
+// An *optional* structured httpPayload (zaplang-io/zap#427): the same collection
+// payload as XSYNTH, but `Config` is not required. The emitter guards the whole
+// body on `is_some()` and reads the members off the unwrapped `pv`; a present
+// payload serializes byte-identically (so it reuses the collections golden), and
+// an absent one signs the bare binding with no body.
+const XOPT: &str = r#"{
+  "metadata":{"protocol":"rest-xml","endpointPrefix":"svc","serviceId":"XSynth","apiVersion":"2021-01-01"},
+  "operations":{"PutThing":{"name":"PutThing","http":{"method":"PUT","requestUri":"/thing/{Id}"},"input":{"shape":"PutThingRequest"}}},
+  "shapes":{
+    "S":{"type":"string"},"B":{"type":"boolean"},
+    "Owner":{"type":"structure","required":["Id"],"members":{"Id":{"shape":"S"}}},
+    "Item":{"type":"structure","required":["Name"],"members":{"Name":{"shape":"S"}}},
+    "ItemList":{"type":"list","member":{"shape":"Item","locationName":"Item"}},
+    "Thing":{"type":"structure","required":["V"],"members":{"V":{"shape":"S"}}},
+    "FlatThings":{"type":"list","member":{"shape":"Thing"},"flattened":true},
+    "StrMap":{"type":"map","key":{"shape":"S"},"value":{"shape":"S"}},
+    "Config":{"type":"structure","required":["Enabled","Owner","Items","Tags","Flat"],
+      "xmlNamespace":{"uri":"urn:xsynth"},
+      "members":{"Enabled":{"shape":"B"},"Owner":{"shape":"Owner"},"Items":{"shape":"ItemList"},
+        "Tags":{"shape":"StrMap"},"Flat":{"shape":"FlatThings"}}},
+    "PutThingRequest":{"type":"structure","required":["Id"],
+      "members":{"Id":{"shape":"S","location":"uri","locationName":"Id"},
+        "Config":{"shape":"Config","locationName":"Config"}},"payload":"Config"}}}"#;
+
+#[test]
+fn generated_restxml_optional_payload_matches_golden() {
+    let src = generate_model(XOPT);
+    let mb = method_body(&src, "def put_thing(self, PutThingRequest input) -> str:");
+
+    // The body build is guarded on the optional payload being present; the
+    // member is unwrapped to `pv`, which the serializer reads from.
+    assert!(mb.contains("if input.Config.is_some():"), "{mb}");
+    assert!(mb.contains("auto pv = input.Config.unwrap()"), "{mb}");
+    assert!(
+        mb.contains("restxml.rest_xml_scalar(root, \"Enabled\", svc_xml_bool(pv.Enabled))"),
+        "{mb}"
+    );
+    assert!(mb.contains("for t2 in pv.Items:"), "{mb}");
+    assert!(mb.contains("for t5 in sorted(pv.Tags.keys()):"), "{mb}");
+    // Present -> sign the document body; absent -> sign the bare binding.
+    assert!(
+        mb.contains(
+            "return restxml.rest_xml_request(self.creds, bp, svc_service(), self.region, host)"
+        ),
+        "{mb}"
+    );
+    assert!(
+        mb.contains(
+            "return restxml.rest_xml_request(self.creds, b, svc_service(), self.region, host)"
+        ),
+        "{mb}"
+    );
+
+    // A present payload serializes to the identical bytes as the required-case
+    // collections golden, so the signed request matches it exactly.
+    let body = "<Config xmlns=\"urn:xsynth\"><Enabled>true</Enabled>\
+                <Owner><Id>o1</Id></Owner>\
+                <Items><Item><Name>a</Name></Item><Item><Name>b</Name></Item></Items>\
+                <Tags><entry><key>k1</key><value>v1</value></entry>\
+                <entry><key>k2</key><value>v2</value></entry></Tags>\
+                <Flat><V>f1</V></Flat><Flat><V>f2</V></Flat></Config>";
+    let path = expand_path("/thing/{Id}", &[("Id", "t 1".to_string())]);
+    let got = binding_sign("svc", &host("svc"), "PUT", &path, body, "application/xml");
+    assert_eq!(got, read("tests/expected/restxml_synth_collections.http"));
+}
+
 // Real-service call-sequence lock (no golden): Route53's implicit XML document
 // body (no httpPayload) is rooted at the operation input ref's name + namespace
 // and built from the top-level members.
