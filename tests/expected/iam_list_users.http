@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: iam.us-east-1.amazonaws.com
+x-amz-content-sha256: 83015f216f97a91a4a133cfb460833b350e40c104df576db07babc4ee8b6a918
+x-amz-date: 20150830T123600Z
+content-length: 88
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/iam/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=0f863799e62c7388aefa273ceecfdb4cc8bf4c843c4e0762167275c220bf56ef
+Connection: close
+
+Action=ListUsers&Version=2010-05-08&PathPrefix=%2Fdivision_abc%2F&Marker=abc&MaxItems=10

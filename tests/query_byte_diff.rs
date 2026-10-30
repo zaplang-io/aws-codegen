@@ -103,15 +103,22 @@ fn generated_sdb_get_attributes_matches_golden() {
     assert_eq!(got, read("tests/expected/sdb_get_attributes.http"));
 }
 
+// EC2 (ec2 variant) — productionized to the full current model (2016-11-15, 811
+// ops) under the generated-is-product policy (#357); the 2014-09-01 pin was the
+// #354 sample. MonitorInstances proves the always-flattened list + capitalized
+// bool key; GetConsoleOutput a plain scalar op with two bools (true and false).
+// DescribeInstances / DescribeRegions are v0-skipped (Filters list-of-struct),
+// so there is no `aws.query` oracle request to diff them against.
+
 #[test]
 fn generated_ec2_monitor_instances_matches_golden() {
-    let src = generate("models/ec2/2014-09-01/service-2.json");
+    let src = generate("models/ec2/2016-11-15/service-2.json");
     assert!(src.contains("def ec2_service() -> str:"));
     assert!(src.contains("    return \"ec2\""));
 
     let sig = "def monitor_instances(self, MonitorInstancesRequest input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"MonitorInstances\", \"2014-09-01\")"));
+    assert!(mb.contains("auto p = query_params(\"MonitorInstances\", \"2016-11-15\")"));
     assert!(
         mb.contains("query_bool(input.DryRun.unwrap())"),
         "the dryRun member is capitalized to DryRun and encoded as a bool:\n{mb}"
@@ -126,18 +133,48 @@ fn generated_ec2_monitor_instances_matches_golden() {
     );
     assert!(mb.contains("return query_request(self.creds, ec2_service(), self.region, p)"));
 
-    // DryRun first (model order), then the flattened InstanceId.N list.
+    // The flattened InstanceId.N list first (model member order), then DryRun.
     let body = form_body(
         "MonitorInstances",
-        "2014-09-01",
+        "2016-11-15",
         &[
-            ("DryRun", "true"),
             ("InstanceId.1", "i-1111"),
             ("InstanceId.2", "i-2222"),
+            ("DryRun", "true"),
         ],
     );
     let got = sign_request("ec2", "POST", "/", &body, &query_headers("ec2", &body));
     assert_eq!(got, read("tests/expected/ec2_monitor_instances.http"));
+}
+
+#[test]
+fn generated_ec2_get_console_output_matches_golden() {
+    let src = generate("models/ec2/2016-11-15/service-2.json");
+
+    let sig = "def get_console_output(self, GetConsoleOutputRequest input) -> str:";
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("auto p = query_params(\"GetConsoleOutput\", \"2016-11-15\")"));
+    assert!(mb.contains("p = query_scalar(p, \"InstanceId\", input.InstanceId)"));
+    assert!(
+        mb.contains("p = query_scalar(p, \"Latest\", query_bool(input.Latest.unwrap()))"),
+        "an optional bool threads through query_bool under the capitalized key:\n{mb}"
+    );
+    assert!(mb.contains("p = query_scalar(p, \"DryRun\", query_bool(input.DryRun.unwrap()))"));
+    assert!(mb.contains("return query_request(self.creds, ec2_service(), self.region, p)"));
+
+    // InstanceId, then the two bools in model order; DryRun is false here, so the
+    // codec renders the "false" branch of query_bool.
+    let body = form_body(
+        "GetConsoleOutput",
+        "2016-11-15",
+        &[
+            ("InstanceId", "i-1234567890abcdef0"),
+            ("Latest", "true"),
+            ("DryRun", "false"),
+        ],
+    );
+    let got = sign_request("ec2", "POST", "/", &body, &query_headers("ec2", &body));
+    assert_eq!(got, read("tests/expected/ec2_get_console_output.http"));
 }
 
 // STS (query) — the first service under the generated-is-product policy (#355).
@@ -201,4 +238,111 @@ fn generated_sts_get_session_token_matches_golden() {
     );
     let got = sign_request("sts", "POST", "/", &body, &query_headers("sts", &body));
     assert_eq!(got, read("tests/expected/sts_get_session_token.http"));
+}
+
+// SNS + IAM (query) — the query-family household services (#357). The ticket's
+// SNS Publish / CreateTopic and IAM CreateUser are v0-skipped (map /
+// list-of-struct members the `aws.query` oracle does not serialize), so clean
+// scalar ops stand in: SNS GetTopicAttributes (one required scalar) and
+// SetTopicAttributes (two required + one optional), IAM GetUser (optional
+// scalar) and ListUsers (optional scalars incl. an integer via str()).
+
+#[test]
+fn generated_sns_get_topic_attributes_matches_golden() {
+    let src = generate("models/sns/2010-03-31/service-2.json");
+    assert!(src.contains("def sns_service() -> str:"));
+    assert!(src.contains("    return \"sns\""));
+
+    let sig = "def get_topic_attributes(self, GetTopicAttributesInput input) -> str:";
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("auto p = query_params(\"GetTopicAttributes\", \"2010-03-31\")"));
+    assert!(mb.contains("p = query_scalar(p, \"TopicArn\", input.TopicArn)"));
+    assert!(mb.contains("return query_request(self.creds, sns_service(), self.region, p)"));
+
+    // One required scalar; the ARN's `:` chars url-encode to %3A.
+    let body = form_body(
+        "GetTopicAttributes",
+        "2010-03-31",
+        &[("TopicArn", "arn:aws:sns:us-east-1:123456789012:MyTopic")],
+    );
+    let got = sign_request("sns", "POST", "/", &body, &query_headers("sns", &body));
+    assert_eq!(got, read("tests/expected/sns_get_topic_attributes.http"));
+}
+
+#[test]
+fn generated_sns_set_topic_attributes_matches_golden() {
+    let src = generate("models/sns/2010-03-31/service-2.json");
+
+    let sig = "def set_topic_attributes(self, SetTopicAttributesInput input) -> str:";
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("auto p = query_params(\"SetTopicAttributes\", \"2010-03-31\")"));
+    assert!(mb.contains("p = query_scalar(p, \"TopicArn\", input.TopicArn)"));
+    assert!(mb.contains("p = query_scalar(p, \"AttributeName\", input.AttributeName)"));
+    assert!(
+        mb.contains("p = query_scalar(p, \"AttributeValue\", input.AttributeValue.unwrap())"),
+        "the optional AttributeValue threads through query_scalar when set:\n{mb}"
+    );
+    assert!(mb.contains("return query_request(self.creds, sns_service(), self.region, p)"));
+
+    // Two required scalars + the optional AttributeValue (a space -> %20).
+    let body = form_body(
+        "SetTopicAttributes",
+        "2010-03-31",
+        &[
+            ("TopicArn", "arn:aws:sns:us-east-1:123456789012:MyTopic"),
+            ("AttributeName", "DisplayName"),
+            ("AttributeValue", "My Topic"),
+        ],
+    );
+    let got = sign_request("sns", "POST", "/", &body, &query_headers("sns", &body));
+    assert_eq!(got, read("tests/expected/sns_set_topic_attributes.http"));
+}
+
+#[test]
+fn generated_iam_get_user_matches_golden() {
+    let src = generate("models/iam/2010-05-08/service-2.json");
+    assert!(src.contains("def iam_service() -> str:"));
+    assert!(src.contains("    return \"iam\""));
+
+    let sig = "def get_user(self, GetUserRequest input) -> str:";
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("auto p = query_params(\"GetUser\", \"2010-05-08\")"));
+    assert!(
+        mb.contains("p = query_scalar(p, \"UserName\", input.UserName.unwrap())"),
+        "the optional UserName threads through query_scalar when set:\n{mb}"
+    );
+    assert!(mb.contains("return query_request(self.creds, iam_service(), self.region, p)"));
+
+    let body = form_body("GetUser", "2010-05-08", &[("UserName", "Bob")]);
+    let got = sign_request("iam", "POST", "/", &body, &query_headers("iam", &body));
+    assert_eq!(got, read("tests/expected/iam_get_user.http"));
+}
+
+#[test]
+fn generated_iam_list_users_matches_golden() {
+    let src = generate("models/iam/2010-05-08/service-2.json");
+
+    let sig = "def list_users(self, ListUsersRequest input) -> str:";
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("auto p = query_params(\"ListUsers\", \"2010-05-08\")"));
+    assert!(mb.contains("p = query_scalar(p, \"PathPrefix\", input.PathPrefix.unwrap())"));
+    assert!(mb.contains("p = query_scalar(p, \"Marker\", input.Marker.unwrap())"));
+    assert!(
+        mb.contains("p = query_scalar(p, \"MaxItems\", str(input.MaxItems.unwrap()))"),
+        "the integer MaxItems renders through str(...):\n{mb}"
+    );
+    assert!(mb.contains("return query_request(self.creds, iam_service(), self.region, p)"));
+
+    // Optional scalars in model order; PathPrefix's `/` url-encodes to %2F.
+    let body = form_body(
+        "ListUsers",
+        "2010-05-08",
+        &[
+            ("PathPrefix", "/division_abc/"),
+            ("Marker", "abc"),
+            ("MaxItems", "10"),
+        ],
+    );
+    let got = sign_request("iam", "POST", "/", &body, &query_headers("iam", &body));
+    assert_eq!(got, read("tests/expected/iam_list_users.http"));
 }

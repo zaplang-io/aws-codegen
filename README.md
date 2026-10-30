@@ -13,9 +13,10 @@ multiple services; the **rest-json** (restJson1) protocol
 ([#4](https://github.com/zaplang-io/aws-codegen/issues/4), **Lambda** the proof);
 and the XML family — **rest-xml** (CloudFront) and **query**/**ec2** (SimpleDB /
 EC2) ([#354](https://github.com/zaplang-io/aws-codegen/issues/354)), through the
-hand-written `aws.restxml` / `aws.query` codecs. Wiring the output into the `aws`
-package, and the remaining broad-coverage services (SNS/IAM/EC2), are later
-tickets.
+hand-written `aws.restxml` / `aws.query` codecs. The broad-coverage query-family
+services — **SNS**, **IAM**, and **EC2** productionized to its full current model
+— landed under the generated-is-product policy ([#357](https://github.com/zaplang-io/aws-codegen/issues/357)).
+Wiring the output into the `aws` package is a later ticket.
 
 **Generated clients are the product.** The generated clients are the shipping
 SDK; the hand-written `aws.core` runtime and protocol codecs stay as the runtime
@@ -37,9 +38,11 @@ regenerates each from its pinned model and fails on any drift.
 | **Lambda** | **rest-json** | `models/lambda/2015-03-31/` | `generated/lambda/lambda.zap` | The **rest-json** proof (#4): HTTP path/query/header bindings + raw httpPayload + JSON document bodies, through the `aws.binding` + `aws.restjson` codec; 14 `Marker` paginators; `GetFunction` / `ListFunctions` / `Invoke` / `PutFunctionConcurrency` byte-diffed (cross-checked vs botocore). |
 | **CloudFront** | **rest-xml** | `models/cloudfront/2015-09-17/` | `generated/cloudfront/cloudfront.zap` | The **rest-xml** proof (#354): XML document bodies (default namespace, nested structs, wrapped lists) over the `aws.binding` + `aws.restxml` codec; `CreateInvalidation` / `CreateCloudFrontOriginAccessIdentity` byte-diffed. Complex payloads (`DistributionConfig`) are v0-skipped. |
 | **SimpleDB** | **query** | `models/sdb/2009-04-15/` | `generated/sdb/sdb.zap` | The **query** (awsQuery) proof (#354): flat form-urlencoded bodies via the `aws.query` codec; `GetAttributes` (scalars + a flattened list + a boolean) byte-diffed. |
-| **EC2** | **ec2** | `models/ec2/2014-09-01/` | `generated/ec2/ec2.zap` | The **ec2** variant proof (#354): Capitalized keys + always-flattened lists; `MonitorInstances` byte-diffed. A deliberately small/old pin — EC2 productionization is a later ticket. |
+| **EC2** | **ec2** | `models/ec2/2016-11-15/` | `generated/ec2/ec2.zap` | The **ec2** variant: Capitalized keys + always-flattened lists. Productionized to the **full current model** ([#357](https://github.com/zaplang-io/aws-codegen/issues/357); the #354 pin was the 154-op 2014-09-01 sample) — 811 ops → 427 methods, the large-model case the sync drift check + generator handle. `MonitorInstances` (flattened list + bool) and `GetConsoleOutput` (scalar + bools) byte-diffed against the `aws.query` oracle. `DescribeInstances` / `DescribeRegions` are v0-skipped (`Filters` list-of-struct). |
 | **STS** | **query** | `models/sts/2011-06-15/` | `generated/sts/sts.zap` | First service under the **generated-is-product** policy ([#355](https://github.com/zaplang-io/aws-codegen/issues/355); DECISIONS.md D-0001) — no hand-written client. `query` protocol; `AssumeRole` (scalars + an int) and `GetCallerIdentity` (empty input) byte-diffed against the `aws.query` oracle. Unblocks the assume-role / SSO / web-identity credential providers. |
 | **S3** | **rest-xml** | `models/s3/2006-03-01/` | `generated/s3/s3.zap` | Under the **generated-is-product** policy ([#356](https://github.com/zaplang-io/aws-codegen/issues/356); D-0001) — the hand-written `aws.s3` retires in a follow-up `aws` PR. 116 ops → 73 methods; the **S3 binding variant** (canonical URI verbatim — S3 disables path normalization — + greedy `{Key+}` object keys, path-style regional host). `HeadBucket` / `ListBuckets` / `ListParts` / `UploadPart` (bucket op, listing, object GET, object PUT with a raw body) byte-diffed against the `aws.binding` oracle. **v0 limitations (follow-ups):** `GetObject` / `PutObject` / `ListObjectsV2` / `CreateBucket` are skipped (DateTime / bool header + query bindings, optional httpPayload structs); and S3's sub-resource markers (`?tagging`, `?versioning`, …) are left in the URI path rather than hoisted into the signed query, so those 67 methods are generated but **not yet byte-diff-verified** — a pre-existing binding-emitter gap (also latent in Lambda) that S3 is the first to exercise widely. |
+| **SNS** | **query** | `models/sns/2010-03-31/` | `generated/sns/sns.zap` | Query-family household service under the **generated-is-product** policy ([#357](https://github.com/zaplang-io/aws-codegen/issues/357); D-0001) — no hand-written client. 42 ops → 32 methods; `GetTopicAttributes` (one scalar) and `SetTopicAttributes` (scalars incl. an optional) byte-diffed against the `aws.query` oracle. `Publish` / `CreateTopic` / `Subscribe` are v0-skipped (`MessageAttributes` map / `Tags` list-of-struct). |
+| **IAM** | **query** | `models/iam/2010-05-08/` | `generated/iam/iam.zap` | Query-family household service under the **generated-is-product** policy ([#357](https://github.com/zaplang-io/aws-codegen/issues/357); D-0001) — no hand-written client. 180 ops → 159 methods; the named ops `GetUser` and `ListUsers` (optional scalars incl. an integer `MaxItems` and a `/`-bearing `PathPrefix`) byte-diffed against the `aws.query` oracle. `CreateUser` is v0-skipped (`Tags` list-of-struct). |
 
 The awsJson services span both wire versions (1.0 and 1.1) and three protocol
 prefixes; Lambda adds the REST binding path; CloudFront/SimpleDB/EC2 add the XML
@@ -277,7 +280,7 @@ cargo run -- models/lambda/2015-03-31/service-2.json    -o /tmp/lam.zap && diff 
 python3 tools/verify_describe_table.py   # DynamoDB (#348)
 python3 tools/verify_goldens.py          # SQS + Kinesis JSON services (#350)
 python3 tools/verify_lambda_requests.py  # Lambda rest-json (#4; cross-checked vs botocore)
-python3 tools/verify_xml_requests.py     # CloudFront rest-xml + SimpleDB query + EC2 ec2 (#354)
+python3 tools/verify_xml_requests.py     # rest-xml (CloudFront/S3) + query (SimpleDB/STS/SNS/IAM) + ec2 (EC2) (#354/#355/#356/#357)
 ```
 
 These are all **host-only** (no Zap toolchain / Docker). The byte-diff is proven
