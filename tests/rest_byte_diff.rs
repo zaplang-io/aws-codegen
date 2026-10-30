@@ -341,7 +341,7 @@ fn generated_get_function_request_matches_golden() {
         "Qualifier must bind to the query string"
     );
     assert!(
-        mb.contains("rest_json_request(self.creds, b,"),
+        mb.contains("restjson.rest_json_request(self.creds, b,"),
         "GET sends no body (binding b, not a payload/document variant)"
     );
 
@@ -406,7 +406,7 @@ fn generated_put_function_concurrency_request_matches_golden() {
         ),
         "the document body is built from the document members"
     );
-    assert!(mb.contains("rest_json_document(b, doc.to_json())"));
+    assert!(mb.contains("restjson.rest_json_document(b, doc.to_json())"));
 
     let body = concurrency_body(&src, 100);
     let got = binding_sign(
@@ -441,7 +441,7 @@ fn generated_invoke_request_matches_golden() {
     );
     assert!(
         mb.contains(
-            "rest_json_raw_payload(b, str(input.Payload.unwrap_or(bytes())), \"application/octet-stream\")"
+            "restjson.rest_json_raw_payload(b, str(input.Payload.unwrap_or(bytes())), \"application/octet-stream\")"
         ),
         "the blob httpPayload is carried as the raw body"
     );

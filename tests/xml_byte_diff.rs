@@ -58,15 +58,16 @@ fn generated_cloudfront_create_invalidation_matches_golden() {
     // The payload structure root carries the default namespace; the nested
     // Paths struct holds a Quantity scalar and a wrapped Items/Path list.
     assert!(mb.contains(&format!(
-        "auto root = rest_xml_root_ns(\"InvalidationBatch\", \"{CF_NS}\")"
+        "auto root = restxml.rest_xml_root_ns(\"InvalidationBatch\", \"{CF_NS}\")"
     )));
-    assert!(mb.contains("rest_xml_struct(root, \"Paths\")"));
-    assert!(mb.contains(
-        "rest_xml_scalar(n0, \"Quantity\", str(input.InvalidationBatch.Paths.Quantity))"
-    ));
-    assert!(mb.contains("rest_xml_wrapped_list(n0, \"Items\", \"Path\","));
-    assert!(mb.contains("rest_xml_scalar(root, \"CallerReference\","));
-    assert!(mb.contains("auto bp = rest_xml_document(b, body)"));
+    assert!(mb.contains("restxml.rest_xml_struct(root, \"Paths\")"));
+    // The qualified codec prefix pushes this past 88 cols, so the `str(...)`
+    // value is hoisted into a fresh local first (emit_hoisted).
+    assert!(mb.contains("auto t1 = str(input.InvalidationBatch.Paths.Quantity)"));
+    assert!(mb.contains("restxml.rest_xml_scalar(n0, \"Quantity\", t1)"));
+    assert!(mb.contains("restxml.rest_xml_wrapped_list(n0, \"Items\", \"Path\","));
+    assert!(mb.contains("restxml.rest_xml_scalar(root, \"CallerReference\","));
+    assert!(mb.contains("auto bp = restxml.rest_xml_document(b, body)"));
     assert!(mb.contains("rest_xml_request(self.creds, bp, cloudfront_service()"));
 
     let body = format!(
@@ -99,10 +100,10 @@ fn generated_cloudfront_create_oai_matches_golden() {
                CreateCloudFrontOriginAccessIdentityRequest input) -> str:";
     let mb = method_body(&src, sig);
     assert!(mb.contains(&format!(
-        "auto root = rest_xml_root_ns(\"CloudFrontOriginAccessIdentityConfig\", \"{CF_NS}\")"
+        "auto root = restxml.rest_xml_root_ns(\"CloudFrontOriginAccessIdentityConfig\", \"{CF_NS}\")"
     )));
-    assert!(mb.contains("rest_xml_scalar(root, \"CallerReference\","));
-    assert!(mb.contains("rest_xml_scalar(root, \"Comment\","));
+    assert!(mb.contains("restxml.rest_xml_scalar(root, \"CallerReference\","));
+    assert!(mb.contains("restxml.rest_xml_scalar(root, \"Comment\","));
 
     let body = format!(
         "<CloudFrontOriginAccessIdentityConfig xmlns=\"{CF_NS}\">\
@@ -146,10 +147,15 @@ fn generated_synthetic_restxml_matches_golden() {
     let sig = "def put_thing(self, PutThingRequest input) -> str:";
     let mb = method_body(&src, sig);
     // A prefixed-namespace root, an xmlAttribute, and a flattened list.
-    assert!(mb.contains("auto root = rest_xml_root_prefixed(\"Config\", \"ns\", \"urn:svc\")"));
-    assert!(mb.contains("rest_xml_attribute(root, \"Version\", input.Config.Version.unwrap())"));
-    assert!(mb.contains("rest_xml_scalar(root, \"Name\", input.Config.Name)"));
-    assert!(mb.contains("rest_xml_flat_list(root, \"Alias\", input.Config.Alias.unwrap_or([]))"));
+    assert!(
+        mb.contains("auto root = restxml.rest_xml_root_prefixed(\"Config\", \"ns\", \"urn:svc\")")
+    );
+    assert!(
+        mb.contains("restxml.rest_xml_attribute(root, \"Version\", input.Config.Version.unwrap())")
+    );
+    assert!(mb.contains("restxml.rest_xml_scalar(root, \"Name\", input.Config.Name)"));
+    assert!(mb
+        .contains("restxml.rest_xml_flat_list(root, \"Alias\", input.Config.Alias.unwrap_or([]))"));
 
     let body = "<ns:Config xmlns:ns=\"urn:svc\" Version=\"2\"><Name>gadget</Name>\
                 <Alias>a1</Alias><Alias>a2</Alias></ns:Config>";

@@ -44,11 +44,11 @@ fn sqs_model_is_awsjson() {
 #[test]
 fn checked_in_sqs_output_is_current() {
     let (src, _cov) = generate_sqs();
-    let on_disk = read("generated/sqs/sqs.zap");
+    let on_disk = read("generated/sqs/src/sqs.zap");
     assert_eq!(
         src, on_disk,
-        "generated/sqs/sqs.zap is stale — re-run: \
-         cargo run -- models/sqs/2012-11-05/service-2.json -o generated/sqs/sqs.zap"
+        "generated/sqs/src/sqs.zap is stale — re-run: \
+         cargo run -- models/sqs/2012-11-05/service-2.json -o generated/sqs/src/sqs.zap"
     );
 }
 
@@ -88,14 +88,14 @@ fn sqs_coverage() {
 #[test]
 fn sqs_awsjson_contract_shape() {
     let (src, _cov) = generate_sqs();
-    assert!(src.contains("def sqs_protocol() -> AwsJson:"));
-    assert!(src.contains("awsjson_1_0(\"AmazonSQS\", \"sqs\")"));
+    assert!(src.contains("def sqs_protocol() -> awsjson.AwsJson:"));
+    assert!(src.contains("awsjson.awsjson_1_0(\"AmazonSQS\", \"sqs\")"));
     assert!(src.contains("struct SQSClient:"));
-    assert!(src.contains("def sqs_client(Credentials creds, str region) -> SQSClient:"));
+    assert!(src.contains("def sqs_client(core.Credentials creds, str region) -> SQSClient:"));
     // A derivable op dispatches through the codec with a derived body.
     assert!(src.contains("def get_queue_url(self, GetQueueUrlRequest input) -> str:"));
     assert!(src.contains(
-        "return awsjson_request_now(sqs_protocol(), self.creds, self.region, \"GetQueueUrl\", body)"
+        "return awsjson.awsjson_request_now(sqs_protocol(), self.creds, self.region, \"GetQueueUrl\", body)"
     ));
     // Error dispatch.
     assert!(src.contains("enum SQSError:"));

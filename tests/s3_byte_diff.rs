@@ -6,7 +6,7 @@
 //! VERBATIM (no second `quote_path` pass the other services get), and object keys
 //! bind to a greedy `{Key+}` label that keeps "/". The host is the path-style
 //! regional endpoint `s3.<region>.amazonaws.com` (the generated client calls
-//! `regional_host("s3", region)`), not a virtual-hosted bucket host.
+//! `endpoints.regional_host("s3", region)`), not a virtual-hosted bucket host.
 //!
 //! Same toolchain-free design as the sibling gates (tests/rest_byte_diff.rs,
 //! tests/xml_byte_diff.rs): the generator-OWNED pieces — the HTTP method, the URI
@@ -383,7 +383,7 @@ fn generated_s3_upload_part_matches_golden() {
     assert!(mb.contains("query[\"uploadId\"] = input.UploadId"));
     // The body is the raw httpPayload blob carried as application/octet-stream.
     assert!(mb.contains(
-        "rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), \"application/octet-stream\")"
+        "restxml.rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), \"application/octet-stream\")"
     ));
 
     let got = s3_binding_sign(

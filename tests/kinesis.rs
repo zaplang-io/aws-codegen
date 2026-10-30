@@ -41,11 +41,11 @@ fn kinesis_model_is_awsjson_1_1() {
 #[test]
 fn checked_in_kinesis_output_is_current() {
     let (src, _cov) = generate_kinesis();
-    let on_disk = read("generated/kinesis/kinesis.zap");
+    let on_disk = read("generated/kinesis/src/kinesis.zap");
     assert_eq!(
         src, on_disk,
-        "generated/kinesis/kinesis.zap is stale — re-run: \
-         cargo run -- models/kinesis/2013-12-02/service-2.json -o generated/kinesis/kinesis.zap"
+        "generated/kinesis/src/kinesis.zap is stale — re-run: \
+         cargo run -- models/kinesis/2013-12-02/service-2.json -o generated/kinesis/src/kinesis.zap"
     );
 }
 
@@ -85,16 +85,18 @@ fn kinesis_coverage() {
 #[test]
 fn kinesis_awsjson_1_1_contract_shape() {
     let (src, _cov) = generate_kinesis();
-    assert!(src.contains("def kinesis_protocol() -> AwsJson:"));
+    assert!(src.contains("def kinesis_protocol() -> awsjson.AwsJson:"));
     // The 1.1 constructor — the whole reason Kinesis is in the suite.
-    assert!(src.contains("awsjson_1_1(\"Kinesis_20131202\", \"kinesis\")"));
+    assert!(src.contains("awsjson.awsjson_1_1(\"Kinesis_20131202\", \"kinesis\")"));
     assert!(src.contains("struct KinesisClient:"));
-    assert!(src.contains("def kinesis_client(Credentials creds, str region) -> KinesisClient:"));
+    assert!(
+        src.contains("def kinesis_client(core.Credentials creds, str region) -> KinesisClient:")
+    );
     assert!(
         src.contains("def describe_stream_summary(self, DescribeStreamSummaryInput input) -> str:")
     );
     assert!(src.contains(
-        "return awsjson_request_now(kinesis_protocol(), self.creds, self.region, \"DescribeStreamSummary\", body)"
+        "return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, \"DescribeStreamSummary\", body)"
     ));
     assert!(src.contains("enum KinesisError:"));
     assert!(src.contains("def kinesis_error_from_code(str code) -> KinesisError:"));

@@ -24,6 +24,7 @@
 # derives from a binding-produced request is byte-identical to a hand-built one,
 # so the pinned SigV4 vectors are unaffected.
 
+import core
 import crypto
 import url
 
@@ -225,11 +226,11 @@ def binding_request(
     str region,
     str host,
     str amz_date,
-) -> Request:
+) -> core.Request:
     auto path = expand_path(b.path_template, b.labels, b.greedy_labels)
-    auto sha = payload_hash(b.body)
+    auto sha = core.payload_hash(b.body)
     auto headers = binding_headers(b, host, amz_date, sha)
-    return Request(
+    return core.Request(
         method=b.method,
         service=service,
         region=region,
@@ -259,7 +260,12 @@ def canonical_uri_encoded(str wire_path_str, str service) -> str:
 # / sign / authorization_header) and produces byte-identical signatures for an
 # identical canonical request. The pinned SigV4 vectors sign through
 # `core.sign_request` and are untouched by this function.
-def binding_sign(Credentials creds, Request req, str amz_date, str date_stamp) -> str:
+def binding_sign(
+    core.Credentials creds,
+    core.Request req,
+    str amz_date,
+    str date_stamp,
+) -> str:
     auto to_sign = req.headers.copy()
     if creds.has_session:
         to_sign["x-amz-security-token"] = creds.session_token
@@ -270,9 +276,9 @@ def binding_sign(Credentials creds, Request req, str amz_date, str date_stamp) -
 
     auto canon_uri_str = canonical_uri_encoded(req.path, req.service)
     auto canon_q = url.canonical_query(req.query)
-    auto canon = canonical_headers(to_sign)
-    auto shead = signed_headers(to_sign)
-    auto creq = canonical_request(
+    auto canon = core.canonical_headers(to_sign)
+    auto shead = core.signed_headers(to_sign)
+    auto creq = core.canonical_request(
         req.method,
         canon_uri_str,
         canon_q,
@@ -280,17 +286,22 @@ def binding_sign(Credentials creds, Request req, str amz_date, str date_stamp) -
         shead,
         payload_sha,
     )
-    auto cred_scope = credential_scope(date_stamp, req.region, req.service)
-    auto sts = string_to_sign(amz_date, cred_scope, creq)
-    auto key = signing_key(creds.secret_key, date_stamp, req.region, req.service)
-    auto signature = sign(key, sts)
-    auto auth = authorization_header(creds.access_key, cred_scope, shead, signature)
+    auto cred_scope = core.credential_scope(date_stamp, req.region, req.service)
+    auto sts = core.string_to_sign(amz_date, cred_scope, creq)
+    auto key = core.signing_key(creds.secret_key, date_stamp, req.region, req.service)
+    auto signature = core.sign(key, sts)
+    auto auth = core.authorization_header(
+        creds.access_key,
+        cred_scope,
+        shead,
+        signature,
+    )
 
-    auto headers_block = wire_headers(to_sign) + "content-length: " + content_length(req.body) + "\r\n" + "authorization: " + auth + "\r\n"
+    auto headers_block = core.wire_headers(to_sign) + "content-length: " + core.content_length(req.body) + "\r\n" + "authorization: " + auth + "\r\n"
     auto target = req.path
     if len(canon_q) > 0:
         target = target + "?" + canon_q
-    return http_request_text(req.method, target, headers_block, req.body)
+    return core.http_request_text(req.method, target, headers_block, req.body)
 
 # ---------------------------------------------------------------------------
 # Response binding (protocol-agnostic)
@@ -298,13 +309,13 @@ def binding_sign(Credentials creds, Request req, str amz_date, str date_stamp) -
 
 # A member bound to a response header (httpHeader), or none when absent. Matched
 # case-insensitively against the parsed (lowercased) header map.
-def bound_header(Response resp, str name) -> Optional[str]:
+def bound_header(core.Response resp, str name) -> Optional[str]:
     return resp.headers.get(name.lower())
 
 # Collect httpPrefixHeaders from a response: every header whose (lowercased) name
 # starts with `prefix`, keyed by the suffix after the prefix. The inverse of
 # `render_prefix_headers`.
-def collect_prefix_headers(Response resp, str prefix) -> dict[str, str]:
+def collect_prefix_headers(core.Response resp, str prefix) -> dict[str, str]:
     dict[str, str] out = {}
     auto p = prefix.lower()
     for name in resp.headers.keys():
@@ -314,5 +325,5 @@ def collect_prefix_headers(Response resp, str prefix) -> dict[str, str]:
     return out
 
 # The HTTP status code bound to an output member (httpResponseCode).
-def bound_status(Response resp) -> int64:
+def bound_status(core.Response resp) -> int64:
     return resp.status

@@ -37,6 +37,8 @@
 # path; this module is the full xml-module-backed codec and uses distinct
 # `rest_xml_*` names so the two coexist in the concatenated bundle.
 
+import binding
+import core
 import xml
 import base64
 import datetime
@@ -59,15 +61,24 @@ def rest_xml_content_type() -> str:
 # `rest_xml_serialize` over the operation's document members (the empty string
 # when the operation has no XML body). This is the only place rest-xml commits to
 # XML — the binding layer stays format-agnostic.
-def rest_xml_document(HttpBinding b, str document) -> HttpBinding:
-    return with_payload(b, PayloadKind.Document, document, rest_xml_content_type())
+def rest_xml_document(binding.HttpBinding b, str document) -> binding.HttpBinding:
+    return binding.with_payload(
+        b,
+        binding.PayloadKind.Document,
+        document,
+        rest_xml_content_type(),
+    )
 
 # Bind one member as the raw request body (httpPayload), carried verbatim with
 # its own media type (e.g. "application/octet-stream" for a blob, or an XML
 # structure member serialized on its own). No framing — the member's bytes ARE
 # the body. Mirrors aws.restjson.rest_json_raw_payload.
-def rest_xml_raw_payload(HttpBinding b, str raw, str content_type) -> HttpBinding:
-    return with_payload(b, PayloadKind.Raw, raw, content_type)
+def rest_xml_raw_payload(
+    binding.HttpBinding b,
+    str raw,
+    str content_type,
+) -> binding.HttpBinding:
+    return binding.with_payload(b, binding.PayloadKind.Raw, raw, content_type)
 
 # ---------------------------------------------------------------------------
 # Request: build + sign
@@ -80,26 +91,26 @@ def rest_xml_raw_payload(HttpBinding b, str raw, str content_type) -> HttpBindin
 # The core signer's canonicalization is unchanged, so the pinned SigV4 vectors
 # are unaffected.
 def rest_xml_sign(
-    Credentials creds,
-    HttpBinding b,
+    core.Credentials creds,
+    binding.HttpBinding b,
     str service,
     str region,
     str host,
     str amz_date,
     str date_stamp,
 ) -> str:
-    auto req = binding_request(b, service, region, host, amz_date)
-    return binding_sign(creds, req, amz_date, date_stamp)
+    auto req = binding.binding_request(b, service, region, host, amz_date)
+    return binding.binding_sign(creds, req, amz_date, date_stamp)
 
 # Build + sign a rest-xml request using the current UTC time (the live path).
 def rest_xml_request(
-    Credentials creds,
-    HttpBinding b,
+    core.Credentials creds,
+    binding.HttpBinding b,
     str service,
     str region,
     str host,
 ) -> str:
-    auto t = signing_time_now()
+    auto t = core.signing_time_now()
     return rest_xml_sign(creds, b, service, region, host, t.amz_date, t.date_stamp)
 
 # ---------------------------------------------------------------------------
@@ -224,13 +235,13 @@ def xml_blob(bytes b) -> str:
 # ---------------------------------------------------------------------------
 
 # The raw XML document body of a response.
-def rest_xml_body(Response resp) -> str:
+def rest_xml_body(core.Response resp) -> str:
     return resp.body
 
 # Parse a response body into the XML DOM root. Caller navigates with the `xml`
 # module methods (`find` / `find_all` / `get_attr` / `get_text`) or the
 # `rest_xml_*_values` helpers below.
-def rest_xml_parse(Response resp) -> XmlElement:
+def rest_xml_parse(core.Response resp) -> XmlElement:
     return xml.parse(resp.body)
 
 # Read a flattened list back: every direct child of `parent` named `member`, in
@@ -273,7 +284,7 @@ def rest_xml_error_element(XmlElement root) -> Optional[XmlElement]:
 # The text of a named field inside the `<Error>` element, or "" when the document
 # is not a recognizable rest-xml error (empty/non-XML body, no `<Error>`, or the
 # field is absent). Used for both `<Code>` and `<Message>`.
-def rest_xml_error_field(Response resp, str field) -> str:
+def rest_xml_error_field(core.Response resp, str field) -> str:
     if len(resp.body) == 0:
         return ""
     if not resp.body.startswith("<"):
@@ -288,11 +299,11 @@ def rest_xml_error_field(Response resp, str field) -> str:
     return f.unwrap().get_text()
 
 # The rest-xml error code for a response (the `<Error><Code>` text), or "".
-def rest_xml_error_code(Response resp) -> str:
+def rest_xml_error_code(core.Response resp) -> str:
     return rest_xml_error_field(resp, "Code")
 
 # The rest-xml error message for a response (the `<Error><Message>` text), or "".
-def rest_xml_error_message(Response resp) -> str:
+def rest_xml_error_message(core.Response resp) -> str:
     return rest_xml_error_field(resp, "Message")
 
 # Dispatch a response to an AwsError, or none on a 2xx status. The code and
@@ -300,11 +311,11 @@ def rest_xml_error_message(Response resp) -> str:
 # per-service modeled-exception registry (member fields, retryable flags) is
 # future work — this is the shape error dispatch produces now, and it matches
 # core's `AwsError` so retry/classification code is shared across protocols.
-def rest_xml_error(Response resp) -> Optional[AwsError]:
-    if is_success(resp.status):
+def rest_xml_error(core.Response resp) -> Optional[core.AwsError]:
+    if core.is_success(resp.status):
         return Optional.None
     return Optional.Some(
-        AwsError(
+        core.AwsError(
             code=rest_xml_error_code(resp),
             message=rest_xml_error_message(resp),
             status=resp.status,

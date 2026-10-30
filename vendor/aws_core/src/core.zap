@@ -3,10 +3,12 @@
 # This module is the "botocore runtime" half of the design (D-0011 §2): the
 # bounded, hand-written pieces that ~70% of every AWS service rides on —
 # credentials, a Request/Response model, a real SigV4 signer, an HTTPS transport
-# over the stdlib `tls` sockets, and the seams the later phases fill (endpoint/
-# region resolution #342, retry #343, a full credential chain #341, error
-# dispatch, pagination). Per-service modules (aws.s3, aws.dynamodb) build a
-# `Request` and hand it here.
+# over the stdlib `tls` sockets, error dispatch, and pagination hooks. The
+# adjacent seams live in their own sibling modules (endpoint/region resolution in
+# aws.endpoints #342, retry in aws.retry #343, the full credential chain in
+# aws.credentials #341), imported by the consumers that need them so this module
+# stays a dependency-free signing/transport base. Per-service modules (aws.s3,
+# aws.dynamodb) build a `Request` and hand it here.
 #
 # PHASE 1 — REAL CANONICALIZATION. The v1 cut of this core predated most of the
 # runtime's string surface and worked AROUND the gaps (pre-sorted literal header
@@ -371,40 +373,6 @@ def sign_request_now(Credentials creds, Request req) -> str:
 # framing + the blank-line/body separator are added here.
 def http_request_text(str method, str path, str headers_block, str body) -> str:
     return method + " " + path + " HTTP/1.1\r\n" + headers_block + "Connection: close\r\n" + "\r\n" + body
-
-# ---------------------------------------------------------------------------
-# Endpoint / region resolution seam (D-0011 §6)
-# ---------------------------------------------------------------------------
-
-# A resolved endpoint. The structured resolver in aws.endpoints (#342 —
-# partitions, FIPS/dualstack, S3 path-vs-virtual addressing) populates `host`;
-# the full AWS endpoint-ruleset engine (#342 follow-up) can replace it without
-# reshaping this struct or the signer that consumes `host`/`region`.
-struct Endpoint:
-    str host
-    str region
-    str service
-
-# Regional host for a global-style service, e.g. ("dynamodb","us-east-1") ->
-# "dynamodb.us-east-1.amazonaws.com". Thin shim over aws.endpoints with the
-# default options (no FIPS/dualstack); the resolver is the single source of
-# truth for host templates.
-def regional_host(str service, str region) -> str:
-    return resolve_service_host(service, region, default_options())
-
-# Virtual-hosted-style S3 host for a bucket, e.g.
-# ("my-bucket","us-east-1") -> "my-bucket.s3.us-east-1.amazonaws.com". Thin shim
-# over aws.endpoints (default options, always bucket-in-host).
-def s3_virtual_host(str bucket, str region) -> str:
-    return s3_virtual_host_for(bucket, region, default_s3_options())
-
-# Baseline resolver: the templated regional host for a service.
-def resolve_endpoint(str service, str region) -> Endpoint:
-    return resolve_service_endpoint(service, region, default_options())
-
-# Baseline resolver for virtual-hosted-style S3.
-def resolve_s3_endpoint(str bucket, str region) -> Endpoint:
-    return Endpoint(host=s3_virtual_host(bucket, region), region=region, service="s3")
 
 # ---------------------------------------------------------------------------
 # HTTPS transport over the stdlib tls sockets (D-0011 §6)

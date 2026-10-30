@@ -1,8 +1,11 @@
 # aws.endpoints — structured region + endpoint resolution (D-0011 §6, #342).
 #
-# Depends on aws.core (bundled ahead of this file; it uses core's `Endpoint`
-# struct and is used BY core's endpoint shims, so the two are always bundled
-# together — see tools/run-tests.sh / ci.yml). This module turns the v1 template
+# A self-contained module (stdlib only — no intra-package imports). It owns the
+# `Endpoint` type and the thin regional-host shims (`regional_host` /
+# `s3_virtual_host` / `resolve_endpoint`), which used to live in aws.core; moving
+# them here keeps aws.core a pure signing/transport base and leaves endpoint
+# resolution a leaf of the module graph (no core↔endpoints cycle, which D-0081
+# rejects). This module turns the v1 template
 # seams (regional_host / s3_virtual_host) into a proper resolver with the pieces
 # botocore's endpoint layer carries:
 #
@@ -23,6 +26,19 @@
 # Partitions beyond the three above (aws-iso / aws-iso-b) are intentionally out
 # of scope for v1 and fall through to the aws partition; the ruleset import will
 # complete them.
+
+# ---------------------------------------------------------------------------
+# Resolved endpoint
+# ---------------------------------------------------------------------------
+
+# A resolved endpoint. The resolver below (#342 — partitions, FIPS/dualstack, S3
+# path-vs-virtual addressing) populates `host`; the full AWS endpoint-ruleset
+# engine (#342 follow-up) can replace it without reshaping this struct or the
+# signer that consumes `host`/`region`.
+struct Endpoint:
+    str host
+    str region
+    str service
 
 # ---------------------------------------------------------------------------
 # Partitions
@@ -115,7 +131,7 @@ def resolve_service_host(str service, str region, ResolveOptions opts) -> str:
     auto p = partition_for_region(region)
     return service_label(service, opts) + "." + region + "." + endpoint_dns_suffix(p, opts)
 
-# The resolved `Endpoint` (core's struct) for a regional service.
+# The resolved `Endpoint` for a regional service.
 def resolve_service_endpoint(str service, str region, ResolveOptions opts) -> Endpoint:
     return Endpoint(
         host=resolve_service_host(service, region, opts),
@@ -268,3 +284,30 @@ def s3_path_prefix(S3Endpoint ep, str bucket) -> str:
     if ep.path_style:
         return "/" + bucket
     return ""
+
+# ---------------------------------------------------------------------------
+# Thin regional-host shims (moved here from aws.core)
+# ---------------------------------------------------------------------------
+#
+# These used to live in aws.core as convenience wrappers; they now sit with the
+# resolver they delegate to, so aws.core need not import aws.endpoints. Default
+# options (no FIPS/dualstack); the resolver above is the single source of truth
+# for host templates.
+
+# Regional host for a global-style service, e.g. ("dynamodb","us-east-1") ->
+# "dynamodb.us-east-1.amazonaws.com".
+def regional_host(str service, str region) -> str:
+    return resolve_service_host(service, region, default_options())
+
+# Virtual-hosted-style S3 host for a bucket, e.g.
+# ("my-bucket","us-east-1") -> "my-bucket.s3.us-east-1.amazonaws.com".
+def s3_virtual_host(str bucket, str region) -> str:
+    return s3_virtual_host_for(bucket, region, default_s3_options())
+
+# Baseline resolver: the templated regional host for a service.
+def resolve_endpoint(str service, str region) -> Endpoint:
+    return resolve_service_endpoint(service, region, default_options())
+
+# Baseline resolver for virtual-hosted-style S3.
+def resolve_s3_endpoint(str bucket, str region) -> Endpoint:
+    return Endpoint(host=s3_virtual_host(bucket, region), region=region, service="s3")

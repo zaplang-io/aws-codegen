@@ -249,12 +249,12 @@ pub fn between(s: &str, open: &str, close: &str) -> Option<String> {
 
 /// The awsJson protocol config threaded into every call: the X-Amz-Target prefix,
 /// the SigV4 service name, and the content type pinned by the codec constructor.
-/// Read from `def <svc>_protocol() -> AwsJson: return awsjson_1_<v>("<prefix>", "<svc>")`.
+/// Read from `def <svc>_protocol() -> awsjson.AwsJson: return awsjson_1_<v>("<prefix>", "<svc>")`.
 pub fn parse_protocol(src: &str) -> (String, String, String) {
-    let (call, ctype) = if src.contains("awsjson_1_1(") {
-        ("awsjson_1_1(", "application/x-amz-json-1.1")
+    let (call, ctype) = if src.contains("awsjson.awsjson_1_1(") {
+        ("awsjson.awsjson_1_1(", "application/x-amz-json-1.1")
     } else {
-        ("awsjson_1_0(", "application/x-amz-json-1.0")
+        ("awsjson.awsjson_1_0(", "application/x-amz-json-1.0")
     };
     let start = src.find(call).expect("protocol fn uses awsjson_1_x(...)");
     let args = &src[start + call.len()..];
@@ -272,7 +272,7 @@ pub fn parse_protocol(src: &str) -> (String, String, String) {
 }
 
 /// The operation name a generated method dispatches, read from its
-/// `awsjson_request_now(..., "<Op>", body)` call. `method_sig` is the exact
+/// `awsjson.awsjson_request_now(..., "<Op>", body)` call. `method_sig` is the exact
 /// `def ...:` header line to anchor on.
 pub fn parse_dispatch_op(src: &str, method_sig: &str) -> String {
     let m = src
@@ -336,7 +336,7 @@ pub fn parse_paginator(src: &str, method_sig: &str) -> ParsedPaginator {
         "paginator yields pages:\n{body}"
     );
     assert!(
-        body.contains("auto page = send(host, raw)"),
+        body.contains("auto page = core.send(host, raw)"),
         "paginator sends each page:\n{body}"
     );
     assert!(
@@ -345,7 +345,7 @@ pub fn parse_paginator(src: &str, method_sig: &str) -> ParsedPaginator {
     );
 
     let op = between(body, "self.region, \"", "\", body)").expect("dispatches a named operation");
-    let output_token = between(body, "next_page_json(page.body, \"", "\")")
+    let output_token = between(body, "core.next_page_json(page.body, \"", "\")")
         .expect("reads the next token via next_page_json");
     // Anchor on the assignment itself, between the last `input.` before the
     // `= ...(np.token)` suffix (so `input.to_json()` is not matched).

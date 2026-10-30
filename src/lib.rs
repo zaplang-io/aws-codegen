@@ -18,7 +18,7 @@ pub mod query;
 pub mod types;
 pub mod xml;
 
-pub use emit::{generate, Coverage};
+pub use emit::{generate, package_manifest, Coverage, AWS_CORE_DEP_PATH};
 pub use model::{Model, Paginators};
 
 /// Parse a `service-2.json` string and generate the Zap client source.

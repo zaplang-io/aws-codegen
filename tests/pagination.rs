@@ -43,7 +43,7 @@ fn generated_client() -> String {
 
 /// The pagination wiring the generated `paginate_list_tables` method encodes:
 /// the operation name it dispatches, the response-body field it reads the next
-/// token from (`next_page_json(page.body, "<output>")`), and the input field it
+/// token from (`core.next_page_json(page.body, "<output>")`), and the input field it
 /// assigns that token to on the next request (`input.<input> = ...`).
 struct ParsedPaginator {
     op: String,
@@ -74,7 +74,7 @@ fn parse_list_tables_paginator(src: &str) -> ParsedPaginator {
         "paginator yields pages:\n{body}"
     );
     assert!(
-        body.contains("auto page = send(host, raw)"),
+        body.contains("auto page = core.send(host, raw)"),
         "paginator sends each page:\n{body}"
     );
     assert!(
@@ -83,7 +83,7 @@ fn parse_list_tables_paginator(src: &str) -> ParsedPaginator {
     );
 
     let op = between(body, "self.region, \"", "\", body)").expect("dispatches a named operation");
-    let output_token = between(body, "next_page_json(page.body, \"", "\")")
+    let output_token = between(body, "core.next_page_json(page.body, \"", "\")")
         .expect("reads the next token via next_page_json");
     // Anchor on the assignment itself: the field sits between the last `input.`
     // before ` = Optional.Some(np.token)` and that suffix (avoids matching the
@@ -154,7 +154,7 @@ fn drive(p: &ParsedPaginator, responses: &[&str]) -> Run {
         let page = responses[i].to_string();
         // yield page
         pages.push(page.clone());
-        // np = next_page_json(page.body, "<output_token>")
+        // np = core.next_page_json(page.body, "<output_token>")
         let next = json_string_field(&page, &p.output_token).unwrap_or_default();
         if next.is_empty() {
             break; // if not np.has_more: break

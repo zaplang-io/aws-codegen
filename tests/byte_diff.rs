@@ -57,14 +57,14 @@ fn read(path: &str) -> String {
 
 /// The awsJson protocol config the generated client threads into every call:
 /// the X-Amz-Target prefix and the SigV4 service name, read from
-/// `def dynamodb_protocol() -> AwsJson: return awsjson_1_0("<prefix>", "<svc>")`.
+/// `def dynamodb_protocol() -> awsjson.AwsJson: return awsjson.awsjson_1_0("<prefix>", "<svc>")`.
 fn parse_protocol(src: &str) -> (String, String, String) {
-    let call = "awsjson_1_0(";
+    let call = "awsjson.awsjson_1_0(";
     let start = src
         .find(call)
-        .expect("generated source defines dynamodb_protocol via awsjson_1_0(...)");
+        .expect("generated source defines dynamodb_protocol via awsjson.awsjson_1_0(...)");
     let args = &src[start + call.len()..];
-    let end = args.find(')').expect("awsjson_1_0(...) is closed");
+    let end = args.find(')').expect("awsjson.awsjson_1_0(...) is closed");
     let args = &args[..end];
     let strings: Vec<String> = args
         .split(',')
@@ -84,7 +84,7 @@ fn parse_protocol(src: &str) -> (String, String, String) {
 }
 
 /// The operation name the generated `describe_table` method selects, read from
-/// its `awsjson_request_now(..., "<Op>", body)` call.
+/// its `awsjson.awsjson_request_now(..., "<Op>", body)` call.
 fn parse_describe_table_op(src: &str) -> String {
     let anchor = "def describe_table(self, DescribeTableInput input) -> str:";
     let m = src
@@ -96,7 +96,7 @@ fn parse_describe_table_op(src: &str) -> String {
         body[..200].contains("auto body = input.to_json()"),
         "describe_table serializes its input with derive(Json) to_json()"
     );
-    let needle = "awsjson_request_now(dynamodb_protocol(), self.creds, self.region, \"";
+    let needle = "awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, \"";
     let n = body
         .find(needle)
         .expect("describe_table dispatches through awsjson_request_now");
