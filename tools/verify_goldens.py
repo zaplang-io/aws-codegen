@@ -152,6 +152,22 @@ VECTORS = [
         host="kinesis.us-east-1.amazonaws.com",
         body='{"StreamName":"exampleStreamName"}',
     ),
+    # Kinesis PutRecords: a **list-of-structures** document body (zaplang-io/
+    # zap#424). `Records` is a required list of PutRecordsRequestEntry, each a
+    # derivable struct serialized via its `.to_json()` (declaration order: Data
+    # as a base64 blob, then PartitionKey); the list wraps them in a JSON array,
+    # then StreamName follows in model order. The explicit `<shape>_to_json`
+    # serializer produces exactly this (blob -> base64 "aGVsbG8=" for b"hello").
+    Vector(
+        name="kinesis_put_records",
+        service="kinesis",
+        prefix="Kinesis_20131202",
+        op="PutRecords",
+        json_version="1.1",
+        host="kinesis.us-east-1.amazonaws.com",
+        body='{"Records":[{"Data":"aGVsbG8=","PartitionKey":"pk1"}],'
+        '"StreamName":"my-stream"}',
+    ),
 ]
 
 

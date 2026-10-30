@@ -171,11 +171,43 @@ def invoke():
         {"X-Amz-Invocation-Type": "Event"}, payload, "application/octet-stream")
 
 
+def tag_resource():
+    # httpLabel {Resource} + a JSON document **map** body (zaplang-io/zap#424):
+    # the required `Tags: map<str,str>` serializes as a JSON object. Map keys are
+    # emitted sorted for determinism (AWS maps are order-insensitive), so
+    # {"Dept","Env"} comes out in that order. POST.
+    body = '{"Tags":{"Dept":"Eng","Env":"Prod"}}'
+    return binding_sign(
+        "POST", "/2017-03-31/tags/{Resource}",
+        {"Resource": "arn:aws:lambda:us-east-1:123456789012:function:my-func"}, {},
+        {}, {}, body, "application/json")
+
+
+def create_function():
+    # A JSON document body with a **nested struct** (Code), an explicitly
+    # serialized nested struct carrying a **list** (VpcConfig.SubnetIds), and a
+    # base64 **blob** inside the derivable Code (zaplang-io/zap#424). Members are
+    # emitted in model declaration order: FunctionName, Role, Code, VpcConfig
+    # (absent optionals omitted). Code is a derivable struct (`.to_json()`);
+    # VpcConfig is non-derivable (it holds lists) so rides an explicit serializer.
+    body = (
+        '{"FunctionName":"my-func",'
+        '"Role":"arn:aws:iam::123456789012:role/svc",'
+        '"Code":{"ZipFile":"emlwYnl0ZXM="},'
+        '"VpcConfig":{"SubnetIds":["subnet-1","subnet-2"]}}'
+    )
+    return binding_sign(
+        "POST", "/2015-03-31/functions",
+        {}, {}, {}, {}, body, "application/json")
+
+
 FIXTURES = {
     "lambda_get_function": get_function,
     "lambda_list_functions": list_functions,
     "lambda_put_function_concurrency": put_function_concurrency,
     "lambda_invoke": invoke,
+    "lambda_tag_resource": tag_resource,
+    "lambda_create_function": create_function,
 }
 
 

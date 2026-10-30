@@ -1,0 +1,10 @@
+POST /2017-03-31/tags/arn%3Aaws%3Alambda%3Aus-east-1%3A123456789012%3Afunction%3Amy-func HTTP/1.1
+content-type: application/json
+host: lambda.us-east-1.amazonaws.com
+x-amz-content-sha256: bd84f364a0128aa1543b795a62730992cc5fb956c10e6ac2a03769e9cd3bbad3
+x-amz-date: 20150830T123600Z
+content-length: 36
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/lambda/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=4f6e8f0a88fb0c5ac6a2a016bc5c797c730200d960c671dff44d4f14b4f04409
+Connection: close
+
+{"Tags":{"Dept":"Eng","Env":"Prod"}}

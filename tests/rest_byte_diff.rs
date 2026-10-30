@@ -462,3 +462,81 @@ fn generated_invoke_request_matches_golden() {
     );
     assert_eq!(got, read("tests/expected/lambda_invoke.http"));
 }
+
+// --- zaplang-io/zap#424: collection / nested JSON document bodies -------------
+
+#[test]
+fn generated_tag_resource_request_matches_golden() {
+    // A document **map** body: `Tags: map<str,str>` serializes as a JSON object
+    // with keys emitted sorted (deterministic; AWS maps are order-insensitive).
+    let src = generated();
+    let sig = "def tag_resource(self, TagResourceRequest input) -> str:";
+    let (method, path) = parse_binding(&src, sig);
+    assert_eq!(method, "POST");
+    assert_eq!(path, "/2017-03-31/tags/{Resource}");
+
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("labels[\"Resource\"] = input.Resource"));
+    // The map is serialized inline: sorted keys, each `"k":"v"` via _json_str.
+    assert!(mb.contains("for k0 in sorted(input.Tags.keys()):"));
+    assert!(
+        mb.contains("m0.append(lambda__json_str(k0) + \":\" + lambda__json_str(input.Tags[k0]))"),
+        "map members serialize each entry with the escaping helper"
+    );
+    assert!(mb.contains("parts.append(\"\\\"Tags\\\":\" + lambda__json_obj(m0))"));
+    assert!(mb.contains("restjson.rest_json_document(b, lambda__json_obj(parts))"));
+
+    let body = r#"{"Tags":{"Dept":"Eng","Env":"Prod"}}"#;
+    let got = binding_sign(
+        &method,
+        &path,
+        &[(
+            "Resource",
+            "arn:aws:lambda:us-east-1:123456789012:function:my-func".to_string(),
+            false,
+        )],
+        &[],
+        &[],
+        body,
+        "application/json",
+    );
+    assert_eq!(got, read("tests/expected/lambda_tag_resource.http"));
+}
+
+#[test]
+fn generated_create_function_request_matches_golden() {
+    // A document body with a **nested struct** (Code, derivable -> `.to_json()`),
+    // a nested struct carrying a **list** (VpcConfig, non-derivable -> explicit
+    // `vpc_config_to_json`), and a base64 **blob** inside Code. Members emit in
+    // model declaration order; absent optionals are omitted.
+    let src = generated();
+    let sig = "def create_function(self, CreateFunctionRequest input) -> str:";
+    let (method, path) = parse_binding(&src, sig);
+    assert_eq!(method, "POST");
+    assert_eq!(path, "/2015-03-31/functions");
+
+    let mb = method_body(&src, sig);
+    assert!(mb.contains(
+        "parts.append(\"\\\"FunctionName\\\":\" + lambda__json_str(input.FunctionName))"
+    ));
+    assert!(mb.contains("parts.append(\"\\\"Role\\\":\" + lambda__json_str(input.Role))"));
+    // Code is a derivable nested struct -> its own derived encoder.
+    assert!(mb.contains("parts.append(\"\\\"Code\\\":\" + input.Code.to_json())"));
+    // VpcConfig is non-derivable (holds lists) -> an explicit serializer.
+    assert!(mb.contains("parts.append(\"\\\"VpcConfig\\\":\" + vpc_config_to_json(u"));
+
+    // The VpcConfig serializer: SubnetIds list -> JSON array of escaped strings.
+    assert!(src.contains("def vpc_config_to_json(VpcConfig v) -> str:"));
+    assert!(src.contains("auto u0 = v.SubnetIds.unwrap()"));
+    assert!(src.contains("e1.append(lambda__json_str(x1))"));
+    assert!(src.contains("parts.append(\"\\\"SubnetIds\\\":\" + lambda__json_arr(e1))"));
+
+    let body = concat!(
+        r#"{"FunctionName":"my-func","#,
+        r#""Role":"arn:aws:iam::123456789012:role/svc","#,
+        r#""Code":{"ZipFile":"emlwYnl0ZXM="},"#,
+        r#""VpcConfig":{"SubnetIds":["subnet-1","subnet-2"]}}"#,
+    );
+    let got = binding_sign(&method, &path, &[], &[], &[], body, "application/json");
+    assert_eq!(got, read("tests/expected/lambda_create_function.http"));
+}
