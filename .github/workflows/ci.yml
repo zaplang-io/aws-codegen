@@ -85,12 +85,16 @@ jobs:
         # Kinesis 1.1) + the Lambda rest-json fixtures (#4: GetFunction /
         # ListFunctions / Invoke / PutFunctionConcurrency, cross-checked vs botocore)
         # + the #354 XML-family fixtures (CloudFront rest-xml, SimpleDB query,
-        # EC2 ec2, + a synthetic rest-xml flattened-list/attribute/prefixed-ns case).
+        # EC2 ec2, + a synthetic rest-xml flattened-list/attribute/prefixed-ns case)
+        # + the #428 smithy-rpc-v2-cbor fixtures (CloudWatch PutMetricData /
+        # Translate TranslateText, whose CBOR bodies are cross-checked against the
+        # botocore-verified vectors from zaplang-io/aws #428).
         run: |
           python3 tools/verify_describe_table.py
           python3 tools/verify_goldens.py
           python3 tools/verify_lambda_requests.py
           python3 tools/verify_xml_requests.py
+          python3 tools/verify_cbor_requests.py
 
       # Best-effort: compile the generated Zap under the published compiler image.
       # Non-blocking because the published image lags the derive(Json) AWS hooks

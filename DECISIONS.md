@@ -203,3 +203,69 @@ clients: the only diagnostic is the tracked generators-as-methods limitation
 (#429, paginator methods), which affects the pre-rollout clients equally and is
 why the toolchain *compile* CI step is best-effort. The authoritative full
 compile/byte-diff under the toolchain image is CI's job.
+
+## D-0005 — smithy-rpc-v2-cbor is the sixth protocol; its codec is vendored, not pinned (2026-10-30)
+
+**Status:** accepted. Implements #428 part 2 on top of D-0004 (broad rollout) and
+D-0002 (generated clients are per-service zenv packages depending on `aws_core`).
+
+**Context.** #364/D-0004 shipped every botocore service on the five supported
+protocols and excluded the 25 `smithy-rpc-v2-cbor` services entirely (no manifest
+entry, no package). #428 part 1 landed the hand-written `aws_core.cbor` codec (the
+canonical CBOR wire format + rpc-v2 framing + SigV4-over-bytes + the byte-diff
+oracle) in zaplang-io/aws (PR #18, merged to aws `main`). This decision wires the
+generator to that codec and brings the 25 services online.
+
+**Decision.** The generator emits a `smithy-rpc-v2-cbor` client like the awsJson
+RPC path, but builds the body as a canonical CBOR data item and returns `bytes`.
+
+- **Emitter.** `src/cborbody.rs` emits, per request-body shape, an explicit
+  `def <shape>_to_cbor(<Shape> v) -> cbor.CborValue` that builds the value tree in
+  model order and hands it to `cbor.cbor_encode`. There is no `@derive(Cbor)`, so
+  *every* reachable body struct gets an explicit serializer (unlike the JSON
+  derive fast path). Each operation method resolves the regional host + SigV4
+  timestamp, calls `cbor.cbor_build_request` (POST to
+  `/service/{targetPrefix}/operation/{Op}`) and signs over the CBOR bytes with
+  `cbor.cbor_sign`. Fidelity is byte-matched to botocore's `RpcV2CBORSerializer`:
+  structure = text-keyed map in model order with absent optional members omitted;
+  `float`→single (ai 26) / `double`→double (ai 27) distinguished from the raw
+  shape kind; tag-1 integer epoch timestamps; blobs as raw bytes. The URI service
+  name is the model's `metadata.targetPrefix` (what botocore uses), not the
+  serviceId. The generator reuses the codec and never reimplements the wire
+  format. All 25 services generate with **810 operations, 0 skipped**.
+
+- **The codec is VENDORED, not pinned as a dependency.** `aws_core.cbor` is copied
+  into `vendor/aws_core/src/cbor.zap` (byte-identical to aws `main`), exactly like
+  the other `aws_core` modules already here. aws-codegen does **not** take a
+  versioned/commit-pinned dependency on zaplang-io/aws; D-0002 established that it
+  keeps a *pinned in-repo snapshot* of the whole `aws_core` package under
+  `vendor/`, so the repo stays hermetic (no sibling checkout, no network) for the
+  byte-diff gate and the best-effort compile. Adding the CBOR codec therefore means
+  refreshing that snapshot with the new module — the same mechanism used when any
+  `aws_core` module changes. "Bumping the aws_core pin" is not an option today
+  because there is no external pin: the vendored copy *is* the pin.
+
+  - **Sync.** `vendor/README.md` already documents refreshing `vendor/aws_core`
+    from zaplang-io/aws when the runtime changes; `cbor.zap` follows that rule. The
+    vendored blob here matches aws `main` commit's `aws-core/src/cbor.zap`
+    (verified by `git hash-object`). If the upstream codec changes, re-vendor.
+  - **Follow-up (open question for the maintainer).** If/when aws-codegen moves to
+    a real published/version-pinned `aws_core` dependency (a registry or git pin)
+    instead of a vendored snapshot, that is a repo-wide change affecting *all*
+    vendored modules, not cbor specifically — out of scope for #428. Flagged here
+    so it is a deliberate choice, not an oversight.
+
+**Validation (host-only; Docker not run — it kernel-panics the maintainer's
+host, so the local LLVM-18 compile gate is skipped and CI is the sole
+authoritative gate).** `cargo fmt --check`, `cargo clippy -D warnings`,
+`cargo test` (incl. the new `tests/cbor_byte_diff.rs` reconstructions and the
+all-packages determinism test over all 435 packages), the Python SigV4 oracles
+(incl. the new `tools/verify_cbor_requests.py`, whose CBOR bodies are cross-checked
+against the botocore-verified vectors from aws #428 part 1), and the model-drift
+check all pass. A current `zap` front-end (`zap ir`, built from zaplang-io/zap
+`main` which has the merged #429 generator-methods) type-checks the generated
+Translate client cleanly; CloudWatch's only diagnostic is the pre-existing
+`for … in sorted(dict.keys())` codegen limitation (`ZAP6001`) shared byte-for-byte
+with every map-bearing generated client (e.g. Lambda), not a cbor regression.
+Generated clients are not `zap fmt`-clean (none ever have been — CI does not gate
+on it); the vendored hand-written `cbor.zap` *is* fmt-clean.

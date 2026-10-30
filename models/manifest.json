@@ -1,5 +1,5 @@
 {
-  "_about": "Declarative source of truth for the vendored AWS service models. botocore is pinned here; tools/sync-models.py snapshots ONLY the services listed below into models/<service>/<api_version>/ from that exact botocore release. The generator builds from the checked-in snapshot, so `cargo build` and the generator never need pip or the network. To add a service: add an entry, rerun the sync, review the diff. To bump every model: bump botocore_version + wheel_sha256, rerun the sync, review the diff. As of the #364 broad rollout this lists every botocore service on a protocol the generator supports (awsJson/rest-json/rest-xml/query/ec2); services on unsupported protocols (smithy-rpc-v2-cbor) are omitted. Existing services keep their originally pinned api_version. See README.md > Model sourcing.",
+  "_about": "Declarative source of truth for the vendored AWS service models. botocore is pinned here; tools/sync-models.py snapshots ONLY the services listed below into models/<service>/<api_version>/ from that exact botocore release. The generator builds from the checked-in snapshot, so `cargo build` and the generator never need pip or the network. To add a service: add an entry, rerun the sync, review the diff. To bump every model: bump botocore_version + wheel_sha256, rerun the sync, review the diff. As of #428 this lists every botocore service on a protocol the generator supports (awsJson/rest-json/rest-xml/query/ec2/smithy-rpc-v2-cbor). Existing services keep their originally pinned api_version. See README.md > Model sourcing.",
   "botocore_version": "1.43.121",
   "wheel_sha256": "39bfd17e69f3370350e6aac2072df64045d002f9878e09115e85b87c772bd473",
   "services": [
@@ -88,6 +88,10 @@
       "api_version": "2016-02-06"
     },
     {
+      "service": "application-insights",
+      "api_version": "2018-11-25"
+    },
+    {
       "service": "application-signals",
       "api_version": "2024-04-15"
     },
@@ -104,8 +108,16 @@
       "api_version": "2020-05-15"
     },
     {
+      "service": "appstream",
+      "api_version": "2016-12-01"
+    },
+    {
       "service": "appsync",
       "api_version": "2017-07-25"
+    },
+    {
+      "service": "arc-region-switch",
+      "api_version": "2022-07-26"
     },
     {
       "service": "arc-zonal-shift",
@@ -138,6 +150,10 @@
     {
       "service": "backup",
       "api_version": "2018-11-15"
+    },
+    {
+      "service": "backup-gateway",
+      "api_version": "2021-01-01"
     },
     {
       "service": "backupsearch",
@@ -300,6 +316,14 @@
       "api_version": "2021-08-11"
     },
     {
+      "service": "cloudwatch",
+      "api_version": "2010-08-01"
+    },
+    {
+      "service": "cloudwatchomni",
+      "api_version": "2025-01-01"
+    },
+    {
       "service": "codeartifact",
       "api_version": "2018-09-22"
     },
@@ -314,6 +338,10 @@
     {
       "service": "codecommit",
       "api_version": "2015-04-13"
+    },
+    {
+      "service": "codeconnections",
+      "api_version": "2023-12-01"
     },
     {
       "service": "codedeploy",
@@ -358,6 +386,18 @@
     {
       "service": "comprehend",
       "api_version": "2017-11-27"
+    },
+    {
+      "service": "comprehendmedical",
+      "api_version": "2018-10-30"
+    },
+    {
+      "service": "compute-optimizer",
+      "api_version": "2019-11-01"
+    },
+    {
+      "service": "compute-optimizer-automation",
+      "api_version": "2025-09-22"
     },
     {
       "service": "config",
@@ -588,6 +628,10 @@
       "api_version": "2015-01-01"
     },
     {
+      "service": "eventbridgev2",
+      "api_version": "2025-05-15"
+    },
+    {
       "service": "events",
       "api_version": "2015-10-07"
     },
@@ -602,6 +646,10 @@
     {
       "service": "fis",
       "api_version": "2020-12-01"
+    },
+    {
+      "service": "fms",
+      "api_version": "2018-01-01"
     },
     {
       "service": "forecast",
@@ -622,6 +670,10 @@
     {
       "service": "fsx",
       "api_version": "2018-03-01"
+    },
+    {
+      "service": "gamelift",
+      "api_version": "2015-10-01"
     },
     {
       "service": "gameliftstreams",
@@ -672,6 +724,10 @@
       "api_version": "2017-11-28"
     },
     {
+      "service": "health",
+      "api_version": "2016-08-04"
+    },
+    {
       "service": "healthlake",
       "api_version": "2017-07-01"
     },
@@ -706,6 +762,10 @@
     {
       "service": "inspector2",
       "api_version": "2020-06-08"
+    },
+    {
+      "service": "interconnect",
+      "api_version": "2022-07-26"
     },
     {
       "service": "internetmonitor",
@@ -782,6 +842,14 @@
     {
       "service": "kendra",
       "api_version": "2019-02-03"
+    },
+    {
+      "service": "kendra-ranking",
+      "api_version": "2022-10-19"
+    },
+    {
+      "service": "keyspaces",
+      "api_version": "2022-02-10"
     },
     {
       "service": "keyspacesstreams",
@@ -904,12 +972,20 @@
       "api_version": "2020-01-01"
     },
     {
+      "service": "mailmanager",
+      "api_version": "2023-10-17"
+    },
+    {
       "service": "managedblockchain",
       "api_version": "2018-09-24"
     },
     {
       "service": "managedblockchain-query",
       "api_version": "2023-05-04"
+    },
+    {
+      "service": "marketplace-agreement",
+      "api_version": "2020-03-01"
     },
     {
       "service": "marketplace-catalog",
@@ -922,6 +998,10 @@
     {
       "service": "marketplace-discovery",
       "api_version": "2026-02-05"
+    },
+    {
+      "service": "marketplace-entitlement",
+      "api_version": "2017-01-11"
     },
     {
       "service": "marketplace-reporting",
@@ -1116,6 +1196,10 @@
       "api_version": "2024-03-18"
     },
     {
+      "service": "partnercentral-revenue-measurement",
+      "api_version": "2022-07-26"
+    },
+    {
       "service": "partnercentral-selling",
       "api_version": "2022-07-26"
     },
@@ -1150,6 +1234,10 @@
     {
       "service": "personalize-runtime",
       "api_version": "2018-05-22"
+    },
+    {
+      "service": "pi",
+      "api_version": "2018-02-27"
     },
     {
       "service": "pinpoint",
@@ -1456,6 +1544,10 @@
       "api_version": "2021-08-04"
     },
     {
+      "service": "snowball",
+      "api_version": "2016-06-30"
+    },
+    {
       "service": "sns",
       "api_version": "2010-03-31"
     },
@@ -1572,6 +1664,10 @@
       "api_version": "2018-11-05"
     },
     {
+      "service": "translate",
+      "api_version": "2017-07-01"
+    },
+    {
       "service": "trustedadvisor",
       "api_version": "2022-09-15"
     },
@@ -1630,6 +1726,10 @@
     {
       "service": "workspaces",
       "api_version": "2015-04-08"
+    },
+    {
+      "service": "workspaces-instances",
+      "api_version": "2022-07-26"
     },
     {
       "service": "workspaces-thin-client",
