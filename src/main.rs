@@ -19,6 +19,8 @@ fn main() -> ExitCode {
 fn run(args: &[String]) -> Result<(), String> {
     let mut model_path: Option<String> = None;
     let mut out_path: Option<String> = None;
+    let mut package_dir: Option<String> = None;
+    let mut package_name: Option<String> = None;
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
@@ -29,6 +31,14 @@ fn run(args: &[String]) -> Result<(), String> {
             "-o" | "--out" => {
                 i += 1;
                 out_path = Some(args.get(i).ok_or("-o requires a path")?.clone());
+            }
+            "--package" => {
+                i += 1;
+                package_dir = Some(args.get(i).ok_or("--package requires a directory")?.clone());
+            }
+            "--name" => {
+                i += 1;
+                package_name = Some(args.get(i).ok_or("--name requires a package name")?.clone());
             }
             s if s.starts_with('-') => return Err(format!("unknown flag `{s}`")),
             s => {
@@ -59,9 +69,32 @@ fn run(args: &[String]) -> Result<(), String> {
     let (src, cov) =
         aws_codegen::generate_from_json_with_paginators(&json, paginators_json.as_deref())?;
 
-    match &out_path {
-        Some(p) => std::fs::write(p, &src).map_err(|e| format!("writing {p}: {e}"))?,
-        None => print!("{src}"),
+    // --package writes the full zenv package (zap.toml + src/<name>.zap); -o
+    // writes the raw client source; with neither, the client goes to stdout.
+    match (&package_dir, &out_path) {
+        (Some(_), Some(_)) => return Err("--package and -o are mutually exclusive".to_string()),
+        (Some(dir), None) => {
+            let name = package_name
+                .as_deref()
+                .ok_or("--package requires --name <package>")?;
+            let dir = std::path::Path::new(dir);
+            let src_dir = dir.join("src");
+            std::fs::create_dir_all(&src_dir)
+                .map_err(|e| format!("creating {}: {e}", src_dir.display()))?;
+            let manifest_path = dir.join("zap.toml");
+            std::fs::write(&manifest_path, aws_codegen::package_manifest(name))
+                .map_err(|e| format!("writing {}: {e}", manifest_path.display()))?;
+            let client_path = src_dir.join(format!("{name}.zap"));
+            std::fs::write(&client_path, &src)
+                .map_err(|e| format!("writing {}: {e}", client_path.display()))?;
+        }
+        (None, Some(p)) => std::fs::write(p, &src).map_err(|e| format!("writing {p}: {e}"))?,
+        (None, None) => {
+            if package_name.is_some() {
+                return Err("--name requires --package <dir>".to_string());
+            }
+            print!("{src}");
+        }
     }
 
     eprintln!(
@@ -75,13 +108,19 @@ fn run(args: &[String]) -> Result<(), String> {
         cov.error_variants,
         cov.paginators,
         cov.paginators_skipped,
-        out_path.map(|p| format!(" -> {p}")).unwrap_or_default(),
+        package_dir
+            .map(|d| format!(" -> {d}/ (package)"))
+            .or_else(|| out_path.map(|p| format!(" -> {p}")))
+            .unwrap_or_default(),
     );
     Ok(())
 }
 
 fn print_usage() {
-    eprintln!("usage: aws-codegen <service-2.json> [-o <out.zap>]");
-    eprintln!("  Generate a Zap AWS SDK client (awsJson or rest-json) from a botocore model.");
-    eprintln!("  With no -o, the client is written to stdout.");
+    eprintln!("usage: aws-codegen <service-2.json> [--package <dir> --name <pkg> | -o <out.zap>]");
+    eprintln!("  Generate a Zap AWS SDK client from a botocore model.");
+    eprintln!("  --package <dir> --name <pkg>  write a zenv package: <dir>/zap.toml +");
+    eprintln!("                                <dir>/src/<pkg>.zap (depends on aws_core).");
+    eprintln!("  -o <out.zap>                  write just the client source to a file.");
+    eprintln!("  With neither, the client source is written to stdout.");
 }

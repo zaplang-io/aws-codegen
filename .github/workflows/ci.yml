@@ -56,24 +56,31 @@ jobs:
         # regenerate byte-identically from its pinned model (+ paginators sidecar).
         run: |
           set -e
+          # Each client is a zenv package (#339 step 2): regenerate the whole
+          # package (zap.toml + src/<svc>.zap) into a temp dir and diff both
+          # files against the checked-in package.
           regen() {
-            cargo run --locked -- "$1" -o "/tmp/$(basename "$2")"
-            if ! diff -u "$2" "/tmp/$(basename "$2")"; then
-              echo "::error::$2 is stale — regenerate it" >&2
-              exit 1
-            fi
+            model="$1"; svc="$2"
+            out="$(mktemp -d)"
+            cargo run --locked -- "$model" --package "$out" --name "$svc"
+            for rel in zap.toml "src/$svc.zap"; do
+              if ! diff -u "generated/$svc/$rel" "$out/$rel"; then
+                echo "::error::generated/$svc/$rel is stale — regenerate it" >&2
+                exit 1
+              fi
+            done
           }
-          regen models/dynamodb/2012-08-10/service-2.json   generated/dynamodb/dynamodb.zap
-          regen models/sqs/2012-11-05/service-2.json         generated/sqs/sqs.zap
-          regen models/kinesis/2013-12-02/service-2.json     generated/kinesis/kinesis.zap
-          regen models/lambda/2015-03-31/service-2.json      generated/lambda/lambda.zap
-          regen models/cloudfront/2015-09-17/service-2.json  generated/cloudfront/cloudfront.zap
-          regen models/sdb/2009-04-15/service-2.json         generated/sdb/sdb.zap
-          regen models/ec2/2016-11-15/service-2.json         generated/ec2/ec2.zap
-          regen models/sts/2011-06-15/service-2.json         generated/sts/sts.zap
-          regen models/s3/2006-03-01/service-2.json          generated/s3/s3.zap
-          regen models/sns/2010-03-31/service-2.json         generated/sns/sns.zap
-          regen models/iam/2010-05-08/service-2.json         generated/iam/iam.zap
+          regen models/dynamodb/2012-08-10/service-2.json   dynamodb
+          regen models/sqs/2012-11-05/service-2.json         sqs
+          regen models/kinesis/2013-12-02/service-2.json     kinesis
+          regen models/lambda/2015-03-31/service-2.json      lambda
+          regen models/cloudfront/2015-09-17/service-2.json  cloudfront
+          regen models/sdb/2009-04-15/service-2.json         sdb
+          regen models/ec2/2016-11-15/service-2.json         ec2
+          regen models/sts/2011-06-15/service-2.json         sts
+          regen models/s3/2006-03-01/service-2.json          s3
+          regen models/sns/2010-03-31/service-2.json         sns
+          regen models/iam/2010-05-08/service-2.json         iam
 
       - name: byte-diff goldens are correct SigV4 (independent oracles)
         # Toolchain-free second implementations of the on-the-wire request bytes;
@@ -96,9 +103,9 @@ jobs:
         continue-on-error: true
         run: |
           docker pull ghcr.io/zaplang-io/zap:latest
-          bash scripts/compile_check.sh
-          bash scripts/compile_check.sh generated/sqs/sqs.zap vendor/smoke_sqs_main.zap
-          bash scripts/compile_check.sh generated/kinesis/kinesis.zap vendor/smoke_kinesis_main.zap
+          bash scripts/compile_check.sh dynamodb vendor/smoke_main.zap
+          bash scripts/compile_check.sh sqs vendor/smoke_sqs_main.zap
+          bash scripts/compile_check.sh kinesis vendor/smoke_kinesis_main.zap
 
       # Best-effort: the end-to-end byte-diff — run the GENERATED client under the
       # real toolchain and diff its serialized DescribeTable request against the

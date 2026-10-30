@@ -72,20 +72,24 @@ fn generated_sdb_get_attributes_matches_golden() {
 
     let sig = "def get_attributes(self, GetAttributesRequest input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"GetAttributes\", \"2009-04-15\")"));
-    assert!(mb.contains("p = query_scalar(p, \"DomainName\", input.DomainName)"));
-    assert!(mb.contains("p = query_scalar(p, \"ItemName\", input.ItemName)"));
+    assert!(mb.contains("auto p = query.query_params(\"GetAttributes\", \"2009-04-15\")"));
+    assert!(mb.contains("p = query.query_scalar(p, \"DomainName\", input.DomainName)"));
+    assert!(mb.contains("p = query.query_scalar(p, \"ItemName\", input.ItemName)"));
+    // The qualified codec prefix pushes this call past 88 cols, so the value is
+    // hoisted into a fresh local first (emit_hoisted) — still the same flat list.
     assert!(
-        mb.contains(
-            "p = query_flat_list(p, \"AttributeNames\", input.AttributeNames.unwrap_or([]))"
-        ),
+        mb.contains("auto t0 = input.AttributeNames.unwrap_or([])"),
+        "the flattened list value is hoisted:\n{mb}"
+    );
+    assert!(
+        mb.contains("p = query.query_flat_list(p, \"AttributeNames\", t0)"),
         "a flattened string list threads through query_flat_list:\n{mb}"
     );
     assert!(
-        mb.contains("query_bool(input.ConsistentRead.unwrap())"),
+        mb.contains("query.query_bool(input.ConsistentRead.unwrap())"),
         "the boolean member uses the codec's query_bool:\n{mb}"
     );
-    assert!(mb.contains("return query_request(self.creds, sdb_service(), self.region, p)"));
+    assert!(mb.contains("return query.query_request(self.creds, sdb_service(), self.region, p)"));
 
     // Reconstruct the body for a representative input and sign it.
     let body = form_body(
@@ -118,20 +122,20 @@ fn generated_ec2_monitor_instances_matches_golden() {
 
     let sig = "def monitor_instances(self, MonitorInstancesRequest input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"MonitorInstances\", \"2016-11-15\")"));
+    assert!(mb.contains("auto p = query.query_params(\"MonitorInstances\", \"2016-11-15\")"));
     assert!(
-        mb.contains("query_bool(input.DryRun.unwrap())"),
+        mb.contains("query.query_bool(input.DryRun.unwrap())"),
         "the dryRun member is capitalized to DryRun and encoded as a bool:\n{mb}"
     );
     assert!(
-        mb.contains("p = query_scalar(p, \"DryRun\","),
+        mb.contains("p = query.query_scalar(p, \"DryRun\","),
         "ec2 capitalizes the locationName key:\n{mb}"
     );
     assert!(
-        mb.contains("p = query_flat_list(p, \"InstanceId\", input.InstanceIds)"),
+        mb.contains("p = query.query_flat_list(p, \"InstanceId\", input.InstanceIds)"),
         "the ec2 list is always flattened under the capitalized member key:\n{mb}"
     );
-    assert!(mb.contains("return query_request(self.creds, ec2_service(), self.region, p)"));
+    assert!(mb.contains("return query.query_request(self.creds, ec2_service(), self.region, p)"));
 
     // The flattened InstanceId.N list first (model member order), then DryRun.
     let body = form_body(
@@ -153,14 +157,18 @@ fn generated_ec2_get_console_output_matches_golden() {
 
     let sig = "def get_console_output(self, GetConsoleOutputRequest input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"GetConsoleOutput\", \"2016-11-15\")"));
-    assert!(mb.contains("p = query_scalar(p, \"InstanceId\", input.InstanceId)"));
+    assert!(mb.contains("auto p = query.query_params(\"GetConsoleOutput\", \"2016-11-15\")"));
+    assert!(mb.contains("p = query.query_scalar(p, \"InstanceId\", input.InstanceId)"));
     assert!(
-        mb.contains("p = query_scalar(p, \"Latest\", query_bool(input.Latest.unwrap()))"),
+        mb.contains(
+            "p = query.query_scalar(p, \"Latest\", query.query_bool(input.Latest.unwrap()))"
+        ),
         "an optional bool threads through query_bool under the capitalized key:\n{mb}"
     );
-    assert!(mb.contains("p = query_scalar(p, \"DryRun\", query_bool(input.DryRun.unwrap()))"));
-    assert!(mb.contains("return query_request(self.creds, ec2_service(), self.region, p)"));
+    assert!(mb.contains(
+        "p = query.query_scalar(p, \"DryRun\", query.query_bool(input.DryRun.unwrap()))"
+    ));
+    assert!(mb.contains("return query.query_request(self.creds, ec2_service(), self.region, p)"));
 
     // InstanceId, then the two bools in model order; DryRun is false here, so the
     // codec renders the "false" branch of query_bool.
@@ -195,12 +203,12 @@ fn generated_sts_get_caller_identity_matches_golden() {
     // Action/Version pair.
     let sig = "def get_caller_identity(self) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"GetCallerIdentity\", \"2011-06-15\")"));
+    assert!(mb.contains("auto p = query.query_params(\"GetCallerIdentity\", \"2011-06-15\")"));
     assert!(
         !mb.contains("query_scalar"),
         "GetCallerIdentity has no input members, so no form parameters:\n{mb}"
     );
-    assert!(mb.contains("return query_request(self.creds, sts_service(), self.region, p)"));
+    assert!(mb.contains("return query.query_request(self.creds, sts_service(), self.region, p)"));
 
     let body = form_body("GetCallerIdentity", "2011-06-15", &[]);
     let got = sign_request("sts", "POST", "/", &body, &query_headers("sts", &body));
@@ -213,16 +221,20 @@ fn generated_sts_get_session_token_matches_golden() {
 
     let sig = "def get_session_token(self, GetSessionTokenRequest input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"GetSessionToken\", \"2011-06-15\")"));
+    assert!(mb.contains("auto p = query.query_params(\"GetSessionToken\", \"2011-06-15\")"));
+    // The qualified codec prefix pushes this call past 88 cols, so the
+    // `str(...)` value is hoisted into a fresh local first (emit_hoisted).
     assert!(
-        mb.contains(
-            "p = query_scalar(p, \"DurationSeconds\", str(input.DurationSeconds.unwrap()))"
-        ),
+        mb.contains("auto t0 = str(input.DurationSeconds.unwrap())"),
         "an integer member is rendered through str(...):\n{mb}"
     );
-    assert!(mb.contains("p = query_scalar(p, \"SerialNumber\", input.SerialNumber.unwrap())"));
-    assert!(mb.contains("p = query_scalar(p, \"TokenCode\", input.TokenCode.unwrap())"));
-    assert!(mb.contains("return query_request(self.creds, sts_service(), self.region, p)"));
+    assert!(
+        mb.contains("p = query.query_scalar(p, \"DurationSeconds\", t0)"),
+        "the hoisted integer threads through query_scalar:\n{mb}"
+    );
+    assert!(mb.contains("p = query.query_scalar(p, \"SerialNumber\", input.SerialNumber.unwrap())"));
+    assert!(mb.contains("p = query.query_scalar(p, \"TokenCode\", input.TokenCode.unwrap())"));
+    assert!(mb.contains("return query.query_request(self.creds, sts_service(), self.region, p)"));
 
     // All optional members set, in model order; the MFA serial exercises
     // url-encoding of `:` and `/` in a value.
@@ -255,9 +267,9 @@ fn generated_sns_get_topic_attributes_matches_golden() {
 
     let sig = "def get_topic_attributes(self, GetTopicAttributesInput input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"GetTopicAttributes\", \"2010-03-31\")"));
-    assert!(mb.contains("p = query_scalar(p, \"TopicArn\", input.TopicArn)"));
-    assert!(mb.contains("return query_request(self.creds, sns_service(), self.region, p)"));
+    assert!(mb.contains("auto p = query.query_params(\"GetTopicAttributes\", \"2010-03-31\")"));
+    assert!(mb.contains("p = query.query_scalar(p, \"TopicArn\", input.TopicArn)"));
+    assert!(mb.contains("return query.query_request(self.creds, sns_service(), self.region, p)"));
 
     // One required scalar; the ARN's `:` chars url-encode to %3A.
     let body = form_body(
@@ -275,14 +287,14 @@ fn generated_sns_set_topic_attributes_matches_golden() {
 
     let sig = "def set_topic_attributes(self, SetTopicAttributesInput input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"SetTopicAttributes\", \"2010-03-31\")"));
-    assert!(mb.contains("p = query_scalar(p, \"TopicArn\", input.TopicArn)"));
-    assert!(mb.contains("p = query_scalar(p, \"AttributeName\", input.AttributeName)"));
+    assert!(mb.contains("auto p = query.query_params(\"SetTopicAttributes\", \"2010-03-31\")"));
+    assert!(mb.contains("p = query.query_scalar(p, \"TopicArn\", input.TopicArn)"));
+    assert!(mb.contains("p = query.query_scalar(p, \"AttributeName\", input.AttributeName)"));
     assert!(
-        mb.contains("p = query_scalar(p, \"AttributeValue\", input.AttributeValue.unwrap())"),
+        mb.contains("p = query.query_scalar(p, \"AttributeValue\", input.AttributeValue.unwrap())"),
         "the optional AttributeValue threads through query_scalar when set:\n{mb}"
     );
-    assert!(mb.contains("return query_request(self.creds, sns_service(), self.region, p)"));
+    assert!(mb.contains("return query.query_request(self.creds, sns_service(), self.region, p)"));
 
     // Two required scalars + the optional AttributeValue (a space -> %20).
     let body = form_body(
@@ -306,12 +318,12 @@ fn generated_iam_get_user_matches_golden() {
 
     let sig = "def get_user(self, GetUserRequest input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"GetUser\", \"2010-05-08\")"));
+    assert!(mb.contains("auto p = query.query_params(\"GetUser\", \"2010-05-08\")"));
     assert!(
-        mb.contains("p = query_scalar(p, \"UserName\", input.UserName.unwrap())"),
+        mb.contains("p = query.query_scalar(p, \"UserName\", input.UserName.unwrap())"),
         "the optional UserName threads through query_scalar when set:\n{mb}"
     );
-    assert!(mb.contains("return query_request(self.creds, iam_service(), self.region, p)"));
+    assert!(mb.contains("return query.query_request(self.creds, iam_service(), self.region, p)"));
 
     let body = form_body("GetUser", "2010-05-08", &[("UserName", "Bob")]);
     let got = sign_request("iam", "POST", "/", &body, &query_headers("iam", &body));
@@ -324,14 +336,14 @@ fn generated_iam_list_users_matches_golden() {
 
     let sig = "def list_users(self, ListUsersRequest input) -> str:";
     let mb = method_body(&src, sig);
-    assert!(mb.contains("auto p = query_params(\"ListUsers\", \"2010-05-08\")"));
-    assert!(mb.contains("p = query_scalar(p, \"PathPrefix\", input.PathPrefix.unwrap())"));
-    assert!(mb.contains("p = query_scalar(p, \"Marker\", input.Marker.unwrap())"));
+    assert!(mb.contains("auto p = query.query_params(\"ListUsers\", \"2010-05-08\")"));
+    assert!(mb.contains("p = query.query_scalar(p, \"PathPrefix\", input.PathPrefix.unwrap())"));
+    assert!(mb.contains("p = query.query_scalar(p, \"Marker\", input.Marker.unwrap())"));
     assert!(
-        mb.contains("p = query_scalar(p, \"MaxItems\", str(input.MaxItems.unwrap()))"),
+        mb.contains("p = query.query_scalar(p, \"MaxItems\", str(input.MaxItems.unwrap()))"),
         "the integer MaxItems renders through str(...):\n{mb}"
     );
-    assert!(mb.contains("return query_request(self.creds, iam_service(), self.region, p)"));
+    assert!(mb.contains("return query.query_request(self.creds, iam_service(), self.region, p)"));
 
     // Optional scalars in model order; PathPrefix's `/` url-encodes to %2F.
     let body = form_body(

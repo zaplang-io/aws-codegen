@@ -1,0 +1,17 @@
+# aws-core — the hand-written Zap AWS runtime + protocol codecs, shipped as a
+# zenv package (D-0052, D-0081 / zaplang-io/zap#283). This is the package the
+# GENERATED per-service clients (aws-codegen, generated-is-product D-0001) import
+# via `import aws_core` / `import aws_core.<module>`, and the byte-diff oracle the
+# generator diffs against. See ../DECISIONS.md.
+#
+# The logical name is `aws_core` (underscore): a consumer's `import aws_core.core`
+# resolves to `$ZAP_ZENV/pkg/aws_core/src/core.zap`, and a bare `import aws_core`
+# to `src/aws_core.zap` (the root module).
+[package]
+name = "aws_core"
+version = "0.1.0"
+
+[dependencies]
+# None — aws-core uses only stdlib modules (crypto, os, tls, url, datetime, fs,
+# process, http, random, math, time, base64, xml). Its own modules import each
+# other with bare intra-package imports (`import core`, `import binding`, …).

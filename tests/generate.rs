@@ -45,13 +45,13 @@ fn generate_dynamodb() -> (String, aws_codegen::Coverage) {
 #[test]
 fn checked_in_dynamodb_output_is_current() {
     let (src, _cov) = generate_dynamodb();
-    let checked = repo_root().join("generated/dynamodb/dynamodb.zap");
+    let checked = repo_root().join("generated/dynamodb/src/dynamodb.zap");
     let on_disk = std::fs::read_to_string(&checked)
         .unwrap_or_else(|e| panic!("reading {}: {e}", checked.display()));
     assert_eq!(
         src, on_disk,
-        "generated/dynamodb/dynamodb.zap is stale — re-run: \
-         cargo run -- models/dynamodb/2012-08-10/service-2.json -o generated/dynamodb/dynamodb.zap"
+        "generated/dynamodb/src/dynamodb.zap is stale — re-run: \
+         cargo run -- models/dynamodb/2012-08-10/service-2.json --package generated/dynamodb --name dynamodb"
     );
 }
 
@@ -104,7 +104,7 @@ fn paginator_contract_shape() {
     );
     // ListTables threads LastEvaluatedTableName -> ExclusiveStartTableName and
     // stops when the output token is absent.
-    assert!(src.contains("auto np = next_page_json(page.body, \"LastEvaluatedTableName\")"));
+    assert!(src.contains("auto np = core.next_page_json(page.body, \"LastEvaluatedTableName\")"));
     assert!(src.contains("input.ExclusiveStartTableName = Optional.Some(np.token)"));
     assert!(src.contains("yield page"));
     assert!(src.contains("if not np.has_more:"));
@@ -121,14 +121,16 @@ fn awsjson_contract_shape() {
     let src = aws_codegen::generate_from_json(&dynamodb_model())
         .unwrap()
         .0;
-    assert!(src.contains("def dynamodb_protocol() -> AwsJson:"));
-    assert!(src.contains("awsjson_1_0(\"DynamoDB_20120810\", \"dynamodb\")"));
+    assert!(src.contains("def dynamodb_protocol() -> awsjson.AwsJson:"));
+    assert!(src.contains("awsjson.awsjson_1_0(\"DynamoDB_20120810\", \"dynamodb\")"));
     assert!(src.contains("struct DynamoDBClient:"));
-    assert!(src.contains("def dynamodb_client(Credentials creds, str region) -> DynamoDBClient:"));
+    assert!(
+        src.contains("def dynamodb_client(core.Credentials creds, str region) -> DynamoDBClient:")
+    );
     // A derivable op dispatches through the codec with a derived body.
     assert!(src.contains("def describe_table(self, DescribeTableInput input) -> str:"));
     assert!(src.contains(
-        "return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, \"DescribeTable\", body)"
+        "return awsjson.awsjson_request_now(dynamodb_protocol(), self.creds, self.region, \"DescribeTable\", body)"
     ));
     // A non-derivable input is documented, not silently emitted wrong.
     assert!(src.contains("no @derive(Json)"));
@@ -164,13 +166,13 @@ fn supported_protocols_accepted_unknown_rejected() {
 #[test]
 fn checked_in_lambda_output_is_current() {
     let (src, _cov) = generate_lambda();
-    let checked = repo_root().join("generated/lambda/lambda.zap");
+    let checked = repo_root().join("generated/lambda/src/lambda.zap");
     let on_disk = std::fs::read_to_string(&checked)
         .unwrap_or_else(|e| panic!("reading {}: {e}", checked.display()));
     assert_eq!(
         src, on_disk,
-        "generated/lambda/lambda.zap is stale — re-run: \
-         cargo run -- models/lambda/2015-03-31/service-2.json -o generated/lambda/lambda.zap"
+        "generated/lambda/src/lambda.zap is stale — re-run: \
+         cargo run -- models/lambda/2015-03-31/service-2.json --package generated/lambda --name lambda"
     );
 }
 
@@ -209,9 +211,9 @@ fn rest_json_contract_shape() {
 
     // A raw httpPayload blob (Invoke) and a JSON document body (PutFunction-
     // Concurrency) are both emitted through the rest-json codec.
-    assert!(src.contains("rest_json_raw_payload(b, str(input.Payload.unwrap_or(bytes()))"));
+    assert!(src.contains("restjson.rest_json_raw_payload(b, str(input.Payload.unwrap_or(bytes()))"));
     assert!(src.contains("struct PutFunctionConcurrencyDocument:"));
-    assert!(src.contains("rest_json_document(b, doc.to_json())"));
+    assert!(src.contains("restjson.rest_json_document(b, doc.to_json())"));
 
     // A string enum bound to a header/query is carried as its plain wire string.
     assert!(src.contains("# wire string of the InvocationType enum (header binding)"));
@@ -220,7 +222,7 @@ fn rest_json_contract_shape() {
     assert!(src.contains("enum LambdaError:"));
     assert!(src.contains("def lambda__error_from_code(str code) -> LambdaError:"));
     assert!(src.contains("def paginate_list_functions(self, ListFunctionsRequest input):"));
-    assert!(src.contains("auto np = next_page_json(page.body, \"NextMarker\")"));
+    assert!(src.contains("auto np = core.next_page_json(page.body, \"NextMarker\")"));
     assert!(src.contains("input.Marker = Optional.Some(np.token)"));
 }
 
@@ -313,33 +315,33 @@ fn checked_in_cloudfront_output_is_current() {
     assert_current(
         "cloudfront",
         "2015-09-17",
-        "generated/cloudfront/cloudfront.zap",
+        "generated/cloudfront/src/cloudfront.zap",
     );
 }
 
 #[test]
 fn checked_in_sdb_output_is_current() {
-    assert_current("sdb", "2009-04-15", "generated/sdb/sdb.zap");
+    assert_current("sdb", "2009-04-15", "generated/sdb/src/sdb.zap");
 }
 
 #[test]
 fn checked_in_ec2_output_is_current() {
-    assert_current("ec2", "2016-11-15", "generated/ec2/ec2.zap");
+    assert_current("ec2", "2016-11-15", "generated/ec2/src/ec2.zap");
 }
 
 #[test]
 fn checked_in_sns_output_is_current() {
-    assert_current("sns", "2010-03-31", "generated/sns/sns.zap");
+    assert_current("sns", "2010-03-31", "generated/sns/src/sns.zap");
 }
 
 #[test]
 fn checked_in_iam_output_is_current() {
-    assert_current("iam", "2010-05-08", "generated/iam/iam.zap");
+    assert_current("iam", "2010-05-08", "generated/iam/src/iam.zap");
 }
 
 #[test]
 fn checked_in_s3_output_is_current() {
-    assert_current("s3", "2006-03-01", "generated/s3/s3.zap");
+    assert_current("s3", "2006-03-01", "generated/s3/src/s3.zap");
 }
 
 #[test]
@@ -374,7 +376,7 @@ fn s3_restxml_contract_shape() {
     assert!(src.contains("def upload_part(self, UploadPartRequest input) -> str:"));
     assert!(src.contains("greedy_labels[\"Key\"] = input.Key"));
     assert!(src.contains(
-        "rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), \"application/octet-stream\")"
+        "restxml.rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), \"application/octet-stream\")"
     ));
     // The ticket's named ops are v0-skipped, each with a documented reason.
     assert!(src.contains("GetObject (httpHeader `IfModifiedSince` has unsupported type DateTime)"));
@@ -412,10 +414,10 @@ fn restxml_contract_shape() {
         "rest-xml structs are plain carriers"
     );
     // A namespaced XML document body with a nested struct + wrapped list.
-    assert!(src.contains("rest_xml_root_ns(\"InvalidationBatch\","));
-    assert!(src.contains("rest_xml_struct(root, \"Paths\")"));
-    assert!(src.contains("rest_xml_wrapped_list(n0, \"Items\", \"Path\","));
-    assert!(src.contains("rest_xml_document(b, body)"));
+    assert!(src.contains("restxml.rest_xml_root_ns(\"InvalidationBatch\","));
+    assert!(src.contains("restxml.rest_xml_struct(root, \"Paths\")"));
+    assert!(src.contains("restxml.rest_xml_wrapped_list(n0, \"Items\", \"Path\","));
+    assert!(src.contains("restxml.rest_xml_document(b, body)"));
     // Error dispatch from the rest-xml <Error><Code>.
     assert!(src.contains("enum CloudFrontError:"));
     assert!(src.contains("def cloudfront_error_from_code(str code) -> CloudFrontError:"));
@@ -435,10 +437,10 @@ fn query_contract_shape() {
     assert!(src.contains("# Protocol: query"));
     assert!(src.contains("def sdb_service() -> str:"));
     assert!(src.contains("    return \"sdb\""));
-    assert!(src.contains("auto p = query_params(\"GetAttributes\", \"2009-04-15\")"));
-    assert!(src.contains("query_flat_list(p, \"AttributeNames\","));
-    assert!(src.contains("query_bool(input.ConsistentRead.unwrap())"));
-    assert!(src.contains("return query_request(self.creds, sdb_service(), self.region, p)"));
+    assert!(src.contains("auto p = query.query_params(\"GetAttributes\", \"2009-04-15\")"));
+    assert!(src.contains("query.query_flat_list(p, \"AttributeNames\","));
+    assert!(src.contains("query.query_bool(input.ConsistentRead.unwrap())"));
+    assert!(src.contains("return query.query_request(self.creds, sdb_service(), self.region, p)"));
 }
 
 #[test]
@@ -457,10 +459,10 @@ fn ec2_contract_shape() {
     assert!(src.contains("# Protocol: ec2"));
     assert!(src.contains("def ec2_service() -> str:"));
     assert!(src.contains("    return \"ec2\""));
-    assert!(src.contains("auto p = query_params(\"MonitorInstances\", \"2016-11-15\")"));
+    assert!(src.contains("auto p = query.query_params(\"MonitorInstances\", \"2016-11-15\")"));
     // ec2 capitalizes the key and always flattens the list.
-    assert!(src.contains("query_flat_list(p, \"InstanceId\", input.InstanceIds)"));
-    assert!(src.contains("query_scalar(p, \"DryRun\","));
+    assert!(src.contains("query.query_flat_list(p, \"InstanceId\", input.InstanceIds)"));
+    assert!(src.contains("query.query_scalar(p, \"DryRun\","));
     // The two byte-diffed ops (tests/query_byte_diff.rs) generate; the ticket's
     // DescribeInstances / DescribeRegions are v0-skipped (Filters list-of-struct).
     assert!(src.contains("def get_console_output(self, GetConsoleOutputRequest input) -> str:"));
@@ -482,8 +484,8 @@ fn sns_contract_shape() {
     assert!(src.contains("# Protocol: query"));
     assert!(src.contains("def sns_service() -> str:"));
     assert!(src.contains("    return \"sns\""));
-    assert!(src.contains("auto p = query_params(\"GetTopicAttributes\", \"2010-03-31\")"));
-    assert!(src.contains("p = query_scalar(p, \"TopicArn\", input.TopicArn)"));
+    assert!(src.contains("auto p = query.query_params(\"GetTopicAttributes\", \"2010-03-31\")"));
+    assert!(src.contains("p = query.query_scalar(p, \"TopicArn\", input.TopicArn)"));
     assert!(src.contains("def set_topic_attributes(self, SetTopicAttributesInput input) -> str:"));
     // The ticket's Publish / CreateTopic are v0-skipped (map / list-of-struct).
     assert!(!src.contains("def publish("));
@@ -508,8 +510,8 @@ fn iam_contract_shape() {
     // The ticket's named ops GetUser / ListUsers generate and are byte-diffed.
     assert!(src.contains("def get_user(self, GetUserRequest input) -> str:"));
     assert!(src.contains("def list_users(self, ListUsersRequest input) -> str:"));
-    assert!(src.contains("auto p = query_params(\"ListUsers\", \"2010-05-08\")"));
-    assert!(src.contains("p = query_scalar(p, \"MaxItems\", str(input.MaxItems.unwrap()))"));
+    assert!(src.contains("auto p = query.query_params(\"ListUsers\", \"2010-05-08\")"));
+    assert!(src.contains("p = query.query_scalar(p, \"MaxItems\", str(input.MaxItems.unwrap()))"));
     // CreateUser is v0-skipped (Tags list-of-struct).
     assert!(!src.contains("def create_user("));
 }

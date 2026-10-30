@@ -1,30 +1,34 @@
-# vendor/ — pinned aws-core runtime for the compile gate
+# vendor/ — pinned aws_core package for the compile gate
 
-These are **pinned copies** of the hand-written AWS SDK runtime from
-[`zaplang-io/aws`](https://github.com/zaplang-io/aws) (`src/aws/`), used only so
-`scripts/compile_check.sh` can bundle and run a generated client end to end:
+`vendor/aws_core/` is a **pinned copy** of the hand-written `aws_core` zenv
+package from [`zaplang-io/aws`](https://github.com/zaplang-io/aws)
+(`aws-core/`, shipped by #339 step 1): its `zap.toml` + `src/*.zap` runtime and
+protocol codecs. aws-codegen does not host aws_core; it keeps this snapshot so
+the repo stays hermetic (no sibling checkout) and the best-effort compile gate
+can resolve the dependency.
 
-| file           | role                                                                 |
-| -------------- | -------------------------------------------------------------------- |
-| `core.zap`     | protocol-agnostic runtime: SigV4 signer, Request/Response, transport |
-| `endpoints.zap`| regional endpoint / host resolution (used by `core.zap`)             |
-| `awsjson.zap`  | the awsJson 1.0/1.1 codec the generated client dispatches through    |
-| `binding.zap`  | the protocol-agnostic HTTP binding layer (httpLabel/Query/Header/…)  |
-| `restjson.zap` | the rest-json (restJson1) codec, a JSON body atop `binding.zap`       |
-| `restxml.zap`  | the rest-xml codec, an XML body atop `binding.zap` (zaplang-io/aws#352) |
-| `query.zap`    | the query + ec2 codec: a form body + XML response (zaplang-io/aws#353)  |
-| `smoke_main.zap` | a tiny entry point exercising the generated derive-path surface    |
+Since #339 step 2 the generated clients are per-service **zenv packages** that
+`import aws_core.<module>` their codecs via real module imports
+(zaplang-io/zap#283) — the `tools/bundle.py`-style concatenation of loose
+`vendor/*.zap` ahead of the client is **retired**. `scripts/compile_check.sh`
+and `scripts/byte_diff_check.sh` now materialize a throwaway consumer project
+with path dependencies on a generated `generated/<svc>/` package and this
+`vendor/aws_core`, run `zap zenv create`, and execute a smoke entry.
 
-`binding.zap` + `restjson.zap` are the rest-json half (zaplang-io/aws #345, merged
-on `aws` main); the generated rest-json client (e.g. `generated/lambda`) builds an
-`HttpBinding` and dispatches through `rest_json_request` / `rest_json_sign`.
-`restxml.zap` (#352) is the same binding layer with an XML document body from the
-`rest_xml_*` helpers (`generated/cloudfront`); `query.zap` (#353) is the query/ec2
-half — a flat form body with no URI binding (`generated/sdb`, `generated/ec2`).
-Both are merged on `aws` main.
+| path                      | role                                                              |
+| ------------------------- | ----------------------------------------------------------------- |
+| `aws_core/zap.toml`       | the pinned package manifest (`[package] name = "aws_core"`)        |
+| `aws_core/src/core.zap`   | protocol-agnostic runtime: SigV4 signer, Request/Response, transport |
+| `aws_core/src/endpoints.zap` | regional endpoint / host resolution (`regional_host`, `Endpoint`) |
+| `aws_core/src/awsjson.zap`| the awsJson 1.0/1.1 codec                                          |
+| `aws_core/src/binding.zap`| the protocol-agnostic HTTP binding layer (httpLabel/Query/Header/…) |
+| `aws_core/src/restjson.zap` | the rest-json (restJson1) codec, a JSON body atop `binding.zap`   |
+| `aws_core/src/restxml.zap`| the rest-xml codec, an XML body atop `binding.zap`                 |
+| `aws_core/src/query.zap`  | the query + ec2 codec: a form body + XML response                 |
+| `aws_core/src/{credentials,retry,s3,dynamodb,aws_core}.zap` | the rest of the pinned package (not all imported by every client) |
+| `smoke_main.zap` / `smoke_sqs_main.zap` / `smoke_kinesis_main.zap` | consumer smoke entries (import the service package + aws_core) |
 
-They are **not** a dependency of the Rust generator and are **not** how the
-generated client ships. Wiring the generated output into the `aws` package is a
-separate ticket (zaplang-io/zap#350); until then these copies let CI prove the
-generated Zap compiles. Refresh them from `zaplang-io/aws` when its runtime
+The generated client ships the per-service `generated/<svc>/` packages; this
+pinned copy is **not** a dependency of the Rust generator and is **not** how the
+SDK ships. Refresh it from `zaplang-io/aws` (`aws-core/`) when that runtime
 changes.

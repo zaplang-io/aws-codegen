@@ -36,6 +36,9 @@
 # version (1.0 vs 1.1), the X-Amz-Target JSON prefix (the service's API id, e.g.
 # "DynamoDB_20120810"), and the SigV4 service name. A per-service module builds
 # one of these once and threads it through every operation.
+import core
+import endpoints
+
 struct AwsJson:
     str content_type
     str target_prefix
@@ -96,11 +99,11 @@ def awsjson_build_request(
     str op,
     str body,
     str amz_date,
-) -> Request:
-    auto body_sha = payload_hash(body)
+) -> core.Request:
+    auto body_sha = core.payload_hash(body)
     auto headers = awsjson_headers(p, host, body_sha, amz_date, op)
     dict[str, str] query = {}
-    return Request(
+    return core.Request(
         method="POST",
         service=p.service,
         region=region,
@@ -116,7 +119,7 @@ def awsjson_build_request(
 # `body` is the serialized input shape. This is the request half of the codec.
 def awsjson_request(
     AwsJson p,
-    Credentials creds,
+    core.Credentials creds,
     str region,
     str host,
     str op,
@@ -125,7 +128,7 @@ def awsjson_request(
     str date_stamp,
 ) -> str:
     auto req = awsjson_build_request(p, region, host, op, body, amz_date)
-    return sign_request(creds, req, amz_date, date_stamp)
+    return core.sign_request(creds, req, amz_date, date_stamp)
 
 # Serialize + sign an awsJson operation using the current UTC time and the
 # service's regional endpoint — the usual live path (mirrors aws.core's
@@ -133,13 +136,13 @@ def awsjson_request(
 # from datetime.now().
 def awsjson_request_now(
     AwsJson p,
-    Credentials creds,
+    core.Credentials creds,
     str region,
     str op,
     str body,
 ) -> str:
-    auto host = regional_host(p.service, region)
-    auto t = signing_time_now()
+    auto host = endpoints.regional_host(p.service, region)
+    auto t = core.signing_time_now()
     return awsjson_request(p, creds, region, host, op, body, t.amz_date, t.date_stamp)
 
 # ---------------------------------------------------------------------------
@@ -180,9 +183,9 @@ def awsjson_strip_error_code(str raw) -> str:
 # The awsJson error shape name for a response: prefer the body's `__type` field,
 # then the `x-amzn-errortype` response header, stripped to the bare shape name.
 # Returns "" when neither is present.
-def awsjson_error_code(Response resp) -> str:
+def awsjson_error_code(core.Response resp) -> str:
     auto raw = ""
-    Optional[str] jtype = json_string_field(resp.body, "__type")
+    Optional[str] jtype = core.json_string_field(resp.body, "__type")
     raw = jtype.unwrap_or(raw)
     if len(raw) == 0:
         Optional[str] htype = resp.headers.get("x-amzn-errortype")
@@ -193,22 +196,22 @@ def awsjson_error_code(Response resp) -> str:
 
 # The error message an awsJson fault carries: services use either "message" or
 # "Message" in the body (both occur across services).
-def awsjson_error_message(Response resp) -> str:
+def awsjson_error_message(core.Response resp) -> str:
     auto message = ""
-    Optional[str] lower = json_string_field(resp.body, "message")
+    Optional[str] lower = core.json_string_field(resp.body, "message")
     message = lower.unwrap_or(message)
-    Optional[str] upper = json_string_field(resp.body, "Message")
+    Optional[str] upper = core.json_string_field(resp.body, "Message")
     message = upper.unwrap_or(message)
     return message
 
 # Dispatch an awsJson response to an error. Returns none on a 2xx status; on a
 # fault, an aws.core.AwsError with the stripped `__type`/header shape name, the
 # message, and the HTTP status — the typed-ish error the SDK surfaces today.
-def awsjson_error(Response resp) -> Optional[AwsError]:
-    if is_success(resp.status):
+def awsjson_error(core.Response resp) -> Optional[core.AwsError]:
+    if core.is_success(resp.status):
         return Optional.None
     return Optional.Some(
-        AwsError(
+        core.AwsError(
             code=awsjson_error_code(resp),
             message=awsjson_error_message(resp),
             status=resp.status,

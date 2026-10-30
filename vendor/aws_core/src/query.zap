@@ -34,6 +34,8 @@
 #
 # Depends on aws.core (bundled ahead of this file).
 
+import core
+import endpoints
 import xml
 import base64
 import datetime
@@ -216,15 +218,15 @@ def query_build_request(
     str host,
     str body,
     str amz_date,
-) -> Request:
-    auto body_sha = payload_hash(body)
+) -> core.Request:
+    auto body_sha = core.payload_hash(body)
     dict[str, str] h = {}
     h["content-type"] = query_content_type()
     h["host"] = host
     h["x-amz-content-sha256"] = body_sha
     h["x-amz-date"] = amz_date
     dict[str, str] query = {}
-    return Request(
+    return core.Request(
         method="POST",
         service=service,
         region=region,
@@ -241,7 +243,7 @@ def query_build_request(
 # query string), whose canonicalization is unchanged, so the pinned SigV4
 # vectors are unaffected.
 def query_sign(
-    Credentials creds,
+    core.Credentials creds,
     str service,
     str region,
     str host,
@@ -251,13 +253,18 @@ def query_sign(
 ) -> str:
     auto body = query_encode(p)
     auto req = query_build_request(service, region, host, body, amz_date)
-    return sign_request(creds, req, amz_date, date_stamp)
+    return core.sign_request(creds, req, amz_date, date_stamp)
 
 # Encode + sign a query/ec2 operation using the current UTC time and the
 # service's regional endpoint — the usual live path (mirrors awsjson_request_now).
-def query_request(Credentials creds, str service, str region, list[QueryPair] p) -> str:
-    auto host = regional_host(service, region)
-    auto t = signing_time_now()
+def query_request(
+    core.Credentials creds,
+    str service,
+    str region,
+    list[QueryPair] p,
+) -> str:
+    auto host = endpoints.regional_host(service, region)
+    auto t = core.signing_time_now()
     return query_sign(creds, service, region, host, p, t.amz_date, t.date_stamp)
 
 # ---------------------------------------------------------------------------
@@ -272,7 +279,7 @@ def query_request(Credentials creds, str service, str region, list[QueryPair] p)
 #     children of the response root; no Result wrapper).
 
 # Parse a response body into the XML DOM root (the `<…Response>` element).
-def query_parse(Response resp) -> XmlElement:
+def query_parse(core.Response resp) -> XmlElement:
     return xml.parse(resp.body)
 
 # The awsQuery result element: the `<…Result>` child of the response root (the
@@ -312,7 +319,7 @@ def ec2_request_id(XmlElement root) -> str:
 # The `<Error>` element of a parsed awsQuery error document
 # (`<ErrorResponse><Error><Code>/<Message>…`), or none when the body is empty,
 # non-XML, or carries no `<Error>`.
-def query_error_element(Response resp) -> Optional[XmlElement]:
+def query_error_element(core.Response resp) -> Optional[XmlElement]:
     if len(resp.body) == 0:
         return Optional.None
     if not resp.body.startswith("<"):
@@ -322,7 +329,7 @@ def query_error_element(Response resp) -> Optional[XmlElement]:
 
 # The `<Error>` element of a parsed ec2Query error document
 # (`<Response><Errors><Error><Code>/<Message>…`), or none when absent.
-def ec2_error_element(Response resp) -> Optional[XmlElement]:
+def ec2_error_element(core.Response resp) -> Optional[XmlElement]:
     if len(resp.body) == 0:
         return Optional.None
     if not resp.body.startswith("<"):
@@ -347,12 +354,12 @@ def query_error_field(Optional[XmlElement] err, str field) -> str:
 # and message come from `<ErrorResponse><Error>`; the status is the HTTP status.
 # Matches aws.core's `AwsError` so retry/classification code is shared across
 # protocols (like awsjson/restjson/restxml).
-def query_error(Response resp) -> Optional[AwsError]:
-    if is_success(resp.status):
+def query_error(core.Response resp) -> Optional[core.AwsError]:
+    if core.is_success(resp.status):
         return Optional.None
     auto err = query_error_element(resp)
     return Optional.Some(
-        AwsError(
+        core.AwsError(
             code=query_error_field(err, "Code"),
             message=query_error_field(err, "Message"),
             status=resp.status,
@@ -362,12 +369,12 @@ def query_error(Response resp) -> Optional[AwsError]:
 # Dispatch an ec2Query response to an AwsError, or none on a 2xx status. The code
 # and message come from `<Response><Errors><Error>`; the status is the HTTP
 # status.
-def ec2_error(Response resp) -> Optional[AwsError]:
-    if is_success(resp.status):
+def ec2_error(core.Response resp) -> Optional[core.AwsError]:
+    if core.is_success(resp.status):
         return Optional.None
     auto err = ec2_error_element(resp)
     return Optional.Some(
-        AwsError(
+        core.AwsError(
             code=query_error_field(err, "Code"),
             message=query_error_field(err, "Message"),
             status=resp.status,
