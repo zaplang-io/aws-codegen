@@ -6,7 +6,9 @@
 //! struct whose methods build the input shape and dispatch through the
 //! `aws.awsjson` codec, returning ready-to-send signed request text.
 
-use crate::binding::{plan_operation, BindFmt, OpBinding, PayloadBody, QueryListBind, ScalarBind};
+use crate::binding::{
+    plan_operation, BindFmt, OpBinding, PayloadBind, PayloadBody, QueryListBind, ScalarBind,
+};
 use crate::jsonbody::{compute_json_serializable, plan_enc, JsonSer};
 use crate::model::{Model, Paginators, Shape};
 use crate::naming::{escape_ident, snake_case};
@@ -370,7 +372,7 @@ impl<'a> Generator<'a> {
         let skip_reason = match self.protocol {
             Protocol::AwsJson => "input has a non-string-keyed map or free-form document member",
             Protocol::RestJson => {
-                "a non-scalar URI/query/header binding, or a non-derivable payload"
+                "a non-scalar URI/query/header binding, or a non-serializable payload"
             }
             Protocol::RestXml => "a body member is not yet serializable by the XML emitter",
             Protocol::Query | Protocol::Ec2 => {
@@ -1036,6 +1038,17 @@ impl<'a> Generator<'a> {
                             }
                         }
                     }
+                    // A structured `httpPayload` body (zaplang-io/zap#427): the
+                    // payload shape is a serializer root. `plan_roots` emits a
+                    // serializer only for the non-derivable ones, so naming a
+                    // derivable payload here is a harmless no-op.
+                    if let Some(PayloadBind {
+                        body: PayloadBody::Document(shape),
+                        ..
+                    }) = &plan.payload
+                    {
+                        ser_roots.push(shape.clone());
+                    }
                     plans.push((op_name, plan));
                     cov.operations_methods += 1;
                 }
@@ -1242,16 +1255,42 @@ impl<'a> Generator<'a> {
             plan.method, plan.path_template
         ));
 
+        // An optional structured `httpPayload` body (zaplang-io/zap#427): an
+        // absent payload sends no body at all (not an empty one), so guard the
+        // whole serialize-and-attach on `is_some()` and sign the bare binding
+        // otherwise. The member is unwrapped to a fresh local the serializer
+        // reads from.
+        if let Some(PayloadBind {
+            field,
+            body: PayloadBody::Document(shape),
+            optional: true,
+        }) = &plan.payload
+        {
+            let expr = ser.body_expr(shape, "pv");
+            b.push_str(&format!("{i2}if input.{field}.is_some():\n"));
+            b.push_str(&format!("{i3}auto pv = input.{field}.unwrap()\n"));
+            b.push_str(&format!(
+                "{i3}auto bp = restjson.rest_json_raw_payload(b, {expr}, \"application/json\")\n"
+            ));
+            b.push_str(&format!(
+                "{i3}return restjson.rest_json_request(self.creds, bp, {svc}_service(), self.region, host)\n"
+            ));
+            b.push_str(&format!(
+                "{i2}return restjson.rest_json_request(self.creds, b, {svc}_service(), self.region, host)\n"
+            ));
+            return b;
+        }
+
         // Attach the body and sign.
         let bind_var = if let Some(p) = &plan.payload {
-            let (expr, ct) = match p.body {
+            let (expr, ct) = match &p.body {
                 PayloadBody::Blob => (
                     if p.optional {
                         format!("str(input.{}.unwrap_or(bytes()))", p.field)
                     } else {
                         format!("str(input.{})", p.field)
                     },
-                    "application/octet-stream",
+                    "application/octet-stream".to_string(),
                 ),
                 PayloadBody::Str => (
                     if p.optional {
@@ -1259,11 +1298,14 @@ impl<'a> Generator<'a> {
                     } else {
                         format!("input.{}", p.field)
                     },
-                    "text/plain",
+                    "text/plain".to_string(),
                 ),
-                PayloadBody::Document => {
-                    (format!("input.{}.to_json()", p.field), "application/json")
-                }
+                // A required structured payload: serialize via the derivable
+                // `.to_json()` or the explicit #424 serializer (zaplang-io/zap#427).
+                PayloadBody::Document(shape) => (
+                    ser.body_expr(shape, &format!("input.{}", p.field)),
+                    "application/json".to_string(),
+                ),
             };
             b.push_str(&format!(
                 "{i2}auto bp = restjson.rest_json_raw_payload(b, {expr}, \"{ct}\")\n"
@@ -1600,6 +1642,47 @@ impl<'a> Generator<'a> {
             plan.method, plan.path_template
         ));
 
+        // An optional structured `httpPayload` body (zaplang-io/zap#427): an
+        // absent member sends no body, so guard the build-and-attach on
+        // `is_some()` and sign the bare binding otherwise. The member is
+        // unwrapped to a fresh local the XML emitter reads from.
+        if let XmlBody::Struct {
+            field,
+            optional: true,
+            plan: struct_plan,
+        } = &plan.body
+        {
+            let i3 = format!("{i2}{IND}");
+            let mut counter: u32 = 0;
+            b.push_str(&format!("{i2}if input.{field}.is_some():\n"));
+            b.push_str(&format!("{i3}auto pv = input.{field}.unwrap()\n"));
+            b.push_str(&format!(
+                "{i3}auto root = {}\n",
+                xml_root_ctor(&struct_plan.root_name, &struct_plan.namespace)
+            ));
+            self.emit_xml_members(
+                &mut b,
+                &i3,
+                "root",
+                &struct_plan.members,
+                "pv",
+                &mut counter,
+            );
+            b.push_str(&format!(
+                "{i3}auto body = restxml.rest_xml_serialize(root)\n"
+            ));
+            b.push_str(&format!(
+                "{i3}auto bp = restxml.rest_xml_document(b, body)\n"
+            ));
+            b.push_str(&format!(
+                "{i3}return restxml.rest_xml_request(self.creds, bp, {svc}_service(), self.region, host)\n"
+            ));
+            b.push_str(&format!(
+                "{i2}return restxml.rest_xml_request(self.creds, b, {svc}_service(), self.region, host)\n"
+            ));
+            return b;
+        }
+
         let bind_var = match &plan.body {
             XmlBody::Empty => "b",
             XmlBody::Raw {
@@ -1630,7 +1713,12 @@ impl<'a> Generator<'a> {
                 ));
                 "bp"
             }
-            XmlBody::Struct { field, plan } => {
+            // A required structured payload (the optional case returned early).
+            XmlBody::Struct {
+                field,
+                optional: _,
+                plan,
+            } => {
                 let mut counter: u32 = 0;
                 let root_access = format!("input.{field}");
                 b.push_str(&format!(

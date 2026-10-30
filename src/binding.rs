@@ -83,9 +83,11 @@ pub enum PayloadBody {
     /// A `string` member: the body is the field verbatim, content type
     /// `text/plain`.
     Str,
-    /// A derivable `structure` member: the body is `field.to_json()`, content
-    /// type `application/json`.
-    Document,
+    /// A `structure` member serialized as the JSON body (content type
+    /// `application/json`), carrying the raw (model) shape name. A derivable
+    /// struct rides its `.to_json()`; a serializable-but-not-derivable one gets
+    /// the explicit `#424` serializer, named off this shape (zaplang-io/zap#427).
+    Document(String),
 }
 
 /// The single `httpPayload` member of a request, if any.
@@ -269,10 +271,20 @@ pub fn plan_operation(
             let body = match &ty {
                 ZapType::Bytes => PayloadBody::Blob,
                 ZapType::Str => PayloadBody::Str,
-                ZapType::Struct(n) if *derivable.get(n).unwrap_or(&false) => PayloadBody::Document,
+                // A structure payload becomes the JSON document body. A derivable
+                // struct rides `.to_json()`; a serializable-but-not-derivable one
+                // (nested/collection members) gets the explicit #424 serializer
+                // (zaplang-io/zap#427). Key the verdict by the raw model shape
+                // name — how `serializable`/`derivable` are keyed, which may
+                // differ from the resolved (escaped) type name. Only a genuinely
+                // non-serializable struct (free-form document / enum-keyed map)
+                // stays skipped.
+                ZapType::Struct(_) if *serializable.get(&r.shape).unwrap_or(&false) => {
+                    PayloadBody::Document(r.shape.clone())
+                }
                 ZapType::Struct(_) => {
                     return Err(format!(
-                        "httpPayload member `{mn}` is a non-derivable structure"
+                        "httpPayload member `{mn}` is a non-serializable structure"
                     ))
                 }
                 other => {
@@ -440,7 +452,13 @@ mod tests {
         "BadDoc":{"name":"BadDoc",
           "http":{"method":"POST","requestUri":"/d"},
           "input":{"shape":"BadDocRequest"}},
-        "NoHttp":{"name":"NoHttp","input":{"shape":"BadDocRequest"}}
+        "NoHttp":{"name":"NoHttp","input":{"shape":"BadDocRequest"}},
+        "PutDocReq":{"name":"PutDocReq",
+          "http":{"method":"POST","requestUri":"/doc/{Id}"},
+          "input":{"shape":"PutDocReqRequest"}},
+        "PutDocOpt":{"name":"PutDocOpt",
+          "http":{"method":"POST","requestUri":"/doc/{Id}"},
+          "input":{"shape":"PutDocOptRequest"}}
       },
       "shapes":{
         "S":{"type":"string"},
@@ -450,6 +468,19 @@ mod tests {
         "StrMap":{"type":"map","key":{"shape":"S"},"value":{"shape":"S"}},
         "IntMap":{"type":"map","key":{"shape":"I"},"value":{"shape":"S"}},
         "StrList":{"type":"list","member":{"shape":"S"}},
+        "Doc":{"type":"structure","members":{
+          "Name":{"shape":"S"},
+          "Items":{"shape":"StrList"}}},
+        "PutDocReqRequest":{"type":"structure","required":["Id","Body"],
+          "members":{
+            "Id":{"shape":"S","location":"uri","locationName":"Id"},
+            "Body":{"shape":"Doc"}},
+          "payload":"Body"},
+        "PutDocOptRequest":{"type":"structure","required":["Id"],
+          "members":{
+            "Id":{"shape":"S","location":"uri","locationName":"Id"},
+            "Body":{"shape":"Doc"}},
+          "payload":"Body"},
         "PutObjectRequest":{"type":"structure","required":["Bucket","Key","Body"],
           "members":{
             "Bucket":{"shape":"S","location":"uri","locationName":"Bucket"},
@@ -498,6 +529,32 @@ mod tests {
         );
         assert!(p.document.is_empty());
         assert!(!p.has_document_body());
+    }
+
+    #[test]
+    fn structured_payload_required_and_optional() {
+        // `Doc` has a list member, so it is serializable but NOT derivable: the
+        // payload rides the explicit #424 serializer, named off the raw shape
+        // (zaplang-io/zap#427). The required and optional forms differ only in
+        // the `optional` flag the emitter guards the body on.
+        let req = plan(M, "PutDocReq").unwrap();
+        assert_eq!(
+            req.payload,
+            Some(PayloadBind {
+                field: "Body".to_string(),
+                body: PayloadBody::Document("Doc".to_string()),
+                optional: false,
+            })
+        );
+        let opt = plan(M, "PutDocOpt").unwrap();
+        assert_eq!(
+            opt.payload,
+            Some(PayloadBind {
+                field: "Body".to_string(),
+                body: PayloadBody::Document("Doc".to_string()),
+                optional: true,
+            })
+        );
     }
 
     #[test]
