@@ -6,7 +6,7 @@
 //! struct whose methods build the input shape and dispatch through the
 //! `aws.awsjson` codec, returning ready-to-send signed request text.
 
-use crate::binding::{plan_operation, OpBinding, PayloadBody, ScalarBind};
+use crate::binding::{plan_operation, BindFmt, OpBinding, PayloadBody, QueryListBind, ScalarBind};
 use crate::jsonbody::{compute_json_serializable, plan_enc, JsonSer};
 use crate::model::{Model, Paginators, Shape};
 use crate::naming::{escape_ident, snake_case};
@@ -125,6 +125,11 @@ struct Generator<'a> {
     /// Set while emitting rest-xml bodies (#426): whether some member is a bool,
     /// so `xml_client_section` emits the per-file `_xml_bool` helper.
     xml_needs_bool: Cell<bool>,
+    /// Set while emitting URI/query/header binds (#425): whether some bound member
+    /// is a timestamp (needs `import datetime`) or a bool (needs the per-file
+    /// `_bind_bool` helper).
+    bind_needs_datetime: Cell<bool>,
+    bind_needs_bool: Cell<bool>,
 }
 
 impl<'a> Generator<'a> {
@@ -174,6 +179,8 @@ impl<'a> Generator<'a> {
             json_needs_base64: Cell::new(false),
             json_needs_datetime: Cell::new(false),
             xml_needs_bool: Cell::new(false),
+            bind_needs_datetime: Cell::new(false),
+            bind_needs_bool: Cell::new(false),
         }
     }
 
@@ -205,6 +212,17 @@ impl<'a> Generator<'a> {
             ));
         }
         out
+    }
+
+    /// The per-file helper that renders a bool bound to a URI/query/header slot
+    /// as its AWS wire text `"true"`/`"false"` (Zap's `str(bool)` is `"True"`,
+    /// the wrong casing; zaplang-io/zap#425). Emitted when some operation binds a
+    /// bool to a slot. Distinct from the rest-xml body helper `_xml_bool`.
+    fn bind_bool_helper(&self) -> String {
+        format!(
+            "# Render a bool bound to a URI/query/header slot as its wire text.\ndef {}_bind_bool(bool b) -> str:\n{IND}if b:\n{IND}{IND}return \"true\"\n{IND}return \"false\"\n\n",
+            self.fn_prefix
+        )
     }
 
     /// The SigV4 signing name: `signingName` when the model sets one, else the
@@ -433,7 +451,9 @@ impl<'a> Generator<'a> {
         if self.json_needs_base64.get() {
             s.push_str("import base64\n");
         }
-        if self.json_needs_datetime.get() {
+        // datetime is pulled in by the explicit JSON serializers (#424) and by a
+        // timestamp bound to a URI/query/header slot (#425).
+        if self.json_needs_datetime.get() || self.bind_needs_datetime.get() {
             s.push_str("import datetime\n");
         }
         s
@@ -1098,6 +1118,10 @@ impl<'a> Generator<'a> {
             out.push_str(&serializers);
         }
 
+        if self.bind_needs_bool.get() {
+            out.push_str(&self.bind_bool_helper());
+        }
+
         out.push_str(&format!(
             "# A bound {} client: credentials + region, threaded into every operation.\n",
             self.type_prefix
@@ -1177,18 +1201,28 @@ impl<'a> Generator<'a> {
             "{i2}auto host = endpoints.regional_host({svc}_service(), self.region)\n"
         ));
 
-        // Non-greedy vs greedy labels.
+        // Non-greedy vs greedy labels. A shared counter names any hoisted
+        // timestamp locals (`qt*`) across the label/query/header dicts.
+        let mut qctr: u32 = 0;
         let greedy: Vec<&ScalarBind> = plan.labels.iter().filter(|l| l.greedy).collect();
         let plain: Vec<&ScalarBind> = plan.labels.iter().filter(|l| !l.greedy).collect();
-        let labels_arg = self.rest_dict_local(&mut b, &i2, "labels", &plain);
-        let greedy_arg = self.rest_dict_local(&mut b, &i2, "greedy_labels", &greedy);
-        let query_arg =
-            self.rest_dict_local(&mut b, &i2, "query", &plan.query.iter().collect::<Vec<_>>());
+        let labels_arg = self.rest_dict_local(&mut b, &i2, "labels", &plain, &mut qctr);
+        let greedy_arg = self.rest_dict_local(&mut b, &i2, "greedy_labels", &greedy, &mut qctr);
+        let query_arg = self.rest_dict_local(
+            &mut b,
+            &i2,
+            "query",
+            &plan.query.iter().collect::<Vec<_>>(),
+            &mut qctr,
+        );
+        let multi_query_arg =
+            self.rest_multi_query_local(&mut b, &i2, &plan.query_lists.iter().collect::<Vec<_>>());
         let headers_arg = self.rest_dict_local(
             &mut b,
             &i2,
             "headers",
             &plan.headers.iter().collect::<Vec<_>>(),
+            &mut qctr,
         );
 
         let (pfx_arg, pmap_arg) = match &plan.prefix_headers {
@@ -1204,7 +1238,7 @@ impl<'a> Generator<'a> {
         };
 
         b.push_str(&format!(
-            "{i2}auto b = binding.HttpBinding(method=\"{}\", path_template=\"{}\", labels={labels_arg}, greedy_labels={greedy_arg}, query={query_arg}, headers={headers_arg}, prefix_header_prefix={pfx_arg}, prefix_headers={pmap_arg}, payload_kind=binding.PayloadKind.Empty, body=\"\", content_type=\"\")\n",
+            "{i2}auto b = binding.HttpBinding(method=\"{}\", path_template=\"{}\", labels={labels_arg}, greedy_labels={greedy_arg}, query={query_arg}, multi_query={multi_query_arg}, headers={headers_arg}, prefix_header_prefix={pfx_arg}, prefix_headers={pmap_arg}, payload_kind=binding.PayloadKind.Empty, body=\"\", content_type=\"\")\n",
             plan.method, plan.path_template
         ));
 
@@ -1290,13 +1324,16 @@ impl<'a> Generator<'a> {
     /// Declare a `dict[str, str]` local filled from the given scalar binds, and
     /// return the argument to pass to `HttpBinding` (the local name, or `{}`
     /// when there are no entries so no local is emitted). Optional members are
-    /// only inserted when present, so an absent member sends nothing.
+    /// only inserted when present, so an absent member sends nothing. `counter`
+    /// hands out collision-free `qt*` locals for a hoisted timestamp value (a
+    /// long `datetime.strftime(...)` would otherwise exceed the 88-col width).
     fn rest_dict_local(
         &self,
         out: &mut String,
         indent: &str,
         local: &str,
         binds: &[&ScalarBind],
+        counter: &mut u32,
     ) -> String {
         if binds.is_empty() {
             return "{}".to_string();
@@ -1306,21 +1343,125 @@ impl<'a> Generator<'a> {
         for s in binds {
             let access = format!("input.{}", s.field);
             if s.optional {
-                let val = match s.ty {
-                    ZapType::Int => format!("str({access}.unwrap_or(0))"),
-                    _ => format!("{access}.unwrap_or(\"\")"),
-                };
+                let val = self.bind_scalar_value(s.fmt, &access, true);
                 out.push_str(&format!("{indent}if {access}.is_some():\n"));
-                out.push_str(&format!("{i_inner}{local}[\"{}\"] = {val}\n", s.wire));
+                self.emit_dict_assign(out, &i_inner, local, &s.wire, &val, counter);
             } else {
-                let val = match s.ty {
-                    ZapType::Int => format!("str({access})"),
-                    _ => access,
-                };
-                out.push_str(&format!("{indent}{local}[\"{}\"] = {val}\n", s.wire));
+                let val = self.bind_scalar_value(s.fmt, &access, false);
+                self.emit_dict_assign(out, indent, local, &s.wire, &val, counter);
             }
         }
         local.to_string()
+    }
+
+    /// Emit `{indent}{local}["{wire}"] = {val}` on one line, or — when that would
+    /// exceed 88 columns (a long `datetime.strftime(...)`) — hoist `val` into a
+    /// fresh `qt*` local first, so the generated source stays within the
+    /// formatter's width by construction.
+    fn emit_dict_assign(
+        &self,
+        out: &mut String,
+        indent: &str,
+        local: &str,
+        wire: &str,
+        val: &str,
+        counter: &mut u32,
+    ) {
+        let one = format!("{indent}{local}[\"{wire}\"] = {val}");
+        if one.chars().count() <= 88 {
+            out.push_str(&one);
+            out.push('\n');
+        } else {
+            let tmp = format!("qt{}", *counter);
+            *counter += 1;
+            out.push_str(&format!("{indent}auto {tmp} = {val}\n"));
+            out.push_str(&format!("{indent}{local}[\"{wire}\"] = {tmp}\n"));
+        }
+    }
+
+    /// The wire-string expression for a scalar bound to a path/query/header slot,
+    /// given its `access` (`input.<field>`). Strings pass through, ints are
+    /// `str(...)`, a bool goes through the per-file `_bind_bool` helper, and a
+    /// timestamp is formatted with `datetime` (ISO-8601 / RFC-822 / epoch).
+    /// `optional` resolves the `Optional[...]` first (`.unwrap_or(...)` for the
+    /// scalars whose default is cheap, `.unwrap()` under the `is_some` guard for
+    /// bool/timestamp). Str/int keep the exact #345 spelling (byte-stable).
+    fn bind_scalar_value(&self, fmt: BindFmt, access: &str, optional: bool) -> String {
+        match fmt {
+            BindFmt::Str => {
+                if optional {
+                    format!("{access}.unwrap_or(\"\")")
+                } else {
+                    access.to_string()
+                }
+            }
+            BindFmt::Int => {
+                if optional {
+                    format!("str({access}.unwrap_or(0))")
+                } else {
+                    format!("str({access})")
+                }
+            }
+            BindFmt::Bool => {
+                self.bind_needs_bool.set(true);
+                let v = if optional {
+                    format!("{access}.unwrap_or(False)")
+                } else {
+                    access.to_string()
+                };
+                format!("{}_bind_bool({v})", self.fn_prefix)
+            }
+            BindFmt::TsIso8601 | BindFmt::TsRfc822 | BindFmt::TsEpoch => {
+                self.bind_needs_datetime.set(true);
+                let v = if optional {
+                    format!("{access}.unwrap()")
+                } else {
+                    access.to_string()
+                };
+                match fmt {
+                    BindFmt::TsIso8601 => {
+                        format!("datetime.strftime({v}, \"%Y-%m-%dT%H:%M:%SZ\")")
+                    }
+                    BindFmt::TsRfc822 => {
+                        format!("datetime.strftime({v}, \"%a, %d %b %Y %H:%M:%S GMT\")")
+                    }
+                    BindFmt::TsEpoch => format!("str(datetime.to_timestamp({v}))"),
+                    _ => unreachable!(),
+                }
+            }
+        }
+    }
+
+    /// Declare a `dict[str, list[str]] multi_query` local for the list members
+    /// bound to `httpQuery` (each element becomes a repeated query parameter),
+    /// and return the argument to pass to `HttpBinding` (`multi_query`, or `{}`
+    /// when there are none). An absent optional list sends nothing.
+    fn rest_multi_query_local(
+        &self,
+        out: &mut String,
+        indent: &str,
+        binds: &[&QueryListBind],
+    ) -> String {
+        if binds.is_empty() {
+            return "{}".to_string();
+        }
+        out.push_str(&format!(
+            "{indent}dict[str, list[str]] multi_query = {{}}\n"
+        ));
+        let i_inner = format!("{indent}{IND}");
+        for b in binds {
+            let access = format!("input.{}", b.field);
+            if b.optional {
+                out.push_str(&format!("{indent}if {access}.is_some():\n"));
+                out.push_str(&format!(
+                    "{i_inner}multi_query[\"{}\"] = {access}.unwrap()\n",
+                    b.wire
+                ));
+            } else {
+                out.push_str(&format!("{indent}multi_query[\"{}\"] = {access}\n", b.wire));
+            }
+        }
+        "multi_query".to_string()
     }
 
     // --- rest-xml client ---------------------------------------------------
@@ -1372,6 +1513,10 @@ impl<'a> Generator<'a> {
             ));
         }
 
+        if self.bind_needs_bool.get() {
+            out.push_str(&self.bind_bool_helper());
+        }
+
         out.push_str(&format!(
             "# A bound {} client: credentials + region, threaded into every operation.\n",
             self.type_prefix
@@ -1418,17 +1563,26 @@ impl<'a> Generator<'a> {
             "{i2}auto host = endpoints.regional_host({svc}_service(), self.region)\n"
         ));
 
+        let mut qctr: u32 = 0;
         let greedy: Vec<&ScalarBind> = plan.labels.iter().filter(|l| l.greedy).collect();
         let plain: Vec<&ScalarBind> = plan.labels.iter().filter(|l| !l.greedy).collect();
-        let labels_arg = self.rest_dict_local(&mut b, &i2, "labels", &plain);
-        let greedy_arg = self.rest_dict_local(&mut b, &i2, "greedy_labels", &greedy);
-        let query_arg =
-            self.rest_dict_local(&mut b, &i2, "query", &plan.query.iter().collect::<Vec<_>>());
+        let labels_arg = self.rest_dict_local(&mut b, &i2, "labels", &plain, &mut qctr);
+        let greedy_arg = self.rest_dict_local(&mut b, &i2, "greedy_labels", &greedy, &mut qctr);
+        let query_arg = self.rest_dict_local(
+            &mut b,
+            &i2,
+            "query",
+            &plan.query.iter().collect::<Vec<_>>(),
+            &mut qctr,
+        );
+        let multi_query_arg =
+            self.rest_multi_query_local(&mut b, &i2, &plan.query_lists.iter().collect::<Vec<_>>());
         let headers_arg = self.rest_dict_local(
             &mut b,
             &i2,
             "headers",
             &plan.headers.iter().collect::<Vec<_>>(),
+            &mut qctr,
         );
         let (pfx_arg, pmap_arg) = match &plan.prefix_headers {
             Some(ph) => {
@@ -1442,7 +1596,7 @@ impl<'a> Generator<'a> {
             None => ("\"\"".to_string(), "{}".to_string()),
         };
         b.push_str(&format!(
-            "{i2}auto b = binding.HttpBinding(method=\"{}\", path_template=\"{}\", labels={labels_arg}, greedy_labels={greedy_arg}, query={query_arg}, headers={headers_arg}, prefix_header_prefix={pfx_arg}, prefix_headers={pmap_arg}, payload_kind=binding.PayloadKind.Empty, body=\"\", content_type=\"\")\n",
+            "{i2}auto b = binding.HttpBinding(method=\"{}\", path_template=\"{}\", labels={labels_arg}, greedy_labels={greedy_arg}, query={query_arg}, multi_query={multi_query_arg}, headers={headers_arg}, prefix_header_prefix={pfx_arg}, prefix_headers={pmap_arg}, payload_kind=binding.PayloadKind.Empty, body=\"\", content_type=\"\")\n",
             plan.method, plan.path_template
         ));
 

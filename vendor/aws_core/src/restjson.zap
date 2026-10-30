@@ -92,7 +92,7 @@ def rest_json_sign(
     str date_stamp,
 ) -> str:
     auto req = binding.binding_request(b, service, region, host, amz_date)
-    return binding.binding_sign(creds, req, amz_date, date_stamp)
+    return binding.binding_sign(creds, req, amz_date, date_stamp, b.multi_query)
 
 # Build + sign a rest-json request using the current UTC time (the live path).
 def rest_json_request(

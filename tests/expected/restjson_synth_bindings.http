@@ -1,0 +1,9 @@
+GET /t/a%2Fb?after=2015-08-30T12%3A36%3A00Z&enabled=true&tag=a&tag=b&verbose=true HTTP/1.1
+host: svc.us-east-1.amazonaws.com
+x-amz-content-sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+x-amz-date: 20150830T123600Z
+x-since: Sun, 30 Aug 2015 12:36:00 GMT
+content-length: 0
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/svc/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-since, Signature=85bbb385c825f7d9715128970466ff84b588001c2cce2afe4b0b0aa35988452f
+Connection: close
+

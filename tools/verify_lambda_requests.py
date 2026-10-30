@@ -68,8 +68,11 @@ def uri_encode(s, slash_safe):
 
 def canonical_query(params):
     """SigV4 CanonicalQueryString (url.canonical_query): each key/value
-    percent-encoded, pairs sorted by encoded key then value, joined with '&'."""
-    enc = sorted((uri_encode(k, False), uri_encode(v, False)) for k, v in params.items())
+    percent-encoded, pairs sorted by encoded key then value, joined with '&'.
+    Accepts a dict (single-valued) or a list of (key, value) pairs — the latter
+    carries repeated keys (a list member bound to httpQuery, #425)."""
+    items = params.items() if isinstance(params, dict) else params
+    enc = sorted((uri_encode(k, False), uri_encode(v, False)) for k, v in items)
     return "&".join(f"{k}={v}" for k, v in enc)
 
 
@@ -95,16 +98,18 @@ def expand_path(template, labels, greedy):
     return out
 
 
-def binding_sign(method, path_template, labels, greedy, query, headers, body, content_type):
+def binding_sign(method, path_template, labels, greedy, query, headers, body, content_type,
+                 service=SERVICE, host=HOST):
     """aws.binding.binding_sign: sign a binding request whose path is ALREADY
     wire-encoded (canonical URI = a single quote_path, wire target = the path
-    verbatim), returning ready-to-send HTTP/1.1 text."""
+    verbatim), returning ready-to-send HTTP/1.1 text. `query` is a dict or, for
+    repeated-key parameters (a list bound to httpQuery, #425), a list of pairs."""
     wire_path = expand_path(path_template, labels, greedy)
 
     # binding_headers: the signed transport headers + member headers (+ Content-
     # Type when the body carries one). All names lowercase.
     signed = {
-        "host": HOST,
+        "host": host,
         "x-amz-date": AMZ,
         "x-amz-content-sha256": sha(body),
     }
@@ -118,9 +123,9 @@ def binding_sign(method, path_template, labels, greedy, query, headers, body, co
     canon_headers = "".join(f"{n}:{signed[n].strip()}\n" for n in sorted(signed))
     signed_names = ";".join(sorted(signed))
     creq = f"{method}\n{canon_uri}\n{canon_q}\n{canon_headers}\n{signed_names}\n{sha(body)}"
-    scope = f"{DS}/{REGION}/{SERVICE}/aws4_request"
+    scope = f"{DS}/{REGION}/{service}/aws4_request"
     sts = f"AWS4-HMAC-SHA256\n{AMZ}\n{scope}\n{sha(creq)}"
-    sig = hmac.new(signing_key(SECRET, DS, REGION, SERVICE), sts.encode(), hashlib.sha256).hexdigest()
+    sig = hmac.new(signing_key(SECRET, DS, REGION, service), sts.encode(), hashlib.sha256).hexdigest()
     auth = (f"AWS4-HMAC-SHA256 Credential={ACCESS}/{scope}, "
             f"SignedHeaders={signed_names}, Signature={sig}")
 
@@ -201,6 +206,27 @@ def create_function():
         {}, {}, {}, {}, body, "application/json")
 
 
+def restjson_synth_bindings():
+    # zaplang-io/zap#425: a synthetic rest-json op binding the types the HTTP
+    # binding layer now renders — a bool query (`enabled=true`), an optional bool
+    # query (`verbose=true`), an ISO-8601 timestamp query (`after=...`, the query
+    # default), an RFC-822 timestamp header (`x-since`, the header default), and a
+    # list[str] query emitted as REPEATED params (`tag=a&tag=b`, carried by the
+    # binding's multi_query). Id = "a/b" is a non-greedy label, so "/" -> %2F.
+    # Canonical query sorts the (encoded) pairs: after, enabled, tag, tag, verbose.
+    query = [
+        ("enabled", "true"),
+        ("verbose", "true"),
+        ("after", "2015-08-30T12:36:00Z"),
+        ("tag", "b"),
+        ("tag", "a"),
+    ]
+    headers = {"x-since": "Sun, 30 Aug 2015 12:36:00 GMT"}
+    return binding_sign(
+        "GET", "/t/{Id}", {"Id": "a/b"}, {}, query, headers, "", "",
+        service="svc", host="svc.us-east-1.amazonaws.com")
+
+
 FIXTURES = {
     "lambda_get_function": get_function,
     "lambda_list_functions": list_functions,
@@ -208,6 +234,7 @@ FIXTURES = {
     "lambda_invoke": invoke,
     "lambda_tag_resource": tag_resource,
     "lambda_create_function": create_function,
+    "restjson_synth_bindings": restjson_synth_bindings,
 }
 
 

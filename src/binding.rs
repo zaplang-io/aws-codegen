@@ -40,6 +40,38 @@ pub struct ScalarBind {
     /// The raw (model) member name, so the emitter can recover the member's
     /// `ShapeRef` (for JSON document serialization, zaplang-io/zap#424).
     pub member: String,
+    /// How the emitter turns the field into its wire string for this slot
+    /// (zaplang-io/zap#425): a plain string, a stringified int, `"true"`/`"false"`
+    /// for a bool, or a timestamp in the slot's format.
+    pub fmt: BindFmt,
+}
+
+/// How a scalar bound to a path/query/header slot is rendered on the wire
+/// (zaplang-io/zap#425). `Str` (a string or the plain wire string of an enum)
+/// and `Int` (`str(..)`) are the #345 forms; `Bool` goes through the per-file
+/// `_bind_bool` helper (`"true"`/`"false"`, never Zap's `str(bool)` = `"True"`),
+/// and the timestamp forms use `datetime` with the AWS default per slot — ISO-8601
+/// for a query parameter, RFC-822 (HTTP-date) for a header — or the member's
+/// explicit `timestampFormat`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BindFmt {
+    Str,
+    Int,
+    Bool,
+    TsIso8601,
+    TsRfc822,
+    TsEpoch,
+}
+
+/// A list member bound to `httpQuery`: each element becomes a repeated query
+/// parameter named `wire` (`?Tag=a&Tag=b`), carried by the binding's
+/// `multi_query` map. v0 handles `list[str]` (and enum lists, carried as their
+/// plain wire strings); other element types stay skipped.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct QueryListBind {
+    pub field: String,
+    pub wire: String,
+    pub optional: bool,
 }
 
 /// How a raw `httpPayload` member becomes the request body.
@@ -84,6 +116,9 @@ pub struct OpBinding {
     pub input_shape: Option<String>,
     pub labels: Vec<ScalarBind>,
     pub query: Vec<ScalarBind>,
+    /// List members bound to `httpQuery`, emitted as repeated query parameters
+    /// (zaplang-io/zap#425).
+    pub query_lists: Vec<QueryListBind>,
     pub headers: Vec<ScalarBind>,
     pub prefix_headers: Option<PrefixHeadersBind>,
     pub payload: Option<PayloadBind>,
@@ -104,14 +139,58 @@ impl OpBinding {
     }
 }
 
-/// A scalar type the binding layer can render into a path/query/header slot: a
-/// string, an open-enum (sent as its plain wire string), or an integer the
-/// emitter coerces with `str(...)`. Floats and bools are skipped in v0 (their
-/// Zap `str(...)` spelling does not match the AWS wire form — e.g. `True` vs
-/// `true`); timestamps, blobs and collections need member-specific wire
-/// formatting and are skipped too.
-fn is_bindable_scalar(ty: &ZapType) -> bool {
-    matches!(ty, ZapType::Str | ZapType::Enum(_) | ZapType::Int)
+/// Where a scalar is bound, so [`scalar_bind_fmt`] can pick the right timestamp
+/// default (ISO-8601 for a query parameter, RFC-822 HTTP-date for a header).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Slot {
+    Label,
+    Query,
+    Header,
+}
+
+/// Classify a scalar bound to a path/query/header slot into its wire rendering,
+/// or `None` when the type is not a bindable scalar (a collection, a struct, a
+/// blob, or a float — whose `str(...)` spelling does not match the AWS wire
+/// form). Shared by the rest-json ([`plan_operation`]) and rest-xml
+/// (`xml::plan_rest_xml`) binding layers so they stay in lock-step.
+///
+/// String/enum → [`BindFmt::Str`] (an enum is carried as its plain wire string),
+/// integer → [`BindFmt::Int`], boolean → [`BindFmt::Bool`]; a timestamp uses its
+/// explicit `timestampFormat` trait (member ref, else target shape) or the slot
+/// default (query ISO-8601 / header RFC-822). URI labels accept only the #345
+/// string/enum/int set — no AWS model binds a bool or timestamp to a label.
+pub fn scalar_bind_fmt(
+    model: &Model,
+    r: &crate::model::ShapeRef,
+    ty: &ZapType,
+    slot: Slot,
+) -> Option<BindFmt> {
+    match ty {
+        ZapType::Str | ZapType::Enum(_) => Some(BindFmt::Str),
+        ZapType::Int => Some(BindFmt::Int),
+        ZapType::Bool if slot != Slot::Label => Some(BindFmt::Bool),
+        ZapType::DateTime if slot != Slot::Label => Some(timestamp_fmt(model, r, slot)),
+        _ => None,
+    }
+}
+
+/// The timestamp wire format for a bound member: its explicit `timestampFormat`
+/// (on the member ref, else the target timestamp shape), else the AWS protocol
+/// default for the slot — ISO-8601 for a query parameter, RFC-822 (HTTP-date)
+/// for a header.
+fn timestamp_fmt(model: &Model, r: &crate::model::ShapeRef, slot: Slot) -> BindFmt {
+    let explicit = r.timestamp_format.as_deref().or_else(|| {
+        model
+            .shape(&r.shape)
+            .and_then(|s| s.timestamp_format.as_deref())
+    });
+    match explicit {
+        Some("iso8601") => BindFmt::TsIso8601,
+        Some("rfc822") => BindFmt::TsRfc822,
+        Some("unixTimestamp") => BindFmt::TsEpoch,
+        _ if slot == Slot::Header => BindFmt::TsRfc822,
+        _ => BindFmt::TsIso8601,
+    }
 }
 
 /// The type the generated input field takes for a bound scalar slot: a string
@@ -121,6 +200,13 @@ fn wire_type(ty: &ZapType) -> ZapType {
         ZapType::Enum(_) => ZapType::Str,
         other => other.clone(),
     }
+}
+
+/// Whether a list member bound to `httpQuery` can be emitted as repeated query
+/// parameters: v0 supports a `list[str]`. A list of any other element type
+/// (enum, struct, number, …) stays skipped, a documented #425 residual.
+pub fn query_list_elem_ok(ty: &ZapType) -> bool {
+    matches!(ty, ZapType::List(e) if **e == ZapType::Str)
 }
 
 /// Plan the rest-json binding for `op`, or return a short reason it must be
@@ -147,6 +233,7 @@ pub fn plan_operation(
         input_shape: None,
         labels: Vec::new(),
         query: Vec::new(),
+        query_lists: Vec::new(),
         headers: Vec::new(),
         prefix_headers: None,
         payload: None,
@@ -205,12 +292,9 @@ pub fn plan_operation(
 
         match r.location.as_deref() {
             Some("uri") => {
-                if !is_bindable_scalar(&ty) {
-                    return Err(format!(
-                        "httpLabel `{mn}` has unsupported type {}",
-                        ty.render()
-                    ));
-                }
+                let fmt = scalar_bind_fmt(model, r, &ty, Slot::Label).ok_or_else(|| {
+                    format!("httpLabel `{mn}` has unsupported type {}", ty.render())
+                })?;
                 let greedy = http.label_is_greedy(&wire);
                 plan.labels.push(ScalarBind {
                     field,
@@ -219,31 +303,37 @@ pub fn plan_operation(
                     ty: wire_type(&ty),
                     optional,
                     member: mn.clone(),
+                    fmt,
                 });
             }
             Some("querystring") => {
-                if !is_bindable_scalar(&ty) {
+                if let Some(fmt) = scalar_bind_fmt(model, r, &ty, Slot::Query) {
+                    plan.query.push(ScalarBind {
+                        field,
+                        wire,
+                        ty: wire_type(&ty),
+                        optional,
+                        greedy: false,
+                        member: mn.clone(),
+                        fmt,
+                    });
+                } else if query_list_elem_ok(&ty) {
+                    plan.query_lists.push(QueryListBind {
+                        field,
+                        wire,
+                        optional,
+                    });
+                } else {
                     return Err(format!(
                         "httpQuery `{mn}` has unsupported type {}",
                         ty.render()
                     ));
                 }
-                plan.query.push(ScalarBind {
-                    field,
-                    wire,
-                    ty: wire_type(&ty),
-                    optional,
-                    greedy: false,
-                    member: mn.clone(),
-                });
             }
             Some("header") => {
-                if !is_bindable_scalar(&ty) {
-                    return Err(format!(
-                        "httpHeader `{mn}` has unsupported type {}",
-                        ty.render()
-                    ));
-                }
+                let fmt = scalar_bind_fmt(model, r, &ty, Slot::Header).ok_or_else(|| {
+                    format!("httpHeader `{mn}` has unsupported type {}", ty.render())
+                })?;
                 plan.headers.push(ScalarBind {
                     field,
                     wire,
@@ -251,6 +341,7 @@ pub fn plan_operation(
                     optional,
                     greedy: false,
                     member: mn.clone(),
+                    fmt,
                 });
             }
             Some("headers") => {
@@ -296,6 +387,9 @@ pub fn plan_operation(
                     optional,
                     greedy: false,
                     member: mn.clone(),
+                    // Document members are serialized by the JSON emitter (plan_enc),
+                    // not by a slot formatter, so `fmt` is unused here.
+                    fmt: BindFmt::Str,
                 });
             }
         }
@@ -452,6 +546,61 @@ mod tests {
         let p = plan_operation(&m, &m.operations["Op"], &d, &s).unwrap();
         // The enum is bound as its plain wire string.
         assert_eq!(p.query[0].ty, ZapType::Str);
+    }
+
+    #[test]
+    fn binds_bool_timestamp_and_list_query() {
+        // zaplang-io/zap#425: a bool/timestamp query, a timestamp header (its
+        // default format differs from a query's), and a list[str] query (repeated
+        // params). A list of a non-string element stays skipped.
+        let m = Model::from_json_str(
+            r#"{"metadata":{"protocol":"rest-json","endpointPrefix":"svc"},
+              "operations":{"Op":{"name":"Op",
+                "http":{"method":"GET","requestUri":"/x"},"input":{"shape":"Req"}}},
+              "shapes":{
+                "S":{"type":"string"},"B":{"type":"boolean"},"T":{"type":"timestamp"},
+                "SL":{"type":"list","member":{"shape":"S"}},
+                "Req":{"type":"structure","members":{
+                  "Flag":{"shape":"B","location":"querystring","locationName":"flag"},
+                  "After":{"shape":"T","location":"querystring","locationName":"after"},
+                  "Since":{"shape":"T","location":"header","locationName":"x-since"},
+                  "Tags":{"shape":"SL","location":"querystring","locationName":"tag"}}}}}"#,
+        )
+        .unwrap();
+        let d = compute_derivable(&m);
+        let s = compute_json_serializable(&m, &d);
+        let p = plan_operation(&m, &m.operations["Op"], &d, &s).unwrap();
+
+        let flag = p.query.iter().find(|q| q.field == "Flag").unwrap();
+        assert_eq!(flag.fmt, BindFmt::Bool);
+        let after = p.query.iter().find(|q| q.field == "After").unwrap();
+        assert_eq!(after.fmt, BindFmt::TsIso8601); // query default
+        let since = p.headers.iter().find(|h| h.field == "Since").unwrap();
+        assert_eq!(since.fmt, BindFmt::TsRfc822); // header default
+                                                  // The list[str] query is a repeated-param bind, not a scalar.
+        assert_eq!(p.query_lists.len(), 1);
+        assert_eq!(p.query_lists[0].wire, "tag");
+        assert!(!p.query.iter().any(|q| q.field == "Tags"));
+    }
+
+    #[test]
+    fn timestamp_format_trait_overrides_slot_default() {
+        // An explicit timestampFormat beats the slot default (epoch in a header).
+        let m = Model::from_json_str(
+            r#"{"metadata":{"protocol":"rest-json","endpointPrefix":"svc"},
+              "operations":{"Op":{"name":"Op",
+                "http":{"method":"GET","requestUri":"/x"},"input":{"shape":"Req"}}},
+              "shapes":{
+                "T":{"type":"timestamp"},
+                "Req":{"type":"structure","members":{
+                  "When":{"shape":"T","location":"header","locationName":"x-when",
+                    "timestampFormat":"unixTimestamp"}}}}}"#,
+        )
+        .unwrap();
+        let d = compute_derivable(&m);
+        let s = compute_json_serializable(&m, &d);
+        let p = plan_operation(&m, &m.operations["Op"], &d, &s).unwrap();
+        assert_eq!(p.headers[0].fmt, BindFmt::TsEpoch);
     }
 
     #[test]
