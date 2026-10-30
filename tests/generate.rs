@@ -535,3 +535,68 @@ fn xml_family_generation_is_deterministic() {
         generate_with_sidecar("iam", "2010-05-08").0
     );
 }
+
+// --- #364 broad rollout: every manifested package regenerates byte-identically -
+
+/// The whole generated SDK is manifest-driven (#364): `models/manifest.json` is
+/// the single source of truth, and every service listed there must have a
+/// checked-in `generated/<pkg>/` package that regenerates byte-for-byte from its
+/// pinned model (+ paginators sidecar when present). `<pkg>` is the service name
+/// with `-` mapped to `_` (a valid Zap identifier), matching
+/// `tools/manifest_services.py` and the CI determinism step. This is the
+/// toolchain-free determinism gate for the broad rollout: it covers all services
+/// at once (the hand-written per-service `checked_in_*_output_is_current` tests
+/// above remain as focused, coverage-asserting spot checks).
+#[test]
+fn all_checked_in_packages_are_current() {
+    let manifest_path = repo_root().join("models/manifest.json");
+    let manifest: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&manifest_path)
+            .unwrap_or_else(|e| panic!("reading {}: {e}", manifest_path.display())),
+    )
+    .expect("models/manifest.json is valid JSON");
+    let services = manifest["services"]
+        .as_array()
+        .expect("manifest.services is an array");
+    assert!(
+        services.len() >= 400,
+        "expected the broad-rollout manifest (>=400 services), found {}",
+        services.len()
+    );
+
+    let mut stale = Vec::new();
+    for entry in services {
+        let svc = entry["service"].as_str().expect("service is a string");
+        let ver = entry["api_version"]
+            .as_str()
+            .expect("api_version is a string");
+        let pkg = svc.replace('-', "_");
+
+        let model = read_model(&format!("models/{svc}/{ver}/service-2.json"));
+        // Paginators are an optional sidecar; the CLI picks it up when present.
+        let pag_path = repo_root().join(format!("models/{svc}/{ver}/paginators-1.json"));
+        let pag = std::fs::read_to_string(&pag_path).ok();
+        let (src, _cov) = aws_codegen::generate_from_json_with_paginators(&model, pag.as_deref())
+            .unwrap_or_else(|e| panic!("generating {svc}: {e}"));
+
+        let client_rel = format!("generated/{pkg}/src/{pkg}.zap");
+        let on_disk = std::fs::read_to_string(repo_root().join(&client_rel))
+            .unwrap_or_else(|e| panic!("reading {client_rel}: {e}"));
+        if src != on_disk {
+            stale.push(client_rel);
+        }
+
+        let toml_rel = format!("generated/{pkg}/zap.toml");
+        let toml_on_disk = std::fs::read_to_string(repo_root().join(&toml_rel))
+            .unwrap_or_else(|e| panic!("reading {toml_rel}: {e}"));
+        if aws_codegen::package_manifest(&pkg) != toml_on_disk {
+            stale.push(toml_rel);
+        }
+    }
+    assert!(
+        stale.is_empty(),
+        "{} generated file(s) are stale — run `make generate`: {:?}",
+        stale.len(),
+        stale
+    );
+}

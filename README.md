@@ -27,8 +27,19 @@ service to land under this policy — there is no hand-written STS client.
 
 ## Services
 
+As of the **#364 broad rollout**, `models/manifest.json` lists **every botocore
+service on a protocol the generator supports** — **410 services** generated from
+the pinned botocore 1.43.121 snapshot (awsJson, rest-json, rest-xml, query, ec2);
+the 25 `smithy-rpc-v2-cbor` services are the only ones omitted. See
+[`docs/coverage.md`](docs/coverage.md) for the full per-protocol / per-service
+coverage report and the categorized generator-gap list (12,233 of 18,536
+operations generated; the rest skipped per-op with a documented reason).
+
 The generator is the single source of truth for every checked-in client; CI
-regenerates each from its pinned model and fails on any drift.
+regenerates each from its pinned model and fails on any drift. The table below is
+the set of **representative, byte-diff-verified** services (one or more per
+protocol) that pin wire fidelity; every other manifested service rides the same
+protocol codecs.
 
 | Service | Protocol | Model | Generated | Notes |
 |---|---|---|---|---|
@@ -183,10 +194,17 @@ available.
 ## Usage
 
 ```bash
+# Emit a full zenv package (zap.toml + src/<name>.zap) — how the SDK is built:
+cargo run --release -- path/to/service-2.json --package generated/<name> --name <name>
+# ...or just the client source to a file / stdout:
 cargo run --release -- path/to/service-2.json -o out/client.zap
-# or to stdout:
 cargo run --release -- path/to/service-2.json
 ```
+
+The checked-in SDK is driven entirely by `models/manifest.json`: `make generate`
+regenerates every manifested service (via `tools/manifest_services.py`, which maps
+each `service` to its `generated/<package>/` — the service name with `-`→`_`).
+Adding a service is a one-line manifest edit, then `make sync && make generate`.
 
 ## Model sourcing
 

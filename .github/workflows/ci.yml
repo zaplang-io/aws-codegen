@@ -54,33 +54,29 @@ jobs:
       - name: generated output is current (determinism)
         # The generator is the source of truth: every checked-in client must
         # regenerate byte-identically from its pinned model (+ paginators sidecar).
+        # Driven by models/manifest.json (#364 broad rollout) via
+        # tools/manifest_services.py, so this covers every manifested service with
+        # no hand-maintained list. `cargo test` also checks this (the data-driven
+        # `all_checked_in_packages_are_current` test); this step keeps the check in
+        # the exact CLI shape users run (`aws-codegen <model> --package ... --name`).
         run: |
-          set -e
-          # Each client is a zenv package (#339 step 2): regenerate the whole
-          # package (zap.toml + src/<svc>.zap) into a temp dir and diff both
-          # files against the checked-in package.
-          regen() {
-            model="$1"; svc="$2"
+          set -eu
+          cargo build --locked
+          bin="$(pwd)/target/debug/aws-codegen"
+          fail=0
+          while IFS="$(printf '\t')" read -r svc ver pkg; do
+            model="models/$svc/$ver/service-2.json"
             out="$(mktemp -d)"
-            cargo run --locked -- "$model" --package "$out" --name "$svc"
-            for rel in zap.toml "src/$svc.zap"; do
-              if ! diff -u "generated/$svc/$rel" "$out/$rel"; then
-                echo "::error::generated/$svc/$rel is stale — regenerate it" >&2
-                exit 1
+            "$bin" "$model" --package "$out" --name "$pkg"
+            for rel in zap.toml "src/$pkg.zap"; do
+              if ! diff -u "generated/$pkg/$rel" "$out/$rel"; then
+                echo "::error::generated/$pkg/$rel is stale — regenerate it (make generate)" >&2
+                fail=1
               fi
             done
-          }
-          regen models/dynamodb/2012-08-10/service-2.json   dynamodb
-          regen models/sqs/2012-11-05/service-2.json         sqs
-          regen models/kinesis/2013-12-02/service-2.json     kinesis
-          regen models/lambda/2015-03-31/service-2.json      lambda
-          regen models/cloudfront/2015-09-17/service-2.json  cloudfront
-          regen models/sdb/2009-04-15/service-2.json         sdb
-          regen models/ec2/2016-11-15/service-2.json         ec2
-          regen models/sts/2011-06-15/service-2.json         sts
-          regen models/s3/2006-03-01/service-2.json          s3
-          regen models/sns/2010-03-31/service-2.json         sns
-          regen models/iam/2010-05-08/service-2.json         iam
+            rm -rf "$out"
+          done < <(python3 tools/manifest_services.py)
+          exit "$fail"
 
       - name: byte-diff goldens are correct SigV4 (independent oracles)
         # Toolchain-free second implementations of the on-the-wire request bytes;

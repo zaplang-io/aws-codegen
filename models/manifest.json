@@ -1,18 +1,1647 @@
 {
-  "_about": "Declarative source of truth for the vendored AWS service models. botocore is pinned here; tools/sync-models.py snapshots ONLY the services listed below into models/<service>/<api_version>/ from that exact botocore release. The generator builds from the checked-in snapshot, so `cargo build` and the generator never need pip or the network. To add a service: add an entry, rerun the sync, review the diff. To bump every model: bump botocore_version + wheel_sha256, rerun the sync, review the diff. See README.md > Model sourcing.",
+  "_about": "Declarative source of truth for the vendored AWS service models. botocore is pinned here; tools/sync-models.py snapshots ONLY the services listed below into models/<service>/<api_version>/ from that exact botocore release. The generator builds from the checked-in snapshot, so `cargo build` and the generator never need pip or the network. To add a service: add an entry, rerun the sync, review the diff. To bump every model: bump botocore_version + wheel_sha256, rerun the sync, review the diff. As of the #364 broad rollout this lists every botocore service on a protocol the generator supports (awsJson/rest-json/rest-xml/query/ec2); services on unsupported protocols (smithy-rpc-v2-cbor) are omitted. Existing services keep their originally pinned api_version. See README.md > Model sourcing.",
   "botocore_version": "1.43.121",
   "wheel_sha256": "39bfd17e69f3370350e6aac2072df64045d002f9878e09115e85b87c772bd473",
   "services": [
-    { "service": "dynamodb", "api_version": "2012-08-10" },
-    { "service": "sqs", "api_version": "2012-11-05" },
-    { "service": "kinesis", "api_version": "2013-12-02" },
-    { "service": "lambda", "api_version": "2015-03-31" },
-    { "service": "cloudfront", "api_version": "2015-09-17" },
-    { "service": "sdb", "api_version": "2009-04-15" },
-    { "service": "ec2", "api_version": "2016-11-15" },
-    { "service": "sts", "api_version": "2011-06-15" },
-    { "service": "s3", "api_version": "2006-03-01" },
-    { "service": "sns", "api_version": "2010-03-31" },
-    { "service": "iam", "api_version": "2010-05-08" }
+    {
+      "service": "accessanalyzer",
+      "api_version": "2019-11-01"
+    },
+    {
+      "service": "account",
+      "api_version": "2021-02-01"
+    },
+    {
+      "service": "account-access",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "acm",
+      "api_version": "2015-12-08"
+    },
+    {
+      "service": "acm-pca",
+      "api_version": "2017-08-22"
+    },
+    {
+      "service": "agent-registry",
+      "api_version": "2025-12-01"
+    },
+    {
+      "service": "agent-registry-control",
+      "api_version": "2025-12-01"
+    },
+    {
+      "service": "aiops",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "amp",
+      "api_version": "2020-08-01"
+    },
+    {
+      "service": "amplify",
+      "api_version": "2017-07-25"
+    },
+    {
+      "service": "amplifybackend",
+      "api_version": "2020-08-11"
+    },
+    {
+      "service": "amplifyuibuilder",
+      "api_version": "2021-08-11"
+    },
+    {
+      "service": "apigateway",
+      "api_version": "2015-07-09"
+    },
+    {
+      "service": "apigatewaymanagementapi",
+      "api_version": "2018-11-29"
+    },
+    {
+      "service": "apigatewayv2",
+      "api_version": "2018-11-29"
+    },
+    {
+      "service": "appconfig",
+      "api_version": "2019-10-09"
+    },
+    {
+      "service": "appconfigdata",
+      "api_version": "2021-11-11"
+    },
+    {
+      "service": "appfabric",
+      "api_version": "2023-05-19"
+    },
+    {
+      "service": "appflow",
+      "api_version": "2020-08-23"
+    },
+    {
+      "service": "appintegrations",
+      "api_version": "2020-07-29"
+    },
+    {
+      "service": "application-autoscaling",
+      "api_version": "2016-02-06"
+    },
+    {
+      "service": "application-signals",
+      "api_version": "2024-04-15"
+    },
+    {
+      "service": "applicationcostprofiler",
+      "api_version": "2020-09-10"
+    },
+    {
+      "service": "appmesh",
+      "api_version": "2019-01-25"
+    },
+    {
+      "service": "apprunner",
+      "api_version": "2020-05-15"
+    },
+    {
+      "service": "appsync",
+      "api_version": "2017-07-25"
+    },
+    {
+      "service": "arc-zonal-shift",
+      "api_version": "2022-10-30"
+    },
+    {
+      "service": "artifact",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "athena",
+      "api_version": "2017-05-18"
+    },
+    {
+      "service": "auditmanager",
+      "api_version": "2017-07-25"
+    },
+    {
+      "service": "autoscaling",
+      "api_version": "2011-01-01"
+    },
+    {
+      "service": "autoscaling-plans",
+      "api_version": "2018-01-06"
+    },
+    {
+      "service": "b2bi",
+      "api_version": "2022-06-23"
+    },
+    {
+      "service": "backup",
+      "api_version": "2018-11-15"
+    },
+    {
+      "service": "backupsearch",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "batch",
+      "api_version": "2016-08-10"
+    },
+    {
+      "service": "bcm-dashboards",
+      "api_version": "2025-08-18"
+    },
+    {
+      "service": "bcm-data-exports",
+      "api_version": "2023-11-26"
+    },
+    {
+      "service": "bcm-pricing-calculator",
+      "api_version": "2024-06-19"
+    },
+    {
+      "service": "bcm-recommended-actions",
+      "api_version": "2024-11-14"
+    },
+    {
+      "service": "bedrock",
+      "api_version": "2023-04-20"
+    },
+    {
+      "service": "bedrock-agent",
+      "api_version": "2023-06-05"
+    },
+    {
+      "service": "bedrock-agent-runtime",
+      "api_version": "2023-07-26"
+    },
+    {
+      "service": "bedrock-agentcore",
+      "api_version": "2024-02-28"
+    },
+    {
+      "service": "bedrock-agentcore-control",
+      "api_version": "2023-06-05"
+    },
+    {
+      "service": "bedrock-data-automation",
+      "api_version": "2023-07-26"
+    },
+    {
+      "service": "bedrock-data-automation-runtime",
+      "api_version": "2024-06-13"
+    },
+    {
+      "service": "bedrock-runtime",
+      "api_version": "2023-09-30"
+    },
+    {
+      "service": "billing",
+      "api_version": "2023-09-07"
+    },
+    {
+      "service": "billingconductor",
+      "api_version": "2021-07-30"
+    },
+    {
+      "service": "braket",
+      "api_version": "2019-09-01"
+    },
+    {
+      "service": "budgets",
+      "api_version": "2016-10-20"
+    },
+    {
+      "service": "ce",
+      "api_version": "2017-10-25"
+    },
+    {
+      "service": "chatbot",
+      "api_version": "2017-10-11"
+    },
+    {
+      "service": "chime",
+      "api_version": "2018-05-01"
+    },
+    {
+      "service": "chime-sdk-identity",
+      "api_version": "2021-04-20"
+    },
+    {
+      "service": "chime-sdk-media-pipelines",
+      "api_version": "2021-07-15"
+    },
+    {
+      "service": "chime-sdk-meetings",
+      "api_version": "2021-07-15"
+    },
+    {
+      "service": "chime-sdk-messaging",
+      "api_version": "2021-05-15"
+    },
+    {
+      "service": "chime-sdk-voice",
+      "api_version": "2022-08-03"
+    },
+    {
+      "service": "cleanrooms",
+      "api_version": "2022-02-17"
+    },
+    {
+      "service": "cleanroomsml",
+      "api_version": "2023-09-06"
+    },
+    {
+      "service": "cloud9",
+      "api_version": "2017-09-23"
+    },
+    {
+      "service": "cloudcontrol",
+      "api_version": "2021-09-30"
+    },
+    {
+      "service": "clouddirectory",
+      "api_version": "2017-01-11"
+    },
+    {
+      "service": "cloudformation",
+      "api_version": "2010-05-15"
+    },
+    {
+      "service": "cloudfront",
+      "api_version": "2015-09-17"
+    },
+    {
+      "service": "cloudfront-keyvaluestore",
+      "api_version": "2022-07-26"
+    },
+    {
+      "service": "cloudhsm",
+      "api_version": "2014-05-30"
+    },
+    {
+      "service": "cloudhsmv2",
+      "api_version": "2017-04-28"
+    },
+    {
+      "service": "cloudsearch",
+      "api_version": "2013-01-01"
+    },
+    {
+      "service": "cloudsearchdomain",
+      "api_version": "2013-01-01"
+    },
+    {
+      "service": "cloudtrail",
+      "api_version": "2013-11-01"
+    },
+    {
+      "service": "cloudtrail-data",
+      "api_version": "2021-08-11"
+    },
+    {
+      "service": "codeartifact",
+      "api_version": "2018-09-22"
+    },
+    {
+      "service": "codebuild",
+      "api_version": "2016-10-06"
+    },
+    {
+      "service": "codecatalyst",
+      "api_version": "2022-09-28"
+    },
+    {
+      "service": "codecommit",
+      "api_version": "2015-04-13"
+    },
+    {
+      "service": "codedeploy",
+      "api_version": "2014-10-06"
+    },
+    {
+      "service": "codeguru-reviewer",
+      "api_version": "2019-09-19"
+    },
+    {
+      "service": "codeguru-security",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "codeguruprofiler",
+      "api_version": "2019-07-18"
+    },
+    {
+      "service": "codepipeline",
+      "api_version": "2015-07-09"
+    },
+    {
+      "service": "codestar-connections",
+      "api_version": "2019-12-01"
+    },
+    {
+      "service": "codestar-notifications",
+      "api_version": "2019-10-15"
+    },
+    {
+      "service": "cognito-identity",
+      "api_version": "2014-06-30"
+    },
+    {
+      "service": "cognito-idp",
+      "api_version": "2016-04-18"
+    },
+    {
+      "service": "cognito-sync",
+      "api_version": "2014-06-30"
+    },
+    {
+      "service": "comprehend",
+      "api_version": "2017-11-27"
+    },
+    {
+      "service": "config",
+      "api_version": "2014-11-12"
+    },
+    {
+      "service": "connect",
+      "api_version": "2017-08-08"
+    },
+    {
+      "service": "connect-contact-lens",
+      "api_version": "2020-08-21"
+    },
+    {
+      "service": "connectcampaigns",
+      "api_version": "2021-01-30"
+    },
+    {
+      "service": "connectcampaignsv2",
+      "api_version": "2024-04-23"
+    },
+    {
+      "service": "connectcases",
+      "api_version": "2022-10-03"
+    },
+    {
+      "service": "connecthealth",
+      "api_version": "2025-01-29"
+    },
+    {
+      "service": "connectparticipant",
+      "api_version": "2018-09-07"
+    },
+    {
+      "service": "continuum",
+      "api_version": "2022-07-26"
+    },
+    {
+      "service": "controlcatalog",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "controltower",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "cost-optimization-hub",
+      "api_version": "2022-07-26"
+    },
+    {
+      "service": "cur",
+      "api_version": "2017-01-06"
+    },
+    {
+      "service": "customer-profiles",
+      "api_version": "2020-08-15"
+    },
+    {
+      "service": "databrew",
+      "api_version": "2017-07-25"
+    },
+    {
+      "service": "dataexchange",
+      "api_version": "2017-07-25"
+    },
+    {
+      "service": "datapipeline",
+      "api_version": "2012-10-29"
+    },
+    {
+      "service": "datasync",
+      "api_version": "2018-11-09"
+    },
+    {
+      "service": "datazone",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "dax",
+      "api_version": "2017-04-19"
+    },
+    {
+      "service": "deadline",
+      "api_version": "2023-10-12"
+    },
+    {
+      "service": "detective",
+      "api_version": "2018-10-26"
+    },
+    {
+      "service": "devicefarm",
+      "api_version": "2015-06-23"
+    },
+    {
+      "service": "devops-agent",
+      "api_version": "2026-01-01"
+    },
+    {
+      "service": "devops-guru",
+      "api_version": "2020-12-01"
+    },
+    {
+      "service": "directconnect",
+      "api_version": "2012-10-25"
+    },
+    {
+      "service": "discovery",
+      "api_version": "2015-11-01"
+    },
+    {
+      "service": "dlm",
+      "api_version": "2018-01-12"
+    },
+    {
+      "service": "dms",
+      "api_version": "2016-01-01"
+    },
+    {
+      "service": "docdb",
+      "api_version": "2014-10-31"
+    },
+    {
+      "service": "docdb-elastic",
+      "api_version": "2022-11-28"
+    },
+    {
+      "service": "drs",
+      "api_version": "2020-02-26"
+    },
+    {
+      "service": "ds",
+      "api_version": "2015-04-16"
+    },
+    {
+      "service": "ds-data",
+      "api_version": "2023-05-31"
+    },
+    {
+      "service": "dsql",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "dynamodb",
+      "api_version": "2012-08-10"
+    },
+    {
+      "service": "dynamodbstreams",
+      "api_version": "2012-08-10"
+    },
+    {
+      "service": "ebs",
+      "api_version": "2019-11-02"
+    },
+    {
+      "service": "ec2",
+      "api_version": "2016-11-15"
+    },
+    {
+      "service": "ec2-instance-connect",
+      "api_version": "2018-04-02"
+    },
+    {
+      "service": "ecr",
+      "api_version": "2015-09-21"
+    },
+    {
+      "service": "ecr-public",
+      "api_version": "2020-10-30"
+    },
+    {
+      "service": "ecs",
+      "api_version": "2014-11-13"
+    },
+    {
+      "service": "efs",
+      "api_version": "2015-02-01"
+    },
+    {
+      "service": "eks",
+      "api_version": "2017-11-01"
+    },
+    {
+      "service": "eks-auth",
+      "api_version": "2023-11-26"
+    },
+    {
+      "service": "elasticache",
+      "api_version": "2015-02-02"
+    },
+    {
+      "service": "elasticbeanstalk",
+      "api_version": "2010-12-01"
+    },
+    {
+      "service": "elb",
+      "api_version": "2012-06-01"
+    },
+    {
+      "service": "elbv2",
+      "api_version": "2015-12-01"
+    },
+    {
+      "service": "elementalinference",
+      "api_version": "2018-11-14"
+    },
+    {
+      "service": "emr",
+      "api_version": "2009-03-31"
+    },
+    {
+      "service": "emr-containers",
+      "api_version": "2020-10-01"
+    },
+    {
+      "service": "emr-serverless",
+      "api_version": "2021-07-13"
+    },
+    {
+      "service": "endusermessaging",
+      "api_version": "2026-09-21"
+    },
+    {
+      "service": "entityresolution",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "es",
+      "api_version": "2015-01-01"
+    },
+    {
+      "service": "events",
+      "api_version": "2015-10-07"
+    },
+    {
+      "service": "evs",
+      "api_version": "2023-07-27"
+    },
+    {
+      "service": "firehose",
+      "api_version": "2015-08-04"
+    },
+    {
+      "service": "fis",
+      "api_version": "2020-12-01"
+    },
+    {
+      "service": "forecast",
+      "api_version": "2018-06-26"
+    },
+    {
+      "service": "forecastquery",
+      "api_version": "2018-06-26"
+    },
+    {
+      "service": "frauddetector",
+      "api_version": "2019-11-15"
+    },
+    {
+      "service": "freetier",
+      "api_version": "2023-09-07"
+    },
+    {
+      "service": "fsx",
+      "api_version": "2018-03-01"
+    },
+    {
+      "service": "gameliftstreams",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "geo-maps",
+      "api_version": "2020-11-19"
+    },
+    {
+      "service": "geo-places",
+      "api_version": "2020-11-19"
+    },
+    {
+      "service": "geo-routes",
+      "api_version": "2020-11-19"
+    },
+    {
+      "service": "glacier",
+      "api_version": "2012-06-01"
+    },
+    {
+      "service": "globalaccelerator",
+      "api_version": "2018-08-08"
+    },
+    {
+      "service": "glue",
+      "api_version": "2017-03-31"
+    },
+    {
+      "service": "grafana",
+      "api_version": "2020-08-18"
+    },
+    {
+      "service": "greengrass",
+      "api_version": "2017-06-07"
+    },
+    {
+      "service": "greengrassv2",
+      "api_version": "2020-11-30"
+    },
+    {
+      "service": "groundstation",
+      "api_version": "2019-05-23"
+    },
+    {
+      "service": "guardduty",
+      "api_version": "2017-11-28"
+    },
+    {
+      "service": "healthlake",
+      "api_version": "2017-07-01"
+    },
+    {
+      "service": "iam",
+      "api_version": "2010-05-08"
+    },
+    {
+      "service": "iam-toolbox",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "identitystore",
+      "api_version": "2020-06-15"
+    },
+    {
+      "service": "imagebuilder",
+      "api_version": "2019-12-02"
+    },
+    {
+      "service": "importexport",
+      "api_version": "2010-06-01"
+    },
+    {
+      "service": "inspector",
+      "api_version": "2016-02-16"
+    },
+    {
+      "service": "inspector-scan",
+      "api_version": "2023-08-08"
+    },
+    {
+      "service": "inspector2",
+      "api_version": "2020-06-08"
+    },
+    {
+      "service": "internetmonitor",
+      "api_version": "2021-06-03"
+    },
+    {
+      "service": "invoicing",
+      "api_version": "2024-12-01"
+    },
+    {
+      "service": "iot",
+      "api_version": "2015-05-28"
+    },
+    {
+      "service": "iot-data",
+      "api_version": "2015-05-28"
+    },
+    {
+      "service": "iot-jobs-data",
+      "api_version": "2017-09-29"
+    },
+    {
+      "service": "iot-managed-integrations",
+      "api_version": "2025-03-03"
+    },
+    {
+      "service": "iotdeviceadvisor",
+      "api_version": "2020-09-18"
+    },
+    {
+      "service": "iotfleetwise",
+      "api_version": "2021-06-17"
+    },
+    {
+      "service": "iotsecuretunneling",
+      "api_version": "2018-10-05"
+    },
+    {
+      "service": "iotsitewise",
+      "api_version": "2019-12-02"
+    },
+    {
+      "service": "iotthingsgraph",
+      "api_version": "2018-09-06"
+    },
+    {
+      "service": "iottwinmaker",
+      "api_version": "2021-11-29"
+    },
+    {
+      "service": "iotwireless",
+      "api_version": "2020-11-22"
+    },
+    {
+      "service": "ivs",
+      "api_version": "2020-07-14"
+    },
+    {
+      "service": "ivs-realtime",
+      "api_version": "2020-07-14"
+    },
+    {
+      "service": "ivschat",
+      "api_version": "2020-07-14"
+    },
+    {
+      "service": "kafka",
+      "api_version": "2018-11-14"
+    },
+    {
+      "service": "kafkaconnect",
+      "api_version": "2021-09-14"
+    },
+    {
+      "service": "kendra",
+      "api_version": "2019-02-03"
+    },
+    {
+      "service": "keyspacesstreams",
+      "api_version": "2024-09-09"
+    },
+    {
+      "service": "kinesis",
+      "api_version": "2013-12-02"
+    },
+    {
+      "service": "kinesis-video-archived-media",
+      "api_version": "2017-09-30"
+    },
+    {
+      "service": "kinesis-video-media",
+      "api_version": "2017-09-30"
+    },
+    {
+      "service": "kinesis-video-signaling",
+      "api_version": "2019-12-04"
+    },
+    {
+      "service": "kinesis-video-webrtc-storage",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "kinesisanalytics",
+      "api_version": "2015-08-14"
+    },
+    {
+      "service": "kinesisanalyticsv2",
+      "api_version": "2018-05-23"
+    },
+    {
+      "service": "kinesisvideo",
+      "api_version": "2017-09-30"
+    },
+    {
+      "service": "kms",
+      "api_version": "2014-11-01"
+    },
+    {
+      "service": "lakeformation",
+      "api_version": "2017-03-31"
+    },
+    {
+      "service": "lambda",
+      "api_version": "2015-03-31"
+    },
+    {
+      "service": "lambda-core",
+      "api_version": "2026-04-30"
+    },
+    {
+      "service": "lambda-microvms",
+      "api_version": "2025-09-09"
+    },
+    {
+      "service": "lambda-web",
+      "api_version": "2025-03-07"
+    },
+    {
+      "service": "launch-wizard",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "lex-models",
+      "api_version": "2017-04-19"
+    },
+    {
+      "service": "lex-runtime",
+      "api_version": "2016-11-28"
+    },
+    {
+      "service": "lexv2-models",
+      "api_version": "2020-08-07"
+    },
+    {
+      "service": "lexv2-runtime",
+      "api_version": "2020-08-07"
+    },
+    {
+      "service": "license-manager",
+      "api_version": "2018-08-01"
+    },
+    {
+      "service": "license-manager-linux-subscriptions",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "license-manager-user-subscriptions",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "lightsail",
+      "api_version": "2016-11-28"
+    },
+    {
+      "service": "location",
+      "api_version": "2020-11-19"
+    },
+    {
+      "service": "logs",
+      "api_version": "2014-03-28"
+    },
+    {
+      "service": "lookoutequipment",
+      "api_version": "2020-12-15"
+    },
+    {
+      "service": "m2",
+      "api_version": "2021-04-28"
+    },
+    {
+      "service": "machinelearning",
+      "api_version": "2014-12-12"
+    },
+    {
+      "service": "macie2",
+      "api_version": "2020-01-01"
+    },
+    {
+      "service": "managedblockchain",
+      "api_version": "2018-09-24"
+    },
+    {
+      "service": "managedblockchain-query",
+      "api_version": "2023-05-04"
+    },
+    {
+      "service": "marketplace-catalog",
+      "api_version": "2018-09-17"
+    },
+    {
+      "service": "marketplace-deployment",
+      "api_version": "2023-01-25"
+    },
+    {
+      "service": "marketplace-discovery",
+      "api_version": "2026-02-05"
+    },
+    {
+      "service": "marketplace-reporting",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "marketplacecommerceanalytics",
+      "api_version": "2015-07-01"
+    },
+    {
+      "service": "mediaconnect",
+      "api_version": "2018-11-14"
+    },
+    {
+      "service": "mediaconvert",
+      "api_version": "2017-08-29"
+    },
+    {
+      "service": "medialive",
+      "api_version": "2017-10-14"
+    },
+    {
+      "service": "mediapackage",
+      "api_version": "2017-10-12"
+    },
+    {
+      "service": "mediapackage-vod",
+      "api_version": "2018-11-07"
+    },
+    {
+      "service": "mediapackagev2",
+      "api_version": "2022-12-25"
+    },
+    {
+      "service": "mediastore",
+      "api_version": "2017-09-01"
+    },
+    {
+      "service": "mediastore-data",
+      "api_version": "2017-09-01"
+    },
+    {
+      "service": "mediatailor",
+      "api_version": "2018-04-23"
+    },
+    {
+      "service": "medical-imaging",
+      "api_version": "2023-07-19"
+    },
+    {
+      "service": "memorydb",
+      "api_version": "2021-01-01"
+    },
+    {
+      "service": "meteringmarketplace",
+      "api_version": "2016-01-14"
+    },
+    {
+      "service": "mgh",
+      "api_version": "2017-05-31"
+    },
+    {
+      "service": "mgn",
+      "api_version": "2020-02-26"
+    },
+    {
+      "service": "migration-hub-refactor-spaces",
+      "api_version": "2021-10-26"
+    },
+    {
+      "service": "migrationhub-config",
+      "api_version": "2019-06-30"
+    },
+    {
+      "service": "migrationhuborchestrator",
+      "api_version": "2021-08-28"
+    },
+    {
+      "service": "migrationhubstrategy",
+      "api_version": "2020-02-19"
+    },
+    {
+      "service": "mpa",
+      "api_version": "2022-07-26"
+    },
+    {
+      "service": "mq",
+      "api_version": "2017-11-27"
+    },
+    {
+      "service": "mturk",
+      "api_version": "2017-01-17"
+    },
+    {
+      "service": "mwaa",
+      "api_version": "2020-07-01"
+    },
+    {
+      "service": "mwaa-serverless",
+      "api_version": "2024-07-26"
+    },
+    {
+      "service": "neptune",
+      "api_version": "2014-10-31"
+    },
+    {
+      "service": "neptune-graph",
+      "api_version": "2023-11-29"
+    },
+    {
+      "service": "neptunedata",
+      "api_version": "2023-08-01"
+    },
+    {
+      "service": "network-firewall",
+      "api_version": "2020-11-12"
+    },
+    {
+      "service": "network-security-manager",
+      "api_version": "2025-10-30"
+    },
+    {
+      "service": "networkflowmonitor",
+      "api_version": "2023-04-19"
+    },
+    {
+      "service": "networkmanager",
+      "api_version": "2019-07-05"
+    },
+    {
+      "service": "networkmonitor",
+      "api_version": "2023-08-01"
+    },
+    {
+      "service": "notifications",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "notificationscontacts",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "nova-act",
+      "api_version": "2025-08-22"
+    },
+    {
+      "service": "oam",
+      "api_version": "2022-06-10"
+    },
+    {
+      "service": "observabilityadmin",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "odb",
+      "api_version": "2024-08-20"
+    },
+    {
+      "service": "omics",
+      "api_version": "2022-11-28"
+    },
+    {
+      "service": "opensearch",
+      "api_version": "2021-01-01"
+    },
+    {
+      "service": "opensearchserverless",
+      "api_version": "2021-11-01"
+    },
+    {
+      "service": "organizations",
+      "api_version": "2016-11-28"
+    },
+    {
+      "service": "osis",
+      "api_version": "2022-01-01"
+    },
+    {
+      "service": "outposts",
+      "api_version": "2019-12-03"
+    },
+    {
+      "service": "partnercentral-account",
+      "api_version": "2025-04-04"
+    },
+    {
+      "service": "partnercentral-benefits",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "partnercentral-channel",
+      "api_version": "2024-03-18"
+    },
+    {
+      "service": "partnercentral-selling",
+      "api_version": "2022-07-26"
+    },
+    {
+      "service": "payment-cryptography",
+      "api_version": "2021-09-14"
+    },
+    {
+      "service": "payment-cryptography-data",
+      "api_version": "2022-02-03"
+    },
+    {
+      "service": "pca-connector-ad",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "pca-connector-scep",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "pcs",
+      "api_version": "2023-02-10"
+    },
+    {
+      "service": "personalize",
+      "api_version": "2018-05-22"
+    },
+    {
+      "service": "personalize-events",
+      "api_version": "2018-03-22"
+    },
+    {
+      "service": "personalize-runtime",
+      "api_version": "2018-05-22"
+    },
+    {
+      "service": "pinpoint",
+      "api_version": "2016-12-01"
+    },
+    {
+      "service": "pinpoint-email",
+      "api_version": "2018-07-26"
+    },
+    {
+      "service": "pinpoint-sms-voice",
+      "api_version": "2018-09-05"
+    },
+    {
+      "service": "pinpoint-sms-voice-v2",
+      "api_version": "2022-03-31"
+    },
+    {
+      "service": "pipes",
+      "api_version": "2015-10-07"
+    },
+    {
+      "service": "polly",
+      "api_version": "2016-06-10"
+    },
+    {
+      "service": "pricing",
+      "api_version": "2017-10-15"
+    },
+    {
+      "service": "pricing-plan-manager",
+      "api_version": "2025-08-05"
+    },
+    {
+      "service": "proton",
+      "api_version": "2020-07-20"
+    },
+    {
+      "service": "qapps",
+      "api_version": "2023-11-27"
+    },
+    {
+      "service": "qbusiness",
+      "api_version": "2023-11-27"
+    },
+    {
+      "service": "qconnect",
+      "api_version": "2020-10-19"
+    },
+    {
+      "service": "quicksight",
+      "api_version": "2018-04-01"
+    },
+    {
+      "service": "ram",
+      "api_version": "2018-01-04"
+    },
+    {
+      "service": "rbin",
+      "api_version": "2021-06-15"
+    },
+    {
+      "service": "rds",
+      "api_version": "2014-10-31"
+    },
+    {
+      "service": "rds-data",
+      "api_version": "2018-08-01"
+    },
+    {
+      "service": "redshift",
+      "api_version": "2012-12-01"
+    },
+    {
+      "service": "redshift-data",
+      "api_version": "2019-12-20"
+    },
+    {
+      "service": "redshift-serverless",
+      "api_version": "2021-04-21"
+    },
+    {
+      "service": "rekognition",
+      "api_version": "2016-06-27"
+    },
+    {
+      "service": "repostspace",
+      "api_version": "2022-05-13"
+    },
+    {
+      "service": "resiliencehub",
+      "api_version": "2020-04-30"
+    },
+    {
+      "service": "resiliencehubv2",
+      "api_version": "2026-02-17"
+    },
+    {
+      "service": "resource-explorer-2",
+      "api_version": "2022-07-28"
+    },
+    {
+      "service": "resource-groups",
+      "api_version": "2017-11-27"
+    },
+    {
+      "service": "resourcegroupstaggingapi",
+      "api_version": "2017-01-26"
+    },
+    {
+      "service": "rolesanywhere",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "route53",
+      "api_version": "2013-04-01"
+    },
+    {
+      "service": "route53-recovery-cluster",
+      "api_version": "2019-12-02"
+    },
+    {
+      "service": "route53-recovery-control-config",
+      "api_version": "2020-11-02"
+    },
+    {
+      "service": "route53-recovery-readiness",
+      "api_version": "2019-12-02"
+    },
+    {
+      "service": "route53domains",
+      "api_version": "2014-05-15"
+    },
+    {
+      "service": "route53globalresolver",
+      "api_version": "2022-09-27"
+    },
+    {
+      "service": "route53profiles",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "route53resolver",
+      "api_version": "2018-04-01"
+    },
+    {
+      "service": "rtbfabric",
+      "api_version": "2023-05-15"
+    },
+    {
+      "service": "rum",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "s3",
+      "api_version": "2006-03-01"
+    },
+    {
+      "service": "s3control",
+      "api_version": "2018-08-20"
+    },
+    {
+      "service": "s3files",
+      "api_version": "2025-05-05"
+    },
+    {
+      "service": "s3outposts",
+      "api_version": "2017-07-25"
+    },
+    {
+      "service": "s3tables",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "s3vectors",
+      "api_version": "2025-07-15"
+    },
+    {
+      "service": "sagemaker",
+      "api_version": "2017-07-24"
+    },
+    {
+      "service": "sagemaker-a2i-runtime",
+      "api_version": "2019-11-07"
+    },
+    {
+      "service": "sagemaker-edge",
+      "api_version": "2020-09-23"
+    },
+    {
+      "service": "sagemaker-featurestore-runtime",
+      "api_version": "2020-07-01"
+    },
+    {
+      "service": "sagemaker-geospatial",
+      "api_version": "2020-05-27"
+    },
+    {
+      "service": "sagemaker-metrics",
+      "api_version": "2022-09-30"
+    },
+    {
+      "service": "sagemaker-runtime",
+      "api_version": "2017-05-13"
+    },
+    {
+      "service": "sagemakerjobruntime",
+      "api_version": "2026-02-01"
+    },
+    {
+      "service": "sagemakertrainingsessionruntime",
+      "api_version": "2025-02-10"
+    },
+    {
+      "service": "savingsplans",
+      "api_version": "2019-06-28"
+    },
+    {
+      "service": "scheduler",
+      "api_version": "2021-06-30"
+    },
+    {
+      "service": "schemas",
+      "api_version": "2019-12-02"
+    },
+    {
+      "service": "sdb",
+      "api_version": "2009-04-15"
+    },
+    {
+      "service": "secretsmanager",
+      "api_version": "2017-10-17"
+    },
+    {
+      "service": "security-ir",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "securityagent",
+      "api_version": "2025-09-06"
+    },
+    {
+      "service": "securityhub",
+      "api_version": "2018-10-26"
+    },
+    {
+      "service": "securitylake",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "serverlessrepo",
+      "api_version": "2017-09-08"
+    },
+    {
+      "service": "service-quotas",
+      "api_version": "2019-06-24"
+    },
+    {
+      "service": "servicecatalog",
+      "api_version": "2015-12-10"
+    },
+    {
+      "service": "servicecatalog-appregistry",
+      "api_version": "2020-06-24"
+    },
+    {
+      "service": "servicediscovery",
+      "api_version": "2017-03-14"
+    },
+    {
+      "service": "ses",
+      "api_version": "2010-12-01"
+    },
+    {
+      "service": "sesv2",
+      "api_version": "2019-09-27"
+    },
+    {
+      "service": "shield",
+      "api_version": "2016-06-02"
+    },
+    {
+      "service": "signer",
+      "api_version": "2017-08-25"
+    },
+    {
+      "service": "signer-data",
+      "api_version": "2017-08-25"
+    },
+    {
+      "service": "signin",
+      "api_version": "2023-01-01"
+    },
+    {
+      "service": "simpledbv2",
+      "api_version": "2025-09-26"
+    },
+    {
+      "service": "sms-voice",
+      "api_version": "2018-09-05"
+    },
+    {
+      "service": "snow-device-management",
+      "api_version": "2021-08-04"
+    },
+    {
+      "service": "sns",
+      "api_version": "2010-03-31"
+    },
+    {
+      "service": "socialmessaging",
+      "api_version": "2024-01-01"
+    },
+    {
+      "service": "sqs",
+      "api_version": "2012-11-05"
+    },
+    {
+      "service": "ssm",
+      "api_version": "2014-11-06"
+    },
+    {
+      "service": "ssm-contacts",
+      "api_version": "2021-05-03"
+    },
+    {
+      "service": "ssm-guiconnect",
+      "api_version": "2021-05-01"
+    },
+    {
+      "service": "ssm-incidents",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "ssm-quicksetup",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "ssm-sap",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "sso",
+      "api_version": "2019-06-10"
+    },
+    {
+      "service": "sso-admin",
+      "api_version": "2020-07-20"
+    },
+    {
+      "service": "sso-oidc",
+      "api_version": "2019-06-10"
+    },
+    {
+      "service": "stepfunctions",
+      "api_version": "2016-11-23"
+    },
+    {
+      "service": "storagegateway",
+      "api_version": "2013-06-30"
+    },
+    {
+      "service": "sts",
+      "api_version": "2011-06-15"
+    },
+    {
+      "service": "supplychain",
+      "api_version": "2024-01-01"
+    },
+    {
+      "service": "support",
+      "api_version": "2013-04-15"
+    },
+    {
+      "service": "support-app",
+      "api_version": "2021-08-20"
+    },
+    {
+      "service": "supportauthz",
+      "api_version": "2026-06-30"
+    },
+    {
+      "service": "sustainability",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "swf",
+      "api_version": "2012-01-25"
+    },
+    {
+      "service": "synthetics",
+      "api_version": "2017-10-11"
+    },
+    {
+      "service": "taxsettings",
+      "api_version": "2018-05-10"
+    },
+    {
+      "service": "textract",
+      "api_version": "2018-06-27"
+    },
+    {
+      "service": "timestream-influxdb",
+      "api_version": "2023-01-27"
+    },
+    {
+      "service": "timestream-query",
+      "api_version": "2018-11-01"
+    },
+    {
+      "service": "timestream-write",
+      "api_version": "2018-11-01"
+    },
+    {
+      "service": "transcribe",
+      "api_version": "2017-10-26"
+    },
+    {
+      "service": "transfer",
+      "api_version": "2018-11-05"
+    },
+    {
+      "service": "trustedadvisor",
+      "api_version": "2022-09-15"
+    },
+    {
+      "service": "uxc",
+      "api_version": "2024-07-01"
+    },
+    {
+      "service": "verifiedpermissions",
+      "api_version": "2021-12-01"
+    },
+    {
+      "service": "voice-id",
+      "api_version": "2021-09-27"
+    },
+    {
+      "service": "vpc-lattice",
+      "api_version": "2022-11-30"
+    },
+    {
+      "service": "waf",
+      "api_version": "2015-08-24"
+    },
+    {
+      "service": "waf-regional",
+      "api_version": "2016-11-28"
+    },
+    {
+      "service": "wafv2",
+      "api_version": "2019-07-29"
+    },
+    {
+      "service": "wellarchitected",
+      "api_version": "2020-03-31"
+    },
+    {
+      "service": "wickr",
+      "api_version": "2024-02-01"
+    },
+    {
+      "service": "wisdom",
+      "api_version": "2020-10-19"
+    },
+    {
+      "service": "workdocs",
+      "api_version": "2016-05-01"
+    },
+    {
+      "service": "workmail",
+      "api_version": "2017-10-01"
+    },
+    {
+      "service": "workmailmessageflow",
+      "api_version": "2019-05-01"
+    },
+    {
+      "service": "workspaces",
+      "api_version": "2015-04-08"
+    },
+    {
+      "service": "workspaces-thin-client",
+      "api_version": "2023-08-22"
+    },
+    {
+      "service": "workspaces-web",
+      "api_version": "2020-07-08"
+    },
+    {
+      "service": "xray",
+      "api_version": "2016-04-12"
+    }
   ]
 }
