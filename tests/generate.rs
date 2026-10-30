@@ -328,6 +328,62 @@ fn checked_in_ec2_output_is_current() {
 }
 
 #[test]
+fn checked_in_s3_output_is_current() {
+    assert_current("s3", "2006-03-01", "generated/s3/s3.zap");
+}
+
+#[test]
+fn s3_restxml_contract_shape() {
+    let (src, cov) = generate_with_sidecar("s3", "2006-03-01");
+    // The pinned S3 model (botocore 1.43.121): 116 ops. 73 generate; the rest are
+    // document-skipped for v0 emitter limits (DateTime / bool header + query
+    // bindings, optional httpPayload structs, lists of non-scalars). Bumping the
+    // pin can move these — update this count and keep the floors as the contract.
+    assert_eq!(cov.operations_total, 116);
+    assert!(
+        cov.operations_methods >= 70,
+        "methods: {}",
+        cov.operations_methods
+    );
+    assert!(cov.operations_skipped > 0, "complex S3 payloads skip");
+    assert!(cov.error_variants >= 15, "errors: {}", cov.error_variants);
+    // Protocol seam: a service-name function, SigV4 service "s3", plain structs.
+    assert!(src.contains("# Protocol: rest-xml (SigV4 service s3)"));
+    assert!(src.contains("def s3_service() -> str:"));
+    assert!(src.contains("    return \"s3\""));
+    assert!(
+        !src.contains("@derive(Json)\nstruct"),
+        "rest-xml structs are plain carriers"
+    );
+    // The four byte-diffed ops (tests/s3_byte_diff.rs) generate: a bucket op, a
+    // service listing, an object GET with a greedy {Key+} label, and an object
+    // PUT with a raw httpPayload body.
+    assert!(src.contains("def head_bucket(self, HeadBucketRequest input) -> str:"));
+    assert!(src.contains("def list_buckets(self, ListBucketsRequest input) -> str:"));
+    assert!(src.contains("def list_parts(self, ListPartsRequest input) -> str:"));
+    assert!(src.contains("def upload_part(self, UploadPartRequest input) -> str:"));
+    assert!(src.contains("greedy_labels[\"Key\"] = input.Key"));
+    assert!(src.contains(
+        "rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), \"application/octet-stream\")"
+    ));
+    // The ticket's named ops are v0-skipped, each with a documented reason.
+    assert!(src.contains("GetObject (httpHeader `IfModifiedSince` has unsupported type DateTime)"));
+    assert!(src.contains("PutObject (httpHeader `BucketKeyEnabled` has unsupported type bool)"));
+    assert!(src.contains("ListObjectsV2 (httpQuery `FetchOwner` has unsupported type bool)"));
+    assert!(
+        src.contains("CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional")
+    );
+}
+
+#[test]
+fn s3_generation_is_deterministic() {
+    assert_eq!(
+        generate_with_sidecar("s3", "2006-03-01").0,
+        generate_with_sidecar("s3", "2006-03-01").0
+    );
+}
+
+#[test]
 fn restxml_contract_shape() {
     let (src, cov) = generate_with_sidecar("cloudfront", "2015-09-17");
     assert_eq!(cov.operations_total, 22);

@@ -1,0 +1,8 @@
+GET /my-bucket/photos/2024/my%20object.jpg?max-parts=50&uploadId=abc123XYZ HTTP/1.1
+host: s3.us-east-1.amazonaws.com
+x-amz-content-sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+x-amz-date: 20150830T123600Z
+content-length: 0
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=9ad076cd32f083643149bfa75a2e63ad80ef0cc4733ba14e0d7560ed4683ccf6
+Connection: close
+

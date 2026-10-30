@@ -10,6 +10,7 @@
     { "service": "cloudfront", "api_version": "2015-09-17" },
     { "service": "sdb", "api_version": "2009-04-15" },
     { "service": "ec2", "api_version": "2014-09-01" },
-    { "service": "sts", "api_version": "2011-06-15" }
+    { "service": "sts", "api_version": "2011-06-15" },
+    { "service": "s3", "api_version": "2006-03-01" }
   ]
 }
