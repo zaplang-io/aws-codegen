@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 29 operations — 28 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 29 operations — 29 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   79 structs (53 @derive(Json)), 13 enums, 7 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -699,11 +699,6 @@ def api_detective_error_from_code(str code) -> DetectiveError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -829,7 +824,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def accept_invitation(self, AcceptInvitationRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/invitation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/invitation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptInvitationDocument(GraphArn=input.GraphArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -838,7 +833,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def batch_get_graph_member_datasources(self, BatchGetGraphMemberDatasourcesRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
         list[str] e0 = []
@@ -852,7 +847,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def batch_get_membership_datasources(self, BatchGetMembershipDatasourcesRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/membership/datasources/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/membership/datasources/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.GraphArns:
@@ -865,7 +860,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException
     def create_graph(self, CreateGraphRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -880,7 +875,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_members(self, CreateMembersRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/members", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/members", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
         if input.Message.is_some():
@@ -900,7 +895,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_graph(self, DeleteGraphRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/removal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteGraphDocument(GraphArn=input.GraphArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -909,7 +904,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_members(self, DeleteMembersRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/removal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
         list[str] e0 = []
@@ -923,7 +918,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def describe_organization_configuration(self, DescribeOrganizationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/orgs/describeOrganizationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/orgs/describeOrganizationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeOrganizationConfigurationDocument(GraphArn=input.GraphArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -932,14 +927,14 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def disable_organization_admin_account(self) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/orgs/disableAdminAccount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/orgs/disableAdminAccount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_detective_service(), self.region, host)
 
     # DisassociateMembership  POST /membership/removal
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def disassociate_membership(self, DisassociateMembershipRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/membership/removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/membership/removal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateMembershipDocument(GraphArn=input.GraphArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -948,7 +943,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def enable_organization_admin_account(self, EnableOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/orgs/enableAdminAccount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/orgs/enableAdminAccount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableOrganizationAdminAccountDocument(AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -957,7 +952,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_investigation(self, GetInvestigationRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/investigations/getInvestigation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/investigations/getInvestigation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetInvestigationDocument(GraphArn=input.GraphArn, InvestigationId=input.InvestigationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -966,7 +961,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def get_members(self, GetMembersRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
         list[str] e0 = []
@@ -980,7 +975,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def list_datasource_packages(self, ListDatasourcePackagesRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDatasourcePackagesDocument(GraphArn=input.GraphArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -989,7 +984,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_graphs(self, ListGraphsRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graphs/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGraphsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -998,7 +993,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def list_indicators(self, ListIndicatorsRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/investigations/listIndicators", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/investigations/listIndicators", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListIndicatorsDocument(GraphArn=input.GraphArn, InvestigationId=input.InvestigationId, IndicatorType=input.IndicatorType, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1007,7 +1002,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def list_investigations(self, ListInvestigationsRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/investigations/listInvestigations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/investigations/listInvestigations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListInvestigationsDocument(GraphArn=input.GraphArn, NextToken=input.NextToken, MaxResults=input.MaxResults, FilterCriteria=input.FilterCriteria, SortCriteria=input.SortCriteria)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1016,7 +1011,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_invitations(self, ListInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitations/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitations/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListInvitationsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1025,7 +1020,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def list_members(self, ListMembersRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/members/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMembersDocument(GraphArn=input.GraphArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1034,7 +1029,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_organization_admin_accounts(self, ListOrganizationAdminAccountsRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/orgs/adminAccountslist", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/orgs/adminAccountslist", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListOrganizationAdminAccountsDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1045,14 +1040,14 @@ struct DetectiveClient:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, api_detective_service(), self.region, host)
 
     # RejectInvitation  POST /invitation/removal
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def reject_invitation(self, RejectInvitationRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitation/removal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitation/removal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RejectInvitationDocument(GraphArn=input.GraphArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1061,7 +1056,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def start_investigation(self, StartInvestigationRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/investigations/startInvestigation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/investigations/startInvestigation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartInvestigationDocument(GraphArn=input.GraphArn, EntityArn=input.EntityArn, ScopeStartTime=input.ScopeStartTime, ScopeEndTime=input.ScopeEndTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1070,7 +1065,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def start_monitoring_member(self, StartMonitoringMemberRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/member/monitoringstate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/member/monitoringstate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMonitoringMemberDocument(GraphArn=input.GraphArn, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1081,7 +1076,7 @@ struct DetectiveClient:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1090,11 +1085,22 @@ struct DetectiveClient:
         auto bp = restjson.rest_json_document(b, api_detective_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(api_detective_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, api_detective_service(), self.region, host)
+
     # UpdateDatasourcePackages  POST /graph/datasources/update
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def update_datasource_packages(self, UpdateDatasourcePackagesRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graph/datasources/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"GraphArn\":" + api_detective_json_str(input.GraphArn))
         list[str] e0 = []
@@ -1108,7 +1114,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def update_investigation_state(self, UpdateInvestigationStateRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/investigations/updateInvestigationState", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/investigations/updateInvestigationState", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateInvestigationStateDocument(GraphArn=input.GraphArn, InvestigationId=input.InvestigationId, State=input.State)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)
@@ -1117,7 +1123,7 @@ struct DetectiveClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def update_organization_configuration(self, UpdateOrganizationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(api_detective_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/orgs/updateOrganizationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/orgs/updateOrganizationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOrganizationConfigurationDocument(GraphArn=input.GraphArn, AutoEnable=input.AutoEnable)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, api_detective_service(), self.region, host)

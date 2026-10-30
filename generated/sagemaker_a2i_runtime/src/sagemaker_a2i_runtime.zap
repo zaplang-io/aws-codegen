@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 5 operations — 4 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 5 operations — 5 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   20 structs (17 @derive(Json)), 3 enums, 6 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The SageMaker_A2I_Runtime rest-json protocol: SigV4 service "sagemaker" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -212,15 +213,6 @@ def a2i_runtime_sagemaker_error_from_code(str code) -> SageMaker_A2I_RuntimeErro
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListHumanLoops (httpQuery `CreationTimeAfter` has unsupported type DateTime)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListHumanLoops (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -279,7 +271,7 @@ struct SageMaker_A2I_RuntimeClient:
         auto host = endpoints.regional_host(a2i_runtime_sagemaker_service(), self.region)
         dict[str, str] labels = {}
         labels["HumanLoopName"] = input.HumanLoopName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/human-loops/{HumanLoopName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/human-loops/{HumanLoopName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, a2i_runtime_sagemaker_service(), self.region, host)
 
     # DescribeHumanLoop  GET /human-loops/{HumanLoopName}
@@ -288,14 +280,35 @@ struct SageMaker_A2I_RuntimeClient:
         auto host = endpoints.regional_host(a2i_runtime_sagemaker_service(), self.region)
         dict[str, str] labels = {}
         labels["HumanLoopName"] = input.HumanLoopName
-        auto b = binding.HttpBinding(method="GET", path_template="/human-loops/{HumanLoopName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/human-loops/{HumanLoopName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, a2i_runtime_sagemaker_service(), self.region, host)
+
+    # ListHumanLoops  GET /human-loops
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_human_loops(self, ListHumanLoopsRequest input) -> str:
+        auto host = endpoints.regional_host(a2i_runtime_sagemaker_service(), self.region)
+        dict[str, str] query = {}
+        if input.CreationTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.CreationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["CreationTimeAfter"] = qt0
+        if input.CreationTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.CreationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["CreationTimeBefore"] = qt1
+        query["FlowDefinitionArn"] = input.FlowDefinitionArn
+        if input.SortOrder.is_some():
+            query["SortOrder"] = input.SortOrder.unwrap_or("")
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/human-loops", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, a2i_runtime_sagemaker_service(), self.region, host)
 
     # StartHumanLoop  POST /human-loops
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_human_loop(self, StartHumanLoopRequest input) -> str:
         auto host = endpoints.regional_host(a2i_runtime_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/human-loops", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/human-loops", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"HumanLoopName\":" + a2i_runtime_sagemaker_json_str(input.HumanLoopName))
         parts.append("\"FlowDefinitionArn\":" + a2i_runtime_sagemaker_json_str(input.FlowDefinitionArn))
@@ -310,10 +323,23 @@ struct SageMaker_A2I_RuntimeClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def stop_human_loop(self, StopHumanLoopRequest input) -> str:
         auto host = endpoints.regional_host(a2i_runtime_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/human-loops/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/human-loops/stop", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopHumanLoopDocument(HumanLoopName=input.HumanLoopName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, a2i_runtime_sagemaker_service(), self.region, host)
+
+    # Paginator for ListHumanLoops — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: HumanLoopSummaries).
+    def paginate_list_human_loops(self, ListHumanLoopsRequest input):
+        auto host = endpoints.regional_host(a2i_runtime_sagemaker_service(), self.region)
+        while True:
+            auto raw = self.list_human_loops(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a SageMaker_A2I_RuntimeClient bound to credentials + region.
 def a2i_runtime_sagemaker_client(core.Credentials creds, str region) -> SageMaker_A2I_RuntimeClient:

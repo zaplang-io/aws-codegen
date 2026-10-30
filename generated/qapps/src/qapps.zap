@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 35 operations — 34 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 35 operations — 35 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   106 structs (61 @derive(Json)), 14 enums, 9 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1042,11 +1042,6 @@ def data_qapps_error_from_code(str code) -> QAppsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1293,7 +1288,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.associateItemRating", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.associateItemRating", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateLibraryItemReviewDocument(libraryItemId=input.libraryItemId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1304,7 +1299,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.install", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.install", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateQAppWithUserDocument(appId=input.appId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1315,7 +1310,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.createCategories", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.createCategories", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.categories:
@@ -1330,7 +1325,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.deleteCategories", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.deleteCategories", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.categories:
@@ -1345,7 +1340,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateCategories", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateCategories", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.categories:
@@ -1360,7 +1355,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.createItem", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.createItem", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appId\":" + data_qapps_json_str(input.appId))
         parts.append("\"appVersion\":" + str(input.appVersion))
@@ -1377,7 +1372,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.createPresignedUrl", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.createPresignedUrl", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePresignedUrlDocument(cardId=input.cardId, appId=input.appId, fileContentsSha256=input.fileContentsSha256, fileName=input.fileName, scope_=input.scope_, sessionId=input.sessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1388,7 +1383,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.create", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"title\":" + data_qapps_json_str(input.title))
         if input.description.is_some():
@@ -1410,7 +1405,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.deleteItem", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.deleteItem", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLibraryItemDocument(libraryItemId=input.libraryItemId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1421,7 +1416,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.delete", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteQAppDocument(appId=input.appId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1434,7 +1429,7 @@ struct QAppsClient:
         query["appId"] = input.appId
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/apps.describeQAppPermissions", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps.describeQAppPermissions", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # DisassociateLibraryItemReview  POST /catalog.disassociateItemRating
@@ -1443,7 +1438,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.disassociateItemRating", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.disassociateItemRating", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateLibraryItemReviewDocument(libraryItemId=input.libraryItemId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1454,7 +1449,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.uninstall", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.uninstall", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateQAppFromUserDocument(appId=input.appId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1465,7 +1460,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/runtime.exportQAppSessionData", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime.exportQAppSessionData", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExportQAppSessionDataDocument(sessionId=input.sessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1480,7 +1475,7 @@ struct QAppsClient:
             query["appId"] = input.appId.unwrap_or("")
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/catalog.getItem", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/catalog.getItem", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # GetQApp  GET /apps.get
@@ -1493,7 +1488,7 @@ struct QAppsClient:
             query["appVersion"] = str(input.appVersion.unwrap_or(0))
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/apps.get", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps.get", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # GetQAppSession  GET /runtime.getQAppSession
@@ -1504,7 +1499,7 @@ struct QAppsClient:
         query["sessionId"] = input.sessionId
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/runtime.getQAppSession", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runtime.getQAppSession", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # GetQAppSessionMetadata  GET /runtime.getQAppSessionMetadata
@@ -1515,7 +1510,7 @@ struct QAppsClient:
         query["sessionId"] = input.sessionId
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/runtime.getQAppSessionMetadata", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runtime.getQAppSessionMetadata", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # ImportDocument  POST /apps.importDocument
@@ -1524,7 +1519,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.importDocument", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.importDocument", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ImportDocumentDocument(cardId=input.cardId, appId=input.appId, fileContentsBase64=input.fileContentsBase64, fileName=input.fileName, scope_=input.scope_, sessionId=input.sessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1535,7 +1530,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/catalog.listCategories", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/catalog.listCategories", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # ListLibraryItems  GET /catalog.list
@@ -1551,7 +1546,7 @@ struct QAppsClient:
             query["categoryId"] = input.categoryId.unwrap_or("")
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/catalog.list", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/catalog.list", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # ListQAppSessionData  GET /runtime.listQAppSessionData
@@ -1562,7 +1557,7 @@ struct QAppsClient:
         query["sessionId"] = input.sessionId
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/runtime.listQAppSessionData", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runtime.listQAppSessionData", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # ListQApps  GET /apps.list
@@ -1576,7 +1571,7 @@ struct QAppsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/apps.list", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps.list", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceARN}
@@ -1585,7 +1580,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceARN"] = input.resourceARN
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
 
     # PredictQApp  POST /apps.predictQApp
@@ -1594,7 +1589,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.predictQApp", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.predictQApp", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.options.is_some():
             auto u0 = input.options.unwrap()
@@ -1608,7 +1603,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/runtime.startQAppSession", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime.startQAppSession", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appId\":" + data_qapps_json_str(input.appId))
         parts.append("\"appVersion\":" + str(input.appVersion))
@@ -1636,7 +1631,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/runtime.deleteMiniAppRun", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime.deleteMiniAppRun", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopQAppSessionDocument(sessionId=input.sessionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1647,7 +1642,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceARN"] = input.resourceARN
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1656,13 +1651,24 @@ struct QAppsClient:
         auto bp = restjson.rest_json_document(b, data_qapps_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceARN}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(data_qapps_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceARN"] = input.resourceARN
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, data_qapps_service(), self.region, host)
+
     # UpdateLibraryItem  POST /catalog.updateItem
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_library_item(self, UpdateLibraryItemInput input) -> str:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateItem", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateItem", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"libraryItemId\":" + data_qapps_json_str(input.libraryItemId))
         if input.status.is_some():
@@ -1683,7 +1689,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateItemMetadata", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/catalog.updateItemMetadata", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLibraryItemMetadataDocument(libraryItemId=input.libraryItemId, isVerified=input.isVerified)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)
@@ -1694,7 +1700,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.update", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.update", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appId\":" + data_qapps_json_str(input.appId))
         if input.title.is_some():
@@ -1715,7 +1721,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps.updateQAppPermissions", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps.updateQAppPermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appId\":" + data_qapps_json_str(input.appId))
         if input.grantPermissions.is_some():
@@ -1739,7 +1745,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/runtime.updateQAppSession", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime.updateQAppSession", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sessionId\":" + data_qapps_json_str(input.sessionId))
         if input.values.is_some():
@@ -1757,7 +1763,7 @@ struct QAppsClient:
         auto host = endpoints.regional_host(data_qapps_service(), self.region)
         dict[str, str] headers = {}
         headers["instance-id"] = input.instanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/runtime.updateQAppSessionMetadata", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtime.updateQAppSessionMetadata", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQAppSessionMetadataDocument(sessionId=input.sessionId, sessionName=input.sessionName, sharingConfiguration=input.sharingConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, data_qapps_service(), self.region, host)

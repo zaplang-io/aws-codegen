@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 13 operations — 10 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 13 operations — 13 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   51 structs (34 @derive(Json)), 7 enums, 6 error variants.
-#   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The CodeGuru_Security rest-json protocol: SigV4 service "codeguru-security" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -482,17 +483,6 @@ def codeguru_security_error_from_code(str code) -> CodeGuru_SecurityError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetMetricsSummary (httpQuery `date` has unsupported type DateTime)
-#   ListFindingsMetrics (httpQuery `startDate` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListFindingsMetrics (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -515,7 +505,7 @@ struct CodeGuru_SecurityClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_get_findings(self, BatchGetFindingsRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/batchGetFindings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/batchGetFindings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.findingIdentifiers:
@@ -528,7 +518,7 @@ struct CodeGuru_SecurityClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_scan(self, CreateScanRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/scans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/scans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -554,7 +544,7 @@ struct CodeGuru_SecurityClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def create_upload_url(self, CreateUploadUrlRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/uploadUrl", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/uploadUrl", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateUploadUrlDocument(scanName=input.scanName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeguru_security_service(), self.region, host)
@@ -563,7 +553,7 @@ struct CodeGuru_SecurityClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_account_configuration(self) -> str:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/accountConfiguration/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accountConfiguration/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
 
     # GetFindings  GET /findings/{scanName}
@@ -579,7 +569,16 @@ struct CodeGuru_SecurityClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/findings/{scanName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/findings/{scanName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
+
+    # GetMetricsSummary  GET /metrics/summary
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def get_metrics_summary(self, GetMetricsSummaryRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_security_service(), self.region)
+        dict[str, str] query = {}
+        query["date"] = datetime.strftime(input.date, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/metrics/summary", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
 
     # GetScan  GET /scans/{scanName}
@@ -591,7 +590,21 @@ struct CodeGuru_SecurityClient:
         dict[str, str] query = {}
         if input.runId.is_some():
             query["runId"] = input.runId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/scans/{scanName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scans/{scanName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
+
+    # ListFindingsMetrics  GET /metrics/findings
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_findings_metrics(self, ListFindingsMetricsRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_security_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        query["startDate"] = datetime.strftime(input.startDate, "%Y-%m-%dT%H:%M:%SZ")
+        query["endDate"] = datetime.strftime(input.endDate, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/metrics/findings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
 
     # ListScans  GET /scans
@@ -603,7 +616,7 @@ struct CodeGuru_SecurityClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/scans", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scans", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -612,7 +625,7 @@ struct CodeGuru_SecurityClient:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -621,7 +634,7 @@ struct CodeGuru_SecurityClient:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -630,11 +643,22 @@ struct CodeGuru_SecurityClient:
         auto bp = restjson.rest_json_document(b, codeguru_security_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codeguru_security_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_security_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_security_service(), self.region, host)
+
     # UpdateAccountConfiguration  PUT /updateAccountConfiguration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_account_configuration(self, UpdateAccountConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/updateAccountConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/updateAccountConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountConfigurationDocument(encryptionConfig=input.encryptionConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeguru_security_service(), self.region, host)
@@ -645,6 +669,19 @@ struct CodeGuru_SecurityClient:
         auto host = endpoints.regional_host(codeguru_security_service(), self.region)
         while True:
             auto raw = self.get_findings(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListFindingsMetrics — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: findingsMetrics).
+    def paginate_list_findings_metrics(self, ListFindingsMetricsRequest input):
+        auto host = endpoints.regional_host(codeguru_security_service(), self.region)
+        while True:
+            auto raw = self.list_findings_metrics(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

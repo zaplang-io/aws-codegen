@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 62 operations — 61 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 62 operations — 62 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   183 structs (115 @derive(Json)), 26 enums, 6 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1624,11 +1624,6 @@ def auditmanager_error_from_code(str code) -> AuditManagerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1783,7 +1778,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/associateToAssessmentReport", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/associateToAssessmentReport", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateAssessmentReportEvidenceFolderDocument(evidenceFolderId=input.evidenceFolderId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -1794,7 +1789,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/batchAssociateToAssessmentReport", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/batchAssociateToAssessmentReport", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"evidenceFolderId\":" + auditmanager_json_str(input.evidenceFolderId))
         list[str] e0 = []
@@ -1810,7 +1805,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/delegations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/delegations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.createDelegationRequests:
@@ -1825,7 +1820,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/delegations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/delegations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.delegationIds:
@@ -1840,7 +1835,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/batchDisassociateFromAssessmentReport", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/batchDisassociateFromAssessmentReport", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"evidenceFolderId\":" + auditmanager_json_str(input.evidenceFolderId))
         list[str] e0 = []
@@ -1858,7 +1853,7 @@ struct AuditManagerClient:
         labels["assessmentId"] = input.assessmentId
         labels["controlSetId"] = input.controlSetId
         labels["controlId"] = input.controlId
-        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/controls/{controlId}/evidence", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/controls/{controlId}/evidence", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.manualEvidence:
@@ -1871,7 +1866,7 @@ struct AuditManagerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_assessment(self, CreateAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assessments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assessments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + auditmanager_json_str(input.name))
         if input.description.is_some():
@@ -1897,7 +1892,7 @@ struct AuditManagerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_assessment_framework(self, CreateAssessmentFrameworkRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assessmentFrameworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assessmentFrameworks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + auditmanager_json_str(input.name))
         if input.description.is_some():
@@ -1925,7 +1920,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/reports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assessments/{assessmentId}/reports", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAssessmentReportDocument(name=input.name, description=input.description, queryStatement=input.queryStatement)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -1934,7 +1929,7 @@ struct AuditManagerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_control(self, CreateControlRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/controls", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/controls", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + auditmanager_json_str(input.name))
         if input.description.is_some():
@@ -1968,7 +1963,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # DeleteAssessmentFramework  DELETE /assessmentFrameworks/{frameworkId}
@@ -1977,7 +1972,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["frameworkId"] = input.frameworkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assessmentFrameworks/{frameworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assessmentFrameworks/{frameworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # DeleteAssessmentFrameworkShare  DELETE /assessmentFrameworkShareRequests/{requestId}
@@ -1988,7 +1983,7 @@ struct AuditManagerClient:
         labels["requestId"] = input.requestId
         dict[str, str] query = {}
         query["requestType"] = input.requestType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assessmentFrameworkShareRequests/{requestId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assessmentFrameworkShareRequests/{requestId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # DeleteAssessmentReport  DELETE /assessments/{assessmentId}/reports/{assessmentReportId}
@@ -1998,7 +1993,7 @@ struct AuditManagerClient:
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
         labels["assessmentReportId"] = input.assessmentReportId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assessments/{assessmentId}/reports/{assessmentReportId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assessments/{assessmentId}/reports/{assessmentReportId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # DeleteControl  DELETE /controls/{controlId}
@@ -2007,21 +2002,21 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["controlId"] = input.controlId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/controls/{controlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/controls/{controlId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # DeregisterAccount  POST /account/deregisterAccount
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def deregister_account(self) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/account/deregisterAccount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/account/deregisterAccount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # DeregisterOrganizationAdminAccount  POST /account/deregisterOrganizationAdminAccount
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def deregister_organization_admin_account(self, DeregisterOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/account/deregisterOrganizationAdminAccount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/account/deregisterOrganizationAdminAccount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeregisterOrganizationAdminAccountDocument(adminAccountId=input.adminAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2032,7 +2027,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/disassociateFromAssessmentReport", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/disassociateFromAssessmentReport", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateAssessmentReportEvidenceFolderDocument(evidenceFolderId=input.evidenceFolderId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2041,7 +2036,7 @@ struct AuditManagerClient:
     # errors: InternalServerException
     def get_account_status(self) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/account/status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/account/status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetAssessment  GET /assessments/{assessmentId}
@@ -2050,7 +2045,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetAssessmentFramework  GET /assessmentFrameworks/{frameworkId}
@@ -2059,7 +2054,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["frameworkId"] = input.frameworkId
-        auto b = binding.HttpBinding(method="GET", path_template="/assessmentFrameworks/{frameworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessmentFrameworks/{frameworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetAssessmentReportUrl  GET /assessments/{assessmentId}/reports/{assessmentReportId}/url
@@ -2069,7 +2064,7 @@ struct AuditManagerClient:
         dict[str, str] labels = {}
         labels["assessmentReportId"] = input.assessmentReportId
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/reports/{assessmentReportId}/url", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/reports/{assessmentReportId}/url", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetChangeLogs  GET /assessments/{assessmentId}/changelogs
@@ -2087,7 +2082,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/changelogs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/changelogs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetControl  GET /controls/{controlId}
@@ -2096,7 +2091,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["controlId"] = input.controlId
-        auto b = binding.HttpBinding(method="GET", path_template="/controls/{controlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/controls/{controlId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetDelegations  GET /delegations
@@ -2108,7 +2103,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/delegations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/delegations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetEvidence  GET /assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}/evidence/{evidenceId}
@@ -2120,7 +2115,7 @@ struct AuditManagerClient:
         labels["controlSetId"] = input.controlSetId
         labels["evidenceFolderId"] = input.evidenceFolderId
         labels["evidenceId"] = input.evidenceId
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}/evidence/{evidenceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}/evidence/{evidenceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetEvidenceByEvidenceFolder  GET /assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}/evidence
@@ -2136,7 +2131,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}/evidence", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}/evidence", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetEvidenceFileUploadUrl  GET /evidenceFileUploadUrl
@@ -2145,7 +2140,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] query = {}
         query["fileName"] = input.fileName
-        auto b = binding.HttpBinding(method="GET", path_template="/evidenceFileUploadUrl", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/evidenceFileUploadUrl", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetEvidenceFolder  GET /assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}
@@ -2156,7 +2151,7 @@ struct AuditManagerClient:
         labels["assessmentId"] = input.assessmentId
         labels["controlSetId"] = input.controlSetId
         labels["evidenceFolderId"] = input.evidenceFolderId
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/evidenceFolders/{evidenceFolderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetEvidenceFoldersByAssessment  GET /assessments/{assessmentId}/evidenceFolders
@@ -2170,7 +2165,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/evidenceFolders", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/evidenceFolders", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetEvidenceFoldersByAssessmentControl  GET /assessments/{assessmentId}/evidenceFolders-by-assessment-control/{controlSetId}/{controlId}
@@ -2186,14 +2181,14 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/evidenceFolders-by-assessment-control/{controlSetId}/{controlId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments/{assessmentId}/evidenceFolders-by-assessment-control/{controlSetId}/{controlId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetInsights  GET /insights
     # errors: AccessDeniedException, InternalServerException
     def get_insights(self) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetInsightsByAssessment  GET /insights/assessments/{assessmentId}
@@ -2202,21 +2197,21 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/insights/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetOrganizationAdminAccount  GET /account/organizationAdminAccount
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def get_organization_admin_account(self) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/account/organizationAdminAccount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/account/organizationAdminAccount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetServicesInScope  GET /services
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def get_services_in_scope(self) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/services", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/services", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # GetSettings  GET /settings/{attribute}
@@ -2225,7 +2220,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["attribute"] = input.attribute
-        auto b = binding.HttpBinding(method="GET", path_template="/settings/{attribute}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/settings/{attribute}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListAssessmentControlInsightsByControlDomain  GET /insights/controls-by-assessment
@@ -2239,7 +2234,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/insights/controls-by-assessment", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights/controls-by-assessment", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListAssessmentFrameworkShareRequests  GET /assessmentFrameworkShareRequests
@@ -2252,7 +2247,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessmentFrameworkShareRequests", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessmentFrameworkShareRequests", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListAssessmentFrameworks  GET /assessmentFrameworks
@@ -2265,7 +2260,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessmentFrameworks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessmentFrameworks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListAssessmentReports  GET /assessmentReports
@@ -2277,7 +2272,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessmentReports", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessmentReports", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListAssessments  GET /assessments
@@ -2291,7 +2286,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assessments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assessments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListControlDomainInsights  GET /insights/control-domains
@@ -2303,7 +2298,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/insights/control-domains", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights/control-domains", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListControlDomainInsightsByAssessment  GET /insights/control-domains-by-assessment
@@ -2316,7 +2311,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/insights/control-domains-by-assessment", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights/control-domains-by-assessment", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListControlInsightsByControlDomain  GET /insights/controls
@@ -2329,7 +2324,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/insights/controls", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights/controls", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListControls  GET /controls
@@ -2344,7 +2339,7 @@ struct AuditManagerClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.controlCatalogId.is_some():
             query["controlCatalogId"] = input.controlCatalogId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/controls", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/controls", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListKeywordsForDataSource  GET /dataSourceKeywords
@@ -2357,7 +2352,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/dataSourceKeywords", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataSourceKeywords", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListNotifications  GET /notifications
@@ -2369,7 +2364,7 @@ struct AuditManagerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/notifications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/notifications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -2378,14 +2373,14 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
 
     # RegisterAccount  POST /account/registerAccount
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def register_account(self, RegisterAccountRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/account/registerAccount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/account/registerAccount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterAccountDocument(kmsKey=input.kmsKey, delegatedAdminAccount=input.delegatedAdminAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2394,7 +2389,7 @@ struct AuditManagerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def register_organization_admin_account(self, RegisterOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/account/registerOrganizationAdminAccount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/account/registerOrganizationAdminAccount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterOrganizationAdminAccountDocument(adminAccountId=input.adminAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2405,7 +2400,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["frameworkId"] = input.frameworkId
-        auto b = binding.HttpBinding(method="POST", path_template="/assessmentFrameworks/{frameworkId}/shareRequests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assessmentFrameworks/{frameworkId}/shareRequests", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartAssessmentFrameworkShareDocument(destinationAccount=input.destinationAccount, destinationRegion=input.destinationRegion, comment=input.comment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2416,7 +2411,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2425,13 +2420,24 @@ struct AuditManagerClient:
         auto bp = restjson.rest_json_document(b, auditmanager_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(auditmanager_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, auditmanager_service(), self.region, host)
+
     # UpdateAssessment  PUT /assessments/{assessmentId}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_assessment(self, UpdateAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.assessmentName.is_some():
             auto u0 = input.assessmentName.unwrap()
@@ -2460,7 +2466,7 @@ struct AuditManagerClient:
         labels["assessmentId"] = input.assessmentId
         labels["controlSetId"] = input.controlSetId
         labels["controlId"] = input.controlId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/controls/{controlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/controls/{controlId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssessmentControlDocument(controlStatus=input.controlStatus, commentBody=input.commentBody)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2472,7 +2478,7 @@ struct AuditManagerClient:
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
         labels["controlSetId"] = input.controlSetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/controlSets/{controlSetId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssessmentControlSetStatusDocument(status=input.status, comment=input.comment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2483,7 +2489,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["frameworkId"] = input.frameworkId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessmentFrameworks/{frameworkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessmentFrameworks/{frameworkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + auditmanager_json_str(input.name))
         if input.description.is_some():
@@ -2505,7 +2511,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["requestId"] = input.requestId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessmentFrameworkShareRequests/{requestId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessmentFrameworkShareRequests/{requestId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssessmentFrameworkShareDocument(requestType=input.requestType, action=input.action)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2516,7 +2522,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["assessmentId"] = input.assessmentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assessments/{assessmentId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssessmentStatusDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)
@@ -2527,7 +2533,7 @@ struct AuditManagerClient:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
         dict[str, str] labels = {}
         labels["controlId"] = input.controlId
-        auto b = binding.HttpBinding(method="PUT", path_template="/controls/{controlId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/controls/{controlId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + auditmanager_json_str(input.name))
         if input.description.is_some():
@@ -2553,7 +2559,7 @@ struct AuditManagerClient:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def update_settings(self, UpdateSettingsRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.snsTopic.is_some():
             auto u0 = input.snsTopic.unwrap()
@@ -2586,7 +2592,7 @@ struct AuditManagerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def validate_assessment_report_integrity(self, ValidateAssessmentReportIntegrityRequest input) -> str:
         auto host = endpoints.regional_host(auditmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assessmentReports/integrity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assessmentReports/integrity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ValidateAssessmentReportIntegrityDocument(s3RelativePath=input.s3RelativePath)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, auditmanager_service(), self.region, host)

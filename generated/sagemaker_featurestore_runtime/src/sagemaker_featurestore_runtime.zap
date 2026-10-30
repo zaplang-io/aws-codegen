@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 7 operations — 5 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 7 operations — 6 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   24 structs (9 @derive(Json)), 4 enums, 6 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -272,7 +272,6 @@ def featurestore_runtime_sagemaker_error_from_code(str code) -> SageMaker_Featur
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   DeleteRecord (httpQuery `TargetStores` has unsupported type list[TargetStore])
-#   GetRecord (httpQuery `FeatureNames` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -373,7 +372,7 @@ struct SageMaker_FeatureStore_RuntimeClient:
     # errors: AccessForbidden, InternalFailure, ServiceUnavailable, ValidationError
     def batch_get_record(self, BatchGetRecordRequest input) -> str:
         auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetRecord", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetRecord", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Identifiers:
@@ -389,7 +388,7 @@ struct SageMaker_FeatureStore_RuntimeClient:
     # errors: AccessForbidden, InternalFailure, ResourceNotFound, ServiceUnavailable, ValidationError
     def batch_write_record(self, BatchWriteRecordRequest input) -> str:
         auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchWriteRecord", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchWriteRecord", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Entries:
@@ -401,13 +400,29 @@ struct SageMaker_FeatureStore_RuntimeClient:
         auto bp = restjson.rest_json_document(b, featurestore_runtime_sagemaker_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, featurestore_runtime_sagemaker_service(), self.region, host)
 
+    # GetRecord  GET /FeatureGroup/{FeatureGroupName}
+    # errors: AccessForbidden, InternalFailure, ResourceNotFound, ServiceUnavailable, ValidationError
+    def get_record(self, GetRecordRequest input) -> str:
+        auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FeatureGroupName"] = input.FeatureGroupName
+        dict[str, str] query = {}
+        query["RecordIdentifierValueAsString"] = input.RecordIdentifierValueAsString
+        if input.ExpirationTimeResponse.is_some():
+            query["ExpirationTimeResponse"] = input.ExpirationTimeResponse.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.FeatureNames.is_some():
+            multi_query["FeatureName"] = input.FeatureNames.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/FeatureGroup/{FeatureGroupName}", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, featurestore_runtime_sagemaker_service(), self.region, host)
+
     # ListRecords  POST /FeatureGroup/{FeatureGroupName}/ListRecords
     # errors: AccessForbidden, InternalFailure, ResourceNotFound, ServiceUnavailable, ValidationError
     def list_records(self, ListRecordsRequest input) -> str:
         auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
         dict[str, str] labels = {}
         labels["FeatureGroupName"] = input.FeatureGroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/FeatureGroup/{FeatureGroupName}/ListRecords", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/FeatureGroup/{FeatureGroupName}/ListRecords", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecordsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, IncludeSoftDeletedRecords=input.IncludeSoftDeletedRecords)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, featurestore_runtime_sagemaker_service(), self.region, host)
@@ -418,7 +433,7 @@ struct SageMaker_FeatureStore_RuntimeClient:
         auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
         dict[str, str] labels = {}
         labels["FeatureGroupName"] = input.FeatureGroupName
-        auto b = binding.HttpBinding(method="PUT", path_template="/FeatureGroup/{FeatureGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/FeatureGroup/{FeatureGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Record:
@@ -442,7 +457,7 @@ struct SageMaker_FeatureStore_RuntimeClient:
         auto host = endpoints.regional_host(featurestore_runtime_sagemaker_service(), self.region)
         dict[str, str] labels = {}
         labels["FeatureGroupName"] = input.FeatureGroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/FeatureGroup/{FeatureGroupName}/Record", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/FeatureGroup/{FeatureGroupName}/Record", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RecordIdentifierValueAsString\":" + featurestore_runtime_sagemaker_json_str(input.RecordIdentifierValueAsString))
         list[str] e0 = []

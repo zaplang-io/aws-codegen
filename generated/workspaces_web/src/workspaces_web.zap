@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 75 operations — 72 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 75 operations — 73 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   204 structs (129 @derive(Json)), 19 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1675,7 +1675,6 @@ def workspaces_web_error_from_code(str code) -> WorkSpaces_WebError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateUserSettings (document member `brandingConfigurationInput: BrandingConfigurationCreateInput` is not serializable)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateUserSettings (document member `brandingConfigurationInput: BrandingConfigurationUpdateInput` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1827,7 +1826,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["browserSettingsArn"] = input.browserSettingsArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/browserSettings", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/browserSettings", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # AssociateDataProtectionSettings  PUT /portals/{portalArn+}/dataProtectionSettings
@@ -1838,7 +1837,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["dataProtectionSettingsArn"] = input.dataProtectionSettingsArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/dataProtectionSettings", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/dataProtectionSettings", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # AssociateIpAccessSettings  PUT /portals/{portalArn+}/ipAccessSettings
@@ -1849,7 +1848,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["ipAccessSettingsArn"] = input.ipAccessSettingsArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/ipAccessSettings", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/ipAccessSettings", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # AssociateNetworkSettings  PUT /portals/{portalArn+}/networkSettings
@@ -1860,7 +1859,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["networkSettingsArn"] = input.networkSettingsArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/networkSettings", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/networkSettings", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # AssociateSessionLogger  PUT /portals/{portalArn+}/sessionLogger
@@ -1871,7 +1870,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["sessionLoggerArn"] = input.sessionLoggerArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/sessionLogger", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/sessionLogger", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # AssociateTrustStore  PUT /portals/{portalArn+}/trustStores
@@ -1882,7 +1881,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["trustStoreArn"] = input.trustStoreArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/trustStores", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/trustStores", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # AssociateUserAccessLoggingSettings  PUT /portals/{portalArn+}/userAccessLoggingSettings
@@ -1893,7 +1892,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["userAccessLoggingSettingsArn"] = input.userAccessLoggingSettingsArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/userAccessLoggingSettings", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/userAccessLoggingSettings", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # AssociateUserSettings  PUT /portals/{portalArn+}/userSettings
@@ -1904,14 +1903,14 @@ struct WorkSpaces_WebClient:
         greedy_labels["portalArn"] = input.portalArn
         dict[str, str] query = {}
         query["userSettingsArn"] = input.userSettingsArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/userSettings", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}/userSettings", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # CreateBrowserSettings  POST /browserSettings
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_browser_settings(self, CreateBrowserSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/browserSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/browserSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.tags.is_some():
             auto u0 = input.tags.unwrap()
@@ -1944,7 +1943,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_data_protection_settings(self, CreateDataProtectionSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/dataProtectionSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dataProtectionSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -1980,7 +1979,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_identity_provider(self, CreateIdentityProviderRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identityProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identityProviders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"portalArn\":" + workspaces_web_json_str(input.portalArn))
         parts.append("\"identityProviderName\":" + workspaces_web_json_str(input.identityProviderName))
@@ -2005,7 +2004,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_ip_access_settings(self, CreateIpAccessSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ipAccessSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ipAccessSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -2042,7 +2041,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_network_settings(self, CreateNetworkSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/networkSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networkSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"vpcId\":" + workspaces_web_json_str(input.vpcId))
         list[str] e0 = []
@@ -2069,7 +2068,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_portal(self, CreatePortalRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/portals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/portals", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -2111,7 +2110,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_session_logger(self, CreateSessionLoggerRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sessionLoggers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sessionLoggers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"eventFilter\":" + event_filter_to_json(input.eventFilter))
         parts.append("\"logConfiguration\":" + input.logConfiguration.to_json())
@@ -2143,7 +2142,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_trust_store(self, CreateTrustStoreRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/trustStores", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/trustStores", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.certificateList:
@@ -2165,7 +2164,7 @@ struct WorkSpaces_WebClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_user_access_logging_settings(self, CreateUserAccessLoggingSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/userAccessLoggingSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/userAccessLoggingSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"kinesisStreamArn\":" + workspaces_web_json_str(input.kinesisStreamArn))
         if input.tags.is_some():
@@ -2186,7 +2185,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["browserSettingsArn"] = input.browserSettingsArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/browserSettings/{browserSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/browserSettings/{browserSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteDataProtectionSettings  DELETE /dataProtectionSettings/{dataProtectionSettingsArn+}
@@ -2195,7 +2194,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["dataProtectionSettingsArn"] = input.dataProtectionSettingsArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/dataProtectionSettings/{dataProtectionSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/dataProtectionSettings/{dataProtectionSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteIdentityProvider  DELETE /identityProviders/{identityProviderArn+}
@@ -2204,7 +2203,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["identityProviderArn"] = input.identityProviderArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/identityProviders/{identityProviderArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/identityProviders/{identityProviderArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteIpAccessSettings  DELETE /ipAccessSettings/{ipAccessSettingsArn+}
@@ -2213,7 +2212,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ipAccessSettingsArn"] = input.ipAccessSettingsArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/ipAccessSettings/{ipAccessSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/ipAccessSettings/{ipAccessSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteNetworkSettings  DELETE /networkSettings/{networkSettingsArn+}
@@ -2222,7 +2221,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["networkSettingsArn"] = input.networkSettingsArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/networkSettings/{networkSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/networkSettings/{networkSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeletePortal  DELETE /portals/{portalArn+}
@@ -2231,7 +2230,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteSessionLogger  DELETE /sessionLoggers/{sessionLoggerArn+}
@@ -2240,7 +2239,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["sessionLoggerArn"] = input.sessionLoggerArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sessionLoggers/{sessionLoggerArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sessionLoggers/{sessionLoggerArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteTrustStore  DELETE /trustStores/{trustStoreArn+}
@@ -2249,7 +2248,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["trustStoreArn"] = input.trustStoreArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/trustStores/{trustStoreArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/trustStores/{trustStoreArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteUserAccessLoggingSettings  DELETE /userAccessLoggingSettings/{userAccessLoggingSettingsArn+}
@@ -2257,8 +2256,9 @@ struct WorkSpaces_WebClient:
     def delete_user_access_logging_settings(self, DeleteUserAccessLoggingSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
-        greedy_labels["userAccessLoggingSettingsArn"] = input.userAccessLoggingSettingsArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.userAccessLoggingSettingsArn
+        greedy_labels["userAccessLoggingSettingsArn"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DeleteUserSettings  DELETE /userSettings/{userSettingsArn+}
@@ -2267,7 +2267,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["userSettingsArn"] = input.userSettingsArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/userSettings/{userSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/userSettings/{userSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateBrowserSettings  DELETE /portals/{portalArn+}/browserSettings
@@ -2276,7 +2276,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/browserSettings", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/browserSettings", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateDataProtectionSettings  DELETE /portals/{portalArn+}/dataProtectionSettings
@@ -2285,7 +2285,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/dataProtectionSettings", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/dataProtectionSettings", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateIpAccessSettings  DELETE /portals/{portalArn+}/ipAccessSettings
@@ -2294,7 +2294,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/ipAccessSettings", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/ipAccessSettings", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateNetworkSettings  DELETE /portals/{portalArn+}/networkSettings
@@ -2303,7 +2303,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/networkSettings", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/networkSettings", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateSessionLogger  DELETE /portals/{portalArn+}/sessionLogger
@@ -2312,7 +2312,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/sessionLogger", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/sessionLogger", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateTrustStore  DELETE /portals/{portalArn+}/trustStores
@@ -2321,7 +2321,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/trustStores", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/trustStores", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateUserAccessLoggingSettings  DELETE /portals/{portalArn+}/userAccessLoggingSettings
@@ -2330,7 +2330,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/userAccessLoggingSettings", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/userAccessLoggingSettings", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # DisassociateUserSettings  DELETE /portals/{portalArn+}/userSettings
@@ -2339,7 +2339,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/userSettings", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalArn+}/userSettings", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ExpireSession  DELETE /portals/{portalId}/sessions/{sessionId}
@@ -2349,7 +2349,7 @@ struct WorkSpaces_WebClient:
         dict[str, str] labels = {}
         labels["portalId"] = input.portalId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetBrowserSettings  GET /browserSettings/{browserSettingsArn+}
@@ -2358,7 +2358,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["browserSettingsArn"] = input.browserSettingsArn
-        auto b = binding.HttpBinding(method="GET", path_template="/browserSettings/{browserSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/browserSettings/{browserSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetDataProtectionSettings  GET /dataProtectionSettings/{dataProtectionSettingsArn+}
@@ -2367,7 +2367,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["dataProtectionSettingsArn"] = input.dataProtectionSettingsArn
-        auto b = binding.HttpBinding(method="GET", path_template="/dataProtectionSettings/{dataProtectionSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataProtectionSettings/{dataProtectionSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetIdentityProvider  GET /identityProviders/{identityProviderArn+}
@@ -2376,7 +2376,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["identityProviderArn"] = input.identityProviderArn
-        auto b = binding.HttpBinding(method="GET", path_template="/identityProviders/{identityProviderArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identityProviders/{identityProviderArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetIpAccessSettings  GET /ipAccessSettings/{ipAccessSettingsArn+}
@@ -2385,7 +2385,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ipAccessSettingsArn"] = input.ipAccessSettingsArn
-        auto b = binding.HttpBinding(method="GET", path_template="/ipAccessSettings/{ipAccessSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ipAccessSettings/{ipAccessSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetNetworkSettings  GET /networkSettings/{networkSettingsArn+}
@@ -2394,7 +2394,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["networkSettingsArn"] = input.networkSettingsArn
-        auto b = binding.HttpBinding(method="GET", path_template="/networkSettings/{networkSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networkSettings/{networkSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetPortal  GET /portals/{portalArn+}
@@ -2403,7 +2403,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetPortalServiceProviderMetadata  GET /portalIdp/{portalArn+}
@@ -2412,7 +2412,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="GET", path_template="/portalIdp/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portalIdp/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetSession  GET /portals/{portalId}/sessions/{sessionId}
@@ -2422,7 +2422,7 @@ struct WorkSpaces_WebClient:
         dict[str, str] labels = {}
         labels["portalId"] = input.portalId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetSessionLogger  GET /sessionLoggers/{sessionLoggerArn+}
@@ -2431,7 +2431,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["sessionLoggerArn"] = input.sessionLoggerArn
-        auto b = binding.HttpBinding(method="GET", path_template="/sessionLoggers/{sessionLoggerArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sessionLoggers/{sessionLoggerArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetTrustStore  GET /trustStores/{trustStoreArn+}
@@ -2440,7 +2440,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["trustStoreArn"] = input.trustStoreArn
-        auto b = binding.HttpBinding(method="GET", path_template="/trustStores/{trustStoreArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trustStores/{trustStoreArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetTrustStoreCertificate  GET /trustStores/{trustStoreArn+}/certificate
@@ -2451,7 +2451,7 @@ struct WorkSpaces_WebClient:
         greedy_labels["trustStoreArn"] = input.trustStoreArn
         dict[str, str] query = {}
         query["thumbprint"] = input.thumbprint
-        auto b = binding.HttpBinding(method="GET", path_template="/trustStores/{trustStoreArn+}/certificate", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trustStores/{trustStoreArn+}/certificate", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetUserAccessLoggingSettings  GET /userAccessLoggingSettings/{userAccessLoggingSettingsArn+}
@@ -2459,8 +2459,9 @@ struct WorkSpaces_WebClient:
     def get_user_access_logging_settings(self, GetUserAccessLoggingSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
-        greedy_labels["userAccessLoggingSettingsArn"] = input.userAccessLoggingSettingsArn
-        auto b = binding.HttpBinding(method="GET", path_template="/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.userAccessLoggingSettingsArn
+        greedy_labels["userAccessLoggingSettingsArn"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # GetUserSettings  GET /userSettings/{userSettingsArn+}
@@ -2469,7 +2470,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["userSettingsArn"] = input.userSettingsArn
-        auto b = binding.HttpBinding(method="GET", path_template="/userSettings/{userSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/userSettings/{userSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListBrowserSettings  GET /browserSettings
@@ -2481,7 +2482,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/browserSettings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/browserSettings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListDataProtectionSettings  GET /dataProtectionSettings
@@ -2493,7 +2494,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/dataProtectionSettings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataProtectionSettings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListIdentityProviders  GET /portals/{portalArn+}/identityProviders
@@ -2507,7 +2508,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalArn+}/identityProviders", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalArn+}/identityProviders", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListIpAccessSettings  GET /ipAccessSettings
@@ -2519,7 +2520,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/ipAccessSettings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ipAccessSettings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListNetworkSettings  GET /networkSettings
@@ -2531,7 +2532,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/networkSettings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networkSettings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListPortals  GET /portals
@@ -2543,7 +2544,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/portals", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portals", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListSessionLoggers  GET /sessionLoggers
@@ -2555,7 +2556,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/sessionLoggers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sessionLoggers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListSessions  GET /portals/{portalId}/sessions
@@ -2577,7 +2578,7 @@ struct WorkSpaces_WebClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalId}/sessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalId}/sessions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn+}
@@ -2586,7 +2587,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListTrustStoreCertificates  GET /trustStores/{trustStoreArn+}/certificates
@@ -2600,7 +2601,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/trustStores/{trustStoreArn+}/certificates", labels={}, greedy_labels=greedy_labels, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trustStores/{trustStoreArn+}/certificates", labels={}, greedy_labels=greedy_labels, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListTrustStores  GET /trustStores
@@ -2612,7 +2613,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/trustStores", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/trustStores", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListUserAccessLoggingSettings  GET /userAccessLoggingSettings
@@ -2624,7 +2625,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/userAccessLoggingSettings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/userAccessLoggingSettings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # ListUserSettings  GET /userSettings
@@ -2636,7 +2637,7 @@ struct WorkSpaces_WebClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/userSettings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/userSettings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn+}
@@ -2645,7 +2646,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -2657,13 +2658,24 @@ struct WorkSpaces_WebClient:
         auto bp = restjson.rest_json_document(b, workspaces_web_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(workspaces_web_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workspaces_web_service(), self.region, host)
+
     # UpdateBrowserSettings  PATCH /browserSettings/{browserSettingsArn+}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_browser_settings(self, UpdateBrowserSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["browserSettingsArn"] = input.browserSettingsArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/browserSettings/{browserSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/browserSettings/{browserSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.browserPolicy.is_some():
             auto u0 = input.browserPolicy.unwrap()
@@ -2683,7 +2695,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["dataProtectionSettingsArn"] = input.dataProtectionSettingsArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dataProtectionSettings/{dataProtectionSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dataProtectionSettings/{dataProtectionSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.inlineRedactionConfiguration.is_some():
             auto u0 = input.inlineRedactionConfiguration.unwrap()
@@ -2706,7 +2718,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["identityProviderArn"] = input.identityProviderArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/identityProviders/{identityProviderArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/identityProviders/{identityProviderArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.identityProviderName.is_some():
             auto u0 = input.identityProviderName.unwrap()
@@ -2732,7 +2744,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["ipAccessSettingsArn"] = input.ipAccessSettingsArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/ipAccessSettings/{ipAccessSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/ipAccessSettings/{ipAccessSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -2758,7 +2770,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["networkSettingsArn"] = input.networkSettingsArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networkSettings/{networkSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networkSettings/{networkSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.vpcId.is_some():
             auto u0 = input.vpcId.unwrap()
@@ -2787,7 +2799,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["portalArn"] = input.portalArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePortalDocument(displayName=input.displayName, authenticationType=input.authenticationType, instanceType=input.instanceType, maxConcurrentSessions=input.maxConcurrentSessions, portalCustomDomain=input.portalCustomDomain)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)
@@ -2798,7 +2810,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["sessionLoggerArn"] = input.sessionLoggerArn
-        auto b = binding.HttpBinding(method="POST", path_template="/sessionLoggers/{sessionLoggerArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sessionLoggers/{sessionLoggerArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.eventFilter.is_some():
             auto u0 = input.eventFilter.unwrap()
@@ -2818,7 +2830,7 @@ struct WorkSpaces_WebClient:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["trustStoreArn"] = input.trustStoreArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/trustStores/{trustStoreArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/trustStores/{trustStoreArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.certificatesToAdd.is_some():
             auto u0 = input.certificatesToAdd.unwrap()
@@ -2843,8 +2855,9 @@ struct WorkSpaces_WebClient:
     def update_user_access_logging_settings(self, UpdateUserAccessLoggingSettingsRequest input) -> str:
         auto host = endpoints.regional_host(workspaces_web_service(), self.region)
         dict[str, str] greedy_labels = {}
-        greedy_labels["userAccessLoggingSettingsArn"] = input.userAccessLoggingSettingsArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.userAccessLoggingSettingsArn
+        greedy_labels["userAccessLoggingSettingsArn"] = qt0
+        auto b = binding.HttpBinding(method="PATCH", path_template="/userAccessLoggingSettings/{userAccessLoggingSettingsArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserAccessLoggingSettingsDocument(kinesisStreamArn=input.kinesisStreamArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workspaces_web_service(), self.region, host)

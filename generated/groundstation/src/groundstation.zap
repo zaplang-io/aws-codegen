@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 40 operations — 38 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 40 operations — 39 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   164 structs (113 @derive(Json)), 21 enums, 6 error variants.
 #   9 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1437,8 +1437,7 @@ def groundstation_error_from_code(str code) -> GroundStationError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListGroundStationReservations (httpQuery `startTime` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
+#   ListGroundStationReservations (httpQuery `reservationTypes` has unsupported type list[ReservationType])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1691,14 +1690,14 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["contactId"] = input.contactId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact/{contactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact/{contactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # CreateConfig  POST /config
     # errors: DependencyException, InvalidParameterException, ResourceLimitExceededException, ResourceNotFoundException
     def create_config(self, CreateConfigRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/config", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/config", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + groundstation_json_str(input.name))
         parts.append("\"configData\":" + input.configData.to_json())
@@ -1715,7 +1714,7 @@ struct GroundStationClient:
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def create_dataflow_endpoint_group(self, CreateDataflowEndpointGroupRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/dataflowEndpointGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dataflowEndpointGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.endpointDetails:
@@ -1740,7 +1739,7 @@ struct GroundStationClient:
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException, ServiceQuotaExceededException
     def create_dataflow_endpoint_group_v2(self, CreateDataflowEndpointGroupV2Request input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/dataflowEndpointGroupV2", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dataflowEndpointGroupV2", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.endpoints:
@@ -1765,7 +1764,7 @@ struct GroundStationClient:
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def create_ephemeris(self, CreateEphemerisRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ephemeris", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ephemeris", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.satelliteId.is_some():
             auto u0 = input.satelliteId.unwrap()
@@ -1799,7 +1798,7 @@ struct GroundStationClient:
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def create_mission_profile(self, CreateMissionProfileRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/missionprofile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/missionprofile", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + groundstation_json_str(input.name))
         if input.contactPrePassDurationSeconds.is_some():
@@ -1842,7 +1841,7 @@ struct GroundStationClient:
         dict[str, str] labels = {}
         labels["configId"] = input.configId
         labels["configType"] = input.configType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/config/{configType}/{configId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/config/{configType}/{configId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # DeleteDataflowEndpointGroup  DELETE /dataflowEndpointGroup/{dataflowEndpointGroupId}
@@ -1851,7 +1850,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["dataflowEndpointGroupId"] = input.dataflowEndpointGroupId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/dataflowEndpointGroup/{dataflowEndpointGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/dataflowEndpointGroup/{dataflowEndpointGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # DeleteEphemeris  DELETE /ephemeris/{ephemerisId}
@@ -1860,7 +1859,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["ephemerisId"] = input.ephemerisId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/ephemeris/{ephemerisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/ephemeris/{ephemerisId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # DeleteMissionProfile  DELETE /missionprofile/{missionProfileId}
@@ -1869,7 +1868,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["missionProfileId"] = input.missionProfileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/missionprofile/{missionProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/missionprofile/{missionProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # DescribeContact  GET /contact/{contactId}
@@ -1878,7 +1877,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["contactId"] = input.contactId
-        auto b = binding.HttpBinding(method="GET", path_template="/contact/{contactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact/{contactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # DescribeContactVersion  GET /contact/{contactId}/versions/{versionId}
@@ -1888,7 +1887,7 @@ struct GroundStationClient:
         dict[str, str] labels = {}
         labels["contactId"] = input.contactId
         labels["versionId"] = str(input.versionId)
-        auto b = binding.HttpBinding(method="GET", path_template="/contact/{contactId}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact/{contactId}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # DescribeEphemeris  GET /ephemeris/{ephemerisId}
@@ -1897,7 +1896,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["ephemerisId"] = input.ephemerisId
-        auto b = binding.HttpBinding(method="GET", path_template="/ephemeris/{ephemerisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ephemeris/{ephemerisId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # GetAgentConfiguration  GET /agent/{agentId}/configuration
@@ -1906,7 +1905,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="GET", path_template="/agent/{agentId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agent/{agentId}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # GetAgentTaskResponseUrl  GET /agentResponseUrl/{agentId}/{taskId}
@@ -1916,7 +1915,7 @@ struct GroundStationClient:
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/agentResponseUrl/{agentId}/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agentResponseUrl/{agentId}/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # GetConfig  GET /config/{configType}/{configId}
@@ -1926,7 +1925,7 @@ struct GroundStationClient:
         dict[str, str] labels = {}
         labels["configId"] = input.configId
         labels["configType"] = input.configType
-        auto b = binding.HttpBinding(method="GET", path_template="/config/{configType}/{configId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/config/{configType}/{configId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # GetDataflowEndpointGroup  GET /dataflowEndpointGroup/{dataflowEndpointGroupId}
@@ -1935,14 +1934,14 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["dataflowEndpointGroupId"] = input.dataflowEndpointGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/dataflowEndpointGroup/{dataflowEndpointGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataflowEndpointGroup/{dataflowEndpointGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # GetMinuteUsage  POST /minute-usage
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def get_minute_usage(self, GetMinuteUsageRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/minute-usage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/minute-usage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetMinuteUsageDocument(month=input.month, year=input.year)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
@@ -1953,7 +1952,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["missionProfileId"] = input.missionProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/missionprofile/{missionProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/missionprofile/{missionProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # GetSatellite  GET /satellite/{satelliteId}
@@ -1962,7 +1961,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["satelliteId"] = input.satelliteId
-        auto b = binding.HttpBinding(method="GET", path_template="/satellite/{satelliteId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/satellite/{satelliteId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListAntennas  GET /groundstation/{groundStationId}/antenna
@@ -1976,7 +1975,7 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/groundstation/{groundStationId}/antenna", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/groundstation/{groundStationId}/antenna", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListConfigs  GET /config
@@ -1988,7 +1987,7 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/config", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/config", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListContactVersions  GET /contact/{contactId}/versions
@@ -2002,14 +2001,14 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/contact/{contactId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact/{contactId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListContacts  POST /contacts
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def list_contacts(self, ListContactsRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contacts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contacts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -2047,7 +2046,7 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/dataflowEndpointGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dataflowEndpointGroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListEphemerides  POST /ephemerides
@@ -2059,7 +2058,7 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/ephemerides", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ephemerides", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.satelliteId.is_some():
             auto u0 = input.satelliteId.unwrap()
@@ -2089,7 +2088,7 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/groundstation", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/groundstation", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListMissionProfiles  GET /missionprofile
@@ -2101,7 +2100,7 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/missionprofile", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/missionprofile", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListSatellites  GET /satellite
@@ -2113,7 +2112,7 @@ struct GroundStationClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/satellite", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/satellite", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -2122,14 +2121,14 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
 
     # RegisterAgent  POST /agent
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def register_agent(self, RegisterAgentRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/agent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agent", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"discoveryData\":" + discovery_data_to_json(input.discoveryData))
         parts.append("\"agentDetails\":" + agent_details_to_json(input.agentDetails))
@@ -2146,7 +2145,7 @@ struct GroundStationClient:
     # errors: DependencyException, InvalidParameterException, ResourceLimitExceededException, ResourceNotFoundException
     def reserve_contact(self, ReserveContactRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"missionProfileArn\":" + groundstation_json_str(input.missionProfileArn))
         if input.satelliteArn.is_some():
@@ -2173,7 +2172,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2182,13 +2181,24 @@ struct GroundStationClient:
         auto bp = restjson.rest_json_document(b, groundstation_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(groundstation_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, groundstation_service(), self.region, host)
+
     # UpdateAgentStatus  PUT /agent/{agentId}
     # errors: DependencyException, InvalidParameterException, ResourceNotFoundException
     def update_agent_status(self, UpdateAgentStatusRequest input) -> str:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["agentId"] = input.agentId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agent/{agentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agent/{agentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"taskId\":" + groundstation_json_str(input.taskId))
         parts.append("\"aggregateStatus\":" + aggregate_status_to_json(input.aggregateStatus))
@@ -2206,7 +2216,7 @@ struct GroundStationClient:
         dict[str, str] labels = {}
         labels["configId"] = input.configId
         labels["configType"] = input.configType
-        auto b = binding.HttpBinding(method="PUT", path_template="/config/{configType}/{configId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/config/{configType}/{configId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfigDocument(name=input.name, configData=input.configData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
@@ -2217,7 +2227,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["contactId"] = input.contactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/{contactId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/{contactId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactDocument(clientToken=input.clientToken, trackingOverrides=input.trackingOverrides, satelliteArn=input.satelliteArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
@@ -2228,7 +2238,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["ephemerisId"] = input.ephemerisId
-        auto b = binding.HttpBinding(method="PUT", path_template="/ephemeris/{ephemerisId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/ephemeris/{ephemerisId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEphemerisDocument(enabled=input.enabled, name=input.name, priority=input.priority)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, groundstation_service(), self.region, host)
@@ -2239,7 +2249,7 @@ struct GroundStationClient:
         auto host = endpoints.regional_host(groundstation_service(), self.region)
         dict[str, str] labels = {}
         labels["missionProfileId"] = input.missionProfileId
-        auto b = binding.HttpBinding(method="PUT", path_template="/missionprofile/{missionProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/missionprofile/{missionProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()

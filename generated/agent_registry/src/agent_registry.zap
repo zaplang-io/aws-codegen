@@ -389,7 +389,7 @@ struct Agent_RegistryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def batch_get_discoverable_registry_record(self, BatchGetDiscoverableRegistryRecordRequest input) -> str:
         auto host = endpoints.regional_host(agent_registry_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/discoverable-records-batch", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/discoverable-records-batch", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.entries:
@@ -404,7 +404,7 @@ struct Agent_RegistryClient:
         auto host = endpoints.regional_host(agent_registry_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/discoverable-records-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/discoverable-records-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -425,7 +425,7 @@ struct Agent_RegistryClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def search_discoverable_registry_records(self, SearchDiscoverableRegistryRecordsRequest input) -> str:
         auto host = endpoints.regional_host(agent_registry_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/discoverable-records-search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/discoverable-records-search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"searchQuery\":" + agent_registry_json_str(input.searchQuery))
         list[str] e0 = []

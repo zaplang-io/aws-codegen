@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 21 operations — 19 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 21 operations — 21 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   51 structs (30 @derive(Json)), 3 enums, 6 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -511,12 +511,6 @@ def s3files_error_from_code(str code) -> S3FilesError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteFileSystem (httpQuery `forceDelete` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -568,6 +562,12 @@ def posix_user_to_json(PosixUser v) -> str:
         parts.append("\"secondaryGids\":" + s3files_json_arr(e1))
     return s3files_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def s3files_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound S3Files client: credentials + region, threaded into every operation.
 struct S3FilesClient:
     core.Credentials creds
@@ -577,7 +577,7 @@ struct S3FilesClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_access_point(self, CreateAccessPointRequest input) -> str:
         auto host = endpoints.regional_host(s3files_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/access-points", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/access-points", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -602,7 +602,7 @@ struct S3FilesClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_file_system(self, CreateFileSystemRequest input) -> str:
         auto host = endpoints.regional_host(s3files_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"bucket\":" + s3files_json_str(input.bucket))
         if input.prefix.is_some():
@@ -631,7 +631,7 @@ struct S3FilesClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_mount_target(self, CreateMountTargetRequest input) -> str:
         auto host = endpoints.regional_host(s3files_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/mount-targets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/mount-targets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"fileSystemId\":" + s3files_json_str(input.fileSystemId))
         parts.append("\"subnetId\":" + s3files_json_str(input.subnetId))
@@ -659,7 +659,19 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["accessPointId"] = input.accessPointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/access-points/{accessPointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/access-points/{accessPointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
+
+    # DeleteFileSystem  DELETE /file-systems/{fileSystemId}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_file_system(self, DeleteFileSystemRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        dict[str, str] labels = {}
+        labels["fileSystemId"] = input.fileSystemId
+        dict[str, str] query = {}
+        if input.forceDelete.is_some():
+            query["forceDelete"] = s3files_bind_bool(input.forceDelete.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/file-systems/{fileSystemId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # DeleteFileSystemPolicy  DELETE /file-systems/{fileSystemId}/policy
@@ -668,7 +680,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["fileSystemId"] = input.fileSystemId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/file-systems/{fileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/file-systems/{fileSystemId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # DeleteMountTarget  DELETE /mount-targets/{mountTargetId}
@@ -677,7 +689,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["mountTargetId"] = input.mountTargetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/mount-targets/{mountTargetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/mount-targets/{mountTargetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # GetAccessPoint  GET /access-points/{accessPointId}
@@ -686,7 +698,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["accessPointId"] = input.accessPointId
-        auto b = binding.HttpBinding(method="GET", path_template="/access-points/{accessPointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-points/{accessPointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # GetFileSystem  GET /file-systems/{fileSystemId}
@@ -695,7 +707,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["fileSystemId"] = input.fileSystemId
-        auto b = binding.HttpBinding(method="GET", path_template="/file-systems/{fileSystemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/file-systems/{fileSystemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # GetFileSystemPolicy  GET /file-systems/{fileSystemId}/policy
@@ -704,7 +716,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["fileSystemId"] = input.fileSystemId
-        auto b = binding.HttpBinding(method="GET", path_template="/file-systems/{fileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/file-systems/{fileSystemId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # GetMountTarget  GET /mount-targets/{mountTargetId}
@@ -713,7 +725,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["mountTargetId"] = input.mountTargetId
-        auto b = binding.HttpBinding(method="GET", path_template="/mount-targets/{mountTargetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/mount-targets/{mountTargetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # GetSynchronizationConfiguration  GET /file-systems/{fileSystemId}/synchronization-configuration
@@ -722,7 +734,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["fileSystemId"] = input.fileSystemId
-        auto b = binding.HttpBinding(method="GET", path_template="/file-systems/{fileSystemId}/synchronization-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/file-systems/{fileSystemId}/synchronization-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # ListAccessPoints  GET /access-points
@@ -735,7 +747,7 @@ struct S3FilesClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/access-points", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-points", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # ListFileSystems  GET /file-systems
@@ -749,7 +761,7 @@ struct S3FilesClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/file-systems", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/file-systems", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # ListMountTargets  GET /mount-targets
@@ -765,7 +777,7 @@ struct S3FilesClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/mount-targets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/mount-targets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # ListTagsForResource  GET /resource-tags/{resourceId}
@@ -779,7 +791,7 @@ struct S3FilesClient:
             query["MaxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["NextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-tags/{resourceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-tags/{resourceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
 
     # PutFileSystemPolicy  PUT /file-systems/{fileSystemId}/policy
@@ -788,7 +800,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["fileSystemId"] = input.fileSystemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems/{fileSystemId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems/{fileSystemId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFileSystemPolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
@@ -799,7 +811,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["fileSystemId"] = input.fileSystemId
-        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems/{fileSystemId}/synchronization-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/file-systems/{fileSystemId}/synchronization-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.latestVersionNumber.is_some():
             auto u0 = input.latestVersionNumber.unwrap()
@@ -821,7 +833,7 @@ struct S3FilesClient:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceId"] = input.resourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/resource-tags/{resourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resource-tags/{resourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -830,13 +842,24 @@ struct S3FilesClient:
         auto bp = restjson.rest_json_document(b, s3files_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, s3files_service(), self.region, host)
 
+    # UntagResource  DELETE /resource-tags/{resourceId}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(s3files_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceId"] = input.resourceId
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resource-tags/{resourceId}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, s3files_service(), self.region, host)
+
     # UpdateMountTarget  PUT /mount-targets/{mountTargetId}
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_mount_target(self, UpdateMountTargetRequest input) -> str:
         auto host = endpoints.regional_host(s3files_service(), self.region)
         dict[str, str] labels = {}
         labels["mountTargetId"] = input.mountTargetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/mount-targets/{mountTargetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/mount-targets/{mountTargetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.securityGroups:

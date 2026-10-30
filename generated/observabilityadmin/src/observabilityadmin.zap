@@ -1559,7 +1559,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def create_centralization_rule_for_organization(self, CreateCentralizationRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RuleName\":" + observabilityadmin_json_str(input.RuleName))
         parts.append("\"Rule\":" + centralization_rule_to_json(input.Rule))
@@ -1576,7 +1576,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException, ValidationException
     def create_dataset_integration(self, CreateDatasetIntegrationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateDatasetIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateDatasetIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RoleArn\":" + observabilityadmin_json_str(input.RoleArn))
         if input.Tags.is_some():
@@ -1592,7 +1592,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def create_s3_table_integration(self, CreateS3TableIntegrationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateS3TableIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateS3TableIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Encryption\":" + input.Encryption.to_json())
         parts.append("\"RoleArn\":" + observabilityadmin_json_str(input.RoleArn))
@@ -1609,7 +1609,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def create_telemetry_pipeline(self, CreateTelemetryPipelineInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryPipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + observabilityadmin_json_str(input.Name))
         parts.append("\"Configuration\":" + input.Configuration.to_json())
@@ -1626,7 +1626,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def create_telemetry_rule(self, CreateTelemetryRuleInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RuleName\":" + observabilityadmin_json_str(input.RuleName))
         parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
@@ -1643,7 +1643,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def create_telemetry_rule_for_organization(self, CreateTelemetryRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RuleName\":" + observabilityadmin_json_str(input.RuleName))
         parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
@@ -1660,7 +1660,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def delete_centralization_rule_for_organization(self, DeleteCentralizationRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteCentralizationRuleForOrganizationDocument(RuleIdentifier=input.RuleIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1669,7 +1669,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def delete_dataset_integration(self, DeleteDatasetIntegrationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteDatasetIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteDatasetIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteDatasetIntegrationDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1678,7 +1678,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, InvalidStateException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def delete_s3_table_integration(self, DeleteS3TableIntegrationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteS3TableIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteS3TableIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteS3TableIntegrationDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1687,7 +1687,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def delete_telemetry_pipeline(self, DeleteTelemetryPipelineInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTelemetryPipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTelemetryPipelineDocument(PipelineIdentifier=input.PipelineIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1696,7 +1696,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def delete_telemetry_rule(self, DeleteTelemetryRuleInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTelemetryRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTelemetryRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTelemetryRuleDocument(RuleIdentifier=input.RuleIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1705,7 +1705,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def delete_telemetry_rule_for_organization(self, DeleteTelemetryRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTelemetryRuleForOrganizationDocument(RuleIdentifier=input.RuleIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1714,7 +1714,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_centralization_rule_for_organization(self, GetCentralizationRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCentralizationRuleForOrganizationDocument(RuleIdentifier=input.RuleIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1723,7 +1723,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_dataset_integration(self, GetDatasetIntegrationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetDatasetIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetDatasetIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDatasetIntegrationDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1732,7 +1732,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_s3_table_integration(self, GetS3TableIntegrationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetS3TableIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetS3TableIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetS3TableIntegrationDocument(Arn=input.Arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1741,28 +1741,28 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException
     def get_telemetry_enrichment_status(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryEnrichmentStatus", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryEnrichmentStatus", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
     # GetTelemetryEvaluationStatus  POST /GetTelemetryEvaluationStatus
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException
     def get_telemetry_evaluation_status(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryEvaluationStatus", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryEvaluationStatus", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
     # GetTelemetryEvaluationStatusForOrganization  POST /GetTelemetryEvaluationStatusForOrganization
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def get_telemetry_evaluation_status_for_organization(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryEvaluationStatusForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryEvaluationStatusForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
     # GetTelemetryPipeline  POST /GetTelemetryPipeline
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_telemetry_pipeline(self, GetTelemetryPipelineInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryPipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTelemetryPipelineDocument(PipelineIdentifier=input.PipelineIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1771,7 +1771,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_telemetry_rule(self, GetTelemetryRuleInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTelemetryRuleDocument(RuleIdentifier=input.RuleIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1780,7 +1780,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_telemetry_rule_for_organization(self, GetTelemetryRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTelemetryRuleForOrganizationDocument(RuleIdentifier=input.RuleIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1789,7 +1789,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_centralization_rules_for_organization(self, ListCentralizationRulesForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListCentralizationRulesForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListCentralizationRulesForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCentralizationRulesForOrganizationDocument(RuleNamePrefix=input.RuleNamePrefix, AllRegions=input.AllRegions, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1798,7 +1798,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_dataset_integrations(self, ListDatasetIntegrationsInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListDatasetIntegrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListDatasetIntegrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDatasetIntegrationsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1807,7 +1807,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_s3_table_integrations(self, ListS3TableIntegrationsInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListS3TableIntegrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListS3TableIntegrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListS3TableIntegrationsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1816,7 +1816,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(ResourceARN=input.ResourceARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1825,7 +1825,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_telemetry_pipelines(self, ListTelemetryPipelinesInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTelemetryPipelines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTelemetryPipelines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTelemetryPipelinesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1834,7 +1834,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_telemetry_rules(self, ListTelemetryRulesInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTelemetryRules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTelemetryRules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTelemetryRulesDocument(RuleNamePrefix=input.RuleNamePrefix, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -1843,7 +1843,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_telemetry_rules_for_organization(self, ListTelemetryRulesForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTelemetryRulesForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTelemetryRulesForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RuleNamePrefix.is_some():
             auto u0 = input.RuleNamePrefix.unwrap()
@@ -1873,14 +1873,14 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException
     def start_telemetry_enrichment(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEnrichment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEnrichment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
     # StartTelemetryEvaluation  POST /StartTelemetryEvaluation
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def start_telemetry_evaluation(self, StartTelemetryEvaluationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEvaluation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEvaluation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Regions.is_some():
             auto u0 = input.Regions.unwrap()
@@ -1898,7 +1898,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def start_telemetry_evaluation_for_organization(self, StartTelemetryEvaluationForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEvaluationForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTelemetryEvaluationForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Regions.is_some():
             auto u0 = input.Regions.unwrap()
@@ -1916,28 +1916,28 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException
     def stop_telemetry_enrichment(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopTelemetryEnrichment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopTelemetryEnrichment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
     # StopTelemetryEvaluation  POST /StopTelemetryEvaluation
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def stop_telemetry_evaluation(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopTelemetryEvaluation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopTelemetryEvaluation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
     # StopTelemetryEvaluationForOrganization  POST /StopTelemetryEvaluationForOrganization
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def stop_telemetry_evaluation_for_organization(self) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopTelemetryEvaluationForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopTelemetryEvaluationForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, observabilityadmin_service(), self.region, host)
 
     # TagResource  POST /TagResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def tag_resource(self, TagResourceInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + observabilityadmin_json_str(input.ResourceARN))
         list[str] m0 = []
@@ -1951,7 +1951,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def test_telemetry_pipeline(self, TestTelemetryPipelineInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TestTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TestTelemetryPipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Records:
@@ -1968,7 +1968,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def untag_resource(self, UntagResourceInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + observabilityadmin_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1982,7 +1982,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def update_centralization_rule_for_organization(self, UpdateCentralizationRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateCentralizationRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RuleIdentifier\":" + observabilityadmin_json_str(input.RuleIdentifier))
         parts.append("\"Rule\":" + centralization_rule_to_json(input.Rule))
@@ -1993,7 +1993,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def update_dataset_integration(self, UpdateDatasetIntegrationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateDatasetIntegration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateDatasetIntegration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDatasetIntegrationDocument(Arn=input.Arn, RoleArn=input.RoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -2002,7 +2002,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def update_telemetry_pipeline(self, UpdateTelemetryPipelineInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryPipeline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryPipeline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTelemetryPipelineDocument(PipelineIdentifier=input.PipelineIdentifier, Configuration=input.Configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)
@@ -2011,7 +2011,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def update_telemetry_rule(self, UpdateTelemetryRuleInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryRule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryRule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RuleIdentifier\":" + observabilityadmin_json_str(input.RuleIdentifier))
         parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
@@ -2022,7 +2022,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, TooManyRequestsException, ValidationException
     def update_telemetry_rule_for_organization(self, UpdateTelemetryRuleForOrganizationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTelemetryRuleForOrganization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RuleIdentifier\":" + observabilityadmin_json_str(input.RuleIdentifier))
         parts.append("\"Rule\":" + telemetry_rule_to_json(input.Rule))
@@ -2033,7 +2033,7 @@ struct ObservabilityAdminClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def validate_telemetry_pipeline_configuration(self, ValidateTelemetryPipelineConfigurationInput input) -> str:
         auto host = endpoints.regional_host(observabilityadmin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ValidateTelemetryPipelineConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ValidateTelemetryPipelineConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ValidateTelemetryPipelineConfigurationDocument(Configuration=input.Configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, observabilityadmin_service(), self.region, host)

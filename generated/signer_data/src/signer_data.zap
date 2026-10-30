@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 1 operations — 0 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 1 operations — 1 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   6 structs (4 @derive(Json)), 0 enums, 4 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Signer_Data rest-json protocol: SigV4 service "signer" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -101,17 +102,26 @@ def data_signer_error_from_code(str code) -> Signer_DataError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetRevocationStatus (httpQuery `signatureTimestamp` has unsupported type DateTime)
-
 # A bound Signer_Data client: credentials + region, threaded into every operation.
 struct Signer_DataClient:
     core.Credentials creds
     str region
 
-    # no bindable operations were generated for this service in v0
+    # GetRevocationStatus  GET /revocations
+    # errors: AccessDeniedException, InternalServiceErrorException, TooManyRequestsException, ValidationException
+    def get_revocation_status(self, GetRevocationStatusRequest input) -> str:
+        auto host = endpoints.regional_host(data_signer_service(), self.region)
+        dict[str, str] query = {}
+        auto qt0 = datetime.strftime(input.signatureTimestamp, "%Y-%m-%dT%H:%M:%SZ")
+        query["signatureTimestamp"] = qt0
+        query["platformId"] = input.platformId
+        query["profileVersionArn"] = input.profileVersionArn
+        query["jobArn"] = input.jobArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["certificateHashes"] = input.certificateHashes
+        auto b = binding.HttpBinding(method="GET", path_template="/revocations", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, data_signer_service(), self.region, host)
+
 # Construct a Signer_DataClient bound to credentials + region.
 def data_signer_client(core.Credentials creds, str region) -> Signer_DataClient:
     return Signer_DataClient(creds=creds, region=region)

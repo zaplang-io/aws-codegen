@@ -147,7 +147,7 @@ struct Kinesis_Video_MediaClient:
     # errors: ClientLimitExceededException, ConnectionLimitExceededException, InvalidArgumentException, InvalidEndpointException, NotAuthorizedException, ResourceNotFoundException
     def get_media(self, GetMediaInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getMedia", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getMedia", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetMediaDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, StartSelector=input.StartSelector)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)

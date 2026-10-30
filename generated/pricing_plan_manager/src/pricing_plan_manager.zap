@@ -349,7 +349,7 @@ struct Pricing_Plan_ManagerClient:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
         dict[str, str] headers = {}
         headers["If-Match"] = input.ifMatch
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/ApprovePaidSubscription", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/ApprovePaidSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ApprovePaidSubscriptionDocument(arn=input.arn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
@@ -360,7 +360,7 @@ struct Pricing_Plan_ManagerClient:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
         dict[str, str] headers = {}
         headers["If-Match"] = input.ifMatch
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/AssociateResourcesToSubscription", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/AssociateResourcesToSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + pricingplanmanager_json_str(input.arn))
         list[str] e0 = []
@@ -379,7 +379,7 @@ struct Pricing_Plan_ManagerClient:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
         dict[str, str] headers = {}
         headers["If-Match"] = input.ifMatch
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/CancelSubscription", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/CancelSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelSubscriptionDocument(arn=input.arn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
@@ -390,7 +390,7 @@ struct Pricing_Plan_ManagerClient:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
         dict[str, str] headers = {}
         headers["If-Match"] = input.ifMatch
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/CancelSubscriptionChange", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/CancelSubscriptionChange", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelSubscriptionChangeDocument(arn=input.arn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
@@ -399,7 +399,7 @@ struct Pricing_Plan_ManagerClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_subscription(self, CreateSubscriptionInput input) -> str:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/CreateSubscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/CreateSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"planFamily\":" + pricingplanmanager_json_str(input.planFamily))
         parts.append("\"planTier\":" + pricingplanmanager_json_str(input.planTier))
@@ -425,7 +425,7 @@ struct Pricing_Plan_ManagerClient:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
         dict[str, str] headers = {}
         headers["If-Match"] = input.ifMatch
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/DisassociateResourcesFromSubscription", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/DisassociateResourcesFromSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + pricingplanmanager_json_str(input.arn))
         list[str] e0 = []
@@ -442,7 +442,7 @@ struct Pricing_Plan_ManagerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_subscription(self, GetSubscriptionInput input) -> str:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/GetSubscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/GetSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSubscriptionDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
@@ -451,7 +451,7 @@ struct Pricing_Plan_ManagerClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_subscriptions(self, ListSubscriptionsInput input) -> str:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/ListSubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/ListSubscriptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSubscriptionsDocument(nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)
@@ -462,7 +462,7 @@ struct Pricing_Plan_ManagerClient:
         auto host = endpoints.regional_host(pricingplanmanager_service(), self.region)
         dict[str, str] headers = {}
         headers["If-Match"] = input.ifMatch
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/UpdateSubscription", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/UpdateSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSubscriptionDocument(arn=input.arn, planTier=input.planTier, usageLevel=input.usageLevel, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pricingplanmanager_service(), self.region, host)

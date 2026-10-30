@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 195 operations — 182 with a generated method,
-#   13 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 195 operations — 195 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   746 structs (434 @derive(Json)), 91 enums, 8 error variants.
-#   35 paginators generated (6 paginated ops skipped) from paginators-1.json.
+#   41 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The DataZone rest-json protocol: SigV4 service "datazone" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -7810,32 +7811,6 @@ def datazone_error_from_code(str code) -> DataZoneError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchGetAttributesMetadata (httpQuery `attributeIdentifiers` has unsupported type list[str])
-#   DeleteDataSource (httpQuery `retainPermissionsOnRevokeFailure` has unsupported type bool)
-#   DeleteDomain (httpQuery `skipDeletionCheck` has unsupported type bool)
-#   DeleteProject (httpQuery `skipDeletionCheck` has unsupported type bool)
-#   GetConnection (httpQuery `withSecret` has unsupported type bool)
-#   GetLineageNode (httpQuery `eventTimestamp` has unsupported type DateTime)
-#   ListEnvironmentBlueprints (httpQuery `managed` has unsupported type bool)
-#   ListLineageEvents (httpQuery `timestampAfter` has unsupported type DateTime)
-#   ListLineageNodeHistory (httpQuery `eventTimestampGTE` has unsupported type DateTime)
-#   ListNotifications (httpQuery `afterTimestamp` has unsupported type DateTime)
-#   ListRules (httpQuery `projectIds` has unsupported type list[str])
-#   ListTimeSeriesDataPoints (httpQuery `startedAt` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListEnvironmentBlueprints (operation not generated)
-#   ListLineageEvents (operation not generated)
-#   ListLineageNodeHistory (operation not generated)
-#   ListNotifications (operation not generated)
-#   ListRules (operation not generated)
-#   ListTimeSeriesDataPoints (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -9169,6 +9144,12 @@ def vpc_properties_patch_to_json(VpcPropertiesPatch v) -> str:
         parts.append("\"securityGroupId\":" + datazone_json_str(u3))
     return datazone_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def datazone_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound DataZone client: credentials + region, threaded into every operation.
 struct DataZoneClient:
     core.Credentials creds
@@ -9184,7 +9165,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.revision.is_some():
             query["revision"] = input.revision.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/accept-predictions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/accept-predictions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.acceptRule.is_some():
             auto u0 = input.acceptRule.unwrap()
@@ -9208,7 +9189,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}/accept", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.decisionComment.is_some():
             auto u0 = input.decisionComment.unwrap()
@@ -9236,7 +9217,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityType"] = input.entityType
         labels["entityIdentifier"] = input.entityIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/addOwner", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/addOwner", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddEntityOwnerDocument(owner=input.owner, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9249,7 +9230,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityType"] = input.entityType
         labels["entityIdentifier"] = input.entityIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/addGrant", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/addGrant", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"policyType\":" + input.policyType.to_json())
         parts.append("\"principal\":" + input.principal.to_json())
@@ -9268,7 +9249,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["environmentRoleArn"] = input.environmentRoleArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # AssociateGovernedTerms  PATCH /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/associate-governed-terms
@@ -9279,7 +9260,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityIdentifier"] = input.entityIdentifier
         labels["entityType"] = input.entityType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/associate-governed-terms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/associate-governed-terms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.governedGlossaryTerms:
@@ -9287,6 +9268,22 @@ struct DataZoneClient:
         parts.append("\"governedGlossaryTerms\":" + datazone_json_arr(e0))
         auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
+
+    # BatchGetAttributesMetadata  GET /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def batch_get_attributes_metadata(self, BatchGetAttributesMetadataInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["entityType"] = input.entityType
+        labels["entityIdentifier"] = input.entityIdentifier
+        dict[str, str] query = {}
+        if input.entityRevision.is_some():
+            query["entityRevision"] = input.entityRevision.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        multi_query["attributeIdentifier"] = input.attributeIdentifiers
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # BatchPutAttributesMetadata  PUT /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
@@ -9296,7 +9293,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityType"] = input.entityType
         labels["entityIdentifier"] = input.entityIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9315,7 +9312,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # CancelSubscription  PUT /v2/domains/{domainIdentifier}/subscriptions/{identifier}/cancel
@@ -9325,7 +9322,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscriptions/{identifier}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscriptions/{identifier}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # CreateAccountPool  POST /v2/domains/{domainIdentifier}/account-pools
@@ -9334,7 +9331,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/account-pools", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/account-pools", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9351,7 +9348,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.externalIdentifier.is_some():
@@ -9393,7 +9390,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["assetIdentifier"] = input.assetIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9413,7 +9410,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/revisions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.typeRevision.is_some():
@@ -9449,7 +9446,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/asset-types", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/asset-types", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9469,7 +9466,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/connections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/connections", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.awsLocation.is_some():
             auto u0 = input.awsLocation.unwrap()
@@ -9508,7 +9505,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-products", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-products", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
@@ -9546,7 +9543,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}/revisions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9582,7 +9579,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-sources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9629,7 +9626,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/designations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/designations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDesignationDocument(name=input.name, description=input.description, policy=input.policy, deletionProtection=input.deletionProtection)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9638,7 +9635,7 @@ struct DataZoneClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_domain(self, CreateDomainInput input) -> str:
         auto host = endpoints.regional_host(datazone_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9677,7 +9674,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/domain-units", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/domain-units", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDomainUnitDocument(name=input.name, parentDomainUnitIdentifier=input.parentDomainUnitIdentifier, description=input.description, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9688,7 +9685,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"projectIdentifier\":" + datazone_json_str(input.projectIdentifier))
         if input.description.is_some():
@@ -9738,7 +9735,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateEnvironmentActionDocument(name=input.name, parameters=input.parameters, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9749,7 +9746,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environment-blueprints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environment-blueprints", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9774,7 +9771,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environment-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environment-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9803,7 +9800,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/form-types", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/form-types", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFormTypeDocument(name=input.name, model=input.model, owningProjectIdentifier=input.owningProjectIdentifier, status=input.status, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9814,7 +9811,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/glossaries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/glossaries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
@@ -9842,7 +9839,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/glossary-terms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/glossary-terms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"glossaryIdentifier\":" + datazone_json_str(input.glossaryIdentifier))
         parts.append("\"name\":" + datazone_json_str(input.name))
@@ -9870,7 +9867,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/group-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/group-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateGroupProfileDocument(groupIdentifier=input.groupIdentifier, rolePrincipalArn=input.rolePrincipalArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9881,7 +9878,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/listings/change-set", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/listings/change-set", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateListingChangeSetDocument(entityIdentifier=input.entityIdentifier, entityType=input.entityType, entityRevision=input.entityRevision, action=input.action, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9892,7 +9889,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebooks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebooks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
         parts.append("\"name\":" + datazone_json_str(input.name))
@@ -9926,7 +9923,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -9978,7 +9975,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["projectIdentifier"] = input.projectIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects/{projectIdentifier}/createMembership", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects/{projectIdentifier}/createMembership", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateProjectMembershipDocument(member=input.member, designation=input.designation, userCreatedDesignationId=input.userCreatedDesignationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -9989,7 +9986,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/project-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/project-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         if input.description.is_some():
@@ -10028,7 +10025,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/rules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         parts.append("\"target\":" + input.target.to_json())
@@ -10050,7 +10047,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/subscription-grants", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/subscription-grants", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"environmentIdentifier\":" + datazone_json_str(input.environmentIdentifier))
         if input.subscriptionTargetIdentifier.is_some():
@@ -10075,7 +10072,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/subscription-requests", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/subscription-requests", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.subscribedPrincipals:
@@ -10117,7 +10114,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + datazone_json_str(input.name))
         parts.append("\"type\":" + datazone_json_str(input.type))
@@ -10152,7 +10149,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/user-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/user-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateUserProfileDocument(userIdentifier=input.userIdentifier, userType=input.userType, sessionName=input.sessionName, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -10164,7 +10161,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteAsset  DELETE /v2/domains/{domainIdentifier}/assets/{identifier}
@@ -10174,7 +10171,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteAssetFilter  DELETE /v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}
@@ -10185,7 +10182,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["assetIdentifier"] = input.assetIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteAssetType  DELETE /v2/domains/{domainIdentifier}/asset-types/{identifier}
@@ -10195,7 +10192,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/asset-types/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/asset-types/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteConnection  DELETE /v2/domains/{domainIdentifier}/connections/{identifier}
@@ -10205,7 +10202,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/connections/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/connections/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteDataExportConfiguration  DELETE /v2/domains/{domainIdentifier}/data-export-configuration
@@ -10214,7 +10211,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/data-export-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/data-export-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteDataProduct  DELETE /v2/domains/{domainIdentifier}/data-products/{identifier}
@@ -10224,7 +10221,23 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # DeleteDataSource  DELETE /v2/domains/{domainIdentifier}/data-sources/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
+    def delete_data_source(self, DeleteDataSourceInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        if input.retainPermissionsOnRevokeFailure.is_some():
+            auto qt0 = datazone_bind_bool(input.retainPermissionsOnRevokeFailure.unwrap_or(False))
+            query["retainPermissionsOnRevokeFailure"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/data-sources/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteDesignation  DELETE /v2/domains/{domainIdentifier}/designations/{identifier}
@@ -10234,7 +10247,25 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/designations/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/designations/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # DeleteDomain  DELETE /v2/domains/{identifier}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def delete_domain(self, DeleteDomainInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        if input.skipDeletionCheck.is_some():
+            auto qt0 = datazone_bind_bool(input.skipDeletionCheck.unwrap_or(False))
+            query["skipDeletionCheck"] = qt0
+        if input.cascadeDelete.is_some():
+            auto qt1 = datazone_bind_bool(input.cascadeDelete.unwrap_or(False))
+            query["cascadeDelete"] = qt1
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteDomainUnit  DELETE /v2/domains/{domainIdentifier}/domain-units/{identifier}
@@ -10244,7 +10275,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/domain-units/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/domain-units/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteEnvironment  DELETE /v2/domains/{domainIdentifier}/environments/{identifier}
@@ -10254,7 +10285,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteEnvironmentAction  DELETE /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}
@@ -10265,7 +10296,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteEnvironmentBlueprint  DELETE /v2/domains/{domainIdentifier}/environment-blueprints/{identifier}
@@ -10275,7 +10306,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteEnvironmentBlueprintConfiguration  DELETE /v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}
@@ -10285,7 +10316,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentBlueprintIdentifier"] = input.environmentBlueprintIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteEnvironmentProfile  DELETE /v2/domains/{domainIdentifier}/environment-profiles/{identifier}
@@ -10295,7 +10326,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environment-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environment-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteFormType  DELETE /v2/domains/{domainIdentifier}/form-types/{formTypeIdentifier}
@@ -10305,7 +10336,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["formTypeIdentifier"] = input.formTypeIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/form-types/{formTypeIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/form-types/{formTypeIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteGlossary  DELETE /v2/domains/{domainIdentifier}/glossaries/{identifier}
@@ -10315,7 +10346,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/glossaries/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/glossaries/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteGlossaryTerm  DELETE /v2/domains/{domainIdentifier}/glossary-terms/{identifier}
@@ -10325,7 +10356,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/glossary-terms/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/glossary-terms/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteLineageEvent  DELETE /v2/domains/{domainIdentifier}/lineage/events/{identifier}
@@ -10335,7 +10366,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/lineage/events/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/lineage/events/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteListing  DELETE /v2/domains/{domainIdentifier}/listings/{identifier}
@@ -10345,7 +10376,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/listings/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/listings/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteNotebook  DELETE /v2/domains/{domainIdentifier}/notebooks/{identifier}
@@ -10355,7 +10386,21 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/notebooks/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/notebooks/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # DeleteProject  DELETE /v2/domains/{domainIdentifier}/projects/{identifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def delete_project(self, DeleteProjectInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.skipDeletionCheck.is_some():
+            auto qt0 = datazone_bind_bool(input.skipDeletionCheck.unwrap_or(False))
+            query["skipDeletionCheck"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/projects/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteProjectMembership  POST /v2/domains/{domainIdentifier}/projects/{projectIdentifier}/deleteMembership
@@ -10365,7 +10410,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["projectIdentifier"] = input.projectIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects/{projectIdentifier}/deleteMembership", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/projects/{projectIdentifier}/deleteMembership", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteProjectMembershipDocument(member=input.member)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -10377,7 +10422,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/project-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/project-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteRule  DELETE /v2/domains/{domainIdentifier}/rules/{identifier}
@@ -10387,7 +10432,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/rules/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteSubscriptionGrant  DELETE /v2/domains/{domainIdentifier}/subscription-grants/{identifier}
@@ -10397,7 +10442,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/subscription-grants/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/subscription-grants/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteSubscriptionRequest  DELETE /v2/domains/{domainIdentifier}/subscription-requests/{identifier}
@@ -10407,7 +10452,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteSubscriptionTarget  DELETE /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}
@@ -10418,7 +10463,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DeleteTimeSeriesDataPoints  DELETE /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points
@@ -10433,7 +10478,7 @@ struct DataZoneClient:
         query["formName"] = input.formName
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DisassociateEnvironmentRole  DELETE /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}
@@ -10444,7 +10489,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["environmentRoleArn"] = input.environmentRoleArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # DisassociateGovernedTerms  PATCH /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/disassociate-governed-terms
@@ -10455,7 +10500,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityIdentifier"] = input.entityIdentifier
         labels["entityType"] = input.entityType
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/disassociate-governed-terms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/disassociate-governed-terms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.governedGlossaryTerms:
@@ -10471,7 +10516,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetAsset  GET /v2/domains/{domainIdentifier}/assets/{identifier}
@@ -10484,7 +10529,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.revision.is_some():
             query["revision"] = input.revision.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetAssetFilter  GET /v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}
@@ -10495,7 +10540,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["assetIdentifier"] = input.assetIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetAssetType  GET /v2/domains/{domainIdentifier}/asset-types/{identifier}
@@ -10508,7 +10553,20 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.revision.is_some():
             query["revision"] = input.revision.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/asset-types/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/asset-types/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # GetConnection  GET /v2/domains/{domainIdentifier}/connections/{identifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def get_connection(self, GetConnectionInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.withSecret.is_some():
+            query["withSecret"] = datazone_bind_bool(input.withSecret.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/connections/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetDataExportConfiguration  GET /v2/domains/{domainIdentifier}/data-export-configuration
@@ -10517,7 +10575,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-export-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-export-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetDataProduct  GET /v2/domains/{domainIdentifier}/data-products/{identifier}
@@ -10530,7 +10588,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.revision.is_some():
             query["revision"] = input.revision.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetDataSource  GET /v2/domains/{domainIdentifier}/data-sources/{identifier}
@@ -10540,7 +10598,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-sources/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-sources/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetDataSourceRun  GET /v2/domains/{domainIdentifier}/data-source-runs/{identifier}
@@ -10550,7 +10608,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-source-runs/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-source-runs/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetDesignation  GET /v2/domains/{domainIdentifier}/designations/{identifier}
@@ -10560,7 +10618,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/designations/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/designations/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetDomain  GET /v2/domains/{identifier}
@@ -10569,7 +10627,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetDomainUnit  GET /v2/domains/{domainIdentifier}/domain-units/{identifier}
@@ -10579,7 +10637,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/domain-units/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/domain-units/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetEnvironment  GET /v2/domains/{domainIdentifier}/environments/{identifier}
@@ -10589,7 +10647,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetEnvironmentAction  GET /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}
@@ -10600,7 +10658,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetEnvironmentBlueprint  GET /v2/domains/{domainIdentifier}/environment-blueprints/{identifier}
@@ -10610,7 +10668,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetEnvironmentBlueprintConfiguration  GET /v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}
@@ -10620,7 +10678,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentBlueprintIdentifier"] = input.environmentBlueprintIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetEnvironmentCredentials  GET /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/credentials
@@ -10630,7 +10688,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/credentials", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/credentials", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetEnvironmentProfile  GET /v2/domains/{domainIdentifier}/environment-profiles/{identifier}
@@ -10640,7 +10698,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetFormType  GET /v2/domains/{domainIdentifier}/form-types/{formTypeIdentifier}
@@ -10653,7 +10711,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.revision.is_some():
             query["revision"] = input.revision.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/form-types/{formTypeIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/form-types/{formTypeIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetGlossary  GET /v2/domains/{domainIdentifier}/glossaries/{identifier}
@@ -10663,7 +10721,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/glossaries/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/glossaries/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetGlossaryTerm  GET /v2/domains/{domainIdentifier}/glossary-terms/{identifier}
@@ -10673,7 +10731,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/glossary-terms/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/glossary-terms/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetGroupProfile  GET /v2/domains/{domainIdentifier}/group-profiles/{groupIdentifier}
@@ -10683,7 +10741,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["groupIdentifier"] = input.groupIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/group-profiles/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/group-profiles/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetIamPortalLoginUrl  POST /v2/domains/{domainIdentifier}/get-portal-login-url
@@ -10692,7 +10750,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/get-portal-login-url", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/get-portal-login-url", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetJobRun  GET /v2/domains/{domainIdentifier}/jobRuns/{identifier}
@@ -10702,7 +10760,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/jobRuns/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/jobRuns/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetLineageEvent  GET /v2/domains/{domainIdentifier}/lineage/events/{identifier}
@@ -10712,7 +10770,21 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/lineage/events/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/lineage/events/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # GetLineageNode  GET /v2/domains/{domainIdentifier}/lineage/nodes/{identifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def get_lineage_node(self, GetLineageNodeInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.eventTimestamp.is_some():
+            auto qt0 = datetime.strftime(input.eventTimestamp.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["timestamp"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/lineage/nodes/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetListing  GET /v2/domains/{domainIdentifier}/listings/{identifier}
@@ -10725,7 +10797,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.listingRevision.is_some():
             query["listingRevision"] = input.listingRevision.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/listings/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/listings/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetMetadataGenerationRun  GET /v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}
@@ -10738,7 +10810,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetNotebook  GET /v2/domains/{domainIdentifier}/notebooks/{identifier}
@@ -10748,7 +10820,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebooks/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebooks/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetNotebookExport  GET /v2/domains/{domainIdentifier}/notebook-exports/{identifier}
@@ -10758,7 +10830,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebook-exports/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebook-exports/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetNotebookRun  GET /v2/domains/{domainIdentifier}/notebook-runs/{identifier}
@@ -10768,7 +10840,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebook-runs/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebook-runs/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetProject  GET /v2/domains/{domainIdentifier}/projects/{identifier}
@@ -10778,7 +10850,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/projects/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/projects/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetProjectProfile  GET /v2/domains/{domainIdentifier}/project-profiles/{identifier}
@@ -10788,7 +10860,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/project-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/project-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetRule  GET /v2/domains/{domainIdentifier}/rules/{identifier}
@@ -10801,7 +10873,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.revision.is_some():
             query["revision"] = input.revision.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/rules/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/rules/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetSubscription  GET /v2/domains/{domainIdentifier}/subscriptions/{identifier}
@@ -10811,7 +10883,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscriptions/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscriptions/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetSubscriptionGrant  GET /v2/domains/{domainIdentifier}/subscription-grants/{identifier}
@@ -10821,7 +10893,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-grants/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-grants/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetSubscriptionRequestDetails  GET /v2/domains/{domainIdentifier}/subscription-requests/{identifier}
@@ -10831,7 +10903,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetSubscriptionTarget  GET /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}
@@ -10842,7 +10914,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetTimeSeriesDataPoint  GET /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points/{identifier}
@@ -10856,7 +10928,7 @@ struct DataZoneClient:
         labels["identifier"] = input.identifier
         dict[str, str] query = {}
         query["formName"] = input.formName
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # GetUserProfile  GET /v2/domains/{domainIdentifier}/user-profiles/{userIdentifier}
@@ -10871,7 +10943,7 @@ struct DataZoneClient:
             query["type"] = input.type.unwrap_or("")
         if input.sessionName.is_some():
             query["sessionName"] = input.sessionName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/user-profiles/{userIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/user-profiles/{userIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListAccountPools  GET /v2/domains/{domainIdentifier}/account-pools
@@ -10891,7 +10963,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/account-pools", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/account-pools", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListAccountsInAccountPool  GET /v2/domains/{domainIdentifier}/account-pools/{identifier}/accounts
@@ -10906,7 +10978,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}/accounts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}/accounts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListAssetFilters  GET /v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters
@@ -10923,7 +10995,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListAssetRevisions  GET /v2/domains/{domainIdentifier}/assets/{identifier}/revisions
@@ -10938,7 +11010,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/revisions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/revisions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListConnections  GET /v2/domains/{domainIdentifier}/connections
@@ -10966,7 +11038,7 @@ struct DataZoneClient:
             query["type"] = input.type.unwrap_or("")
         if input.scope_.is_some():
             query["scope"] = input.scope_.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/connections", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/connections", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListDataProductRevisions  GET /v2/domains/{domainIdentifier}/data-products/{identifier}/revisions
@@ -10981,7 +11053,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}/revisions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-products/{identifier}/revisions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListDataSourceRunActivities  GET /v2/domains/{domainIdentifier}/data-source-runs/{identifier}/activities
@@ -10998,7 +11070,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-source-runs/{identifier}/activities", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-source-runs/{identifier}/activities", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListDataSourceRuns  GET /v2/domains/{domainIdentifier}/data-sources/{dataSourceIdentifier}/runs
@@ -11015,7 +11087,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-sources/{dataSourceIdentifier}/runs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-sources/{dataSourceIdentifier}/runs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListDataSources  GET /v2/domains/{domainIdentifier}/data-sources
@@ -11040,7 +11112,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-sources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/data-sources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListDesignations  GET /v2/domains/{domainIdentifier}/designations
@@ -11054,7 +11126,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/designations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/designations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListDomainUnitsForParent  GET /v2/domains/{domainIdentifier}/domain-units
@@ -11069,7 +11141,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/domain-units", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/domain-units", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListDomains  GET /v2/domains
@@ -11083,7 +11155,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListEntityOwners  GET /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/owners
@@ -11099,7 +11171,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/owners", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/owners", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListEnvironmentActions  GET /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions
@@ -11114,7 +11186,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListEnvironmentBlueprintConfigurations  GET /v2/domains/{domainIdentifier}/environment-blueprint-configurations
@@ -11128,7 +11200,25 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # ListEnvironmentBlueprints  GET /v2/domains/{domainIdentifier}/environment-blueprints
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def list_environment_blueprints(self, ListEnvironmentBlueprintsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.name.is_some():
+            query["name"] = input.name.unwrap_or("")
+        if input.managed.is_some():
+            query["managed"] = datazone_bind_bool(input.managed.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-blueprints", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListEnvironmentProfiles  GET /v2/domains/{domainIdentifier}/environment-profiles
@@ -11143,7 +11233,8 @@ struct DataZoneClient:
         if input.awsAccountRegion.is_some():
             query["awsAccountRegion"] = input.awsAccountRegion.unwrap_or("")
         if input.environmentBlueprintIdentifier.is_some():
-            query["environmentBlueprintIdentifier"] = input.environmentBlueprintIdentifier.unwrap_or("")
+            auto qt0 = input.environmentBlueprintIdentifier.unwrap_or("")
+            query["environmentBlueprintIdentifier"] = qt0
         if input.projectIdentifier.is_some():
             query["projectIdentifier"] = input.projectIdentifier.unwrap_or("")
         if input.name.is_some():
@@ -11152,7 +11243,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-profiles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environment-profiles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListEnvironments  GET /v2/domains/{domainIdentifier}/environments
@@ -11170,9 +11261,11 @@ struct DataZoneClient:
             query["awsAccountRegion"] = input.awsAccountRegion.unwrap_or("")
         query["projectIdentifier"] = input.projectIdentifier
         if input.environmentProfileIdentifier.is_some():
-            query["environmentProfileIdentifier"] = input.environmentProfileIdentifier.unwrap_or("")
+            auto qt0 = input.environmentProfileIdentifier.unwrap_or("")
+            query["environmentProfileIdentifier"] = qt0
         if input.environmentBlueprintIdentifier.is_some():
-            query["environmentBlueprintIdentifier"] = input.environmentBlueprintIdentifier.unwrap_or("")
+            auto qt1 = input.environmentBlueprintIdentifier.unwrap_or("")
+            query["environmentBlueprintIdentifier"] = qt1
         if input.provider.is_some():
             query["provider"] = input.provider.unwrap_or("")
         if input.name.is_some():
@@ -11181,7 +11274,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListJobRuns  GET /v2/domains/{domainIdentifier}/jobs/{jobIdentifier}/runs
@@ -11200,7 +11293,56 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/jobs/{jobIdentifier}/runs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/jobs/{jobIdentifier}/runs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # ListLineageEvents  GET /v2/domains/{domainIdentifier}/lineage/events
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
+    def list_lineage_events(self, ListLineageEventsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.timestampAfter.is_some():
+            auto qt0 = datetime.strftime(input.timestampAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["timestampAfter"] = qt0
+        if input.timestampBefore.is_some():
+            auto qt1 = datetime.strftime(input.timestampBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["timestampBefore"] = qt1
+        if input.processingStatus.is_some():
+            query["processingStatus"] = input.processingStatus.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/lineage/events", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # ListLineageNodeHistory  GET /v2/domains/{domainIdentifier}/lineage/nodes/{identifier}/history
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def list_lineage_node_history(self, ListLineageNodeHistoryInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["identifier"] = input.identifier
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.direction.is_some():
+            query["direction"] = input.direction.unwrap_or("")
+        if input.eventTimestampGTE.is_some():
+            auto qt0 = datetime.strftime(input.eventTimestampGTE.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["timestampGTE"] = qt0
+        if input.eventTimestampLTE.is_some():
+            auto qt1 = datetime.strftime(input.eventTimestampLTE.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["timestampLTE"] = qt1
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/lineage/nodes/{identifier}/history", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListMetadataGenerationRuns  GET /v2/domains/{domainIdentifier}/metadata-generation-runs
@@ -11220,7 +11362,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.targetIdentifier.is_some():
             query["targetIdentifier"] = input.targetIdentifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListNotebookRuns  GET /v2/domains/{domainIdentifier}/notebook-runs
@@ -11243,7 +11385,7 @@ struct DataZoneClient:
             query["sortOrder"] = input.sortOrder.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebook-runs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebook-runs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListNotebooks  GET /v2/domains/{domainIdentifier}/notebooks
@@ -11266,7 +11408,33 @@ struct DataZoneClient:
             query["type"] = input.type.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebooks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notebooks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # ListNotifications  GET /v2/domains/{domainIdentifier}/notifications
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def list_notifications(self, ListNotificationsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        dict[str, str] query = {}
+        query["type"] = input.type
+        if input.afterTimestamp.is_some():
+            auto qt0 = datetime.strftime(input.afterTimestamp.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["afterTimestamp"] = qt0
+        if input.beforeTimestamp.is_some():
+            auto qt1 = datetime.strftime(input.beforeTimestamp.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["beforeTimestamp"] = qt1
+        if input.taskStatus.is_some():
+            query["taskStatus"] = input.taskStatus.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.subjects.is_some():
+            multi_query["subjects"] = input.subjects.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/notifications", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListPolicyGrants  GET /v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/grants
@@ -11283,7 +11451,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/grants", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/grants", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListProjectMemberships  GET /v2/domains/{domainIdentifier}/projects/{projectIdentifier}/memberships
@@ -11302,7 +11470,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/projects/{projectIdentifier}/memberships", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/projects/{projectIdentifier}/memberships", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListProjectProfiles  GET /v2/domains/{domainIdentifier}/project-profiles
@@ -11322,7 +11490,7 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/project-profiles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/project-profiles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListProjects  GET /v2/domains/{domainIdentifier}/projects
@@ -11344,7 +11512,38 @@ struct DataZoneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/projects", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/projects", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # ListRules  GET /v2/domains/{domainIdentifier}/list-rules/{targetType}/{targetIdentifier}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def list_rules(self, ListRulesInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["targetType"] = input.targetType
+        labels["targetIdentifier"] = input.targetIdentifier
+        dict[str, str] query = {}
+        if input.ruleType.is_some():
+            query["ruleType"] = input.ruleType.unwrap_or("")
+        if input.action.is_some():
+            query["ruleAction"] = input.action.unwrap_or("")
+        if input.dataProduct.is_some():
+            auto qt0 = datazone_bind_bool(input.dataProduct.unwrap_or(False))
+            query["dataProduct"] = qt0
+        if input.includeCascaded.is_some():
+            auto qt1 = datazone_bind_bool(input.includeCascaded.unwrap_or(False))
+            query["includeCascaded"] = qt1
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.projectIds.is_some():
+            multi_query["projectIds"] = input.projectIds.unwrap()
+        if input.assetTypes.is_some():
+            multi_query["assetTypes"] = input.assetTypes.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/list-rules/{targetType}/{targetIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListSubscriptionGrants  GET /v2/domains/{domainIdentifier}/subscription-grants
@@ -11378,7 +11577,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-grants", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-grants", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListSubscriptionRequests  GET /v2/domains/{domainIdentifier}/subscription-requests
@@ -11410,7 +11609,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-requests", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscription-requests", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListSubscriptionTargets  GET /v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets
@@ -11429,7 +11628,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListSubscriptions  GET /v2/domains/{domainIdentifier}/subscriptions
@@ -11440,7 +11639,8 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         dict[str, str] query = {}
         if input.subscriptionRequestIdentifier.is_some():
-            query["subscriptionRequestIdentifier"] = input.subscriptionRequestIdentifier.unwrap_or("")
+            auto qt0 = input.subscriptionRequestIdentifier.unwrap_or("")
+            query["subscriptionRequestIdentifier"] = qt0
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
         if input.subscribedListingId.is_some():
@@ -11463,7 +11663,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscriptions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/subscriptions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -11472,7 +11672,30 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
+    # ListTimeSeriesDataPoints  GET /v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
+    def list_time_series_data_points(self, ListTimeSeriesDataPointsInput input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["domainIdentifier"] = input.domainIdentifier
+        labels["entityIdentifier"] = input.entityIdentifier
+        labels["entityType"] = input.entityType
+        dict[str, str] query = {}
+        query["formName"] = input.formName
+        if input.startedAt.is_some():
+            auto qt0 = datetime.strftime(input.startedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startedAt"] = qt0
+        if input.endedAt.is_some():
+            auto qt1 = datetime.strftime(input.endedAt.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endedAt"] = qt1
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
 
     # PostLineageEvent  POST /v2/domains/{domainIdentifier}/lineage/events
@@ -11484,7 +11707,7 @@ struct DataZoneClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/lineage/events", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/lineage/events", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.event), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
@@ -11496,7 +11719,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityIdentifier"] = input.entityIdentifier
         labels["entityType"] = input.entityType
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.forms:
@@ -11514,7 +11737,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/data-export-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/data-export-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDataExportConfigurationDocument(enableExport=input.enableExport, encryptionConfiguration=input.encryptionConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11526,7 +11749,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentBlueprintIdentifier"] = input.environmentBlueprintIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/environment-blueprint-configurations/{environmentBlueprintIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.provisioningRoleArn.is_some():
             auto u0 = input.provisioningRoleArn.unwrap()
@@ -11585,7 +11808,7 @@ struct DataZoneClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/graph/query", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/graph/query", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.match_:
@@ -11607,7 +11830,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.revision.is_some():
             query["revision"] = input.revision.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/reject-predictions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/assets/{identifier}/reject-predictions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.rejectRule.is_some():
             auto u0 = input.rejectRule.unwrap()
@@ -11631,7 +11854,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}/reject", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RejectSubscriptionRequestDocument(decisionComment=input.decisionComment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11644,7 +11867,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityType"] = input.entityType
         labels["entityIdentifier"] = input.entityIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/removeOwner", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/removeOwner", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveEntityOwnerDocument(owner=input.owner, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11657,7 +11880,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["entityType"] = input.entityType
         labels["entityIdentifier"] = input.entityIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/removeGrant", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/removeGrant", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemovePolicyGrantDocument(policyType=input.policyType, principal=input.principal, grantIdentifier=input.grantIdentifier, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11669,7 +11892,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscriptions/{identifier}/revoke", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/subscriptions/{identifier}/revoke", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeSubscriptionDocument(retainPermissions=input.retainPermissions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11680,7 +11903,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.owningProjectIdentifier.is_some():
             auto u0 = input.owningProjectIdentifier.unwrap()
@@ -11722,7 +11945,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search-group-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search-group-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchGroupProfilesDocument(groupType=input.groupType, searchText=input.searchText, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11733,7 +11956,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/listings/search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/listings/search", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.searchText.is_some():
             auto u0 = input.searchText.unwrap()
@@ -11777,7 +12000,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/types-search", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/types-search", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -11811,7 +12034,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search-user-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/search-user-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchUserProfilesDocument(userType=input.userType, searchText=input.searchText, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11823,7 +12046,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["dataSourceIdentifier"] = input.dataSourceIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-sources/{dataSourceIdentifier}/runs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/data-sources/{dataSourceIdentifier}/runs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartDataSourceRunDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11834,7 +12057,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/metadata-generation-runs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.type.is_some():
             auto u0 = input.type.unwrap()
@@ -11859,7 +12082,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-exports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-exports", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartNotebookExportDocument(notebookIdentifier=input.notebookIdentifier, owningProjectIdentifier=input.owningProjectIdentifier, fileFormat=input.fileFormat, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11870,7 +12093,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-imports", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-imports", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
         parts.append("\"sourceLocation\":" + source_location_to_json(input.sourceLocation))
@@ -11893,7 +12116,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-runs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-runs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
         parts.append("\"notebookIdentifier\":" + datazone_json_str(input.notebookIdentifier))
@@ -11939,7 +12162,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-syncs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domains/{domainIdentifier}/notebook-syncs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"owningProjectIdentifier\":" + datazone_json_str(input.owningProjectIdentifier))
         parts.append("\"sourceLocation\":" + source_location_to_json(input.sourceLocation))
@@ -11968,7 +12191,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/notebook-runs/{identifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/notebook-runs/{identifier}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopNotebookRunDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -11979,7 +12202,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -11988,6 +12211,17 @@ struct DataZoneClient:
         auto bp = restjson.rest_json_document(b, datazone_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, datazone_service(), self.region, host)
+
     # UpdateAccountPool  PATCH /v2/domains/{domainIdentifier}/account-pools/{identifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def update_account_pool(self, UpdateAccountPoolInput input) -> str:
@@ -11995,7 +12229,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/account-pools/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12020,7 +12254,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["assetIdentifier"] = input.assetIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12041,7 +12275,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/connections/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/connections/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.configurations.is_some():
             auto u0 = input.configurations.unwrap()
@@ -12068,7 +12302,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/data-sources/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/data-sources/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12110,7 +12344,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/designations/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/designations/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDesignationDocument(name=input.name, description=input.description, policy=input.policy, deletionProtection=input.deletionProtection)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12124,7 +12358,7 @@ struct DataZoneClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDomainDocument(description=input.description, singleSignOn=input.singleSignOn, domainExecutionRole=input.domainExecutionRole, serviceRole=input.serviceRole, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12136,7 +12370,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/domain-units/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/domain-units/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDomainUnitDocument(description=input.description, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12148,7 +12382,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12185,7 +12419,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEnvironmentActionDocument(parameters=input.parameters, name=input.name, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12197,7 +12431,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environment-blueprints/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -12224,7 +12458,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environment-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environment-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12254,7 +12488,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/glossaries/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/glossaries/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGlossaryDocument(name=input.name, description=input.description, status=input.status, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12266,7 +12500,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/glossary-terms/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/glossary-terms/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.glossaryIdentifier.is_some():
             auto u0 = input.glossaryIdentifier.unwrap()
@@ -12296,7 +12530,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["groupIdentifier"] = input.groupIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/group-profiles/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/group-profiles/{groupIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGroupProfileDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12308,7 +12542,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/notebooks/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/notebooks/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -12356,7 +12590,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/projects/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/projects/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12401,7 +12635,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/project-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/project-profiles/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12442,7 +12676,7 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/root-domain-unit-owner", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/root-domain-unit-owner", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRootDomainUnitOwnerDocument(currentOwner=input.currentOwner, newOwner=input.newOwner, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12454,7 +12688,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/rules/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12482,7 +12716,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
         labels["assetIdentifier"] = input.assetIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/subscription-grants/{identifier}/status/{assetIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/subscription-grants/{identifier}/status/{assetIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSubscriptionGrantStatusDocument(status=input.status, failureCause=input.failureCause, targetName=input.targetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12494,7 +12728,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/subscription-requests/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSubscriptionRequestDocument(requestReason=input.requestReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12507,7 +12741,7 @@ struct DataZoneClient:
         labels["domainIdentifier"] = input.domainIdentifier
         labels["environmentIdentifier"] = input.environmentIdentifier
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/subscription-targets/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12549,7 +12783,7 @@ struct DataZoneClient:
         dict[str, str] labels = {}
         labels["domainIdentifier"] = input.domainIdentifier
         labels["userIdentifier"] = input.userIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/user-profiles/{userIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domains/{domainIdentifier}/user-profiles/{userIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserProfileDocument(type=input.type, status=input.status, sessionName=input.sessionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, datazone_service(), self.region, host)
@@ -12749,6 +12983,19 @@ struct DataZoneClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListEnvironmentBlueprints — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_environment_blueprints(self, ListEnvironmentBlueprintsInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.list_environment_blueprints(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListEnvironmentProfiles — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_list_environment_profiles(self, ListEnvironmentProfilesInput input):
@@ -12788,6 +13035,32 @@ struct DataZoneClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListLineageEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_lineage_events(self, ListLineageEventsInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.list_lineage_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListLineageNodeHistory — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: nodes).
+    def paginate_list_lineage_node_history(self, ListLineageNodeHistoryInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.list_lineage_node_history(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListMetadataGenerationRuns — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_list_metadata_generation_runs(self, ListMetadataGenerationRunsInput input):
@@ -12820,6 +13093,19 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         while True:
             auto raw = self.list_notebooks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListNotifications — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: notifications).
+    def paginate_list_notifications(self, ListNotificationsInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.list_notifications(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -12879,6 +13165,19 @@ struct DataZoneClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListRules — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_rules(self, ListRulesInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.list_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListSubscriptionGrants — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: items).
     def paginate_list_subscription_grants(self, ListSubscriptionGrantsInput input):
@@ -12924,6 +13223,19 @@ struct DataZoneClient:
         auto host = endpoints.regional_host(datazone_service(), self.region)
         while True:
             auto raw = self.list_subscriptions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListTimeSeriesDataPoints — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_time_series_data_points(self, ListTimeSeriesDataPointsInput input):
+        auto host = endpoints.regional_host(datazone_service(), self.region)
+        while True:
+            auto raw = self.list_time_series_data_points(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

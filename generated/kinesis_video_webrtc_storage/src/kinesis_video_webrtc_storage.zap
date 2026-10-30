@@ -116,7 +116,7 @@ struct Kinesis_Video_WebRTC_StorageClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def join_storage_session(self, JoinStorageSessionInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/joinStorageSession", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/joinStorageSession", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = JoinStorageSessionDocument(channelArn=input.channelArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -125,7 +125,7 @@ struct Kinesis_Video_WebRTC_StorageClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def join_storage_session_as_viewer(self, JoinStorageSessionAsViewerInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/joinStorageSessionAsViewer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/joinStorageSessionAsViewer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = JoinStorageSessionAsViewerDocument(channelArn=input.channelArn, clientId=input.clientId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)

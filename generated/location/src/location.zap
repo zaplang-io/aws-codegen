@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 64 operations — 62 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 64 operations — 64 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   202 structs (106 @derive(Json)), 17 enums, 7 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1764,12 +1764,6 @@ def geo_error_from_code(str code) -> LocationError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteKey (httpQuery `ForceDelete` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -2167,6 +2161,12 @@ def validate_address_action_options_to_json(ValidateAddressActionOptions v) -> s
         parts.append("\"AdditionalFeatures\":" + geo_json_arr(e1))
     return geo_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def geo_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Location client: credentials + region, threaded into every operation.
 struct LocationClient:
     core.Credentials creds
@@ -2178,7 +2178,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/consumers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/consumers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateTrackerConsumerDocument(ConsumerArn=input.ConsumerArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2189,7 +2189,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/delete-positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/delete-positions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DeviceIds:
@@ -2204,7 +2204,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/delete-geofences", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/delete-geofences", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.GeofenceIds:
@@ -2219,7 +2219,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/positions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DevicePositionUpdates:
@@ -2234,7 +2234,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/get-positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/get-positions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DeviceIds:
@@ -2249,7 +2249,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/put-geofences", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/put-geofences", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Entries:
@@ -2264,7 +2264,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/positions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Updates:
@@ -2282,7 +2282,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators/{CalculatorName}/calculate/route", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators/{CalculatorName}/calculate/route", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DeparturePosition:
@@ -2340,7 +2340,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators/{CalculatorName}/calculate/route-matrix", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators/{CalculatorName}/calculate/route-matrix", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DeparturePositions:
@@ -2381,7 +2381,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def cancel_job(self, CancelJobRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs/cancel-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs/cancel-job", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelJobDocument(JobId=input.JobId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2390,7 +2390,7 @@ struct LocationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_geofence_collection(self, CreateGeofenceCollectionRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CollectionName\":" + geo_json_str(input.CollectionName))
         if input.PricingPlan.is_some():
@@ -2418,7 +2418,7 @@ struct LocationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_key(self, CreateKeyRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/keys", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/keys", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"KeyName\":" + geo_json_str(input.KeyName))
         parts.append("\"Restrictions\":" + api_key_restrictions_to_json(input.Restrictions))
@@ -2444,7 +2444,7 @@ struct LocationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_map(self, CreateMapRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/maps/v0/maps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/maps/v0/maps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"MapName\":" + geo_json_str(input.MapName))
         parts.append("\"Configuration\":" + map_configuration_to_json(input.Configuration))
@@ -2467,7 +2467,7 @@ struct LocationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_place_index(self, CreatePlaceIndexRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"IndexName\":" + geo_json_str(input.IndexName))
         parts.append("\"DataSource\":" + geo_json_str(input.DataSource))
@@ -2493,7 +2493,7 @@ struct LocationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_route_calculator(self, CreateRouteCalculatorRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/calculators", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CalculatorName\":" + geo_json_str(input.CalculatorName))
         parts.append("\"DataSource\":" + geo_json_str(input.DataSource))
@@ -2516,7 +2516,7 @@ struct LocationClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_tracker(self, CreateTrackerRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TrackerName\":" + geo_json_str(input.TrackerName))
         if input.PricingPlan.is_some():
@@ -2555,7 +2555,19 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/geofencing/v0/collections/{CollectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/geofencing/v0/collections/{CollectionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
+
+    # DeleteKey  DELETE /metadata/v0/keys/{KeyName}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_key(self, DeleteKeyRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["KeyName"] = input.KeyName
+        dict[str, str] query = {}
+        if input.ForceDelete.is_some():
+            query["forceDelete"] = geo_bind_bool(input.ForceDelete.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/metadata/v0/keys/{KeyName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DeleteMap  DELETE /maps/v0/maps/{MapName}
@@ -2564,7 +2576,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["MapName"] = input.MapName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/maps/v0/maps/{MapName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/maps/v0/maps/{MapName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DeletePlaceIndex  DELETE /places/v0/indexes/{IndexName}
@@ -2573,7 +2585,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["IndexName"] = input.IndexName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/places/v0/indexes/{IndexName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/places/v0/indexes/{IndexName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DeleteRouteCalculator  DELETE /routes/v0/calculators/{CalculatorName}
@@ -2582,7 +2594,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CalculatorName"] = input.CalculatorName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/routes/v0/calculators/{CalculatorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/routes/v0/calculators/{CalculatorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DeleteTracker  DELETE /tracking/v0/trackers/{TrackerName}
@@ -2591,7 +2603,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/tracking/v0/trackers/{TrackerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tracking/v0/trackers/{TrackerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DescribeGeofenceCollection  GET /geofencing/v0/collections/{CollectionName}
@@ -2600,7 +2612,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="GET", path_template="/geofencing/v0/collections/{CollectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/geofencing/v0/collections/{CollectionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DescribeKey  GET /metadata/v0/keys/{KeyName}
@@ -2609,7 +2621,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["KeyName"] = input.KeyName
-        auto b = binding.HttpBinding(method="GET", path_template="/metadata/v0/keys/{KeyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/metadata/v0/keys/{KeyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DescribeMap  GET /maps/v0/maps/{MapName}
@@ -2618,7 +2630,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["MapName"] = input.MapName
-        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DescribePlaceIndex  GET /places/v0/indexes/{IndexName}
@@ -2627,7 +2639,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["IndexName"] = input.IndexName
-        auto b = binding.HttpBinding(method="GET", path_template="/places/v0/indexes/{IndexName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/places/v0/indexes/{IndexName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DescribeRouteCalculator  GET /routes/v0/calculators/{CalculatorName}
@@ -2636,7 +2648,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CalculatorName"] = input.CalculatorName
-        auto b = binding.HttpBinding(method="GET", path_template="/routes/v0/calculators/{CalculatorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routes/v0/calculators/{CalculatorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DescribeTracker  GET /tracking/v0/trackers/{TrackerName}
@@ -2645,7 +2657,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="GET", path_template="/tracking/v0/trackers/{TrackerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tracking/v0/trackers/{TrackerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # DisassociateTrackerConsumer  DELETE /tracking/v0/trackers/{TrackerName}/consumers/{ConsumerArn}
@@ -2655,7 +2667,7 @@ struct LocationClient:
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
         labels["ConsumerArn"] = input.ConsumerArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/tracking/v0/trackers/{TrackerName}/consumers/{ConsumerArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tracking/v0/trackers/{TrackerName}/consumers/{ConsumerArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # ForecastGeofenceEvents  POST /geofencing/v0/collections/{CollectionName}/forecast-geofence-events
@@ -2664,7 +2676,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/forecast-geofence-events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/forecast-geofence-events", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DeviceState\":" + forecast_geofence_events_device_state_to_json(input.DeviceState))
         if input.TimeHorizonMinutes.is_some():
@@ -2692,7 +2704,7 @@ struct LocationClient:
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
         labels["DeviceId"] = input.DeviceId
-        auto b = binding.HttpBinding(method="GET", path_template="/tracking/v0/trackers/{TrackerName}/devices/{DeviceId}/positions/latest", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tracking/v0/trackers/{TrackerName}/devices/{DeviceId}/positions/latest", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # GetDevicePositionHistory  POST /tracking/v0/trackers/{TrackerName}/devices/{DeviceId}/list-positions
@@ -2702,7 +2714,7 @@ struct LocationClient:
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
         labels["DeviceId"] = input.DeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/devices/{DeviceId}/list-positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/devices/{DeviceId}/list-positions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDevicePositionHistoryDocument(NextToken=input.NextToken, StartTimeInclusive=input.StartTimeInclusive, EndTimeExclusive=input.EndTimeExclusive, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2714,7 +2726,7 @@ struct LocationClient:
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
         labels["GeofenceId"] = input.GeofenceId
-        auto b = binding.HttpBinding(method="GET", path_template="/geofencing/v0/collections/{CollectionName}/geofences/{GeofenceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/geofencing/v0/collections/{CollectionName}/geofences/{GeofenceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # GetJob  GET /metadata/v0/jobs/{JobId}
@@ -2723,7 +2735,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/metadata/v0/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/metadata/v0/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # GetMapGlyphs  GET /maps/v0/maps/{MapName}/glyphs/{FontStack}/{FontUnicodeRange}
@@ -2737,7 +2749,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/glyphs/{FontStack}/{FontUnicodeRange}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/glyphs/{FontStack}/{FontUnicodeRange}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # GetMapSprites  GET /maps/v0/maps/{MapName}/sprites/{FileName}
@@ -2750,7 +2762,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/sprites/{FileName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/sprites/{FileName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # GetMapStyleDescriptor  GET /maps/v0/maps/{MapName}/style-descriptor
@@ -2762,7 +2774,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/style-descriptor", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/style-descriptor", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # GetMapTile  GET /maps/v0/maps/{MapName}/tiles/{Z}/{X}/{Y}
@@ -2777,7 +2789,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/tiles/{Z}/{X}/{Y}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/maps/v0/maps/{MapName}/tiles/{Z}/{X}/{Y}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # GetPlace  GET /places/v0/indexes/{IndexName}/places/{PlaceId}
@@ -2792,7 +2804,7 @@ struct LocationClient:
             query["language"] = input.Language.unwrap_or("")
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/places/v0/indexes/{IndexName}/places/{PlaceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/places/v0/indexes/{IndexName}/places/{PlaceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # ListDevicePositions  POST /tracking/v0/trackers/{TrackerName}/list-positions
@@ -2801,7 +2813,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/list-positions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/list-positions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -2819,7 +2831,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_geofence_collections(self, ListGeofenceCollectionsRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/list-collections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/list-collections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGeofenceCollectionsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2830,7 +2842,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/list-geofences", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/geofencing/v0/collections/{CollectionName}/list-geofences", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListGeofencesDocument(NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2839,7 +2851,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_jobs(self, ListJobsRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs/list-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs/list-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListJobsDocument(Filter=input.Filter, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2848,7 +2860,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_keys(self, ListKeysRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/list-keys", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/list-keys", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListKeysDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, Filter=input.Filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2857,7 +2869,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_maps(self, ListMapsRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/maps/v0/list-maps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/maps/v0/list-maps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMapsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2866,7 +2878,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_place_indexes(self, ListPlaceIndexesRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/list-indexes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/list-indexes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPlaceIndexesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2875,7 +2887,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_route_calculators(self, ListRouteCalculatorsRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/list-calculators", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routes/v0/list-calculators", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRouteCalculatorsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2886,7 +2898,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
 
     # ListTrackerConsumers  POST /tracking/v0/trackers/{TrackerName}/list-consumers
@@ -2895,7 +2907,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/list-consumers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/list-consumers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTrackerConsumersDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2904,7 +2916,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_trackers(self, ListTrackersRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/list-trackers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/list-trackers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTrackersDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -2916,7 +2928,7 @@ struct LocationClient:
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
         labels["GeofenceId"] = input.GeofenceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/geofencing/v0/collections/{CollectionName}/geofences/{GeofenceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/geofencing/v0/collections/{CollectionName}/geofences/{GeofenceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Geometry\":" + geofence_geometry_to_json(input.Geometry))
         if input.GeofenceProperties.is_some():
@@ -2937,7 +2949,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/position", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/position", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Position:
@@ -2961,7 +2973,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/suggestions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/suggestions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Text\":" + geo_json_str(input.Text))
         if input.BiasPosition.is_some():
@@ -3006,7 +3018,7 @@ struct LocationClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/text", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/places/v0/indexes/{IndexName}/search/text", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Text\":" + geo_json_str(input.Text))
         if input.BiasPosition.is_some():
@@ -3046,7 +3058,7 @@ struct LocationClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def start_job(self, StartJobRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metadata/v0/jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -3076,7 +3088,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -3085,13 +3097,24 @@ struct LocationClient:
         auto bp = restjson.rest_json_document(b, geo_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(geo_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, geo_service(), self.region, host)
+
     # UpdateGeofenceCollection  PATCH /geofencing/v0/collections/{CollectionName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_geofence_collection(self, UpdateGeofenceCollectionRequest input) -> str:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CollectionName"] = input.CollectionName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/geofencing/v0/collections/{CollectionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/geofencing/v0/collections/{CollectionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGeofenceCollectionDocument(PricingPlan=input.PricingPlan, PricingPlanDataSource=input.PricingPlanDataSource, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -3102,7 +3125,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["KeyName"] = input.KeyName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/metadata/v0/keys/{KeyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/metadata/v0/keys/{KeyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -3128,7 +3151,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["MapName"] = input.MapName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/maps/v0/maps/{MapName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/maps/v0/maps/{MapName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.PricingPlan.is_some():
             auto u0 = input.PricingPlan.unwrap()
@@ -3148,7 +3171,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["IndexName"] = input.IndexName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/places/v0/indexes/{IndexName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/places/v0/indexes/{IndexName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePlaceIndexDocument(PricingPlan=input.PricingPlan, Description=input.Description, DataSourceConfiguration=input.DataSourceConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -3159,7 +3182,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["CalculatorName"] = input.CalculatorName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/routes/v0/calculators/{CalculatorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/routes/v0/calculators/{CalculatorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRouteCalculatorDocument(PricingPlan=input.PricingPlan, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -3170,7 +3193,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/tracking/v0/trackers/{TrackerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/tracking/v0/trackers/{TrackerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTrackerDocument(PricingPlan=input.PricingPlan, PricingPlanDataSource=input.PricingPlanDataSource, Description=input.Description, PositionFiltering=input.PositionFiltering, EventBridgeEnabled=input.EventBridgeEnabled, KmsKeyEnableGeospatialQueries=input.KmsKeyEnableGeospatialQueries)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, geo_service(), self.region, host)
@@ -3181,7 +3204,7 @@ struct LocationClient:
         auto host = endpoints.regional_host(geo_service(), self.region)
         dict[str, str] labels = {}
         labels["TrackerName"] = input.TrackerName
-        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/positions/verify", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tracking/v0/trackers/{TrackerName}/positions/verify", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DeviceState\":" + device_state_to_json(input.DeviceState))
         if input.DistanceUnit.is_some():

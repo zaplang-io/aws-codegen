@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 26 operations — 25 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 26 operations — 26 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   128 structs (79 @derive(Json)), 8 enums, 4 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -973,11 +973,6 @@ def fis_error_from_code(str code) -> fisError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1211,7 +1206,7 @@ struct fisClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_experiment_template(self, CreateExperimentTemplateRequest input) -> str:
         auto host = endpoints.regional_host(fis_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/experimentTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/experimentTemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + fis_json_str(input.clientToken))
         parts.append("\"description\":" + fis_json_str(input.description))
@@ -1255,7 +1250,7 @@ struct fisClient:
         dict[str, str] labels = {}
         labels["id"] = input.experimentTemplateId
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="POST", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTargetAccountConfigurationDocument(clientToken=input.clientToken, roleArn=input.roleArn, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)
@@ -1266,7 +1261,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/experimentTemplates/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/experimentTemplates/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # DeleteTargetAccountConfiguration  DELETE /experimentTemplates/{id}/targetAccountConfigurations/{accountId}
@@ -1276,7 +1271,7 @@ struct fisClient:
         dict[str, str] labels = {}
         labels["id"] = input.experimentTemplateId
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # GetAction  GET /actions/{id}
@@ -1285,7 +1280,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/actions/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/actions/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # GetExperiment  GET /experiments/{id}
@@ -1294,7 +1289,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # GetExperimentTargetAccountConfiguration  GET /experiments/{id}/targetAccountConfigurations/{accountId}
@@ -1304,7 +1299,7 @@ struct fisClient:
         dict[str, str] labels = {}
         labels["id"] = input.experimentId
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # GetExperimentTemplate  GET /experimentTemplates/{id}
@@ -1313,7 +1308,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # GetSafetyLever  GET /safetyLevers/{id}
@@ -1322,7 +1317,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/safetyLevers/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/safetyLevers/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # GetTargetAccountConfiguration  GET /experimentTemplates/{id}/targetAccountConfigurations/{accountId}
@@ -1332,7 +1327,7 @@ struct fisClient:
         dict[str, str] labels = {}
         labels["id"] = input.experimentTemplateId
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # GetTargetResourceType  GET /targetResourceTypes/{resourceType}
@@ -1341,7 +1336,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceType"] = input.resourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/targetResourceTypes/{resourceType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/targetResourceTypes/{resourceType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListActions  GET /actions
@@ -1353,7 +1348,7 @@ struct fisClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/actions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/actions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListExperimentResolvedTargets  GET /experiments/{id}/resolvedTargets
@@ -1369,7 +1364,7 @@ struct fisClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.targetName.is_some():
             query["targetName"] = input.targetName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}/resolvedTargets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}/resolvedTargets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListExperimentTargetAccountConfigurations  GET /experiments/{id}/targetAccountConfigurations
@@ -1381,7 +1376,7 @@ struct fisClient:
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}/targetAccountConfigurations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experiments/{id}/targetAccountConfigurations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListExperimentTemplates  GET /experimentTemplates
@@ -1393,7 +1388,7 @@ struct fisClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListExperiments  GET /experiments
@@ -1407,7 +1402,7 @@ struct fisClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.experimentTemplateId.is_some():
             query["experimentTemplateId"] = input.experimentTemplateId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/experiments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experiments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1415,7 +1410,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListTargetAccountConfigurations  GET /experimentTemplates/{id}/targetAccountConfigurations
@@ -1429,7 +1424,7 @@ struct fisClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates/{id}/targetAccountConfigurations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experimentTemplates/{id}/targetAccountConfigurations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # ListTargetResourceTypes  GET /targetResourceTypes
@@ -1441,14 +1436,14 @@ struct fisClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/targetResourceTypes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/targetResourceTypes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # StartExperiment  POST /experiments
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def start_experiment(self, StartExperimentRequest input) -> str:
         auto host = endpoints.regional_host(fis_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/experiments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/experiments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + fis_json_str(input.clientToken))
         parts.append("\"experimentTemplateId\":" + fis_json_str(input.experimentTemplateId))
@@ -1470,7 +1465,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/experiments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/experiments/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1478,7 +1473,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1487,13 +1482,24 @@ struct fisClient:
         auto bp = restjson.rest_json_document(b, fis_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(fis_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        if input.tagKeys.is_some():
+            multi_query["tagKeys"] = input.tagKeys.unwrap()
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, fis_service(), self.region, host)
+
     # UpdateExperimentTemplate  PATCH /experimentTemplates/{id}
     # errors: ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def update_experiment_template(self, UpdateExperimentTemplateRequest input) -> str:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/experimentTemplates/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/experimentTemplates/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1537,7 +1543,7 @@ struct fisClient:
         auto host = endpoints.regional_host(fis_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/safetyLevers/{id}/state", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/safetyLevers/{id}/state", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSafetyLeverStateDocument(state=input.state)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)
@@ -1549,7 +1555,7 @@ struct fisClient:
         dict[str, str] labels = {}
         labels["id"] = input.experimentTemplateId
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/experimentTemplates/{id}/targetAccountConfigurations/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTargetAccountConfigurationDocument(roleArn=input.roleArn, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, fis_service(), self.region, host)

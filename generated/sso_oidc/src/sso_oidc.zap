@@ -292,7 +292,7 @@ struct SSO_OIDCClient:
     # errors: AccessDeniedException, AuthorizationPendingException, ExpiredTokenException, InternalServerException, InvalidClientException, InvalidGrantException, InvalidRequestException, InvalidScopeException, SlowDownException, UnauthorizedClientException, UnsupportedGrantTypeException
     def create_token(self, CreateTokenRequest input) -> str:
         auto host = endpoints.regional_host(oidc_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/token", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/token", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientId\":" + oidc_json_str(input.clientId))
         parts.append("\"clientSecret\":" + oidc_json_str(input.clientSecret))
@@ -325,7 +325,7 @@ struct SSO_OIDCClient:
     # errors: AccessDeniedException, AuthorizationPendingException, ExpiredTokenException, InternalServerException, InvalidClientException, InvalidGrantException, InvalidRequestException, InvalidRequestRegionException, InvalidScopeException, SlowDownException, UnauthorizedClientException, UnsupportedGrantTypeException
     def create_token_with_iam(self, CreateTokenWithIAMRequest input) -> str:
         auto host = endpoints.regional_host(oidc_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/token?aws_iam=t", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/token?aws_iam=t", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientId\":" + oidc_json_str(input.clientId))
         parts.append("\"grantType\":" + oidc_json_str(input.grantType))
@@ -366,7 +366,7 @@ struct SSO_OIDCClient:
     # errors: InternalServerException, InvalidClientMetadataException, InvalidRedirectUriException, InvalidRequestException, InvalidScopeException, SlowDownException, UnsupportedGrantTypeException
     def register_client(self, RegisterClientRequest input) -> str:
         auto host = endpoints.regional_host(oidc_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/client/register", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/client/register", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientName\":" + oidc_json_str(input.clientName))
         parts.append("\"clientType\":" + oidc_json_str(input.clientType))
@@ -401,7 +401,7 @@ struct SSO_OIDCClient:
     # errors: InternalServerException, InvalidClientException, InvalidRequestException, SlowDownException, UnauthorizedClientException
     def start_device_authorization(self, StartDeviceAuthorizationRequest input) -> str:
         auto host = endpoints.regional_host(oidc_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/device_authorization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/device_authorization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartDeviceAuthorizationDocument(clientId=input.clientId, clientSecret=input.clientSecret, startUrl=input.startUrl)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oidc_service(), self.region, host)

@@ -2591,7 +2591,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
     def batch_describe_entities(self, BatchDescribeEntitiesRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchDescribeEntities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchDescribeEntities", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.EntityRequestList:
@@ -2607,7 +2607,7 @@ struct Marketplace_CatalogClient:
         dict[str, str] query = {}
         query["catalog"] = input.Catalog
         query["changeSetId"] = input.ChangeSetId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/CancelChangeSet", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/CancelChangeSet", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, catalog_marketplace_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /DeleteResourcePolicy
@@ -2616,14 +2616,14 @@ struct Marketplace_CatalogClient:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteResourcePolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/DeleteResourcePolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, catalog_marketplace_service(), self.region, host)
 
     # DescribeAssessment  POST /DescribeAssessment
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_assessment(self, DescribeAssessmentRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeAssessment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeAssessment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAssessmentDocument(Catalog=input.Catalog, AssessmentIdentifier=input.AssessmentIdentifier, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
@@ -2635,7 +2635,7 @@ struct Marketplace_CatalogClient:
         dict[str, str] query = {}
         query["catalog"] = input.Catalog
         query["changeSetId"] = input.ChangeSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/DescribeChangeSet", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/DescribeChangeSet", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, catalog_marketplace_service(), self.region, host)
 
     # DescribeEntity  GET /DescribeEntity
@@ -2645,7 +2645,7 @@ struct Marketplace_CatalogClient:
         dict[str, str] query = {}
         query["catalog"] = input.Catalog
         query["entityId"] = input.EntityId
-        auto b = binding.HttpBinding(method="GET", path_template="/DescribeEntity", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/DescribeEntity", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, catalog_marketplace_service(), self.region, host)
 
     # GetResourcePolicy  GET /GetResourcePolicy
@@ -2654,14 +2654,14 @@ struct Marketplace_CatalogClient:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/GetResourcePolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/GetResourcePolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, catalog_marketplace_service(), self.region, host)
 
     # ListAssessments  POST /ListAssessments
     # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
     def list_assessments(self, ListAssessmentsRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListAssessments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListAssessments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAssessmentsDocument(Catalog=input.Catalog, FrameworkId=input.FrameworkId, AssessmentTargetFilter=input.AssessmentTargetFilter, FrameworkFilters=input.FrameworkFilters, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
@@ -2670,7 +2670,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
     def list_change_sets(self, ListChangeSetsRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListChangeSets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListChangeSets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Catalog\":" + catalog_marketplace_json_str(input.Catalog))
         if input.FilterList.is_some():
@@ -2695,7 +2695,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_entities(self, ListEntitiesRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListEntities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListEntities", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Catalog\":" + catalog_marketplace_json_str(input.Catalog))
         parts.append("\"EntityType\":" + catalog_marketplace_json_str(input.EntityType))
@@ -2730,7 +2730,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
@@ -2739,7 +2739,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutResourcePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(ResourceArn=input.ResourceArn, Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, catalog_marketplace_service(), self.region, host)
@@ -2748,7 +2748,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ResourceInUseException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_change_set(self, StartChangeSetRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartChangeSet", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartChangeSet", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Catalog\":" + catalog_marketplace_json_str(input.Catalog))
         list[str] e0 = []
@@ -2777,7 +2777,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + catalog_marketplace_json_str(input.ResourceArn))
         list[str] e0 = []
@@ -2791,7 +2791,7 @@ struct Marketplace_CatalogClient:
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(catalog_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + catalog_marketplace_json_str(input.ResourceArn))
         list[str] e0 = []

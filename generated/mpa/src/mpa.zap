@@ -784,14 +784,14 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["SessionArn"] = input.SessionArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/sessions/{SessionArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sessions/{SessionArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # CreateApprovalTeam  POST /approval-teams
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_approval_team(self, CreateApprovalTeamRequest input) -> str:
         auto host = endpoints.regional_host(mpa_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -820,7 +820,7 @@ struct MPAClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_identity_source(self, CreateIdentitySourceRequest input) -> str:
         auto host = endpoints.regional_host(mpa_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identity-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"IdentitySourceParameters\":" + input.IdentitySourceParameters.to_json())
         if input.ClientToken.is_some():
@@ -841,7 +841,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentitySourceArn"] = input.IdentitySourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/identity-sources/{IdentitySourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/identity-sources/{IdentitySourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # DeleteInactiveApprovalTeamVersion  DELETE /approval-teams/{Arn}/{VersionId}
@@ -851,7 +851,7 @@ struct MPAClient:
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
         labels["VersionId"] = input.VersionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/approval-teams/{Arn}/{VersionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/approval-teams/{Arn}/{VersionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # GetApprovalTeam  GET /approval-teams/{Arn}
@@ -860,7 +860,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/approval-teams/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/approval-teams/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # GetIdentitySource  GET /identity-sources/{IdentitySourceArn}
@@ -869,7 +869,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentitySourceArn"] = input.IdentitySourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/identity-sources/{IdentitySourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identity-sources/{IdentitySourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # GetPolicyVersion  GET /policy-versions/{PolicyVersionArn}
@@ -878,14 +878,14 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["PolicyVersionArn"] = input.PolicyVersionArn
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-versions/{PolicyVersionArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-versions/{PolicyVersionArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # GetResourcePolicy  POST /GetResourcePolicy
     # errors: AccessDeniedException, InvalidParameterException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_resource_policy(self, GetResourcePolicyRequest input) -> str:
         auto host = endpoints.regional_host(mpa_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetResourcePolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetResourcePolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetResourcePolicyDocument(ResourceArn=input.ResourceArn, PolicyName=input.PolicyName, PolicyType=input.PolicyType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
@@ -896,7 +896,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["SessionArn"] = input.SessionArn
-        auto b = binding.HttpBinding(method="GET", path_template="/sessions/{SessionArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sessions/{SessionArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # ListApprovalTeams  POST /approval-teams/?List
@@ -908,7 +908,7 @@ struct MPAClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/?List", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/?List", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # ListIdentitySources  POST /identity-sources/?List
@@ -920,7 +920,7 @@ struct MPAClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/identity-sources/?List", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-sources/?List", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # ListPolicies  POST /policies/?List
@@ -932,7 +932,7 @@ struct MPAClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/policies/?List", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/?List", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # ListPolicyVersions  POST /policies/{PolicyArn}/?List
@@ -946,7 +946,7 @@ struct MPAClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/policies/{PolicyArn}/?List", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{PolicyArn}/?List", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # ListResourcePolicies  POST /resource-policies/{ResourceArn}/?List
@@ -960,7 +960,7 @@ struct MPAClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/resource-policies/{ResourceArn}/?List", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resource-policies/{ResourceArn}/?List", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # ListSessions  POST /approval-teams/{ApprovalTeamArn}/sessions/?List
@@ -969,7 +969,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["ApprovalTeamArn"] = input.ApprovalTeamArn
-        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{ApprovalTeamArn}/sessions/?List", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{ApprovalTeamArn}/sessions/?List", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -992,7 +992,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mpa_service(), self.region, host)
 
     # StartActiveApprovalTeamDeletion  POST /approval-teams/{Arn}?Delete
@@ -1001,7 +1001,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{Arn}?Delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{Arn}?Delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartActiveApprovalTeamDeletionDocument(PendingWindowDays=input.PendingWindowDays)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mpa_service(), self.region, host)
@@ -1012,7 +1012,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{Arn}/baseline", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/approval-teams/{Arn}/baseline", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ApproverIds.is_some():
             auto u0 = input.ApproverIds.unwrap()
@@ -1029,7 +1029,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1044,7 +1044,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.TagKeys:
@@ -1059,7 +1059,7 @@ struct MPAClient:
         auto host = endpoints.regional_host(mpa_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/approval-teams/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/approval-teams/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ApprovalStrategy.is_some():
             auto u0 = input.ApprovalStrategy.unwrap()

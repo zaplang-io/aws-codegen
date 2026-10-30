@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 96 operations — 88 with a generated method,
-#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 96 operations — 96 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   437 structs (283 @derive(Json)), 71 enums, 17 error variants.
 #   12 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3870,18 +3870,6 @@ def mediaconnect_error_from_code(str code) -> MediaConnectError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchGetDestinationEndpoint (httpQuery `Arns` has unsupported type list[str])
-#   BatchGetRouterInput (httpQuery `Arns` has unsupported type list[str])
-#   BatchGetRouterNetworkInterface (httpQuery `Arns` has unsupported type list[str])
-#   BatchGetRouterOutput (httpQuery `Arns` has unsupported type list[str])
-#   BatchGetSourceEndpoint (httpQuery `Arns` has unsupported type list[str])
-#   DeregisterGatewayInstance (httpQuery `Force` has unsupported type bool)
-#   UntagGlobalResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4626,6 +4614,12 @@ def vpc_source_endpoint_networking_configuration_to_json(VpcSourceEndpointNetwor
     parts.append("\"subnetId\":" + mediaconnect_json_str(v.SubnetId))
     return mediaconnect_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def mediaconnect_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound MediaConnect client: credentials + region, threaded into every operation.
 struct MediaConnectClient:
     core.Credentials creds
@@ -4637,7 +4631,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges/{BridgeArn}/outputs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges/{BridgeArn}/outputs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Outputs:
@@ -4652,7 +4646,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges/{BridgeArn}/sources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges/{BridgeArn}/sources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Sources:
@@ -4667,7 +4661,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/mediaStreams", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/mediaStreams", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.MediaStreams:
@@ -4682,7 +4676,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/outputs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/outputs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Outputs:
@@ -4697,7 +4691,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/source", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/source", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Sources:
@@ -4712,7 +4706,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/vpcInterfaces", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/vpcInterfaces", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.VpcInterfaces:
@@ -4721,13 +4715,58 @@ struct MediaConnectClient:
         auto bp = restjson.rest_json_document(b, mediaconnect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
 
+    # BatchGetDestinationEndpoint  GET /v1/destinationEndpoints
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def batch_get_destination_endpoint(self, BatchGetDestinationEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, list[str]] multi_query = {}
+        multi_query["arns"] = input.Arns
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/destinationEndpoints", labels={}, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
+    # BatchGetRouterInput  GET /v1/routerInputs
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def batch_get_router_input(self, BatchGetRouterInputRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, list[str]] multi_query = {}
+        multi_query["arns"] = input.Arns
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerInputs", labels={}, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
+    # BatchGetRouterNetworkInterface  GET /v1/routerNetworkInterfaces
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def batch_get_router_network_interface(self, BatchGetRouterNetworkInterfaceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, list[str]] multi_query = {}
+        multi_query["arns"] = input.Arns
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerNetworkInterfaces", labels={}, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
+    # BatchGetRouterOutput  GET /v1/routerOutputs
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def batch_get_router_output(self, BatchGetRouterOutputRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, list[str]] multi_query = {}
+        multi_query["arns"] = input.Arns
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerOutputs", labels={}, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
+    # BatchGetSourceEndpoint  GET /v1/sourceEndpoints
+    # errors: BadRequestException, ConflictException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
+    def batch_get_source_endpoint(self, BatchGetSourceEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, list[str]] multi_query = {}
+        multi_query["arns"] = input.Arns
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/sourceEndpoints", labels={}, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
     # ConnectEndpoints  PUT /v1/connectEndpoints/{DestinationEndpointArn}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
     def connect_endpoints(self, ConnectEndpointsRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["DestinationEndpointArn"] = input.DestinationEndpointArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectEndpoints/{DestinationEndpointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/connectEndpoints/{DestinationEndpointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ConnectEndpointsDocument(SourceEndpointArn=input.SourceEndpointArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -4736,7 +4775,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, ConflictException, CreateBridge420Exception, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
     def create_bridge(self, CreateBridgeRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/bridges", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.EgressGatewayBridge.is_some():
             auto u0 = input.EgressGatewayBridge.unwrap()
@@ -4766,7 +4805,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, CreateFlow420Exception, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
     def create_flow(self, CreateFlowRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AvailabilityZone.is_some():
             auto u0 = input.AvailabilityZone.unwrap()
@@ -4836,7 +4875,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, ConflictException, CreateGateway420Exception, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
     def create_gateway(self, CreateGatewayRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/gateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/gateways", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.EgressCidrBlocks:
@@ -4854,7 +4893,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, RouterInputServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
     def create_router_input(self, CreateRouterInputRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + mediaconnect_json_str(input.Name))
         parts.append("\"configuration\":" + router_input_configuration_to_json(input.Configuration))
@@ -4892,7 +4931,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, RouterNetworkInterfaceServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
     def create_router_network_interface(self, CreateRouterNetworkInterfaceRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerNetworkInterface", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerNetworkInterface", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + mediaconnect_json_str(input.Name))
         parts.append("\"configuration\":" + router_network_interface_configuration_to_json(input.Configuration))
@@ -4915,7 +4954,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, RouterOutputServiceQuotaExceededException, ServiceUnavailableException, TooManyRequestsException
     def create_router_output(self, CreateRouterOutputRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + mediaconnect_json_str(input.Name))
         parts.append("\"configuration\":" + input.Configuration.to_json())
@@ -4952,7 +4991,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/bridges/{BridgeArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/bridges/{BridgeArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DeleteFlow  DELETE /v1/flows/{FlowArn}
@@ -4961,7 +5000,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DeleteGateway  DELETE /v1/gateways/{GatewayArn}
@@ -4970,7 +5009,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["GatewayArn"] = input.GatewayArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/gateways/{GatewayArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/gateways/{GatewayArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DeleteRouterInput  DELETE /v1/routerInput/{Arn}
@@ -4979,7 +5018,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/routerInput/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/routerInput/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DeleteRouterNetworkInterface  DELETE /v1/routerNetworkInterface/{Arn}
@@ -4988,7 +5027,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/routerNetworkInterface/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/routerNetworkInterface/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DeleteRouterOutput  DELETE /v1/routerOutput/{Arn}
@@ -4997,7 +5036,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/routerOutput/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/routerOutput/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DeregisterDestinationEndpoint  DELETE /v1/destinationEndpoint/{Arn}
@@ -5006,7 +5045,19 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/destinationEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/destinationEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
+    # DeregisterGatewayInstance  DELETE /v1/gateway-instances/{GatewayInstanceArn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
+    def deregister_gateway_instance(self, DeregisterGatewayInstanceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["GatewayInstanceArn"] = input.GatewayInstanceArn
+        dict[str, str] query = {}
+        if input.Force.is_some():
+            query["force"] = mediaconnect_bind_bool(input.Force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/gateway-instances/{GatewayInstanceArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DeregisterSourceEndpoint  DELETE /v1/sourceEndpoint/{Arn}
@@ -5015,7 +5066,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeBridge  GET /v1/bridges/{BridgeArn}
@@ -5024,7 +5075,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/bridges/{BridgeArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/bridges/{BridgeArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeFlow  GET /v1/flows/{FlowArn}
@@ -5033,7 +5084,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows/{FlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows/{FlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeFlowSourceMetadata  GET /v1/flows/{FlowArn}/source-metadata
@@ -5042,7 +5093,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows/{FlowArn}/source-metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows/{FlowArn}/source-metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeFlowSourceThumbnail  GET /v1/flows/{FlowArn}/source-thumbnail
@@ -5051,7 +5102,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows/{FlowArn}/source-thumbnail", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows/{FlowArn}/source-thumbnail", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeGateway  GET /v1/gateways/{GatewayArn}
@@ -5060,7 +5111,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["GatewayArn"] = input.GatewayArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateways/{GatewayArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateways/{GatewayArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeGatewayInstance  GET /v1/gateway-instances/{GatewayInstanceArn}
@@ -5069,7 +5120,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["GatewayInstanceArn"] = input.GatewayInstanceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateway-instances/{GatewayInstanceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateway-instances/{GatewayInstanceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeOffering  GET /v1/offerings/{OfferingArn}
@@ -5078,7 +5129,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["OfferingArn"] = input.OfferingArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/offerings/{OfferingArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/offerings/{OfferingArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DescribeReservation  GET /v1/reservations/{ReservationArn}
@@ -5087,7 +5138,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["ReservationArn"] = input.ReservationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/reservations/{ReservationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/reservations/{ReservationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # DisconnectEndpoints  PUT /v1/disconnectEndpoints/{DestinationEndpointArn}
@@ -5096,7 +5147,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["DestinationEndpointArn"] = input.DestinationEndpointArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/disconnectEndpoints/{DestinationEndpointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/disconnectEndpoints/{DestinationEndpointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisconnectEndpointsDocument(SourceEndpointArn=input.SourceEndpointArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5107,7 +5158,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/destinationEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/destinationEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # GetRouterInput  GET /v1/routerInput/{Arn}
@@ -5116,7 +5167,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerInput/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerInput/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # GetRouterInputSourceMetadata  GET /v1/routerInput/{Arn}/source-metadata
@@ -5125,7 +5176,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerInput/{Arn}/source-metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerInput/{Arn}/source-metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # GetRouterInputThumbnail  GET /v1/routerInput/{Arn}/thumbnail
@@ -5134,7 +5185,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerInput/{Arn}/thumbnail", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerInput/{Arn}/thumbnail", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # GetRouterNetworkInterface  GET /v1/routerNetworkInterface/{Arn}
@@ -5143,7 +5194,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerNetworkInterface/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerNetworkInterface/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # GetRouterOutput  GET /v1/routerOutput/{Arn}
@@ -5152,7 +5203,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerOutput/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/routerOutput/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # GetSourceEndpoint  GET /v1/sourceEndpoint/{Arn}
@@ -5161,7 +5212,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # GrantFlowEntitlements  POST /v1/flows/{FlowArn}/entitlements
@@ -5170,7 +5221,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/entitlements", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/{FlowArn}/entitlements", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Entitlements:
@@ -5190,7 +5241,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/bridges", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/bridges", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListDestinationEndpoints  POST /v1/destinationEndpoints
@@ -5202,7 +5253,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/destinationEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/destinationEndpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -5222,7 +5273,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/entitlements", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/entitlements", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListFlows  GET /v1/flows
@@ -5234,7 +5285,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/flows", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListGatewayInstances  GET /v1/gateway-instances
@@ -5248,7 +5299,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateway-instances", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateway-instances", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListGateways  GET /v1/gateways
@@ -5260,7 +5311,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateways", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/gateways", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListOfferings  GET /v1/offerings
@@ -5272,7 +5323,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/offerings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/offerings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListReservations  GET /v1/reservations
@@ -5284,7 +5335,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/reservations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/reservations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListRouterInputs  POST /v1/routerInputs
@@ -5296,7 +5347,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInputs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInputs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -5316,7 +5367,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerNetworkInterfaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerNetworkInterfaces", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -5336,7 +5387,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutputs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutputs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -5356,7 +5407,7 @@ struct MediaConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceEndpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -5373,7 +5424,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/global/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/global/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -5382,7 +5433,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # PurchaseOffering  POST /v1/offerings/{OfferingArn}
@@ -5391,7 +5442,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["OfferingArn"] = input.OfferingArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/offerings/{OfferingArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/offerings/{OfferingArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PurchaseOfferingDocument(ReservationName=input.ReservationName, Start=input.Start)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5400,7 +5451,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, ConflictException, DestinationEndpointServiceQuotaExceededException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException
     def register_destination_endpoint(self, RegisterDestinationEndpointRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/destinationEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/destinationEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -5425,7 +5476,7 @@ struct MediaConnectClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, SourceEndpointServiceQuotaExceededException, TooManyRequestsException
     def register_source_endpoint(self, RegisterSourceEndpointRequest input) -> str:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/sourceEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RegionName.is_some():
             auto u0 = input.RegionName.unwrap()
@@ -5453,7 +5504,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
         labels["OutputName"] = input.OutputName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/bridges/{BridgeArn}/outputs/{OutputName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/bridges/{BridgeArn}/outputs/{OutputName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RemoveBridgeSource  DELETE /v1/bridges/{BridgeArn}/sources/{SourceName}
@@ -5463,7 +5514,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
         labels["SourceName"] = input.SourceName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/bridges/{BridgeArn}/sources/{SourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/bridges/{BridgeArn}/sources/{SourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RemoveFlowMediaStream  DELETE /v1/flows/{FlowArn}/mediaStreams/{MediaStreamName}
@@ -5473,7 +5524,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
         labels["MediaStreamName"] = input.MediaStreamName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/mediaStreams/{MediaStreamName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/mediaStreams/{MediaStreamName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RemoveFlowOutput  DELETE /v1/flows/{FlowArn}/outputs/{OutputArn}
@@ -5483,7 +5534,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
         labels["OutputArn"] = input.OutputArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/outputs/{OutputArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/outputs/{OutputArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RemoveFlowSource  DELETE /v1/flows/{FlowArn}/source/{SourceArn}
@@ -5493,7 +5544,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
         labels["SourceArn"] = input.SourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/source/{SourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/source/{SourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RemoveFlowVpcInterface  DELETE /v1/flows/{FlowArn}/vpcInterfaces/{VpcInterfaceName}
@@ -5503,7 +5554,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
         labels["VpcInterfaceName"] = input.VpcInterfaceName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/vpcInterfaces/{VpcInterfaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/vpcInterfaces/{VpcInterfaceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RestartRouterInput  POST /v1/routerInput/restart/{Arn}
@@ -5512,7 +5563,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput/restart/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput/restart/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RestartRouterOutput  POST /v1/routerOutput/restart/{Arn}
@@ -5521,7 +5572,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput/restart/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput/restart/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # RevokeFlowEntitlement  DELETE /v1/flows/{FlowArn}/entitlements/{EntitlementArn}
@@ -5531,7 +5582,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["EntitlementArn"] = input.EntitlementArn
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/entitlements/{EntitlementArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/flows/{FlowArn}/entitlements/{EntitlementArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # StartFlow  POST /v1/flows/start/{FlowArn}
@@ -5540,7 +5591,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/start/{FlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/start/{FlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # StartRouterInput  POST /v1/routerInput/start/{Arn}
@@ -5549,7 +5600,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput/start/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput/start/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # StartRouterOutput  POST /v1/routerOutput/start/{Arn}
@@ -5558,7 +5609,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput/start/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput/start/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # StopFlow  POST /v1/flows/stop/{FlowArn}
@@ -5567,7 +5618,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/stop/{FlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/flows/stop/{FlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # StopRouterInput  POST /v1/routerInput/stop/{Arn}
@@ -5576,7 +5627,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput/stop/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerInput/stop/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # StopRouterOutput  POST /v1/routerOutput/stop/{Arn}
@@ -5585,7 +5636,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput/stop/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/routerOutput/stop/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # TagGlobalResource  POST /tags/global/{ResourceArn}
@@ -5594,7 +5645,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/global/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/global/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -5609,7 +5660,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -5624,10 +5675,32 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["RouterOutputArn"] = input.RouterOutputArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerOutput/takeRouterInput/{RouterOutputArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerOutput/takeRouterInput/{RouterOutputArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TakeRouterInputDocument(RouterInputArn=input.RouterInputArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
+
+    # UntagGlobalResource  DELETE /tags/global/{ResourceArn}
+    # errors: BadRequestException, InternalServerErrorException, NotFoundException
+    def untag_global_resource(self, UntagGlobalResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/global/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: BadRequestException, InternalServerErrorException, NotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediaconnect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediaconnect_service(), self.region, host)
 
     # UpdateBridge  PUT /v1/bridges/{BridgeArn}
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
@@ -5635,7 +5708,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBridgeDocument(EgressGatewayBridge=input.EgressGatewayBridge, IngressGatewayBridge=input.IngressGatewayBridge, SourceFailoverConfig=input.SourceFailoverConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5647,7 +5720,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
         labels["OutputName"] = input.OutputName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}/outputs/{OutputName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}/outputs/{OutputName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBridgeOutputDocument(NetworkOutput=input.NetworkOutput)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5659,7 +5732,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
         labels["SourceName"] = input.SourceName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}/sources/{SourceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}/sources/{SourceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBridgeSourceDocument(FlowSource=input.FlowSource, NetworkSource=input.NetworkSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5670,7 +5743,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["BridgeArn"] = input.BridgeArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}/state", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/bridges/{BridgeArn}/state", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBridgeStateDocument(DesiredState=input.DesiredState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5681,7 +5754,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/destinationEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/destinationEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -5698,7 +5771,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SourceFailoverConfig.is_some():
             auto u0 = input.SourceFailoverConfig.unwrap()
@@ -5728,7 +5801,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["EntitlementArn"] = input.EntitlementArn
         labels["FlowArn"] = input.FlowArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/entitlements/{EntitlementArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/entitlements/{EntitlementArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -5755,7 +5828,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
         labels["MediaStreamName"] = input.MediaStreamName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/mediaStreams/{MediaStreamName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/mediaStreams/{MediaStreamName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFlowMediaStreamDocument(Attributes=input.Attributes, ClockRate=input.ClockRate, Description=input.Description, MediaStreamType=input.MediaStreamType, VideoFormat=input.VideoFormat)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5767,7 +5840,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
         labels["OutputArn"] = input.OutputArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/outputs/{OutputArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/outputs/{OutputArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CidrAllowList.is_some():
             auto u0 = input.CidrAllowList.unwrap()
@@ -5851,7 +5924,7 @@ struct MediaConnectClient:
         dict[str, str] labels = {}
         labels["FlowArn"] = input.FlowArn
         labels["SourceArn"] = input.SourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/source/{SourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/flows/{FlowArn}/source/{SourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Decryption.is_some():
             auto u0 = input.Decryption.unwrap()
@@ -5928,7 +6001,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["GatewayInstanceArn"] = input.GatewayInstanceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/gateway-instances/{GatewayInstanceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/gateway-instances/{GatewayInstanceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGatewayInstanceDocument(BridgePlacement=input.BridgePlacement)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -5939,7 +6012,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerInput/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerInput/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -5974,7 +6047,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerNetworkInterface/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerNetworkInterface/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -5991,7 +6064,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerOutput/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/routerOutput/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRouterOutputDocument(Name=input.Name, Configuration=input.Configuration, MaximumBitrate=input.MaximumBitrate, RoutingScope=input.RoutingScope, Tier=input.Tier, MaintenanceConfiguration=input.MaintenanceConfiguration, FabricConfiguration=input.FabricConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediaconnect_service(), self.region, host)
@@ -6002,7 +6075,7 @@ struct MediaConnectClient:
         auto host = endpoints.regional_host(mediaconnect_service(), self.region)
         dict[str, str] labels = {}
         labels["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/sourceEndpoint/{Arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 103 operations — 99 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 103 operations — 103 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   314 structs (160 @derive(Json)), 19 enums, 5 error variants.
 #   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3103,14 +3103,6 @@ def apigateway_error_from_code(str code) -> ApiGatewayV2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ExportApi (httpQuery `IncludeExtensions` has unsupported type bool)
-#   ImportApi (httpQuery `FailOnWarnings` has unsupported type bool)
-#   ReimportApi (httpQuery `FailOnWarnings` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3141,6 +3133,11 @@ struct CreateProductPageDocument:
     DisplayContent DisplayContent
 
 @derive(Json)
+struct ImportApiDocument:
+    # document members of ImportApi
+    str Body
+
+@derive(Json)
 struct PublishPortalDocument:
     # document members of PublishPortal
     Optional[str] Description
@@ -3149,6 +3146,11 @@ struct PublishPortalDocument:
 struct PutPortalProductSharingPolicyDocument:
     # document members of PutPortalProductSharingPolicy
     str PolicyDocument
+
+@derive(Json)
+struct ReimportApiDocument:
+    # document members of ReimportApi
+    str Body
 
 @derive(Json)
 struct UpdateApiMappingDocument:
@@ -3351,6 +3353,12 @@ def section_to_json(Section v) -> str:
     parts.append("\"sectionName\":" + apigateway_json_str(v.SectionName))
     return apigateway_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def apigateway_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound ApiGatewayV2 client: credentials + region, threaded into every operation.
 struct ApiGatewayV2Client:
     core.Credentials creds
@@ -3360,7 +3368,7 @@ struct ApiGatewayV2Client:
     # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
     def create_api(self, CreateApiRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ApiKeySelectionExpression.is_some():
             auto u0 = input.ApiKeySelectionExpression.unwrap()
@@ -3412,7 +3420,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames/{domainName}/apimappings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames/{domainName}/apimappings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateApiMappingDocument(ApiId=input.ApiId, ApiMappingKey=input.ApiMappingKey, Stage=input.Stage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -3423,7 +3431,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/authorizers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/authorizers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AuthorizerCredentialsArn.is_some():
             auto u0 = input.AuthorizerCredentialsArn.unwrap()
@@ -3461,7 +3469,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/deployments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDeploymentDocument(Description=input.Description, StageName=input.StageName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -3470,7 +3478,7 @@ struct ApiGatewayV2Client:
     # errors: AccessDeniedException, BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
     def create_domain_name(self, CreateDomainNameRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"domainName\":" + apigateway_json_str(input.DomainName))
         if input.DomainNameConfigurations.is_some():
@@ -3500,7 +3508,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/integrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/integrations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ConnectionId.is_some():
             auto u0 = input.ConnectionId.unwrap()
@@ -3573,7 +3581,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["integrationId"] = input.IntegrationId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ContentHandlingStrategy.is_some():
             auto u0 = input.ContentHandlingStrategy.unwrap()
@@ -3603,7 +3611,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/models", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/models", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateModelDocument(ContentType=input.ContentType, Description=input.Description, Name=input.Name, Schema=input.Schema)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -3612,7 +3620,7 @@ struct ApiGatewayV2Client:
     # errors: AccessDeniedException, BadRequestException, TooManyRequestsException
     def create_portal(self, CreatePortalRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/portals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portals", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"authorization\":" + authorization_to_json(input.Authorization))
         parts.append("\"endpointConfiguration\":" + endpoint_configuration_request_to_json(input.EndpointConfiguration))
@@ -3642,7 +3650,7 @@ struct ApiGatewayV2Client:
     # errors: AccessDeniedException, BadRequestException, TooManyRequestsException
     def create_portal_product(self, CreatePortalProductRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -3663,7 +3671,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts/{portalProductId}/productpages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts/{portalProductId}/productpages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateProductPageDocument(DisplayContent=input.DisplayContent)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -3674,7 +3682,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DisplayContent.is_some():
             auto u0 = input.DisplayContent.unwrap()
@@ -3692,7 +3700,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/routes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/routes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ApiKeyRequired.is_some():
             auto u0 = input.ApiKeyRequired.unwrap()
@@ -3744,7 +3752,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["routeId"] = input.RouteId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ModelSelectionExpression.is_some():
             auto u0 = input.ModelSelectionExpression.unwrap()
@@ -3774,7 +3782,7 @@ struct ApiGatewayV2Client:
         dict[str, str] query = {}
         if input.DomainNameId.is_some():
             query["domainNameId"] = input.DomainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames/{domainName}/routingrules", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/domainnames/{domainName}/routingrules", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Actions:
@@ -3794,7 +3802,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/stages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/apis/{apiId}/stages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccessLogSettings.is_some():
             auto u0 = input.AccessLogSettings.unwrap()
@@ -3840,7 +3848,7 @@ struct ApiGatewayV2Client:
     # errors: BadRequestException, TooManyRequestsException
     def create_vpc_link(self, CreateVpcLinkRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/vpclinks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/vpclinks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + apigateway_json_str(input.Name))
         if input.SecurityGroupIds.is_some():
@@ -3869,7 +3877,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["stageName"] = input.StageName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}/accesslogsettings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}/accesslogsettings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteApi  DELETE /v2/apis/{apiId}
@@ -3878,7 +3886,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteApiMapping  DELETE /v2/domainnames/{domainName}/apimappings/{apiMappingId}
@@ -3888,7 +3896,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiMappingId"] = input.ApiMappingId
         labels["domainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domainnames/{domainName}/apimappings/{apiMappingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domainnames/{domainName}/apimappings/{apiMappingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteAuthorizer  DELETE /v2/apis/{apiId}/authorizers/{authorizerId}
@@ -3898,7 +3906,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["authorizerId"] = input.AuthorizerId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/authorizers/{authorizerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/authorizers/{authorizerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteCorsConfiguration  DELETE /v2/apis/{apiId}/cors
@@ -3907,7 +3915,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/cors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/cors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteDeployment  DELETE /v2/apis/{apiId}/deployments/{deploymentId}
@@ -3917,7 +3925,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["deploymentId"] = input.DeploymentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteDomainName  DELETE /v2/domainnames/{domainName}
@@ -3926,7 +3934,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteIntegration  DELETE /v2/apis/{apiId}/integrations/{integrationId}
@@ -3936,7 +3944,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["integrationId"] = input.IntegrationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteIntegrationResponse  DELETE /v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}
@@ -3947,7 +3955,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["integrationId"] = input.IntegrationId
         labels["integrationResponseId"] = input.IntegrationResponseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteModel  DELETE /v2/apis/{apiId}/models/{modelId}
@@ -3957,7 +3965,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["modelId"] = input.ModelId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/models/{modelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/models/{modelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeletePortal  DELETE /v2/portals/{portalId}
@@ -3966,7 +3974,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.PortalId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portals/{portalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portals/{portalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeletePortalProduct  DELETE /v2/portalproducts/{portalProductId}
@@ -3975,7 +3983,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeletePortalProductSharingPolicy  DELETE /v2/portalproducts/{portalProductId}/sharingpolicy
@@ -3984,7 +3992,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}/sharingpolicy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}/sharingpolicy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteProductPage  DELETE /v2/portalproducts/{portalProductId}/productpages/{productPageId}
@@ -3994,7 +4002,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
         labels["productPageId"] = input.ProductPageId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}/productpages/{productPageId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}/productpages/{productPageId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteProductRestEndpointPage  DELETE /v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}
@@ -4004,7 +4012,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
         labels["productRestEndpointPageId"] = input.ProductRestEndpointPageId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteRoute  DELETE /v2/apis/{apiId}/routes/{routeId}
@@ -4014,7 +4022,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["routeId"] = input.RouteId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/routes/{routeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/routes/{routeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteRouteRequestParameter  DELETE /v2/apis/{apiId}/routes/{routeId}/requestparameters/{requestParameterKey}
@@ -4025,7 +4033,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["requestParameterKey"] = input.RequestParameterKey
         labels["routeId"] = input.RouteId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/routes/{routeId}/requestparameters/{requestParameterKey}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/routes/{routeId}/requestparameters/{requestParameterKey}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteRouteResponse  DELETE /v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}
@@ -4036,7 +4044,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["routeId"] = input.RouteId
         labels["routeResponseId"] = input.RouteResponseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteRouteSettings  DELETE /v2/apis/{apiId}/stages/{stageName}/routesettings/{routeKey}
@@ -4047,7 +4055,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["routeKey"] = input.RouteKey
         labels["stageName"] = input.StageName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}/routesettings/{routeKey}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}/routesettings/{routeKey}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteRoutingRule  DELETE /v2/domainnames/{domainName}/routingrules/{routingRuleId}
@@ -4060,7 +4068,7 @@ struct ApiGatewayV2Client:
         dict[str, str] query = {}
         if input.DomainNameId.is_some():
             query["domainNameId"] = input.DomainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domainnames/{domainName}/routingrules/{routingRuleId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/domainnames/{domainName}/routingrules/{routingRuleId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteStage  DELETE /v2/apis/{apiId}/stages/{stageName}
@@ -4070,7 +4078,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["stageName"] = input.StageName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DeleteVpcLink  DELETE /v2/vpclinks/{vpcLinkId}
@@ -4079,7 +4087,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["vpcLinkId"] = input.VpcLinkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/vpclinks/{vpcLinkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/vpclinks/{vpcLinkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # DisablePortal  DELETE /v2/portals/{portalId}/publish
@@ -4088,7 +4096,26 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.PortalId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portals/{portalId}/publish", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/portals/{portalId}/publish", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # ExportApi  GET /v2/apis/{apiId}/exports/{specification}
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException
+    def export_api(self, ExportApiRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        labels["specification"] = input.Specification
+        dict[str, str] query = {}
+        if input.ExportVersion.is_some():
+            query["exportVersion"] = input.ExportVersion.unwrap_or("")
+        if input.IncludeExtensions.is_some():
+            auto qt0 = apigateway_bind_bool(input.IncludeExtensions.unwrap_or(False))
+            query["includeExtensions"] = qt0
+        query["outputType"] = input.OutputType
+        if input.StageName.is_some():
+            query["stageName"] = input.StageName.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/exports/{specification}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetApi  GET /v2/apis/{apiId}
@@ -4097,7 +4124,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetApiMapping  GET /v2/domainnames/{domainName}/apimappings/{apiMappingId}
@@ -4107,7 +4134,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiMappingId"] = input.ApiMappingId
         labels["domainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/apimappings/{apiMappingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/apimappings/{apiMappingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetApiMappings  GET /v2/domainnames/{domainName}/apimappings
@@ -4121,7 +4148,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/apimappings", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/apimappings", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetApis  GET /v2/apis
@@ -4133,7 +4160,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetAuthorizer  GET /v2/apis/{apiId}/authorizers/{authorizerId}
@@ -4143,7 +4170,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["authorizerId"] = input.AuthorizerId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/authorizers/{authorizerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/authorizers/{authorizerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetAuthorizers  GET /v2/apis/{apiId}/authorizers
@@ -4157,7 +4184,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/authorizers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/authorizers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDeployment  GET /v2/apis/{apiId}/deployments/{deploymentId}
@@ -4167,7 +4194,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["deploymentId"] = input.DeploymentId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDeployments  GET /v2/apis/{apiId}/deployments
@@ -4181,7 +4208,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/deployments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/deployments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDomainName  GET /v2/domainnames/{domainName}
@@ -4190,7 +4217,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetDomainNames  GET /v2/domainnames
@@ -4202,7 +4229,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetIntegration  GET /v2/apis/{apiId}/integrations/{integrationId}
@@ -4212,7 +4239,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["integrationId"] = input.IntegrationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetIntegrationResponse  GET /v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}
@@ -4223,7 +4250,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["integrationId"] = input.IntegrationId
         labels["integrationResponseId"] = input.IntegrationResponseId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetIntegrationResponses  GET /v2/apis/{apiId}/integrations/{integrationId}/integrationresponses
@@ -4238,7 +4265,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetIntegrations  GET /v2/apis/{apiId}/integrations
@@ -4252,7 +4279,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/integrations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetModel  GET /v2/apis/{apiId}/models/{modelId}
@@ -4262,7 +4289,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["modelId"] = input.ModelId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/models/{modelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/models/{modelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetModelTemplate  GET /v2/apis/{apiId}/models/{modelId}/template
@@ -4272,7 +4299,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["modelId"] = input.ModelId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/models/{modelId}/template", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/models/{modelId}/template", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetModels  GET /v2/apis/{apiId}/models
@@ -4286,7 +4313,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/models", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/models", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetPortal  GET /v2/portals/{portalId}
@@ -4295,7 +4322,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.PortalId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portals/{portalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portals/{portalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetPortalProduct  GET /v2/portalproducts/{portalProductId}
@@ -4307,7 +4334,7 @@ struct ApiGatewayV2Client:
         dict[str, str] query = {}
         if input.ResourceOwnerAccountId.is_some():
             query["resourceOwnerAccountId"] = input.ResourceOwnerAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetPortalProductSharingPolicy  GET /v2/portalproducts/{portalProductId}/sharingpolicy
@@ -4316,7 +4343,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/sharingpolicy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/sharingpolicy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetProductPage  GET /v2/portalproducts/{portalProductId}/productpages/{productPageId}
@@ -4329,7 +4356,7 @@ struct ApiGatewayV2Client:
         dict[str, str] query = {}
         if input.ResourceOwnerAccountId.is_some():
             query["resourceOwnerAccountId"] = input.ResourceOwnerAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productpages/{productPageId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productpages/{productPageId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetProductRestEndpointPage  GET /v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}
@@ -4341,10 +4368,11 @@ struct ApiGatewayV2Client:
         labels["productRestEndpointPageId"] = input.ProductRestEndpointPageId
         dict[str, str] query = {}
         if input.IncludeRawDisplayContent.is_some():
-            query["includeRawDisplayContent"] = input.IncludeRawDisplayContent.unwrap_or("")
+            auto qt0 = input.IncludeRawDisplayContent.unwrap_or("")
+            query["includeRawDisplayContent"] = qt0
         if input.ResourceOwnerAccountId.is_some():
             query["resourceOwnerAccountId"] = input.ResourceOwnerAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRoute  GET /v2/apis/{apiId}/routes/{routeId}
@@ -4354,7 +4382,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["routeId"] = input.RouteId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes/{routeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes/{routeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRouteResponse  GET /v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}
@@ -4365,7 +4393,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["routeId"] = input.RouteId
         labels["routeResponseId"] = input.RouteResponseId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRouteResponses  GET /v2/apis/{apiId}/routes/{routeId}/routeresponses
@@ -4380,7 +4408,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRoutes  GET /v2/apis/{apiId}/routes
@@ -4394,7 +4422,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/routes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetRoutingRule  GET /v2/domainnames/{domainName}/routingrules/{routingRuleId}
@@ -4407,7 +4435,7 @@ struct ApiGatewayV2Client:
         dict[str, str] query = {}
         if input.DomainNameId.is_some():
             query["domainNameId"] = input.DomainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/routingrules/{routingRuleId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/routingrules/{routingRuleId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetStage  GET /v2/apis/{apiId}/stages/{stageName}
@@ -4417,7 +4445,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["stageName"] = input.StageName
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/stages/{stageName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/stages/{stageName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetStages  GET /v2/apis/{apiId}/stages
@@ -4431,7 +4459,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/stages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/apis/{apiId}/stages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetTags  GET /v2/tags/{resource-arn}
@@ -4440,7 +4468,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetVpcLink  GET /v2/vpclinks/{vpcLinkId}
@@ -4449,7 +4477,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["vpcLinkId"] = input.VpcLinkId
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/vpclinks/{vpcLinkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/vpclinks/{vpcLinkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # GetVpcLinks  GET /v2/vpclinks
@@ -4461,8 +4489,23 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/vpclinks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/vpclinks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
+    # ImportApi  PUT /v2/apis
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def import_api(self, ImportApiRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] query = {}
+        if input.Basepath.is_some():
+            query["basepath"] = input.Basepath.unwrap_or("")
+        if input.FailOnWarnings.is_some():
+            auto qt0 = apigateway_bind_bool(input.FailOnWarnings.unwrap_or(False))
+            query["failOnWarnings"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/apis", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = ImportApiDocument(Body=input.Body)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
     # ListPortalProducts  GET /v2/portalproducts
     # errors: AccessDeniedException, BadRequestException, TooManyRequestsException
@@ -4475,7 +4518,7 @@ struct ApiGatewayV2Client:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.ResourceOwner.is_some():
             query["resourceOwner"] = input.ResourceOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # ListPortals  GET /v2/portals
@@ -4487,7 +4530,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = input.MaxResults.unwrap_or("")
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portals", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portals", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # ListProductPages  GET /v2/portalproducts/{portalProductId}/productpages
@@ -4503,7 +4546,7 @@ struct ApiGatewayV2Client:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.ResourceOwnerAccountId.is_some():
             query["resourceOwnerAccountId"] = input.ResourceOwnerAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productpages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productpages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # ListProductRestEndpointPages  GET /v2/portalproducts/{portalProductId}/productrestendpointpages
@@ -4519,7 +4562,7 @@ struct ApiGatewayV2Client:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.ResourceOwnerAccountId.is_some():
             query["resourceOwnerAccountId"] = input.ResourceOwnerAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # ListRoutingRules  GET /v2/domainnames/{domainName}/routingrules
@@ -4535,7 +4578,7 @@ struct ApiGatewayV2Client:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/routingrules", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/domainnames/{domainName}/routingrules", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # PreviewPortal  POST /v2/portals/{portalId}/preview
@@ -4544,7 +4587,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.PortalId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/portals/{portalId}/preview", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portals/{portalId}/preview", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # PublishPortal  POST /v2/portals/{portalId}/publish
@@ -4553,7 +4596,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.PortalId
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/portals/{portalId}/publish", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/portals/{portalId}/publish", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PublishPortalDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -4564,7 +4607,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/portalproducts/{portalProductId}/sharingpolicy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/portalproducts/{portalProductId}/sharingpolicy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutPortalProductSharingPolicyDocument(PolicyDocument=input.PolicyDocument)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -4579,7 +4622,7 @@ struct ApiGatewayV2Client:
         dict[str, str] query = {}
         if input.DomainNameId.is_some():
             query["domainNameId"] = input.DomainNameId.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domainnames/{domainName}/routingrules/{routingRuleId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/domainnames/{domainName}/routingrules/{routingRuleId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Actions:
@@ -4593,6 +4636,23 @@ struct ApiGatewayV2Client:
         auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # ReimportApi  PUT /v2/apis/{apiId}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def reimport_api(self, ReimportApiRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["apiId"] = input.ApiId
+        dict[str, str] query = {}
+        if input.Basepath.is_some():
+            query["basepath"] = input.Basepath.unwrap_or("")
+        if input.FailOnWarnings.is_some():
+            auto qt0 = apigateway_bind_bool(input.FailOnWarnings.unwrap_or(False))
+            query["failOnWarnings"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = ReimportApiDocument(Body=input.Body)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
+
     # ResetAuthorizersCache  DELETE /v2/apis/{apiId}/stages/{stageName}/cache/authorizers
     # errors: NotFoundException, TooManyRequestsException
     def reset_authorizers_cache(self, ResetAuthorizersCacheRequest input) -> str:
@@ -4600,7 +4660,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["stageName"] = input.StageName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}/cache/authorizers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/apis/{apiId}/stages/{stageName}/cache/authorizers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
 
     # TagResource  POST /v2/tags/{resource-arn}
@@ -4609,7 +4669,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -4620,13 +4680,24 @@ struct ApiGatewayV2Client:
         auto bp = restjson.rest_json_document(b, apigateway_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
 
+    # UntagResource  DELETE /v2/tags/{resource-arn}
+    # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(apigateway_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, apigateway_service(), self.region, host)
+
     # UpdateApi  PATCH /v2/apis/{apiId}
     # errors: BadRequestException, ConflictException, NotFoundException, TooManyRequestsException
     def update_api(self, UpdateApiRequest input) -> str:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ApiKeySelectionExpression.is_some():
             auto u0 = input.ApiKeySelectionExpression.unwrap()
@@ -4674,7 +4745,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiMappingId"] = input.ApiMappingId
         labels["domainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domainnames/{domainName}/apimappings/{apiMappingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domainnames/{domainName}/apimappings/{apiMappingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApiMappingDocument(ApiId=input.ApiId, ApiMappingKey=input.ApiMappingKey, Stage=input.Stage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -4686,7 +4757,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["authorizerId"] = input.AuthorizerId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/authorizers/{authorizerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/authorizers/{authorizerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AuthorizerCredentialsArn.is_some():
             auto u0 = input.AuthorizerCredentialsArn.unwrap()
@@ -4731,7 +4802,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["deploymentId"] = input.DeploymentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDeploymentDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -4742,7 +4813,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["domainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/domainnames/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DomainNameConfigurations.is_some():
             auto u0 = input.DomainNameConfigurations.unwrap()
@@ -4766,7 +4837,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["integrationId"] = input.IntegrationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ConnectionId.is_some():
             auto u0 = input.ConnectionId.unwrap()
@@ -4842,7 +4913,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["integrationId"] = input.IntegrationId
         labels["integrationResponseId"] = input.IntegrationResponseId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/integrations/{integrationId}/integrationresponses/{integrationResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ContentHandlingStrategy.is_some():
             auto u0 = input.ContentHandlingStrategy.unwrap()
@@ -4875,7 +4946,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["modelId"] = input.ModelId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/models/{modelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/models/{modelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateModelDocument(ContentType=input.ContentType, Description=input.Description, Name=input.Name, Schema=input.Schema)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -4886,7 +4957,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.PortalId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portals/{portalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portals/{portalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Authorization.is_some():
             auto u0 = input.Authorization.unwrap()
@@ -4918,7 +4989,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -4939,7 +5010,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
         labels["productPageId"] = input.ProductPageId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}/productpages/{productPageId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}/productpages/{productPageId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProductPageDocument(DisplayContent=input.DisplayContent)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)
@@ -4951,7 +5022,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["portalProductId"] = input.PortalProductId
         labels["productRestEndpointPageId"] = input.ProductRestEndpointPageId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/portalproducts/{portalProductId}/productrestendpointpages/{productRestEndpointPageId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DisplayContent.is_some():
             auto u0 = input.DisplayContent.unwrap()
@@ -4969,7 +5040,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["routeId"] = input.RouteId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/routes/{routeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/routes/{routeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ApiKeyRequired.is_some():
             auto u0 = input.ApiKeyRequired.unwrap()
@@ -5024,7 +5095,7 @@ struct ApiGatewayV2Client:
         labels["apiId"] = input.ApiId
         labels["routeId"] = input.RouteId
         labels["routeResponseId"] = input.RouteResponseId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/routes/{routeId}/routeresponses/{routeResponseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ModelSelectionExpression.is_some():
             auto u0 = input.ModelSelectionExpression.unwrap()
@@ -5054,7 +5125,7 @@ struct ApiGatewayV2Client:
         dict[str, str] labels = {}
         labels["apiId"] = input.ApiId
         labels["stageName"] = input.StageName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/stages/{stageName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/apis/{apiId}/stages/{stageName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccessLogSettings.is_some():
             auto u0 = input.AccessLogSettings.unwrap()
@@ -5095,7 +5166,7 @@ struct ApiGatewayV2Client:
         auto host = endpoints.regional_host(apigateway_service(), self.region)
         dict[str, str] labels = {}
         labels["vpcLinkId"] = input.VpcLinkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/vpclinks/{vpcLinkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v2/vpclinks/{vpcLinkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVpcLinkDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, apigateway_service(), self.region, host)

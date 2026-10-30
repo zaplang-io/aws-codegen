@@ -159,7 +159,7 @@ struct SSOClient:
         query["account_id"] = input.accountId
         dict[str, str] headers = {}
         headers["x-amz-sso_bearer_token"] = input.accessToken
-        auto b = binding.HttpBinding(method="GET", path_template="/federation/credentials", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/federation/credentials", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, portal_sso_service(), self.region, host)
 
     # ListAccountRoles  GET /assignment/roles
@@ -174,7 +174,7 @@ struct SSOClient:
         query["account_id"] = input.accountId
         dict[str, str] headers = {}
         headers["x-amz-sso_bearer_token"] = input.accessToken
-        auto b = binding.HttpBinding(method="GET", path_template="/assignment/roles", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assignment/roles", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, portal_sso_service(), self.region, host)
 
     # ListAccounts  GET /assignment/accounts
@@ -188,7 +188,7 @@ struct SSOClient:
             query["max_result"] = str(input.maxResults.unwrap_or(0))
         dict[str, str] headers = {}
         headers["x-amz-sso_bearer_token"] = input.accessToken
-        auto b = binding.HttpBinding(method="GET", path_template="/assignment/accounts", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assignment/accounts", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, portal_sso_service(), self.region, host)
 
     # Logout  POST /logout
@@ -197,7 +197,7 @@ struct SSOClient:
         auto host = endpoints.regional_host(portal_sso_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-sso_bearer_token"] = input.accessToken
-        auto b = binding.HttpBinding(method="POST", path_template="/logout", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/logout", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, portal_sso_service(), self.region, host)
 
     # Paginator for ListAccountRoles — yields each Response page, threading the

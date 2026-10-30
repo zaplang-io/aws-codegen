@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 15 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   45 structs (32 @derive(Json)), 6 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -453,11 +453,6 @@ def dsql_error_from_code(str code) -> DSQLError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -522,7 +517,7 @@ struct DSQLClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_cluster(self, CreateClusterInput input) -> str:
         auto host = endpoints.regional_host(dsql_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.deletionProtectionEnabled.is_some():
             auto u0 = input.deletionProtectionEnabled.unwrap()
@@ -557,7 +552,7 @@ struct DSQLClient:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterIdentifier"] = input.clusterIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/stream/{clusterIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/stream/{clusterIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"targetDefinition\":" + input.targetDefinition.to_json())
         parts.append("\"ordering\":" + dsql_json_str(input.ordering))
@@ -583,7 +578,7 @@ struct DSQLClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["client-token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{identifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{identifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # DeleteClusterPolicy  DELETE /cluster/{identifier}/policy
@@ -597,7 +592,7 @@ struct DSQLClient:
             query["expected-policy-version"] = input.expectedPolicyVersion.unwrap_or("")
         if input.clientToken.is_some():
             query["client-token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{identifier}/policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{identifier}/policy", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # DeleteStream  DELETE /stream/{clusterIdentifier}/{streamIdentifier}
@@ -610,7 +605,7 @@ struct DSQLClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["client-token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/stream/{clusterIdentifier}/{streamIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/stream/{clusterIdentifier}/{streamIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # GetCluster  GET /cluster/{identifier}
@@ -619,7 +614,7 @@ struct DSQLClient:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # GetClusterPolicy  GET /cluster/{identifier}/policy
@@ -628,7 +623,7 @@ struct DSQLClient:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{identifier}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{identifier}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # GetStream  GET /stream/{clusterIdentifier}/{streamIdentifier}
@@ -638,7 +633,7 @@ struct DSQLClient:
         dict[str, str] labels = {}
         labels["clusterIdentifier"] = input.clusterIdentifier
         labels["streamIdentifier"] = input.streamIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/stream/{clusterIdentifier}/{streamIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/stream/{clusterIdentifier}/{streamIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # GetVpcEndpointServiceName  GET /clusters/{identifier}/vpc-endpoint-service-name
@@ -647,7 +642,7 @@ struct DSQLClient:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{identifier}/vpc-endpoint-service-name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{identifier}/vpc-endpoint-service-name", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # ListClusters  GET /cluster
@@ -659,7 +654,7 @@ struct DSQLClient:
             query["max-results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # ListStreams  GET /stream/{clusterIdentifier}
@@ -673,7 +668,7 @@ struct DSQLClient:
             query["max-results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next-token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/stream/{clusterIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/stream/{clusterIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -682,7 +677,7 @@ struct DSQLClient:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
 
     # PutClusterPolicy  POST /cluster/{identifier}/policy
@@ -691,7 +686,7 @@ struct DSQLClient:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{identifier}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{identifier}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutClusterPolicyDocument(policy=input.policy, bypassPolicyLockoutSafetyCheck=input.bypassPolicyLockoutSafetyCheck, expectedPolicyVersion=input.expectedPolicyVersion, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dsql_service(), self.region, host)
@@ -702,7 +697,7 @@ struct DSQLClient:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -711,13 +706,24 @@ struct DSQLClient:
         auto bp = restjson.rest_json_document(b, dsql_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, dsql_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(dsql_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, dsql_service(), self.region, host)
+
     # UpdateCluster  POST /cluster/{identifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_cluster(self, UpdateClusterInput input) -> str:
         auto host = endpoints.regional_host(dsql_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.deletionProtectionEnabled.is_some():
             auto u0 = input.deletionProtectionEnabled.unwrap()

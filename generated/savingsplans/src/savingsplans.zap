@@ -624,7 +624,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_savings_plan(self, CreateSavingsPlanRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateSavingsPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSavingsPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"savingsPlanOfferingId\":" + savingsplans_json_str(input.savingsPlanOfferingId))
         parts.append("\"commitment\":" + savingsplans_json_str(input.commitment))
@@ -650,7 +650,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def delete_queued_savings_plan(self, DeleteQueuedSavingsPlanRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteQueuedSavingsPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteQueuedSavingsPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteQueuedSavingsPlanDocument(savingsPlanId=input.savingsPlanId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
@@ -659,7 +659,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def describe_savings_plan_rates(self, DescribeSavingsPlanRatesRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlanRates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlanRates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"savingsPlanId\":" + savingsplans_json_str(input.savingsPlanId))
         if input.filters.is_some():
@@ -681,7 +681,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ValidationException
     def describe_savings_plans(self, DescribeSavingsPlansRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.savingsPlanArns.is_some():
             auto u0 = input.savingsPlanArns.unwrap()
@@ -720,7 +720,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ValidationException
     def describe_savings_plans_offering_rates(self, DescribeSavingsPlansOfferingRatesRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlansOfferingRates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlansOfferingRates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.savingsPlanOfferingIds.is_some():
             auto u0 = input.savingsPlanOfferingIds.unwrap()
@@ -783,7 +783,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ValidationException
     def describe_savings_plans_offerings(self, DescribeSavingsPlansOfferingsRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlansOfferings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSavingsPlansOfferings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.offeringIds.is_some():
             auto u0 = input.offeringIds.unwrap()
@@ -861,7 +861,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
@@ -870,7 +870,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def return_savings_plan(self, ReturnSavingsPlanRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ReturnSavingsPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ReturnSavingsPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ReturnSavingsPlanDocument(savingsPlanId=input.savingsPlanId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, savingsplans_service(), self.region, host)
@@ -879,7 +879,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + savingsplans_json_str(input.resourceArn))
         list[str] m0 = []
@@ -893,7 +893,7 @@ struct savingsplansClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(savingsplans_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + savingsplans_json_str(input.resourceArn))
         list[str] e0 = []

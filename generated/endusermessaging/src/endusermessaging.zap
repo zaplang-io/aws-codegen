@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 27 operations — 26 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 27 operations — 27 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   84 structs (52 @derive(Json)), 9 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -741,11 +741,6 @@ def end_user_messaging_error_from_code(str code) -> EndUserMessagingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -879,7 +874,7 @@ struct EndUserMessagingClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_brand_profile(self, CreateBrandProfileInput input) -> str:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"brandProfileName\":" + end_user_messaging_json_str(input.brandProfileName))
         if input.clientToken.is_some():
@@ -903,7 +898,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] labels = {}
         labels["brandProfileId"] = input.brandProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/attributes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/attributes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.attributes:
@@ -919,7 +914,7 @@ struct EndUserMessagingClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_brand_profile_from_registration(self, CreateBrandProfileFromRegistrationInput input) -> str:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/create-from-registration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/create-from-registration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"registrationId\":" + end_user_messaging_json_str(input.registrationId))
         parts.append("\"brandProfileName\":" + end_user_messaging_json_str(input.brandProfileName))
@@ -942,7 +937,7 @@ struct EndUserMessagingClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_notify_code_configuration(self, CreateNotifyCodeConfigurationInput input) -> str:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"notifyCodeConfigurationName\":" + end_user_messaging_json_str(input.notifyCodeConfigurationName))
         if input.codeConfigurationParameters.is_some():
@@ -972,7 +967,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] labels = {}
         labels["brandProfileId"] = input.brandProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/create-registrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/create-registrations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.registrationTypes:
@@ -993,7 +988,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["brandProfileId"] = input.brandProfileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brand-profiles/{brandProfileId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brand-profiles/{brandProfileId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # DeleteBrandProfileAttribute  DELETE /v1/brand-profiles/{brandProfileId}/attributes/{attributeName}
@@ -1003,7 +998,7 @@ struct EndUserMessagingClient:
         dict[str, str] labels = {}
         labels["brandProfileId"] = input.brandProfileId
         labels["attributeName"] = input.attributeName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # DeleteNotifyCodeConfiguration  DELETE /v1/notify-code-configurations/{notifyCodeConfigurationId+}
@@ -1012,7 +1007,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["notifyCodeConfigurationId"] = input.notifyCodeConfigurationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/notify-code-configurations/{notifyCodeConfigurationId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/notify-code-configurations/{notifyCodeConfigurationId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # GetBrandProfile  GET /v1/brand-profiles/{brandProfileId+}
@@ -1021,7 +1016,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["brandProfileId"] = input.brandProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # GetBrandProfileAttribute  GET /v1/brand-profiles/{brandProfileId}/attributes/{attributeName}
@@ -1031,7 +1026,7 @@ struct EndUserMessagingClient:
         dict[str, str] labels = {}
         labels["brandProfileId"] = input.brandProfileId
         labels["attributeName"] = input.attributeName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # GetJob  GET /v1/jobs/{jobId}
@@ -1040,7 +1035,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # GetNotifyCodeConfiguration  GET /v1/notify-code-configurations/{notifyCodeConfigurationId+}
@@ -1049,7 +1044,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["notifyCodeConfigurationId"] = input.notifyCodeConfigurationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/notify-code-configurations/{notifyCodeConfigurationId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/notify-code-configurations/{notifyCodeConfigurationId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # ListBrandProfileAttributes  GET /v1/brand-profiles/{brandProfileId}/attributes
@@ -1063,7 +1058,7 @@ struct EndUserMessagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId}/attributes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId}/attributes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # ListBrandProfiles  GET /v1/brand-profiles
@@ -1075,7 +1070,7 @@ struct EndUserMessagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # ListJobs  GET /v1/jobs
@@ -1093,7 +1088,7 @@ struct EndUserMessagingClient:
             query["brandProfileId"] = input.brandProfileId.unwrap_or("")
         if input.operationType.is_some():
             query["operationType"] = input.operationType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # ListNotifyCodeConfigurations  GET /v1/notify-code-configurations
@@ -1105,7 +1100,7 @@ struct EndUserMessagingClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/notify-code-configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/notify-code-configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # ListRegistrationsFromBrandProfile  GET /v1/brand-profiles/{brandProfileId}/registrations
@@ -1119,7 +1114,7 @@ struct EndUserMessagingClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId}/registrations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/brand-profiles/{brandProfileId}/registrations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resourceArn}
@@ -1128,14 +1123,14 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
 
     # SendNotifyCodeVerification  POST /v1/notify-code-verifications/send
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def send_notify_code_verification(self, SendNotifyCodeVerificationInput input) -> str:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-verifications/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-verifications/send", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"channel\":" + input.channel_.to_json())
         parts.append("\"destinationIdentity\":" + end_user_messaging_json_str(input.destinationIdentity))
@@ -1170,7 +1165,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -1179,13 +1174,24 @@ struct EndUserMessagingClient:
         auto bp = restjson.rest_json_document(b, end_user_messaging_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, end_user_messaging_service(), self.region, host)
+
     # UpdateBrandProfile  PUT /v1/brand-profiles/{brandProfileId+}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_brand_profile(self, UpdateBrandProfileInput input) -> str:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["brandProfileId"] = input.brandProfileId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brand-profiles/{brandProfileId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brand-profiles/{brandProfileId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrandProfileDocument(brandProfileName=input.brandProfileName, deletionProtectionEnabled=input.deletionProtectionEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
@@ -1197,7 +1203,7 @@ struct EndUserMessagingClient:
         dict[str, str] labels = {}
         labels["brandProfileId"] = input.brandProfileId
         labels["attributeName"] = input.attributeName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrandProfileAttributeDocument(attributeValue=input.attributeValue, attachmentBody=input.attachmentBody, description=input.description, category=input.category)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
@@ -1208,7 +1214,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] labels = {}
         labels["brandProfileId"] = input.brandProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/update-from-registration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/update-from-registration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrandProfileFromRegistrationDocument(registrationId=input.registrationId, smartMatch=input.smartMatch, onAttributeConflict=input.onAttributeConflict, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)
@@ -1219,7 +1225,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["notifyCodeConfigurationId"] = input.notifyCodeConfigurationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/notify-code-configurations/{notifyCodeConfigurationId+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/notify-code-configurations/{notifyCodeConfigurationId+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.notifyCodeConfigurationName.is_some():
             auto u0 = input.notifyCodeConfigurationName.unwrap()
@@ -1242,7 +1248,7 @@ struct EndUserMessagingClient:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
         dict[str, str] labels = {}
         labels["brandProfileId"] = input.brandProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/update-registrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/brand-profiles/{brandProfileId}/update-registrations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.registrationIds:
@@ -1264,7 +1270,7 @@ struct EndUserMessagingClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def validate_notify_code_verification(self, ValidateNotifyCodeVerificationInput input) -> str:
         auto host = endpoints.regional_host(end_user_messaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-verifications/validate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/notify-code-verifications/validate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ValidateNotifyCodeVerificationDocument(destinationIdentity=input.destinationIdentity, referenceId=input.referenceId, code=input.code)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, end_user_messaging_service(), self.region, host)

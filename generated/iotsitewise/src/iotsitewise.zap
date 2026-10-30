@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 149 operations — 141 with a generated method,
-#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 149 operations — 146 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   522 structs (333 @derive(Json)), 72 enums, 14 error variants.
-#   36 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   38 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -4625,22 +4625,15 @@ def iotsitewise_error_from_code(str code) -> IoTSiteWiseError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   DescribeAsset (httpQuery `excludeProperties` has unsupported type bool)
-#   DescribeAssetModel (httpQuery `excludeProperties` has unsupported type bool)
 #   GetAssetPropertyAggregates (httpQuery `aggregateTypes` has unsupported type list[AggregateType])
-#   GetAssetPropertyValueHistory (httpQuery `startDate` has unsupported type DateTime)
+#   GetAssetPropertyValueHistory (httpQuery `qualities` has unsupported type list[Quality])
 #   ListAssetModels (httpQuery `assetModelTypes` has unsupported type list[AssetModelType])
-#   ListEnrichmentJobs (httpQuery `startDate` has unsupported type DateTime)
-#   ListPipelineExecutions (httpQuery `startTimeAfter` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   GetAssetPropertyAggregates (operation not generated)
 #   GetAssetPropertyValueHistory (operation not generated)
 #   ListAssetModels (operation not generated)
-#   ListEnrichmentJobs (operation not generated)
-#   ListPipelineExecutions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -5355,6 +5348,12 @@ def variable_value_to_json(VariableValue v) -> str:
         parts.append("\"propertyPath\":" + iotsitewise_json_arr(e3))
     return iotsitewise_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def iotsitewise_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound IoTSiteWise client: credentials + region, threaded into every operation.
 struct IoTSiteWiseClient:
     core.Credentials creds
@@ -5366,7 +5365,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["assetId"] = input.assetId
-        auto b = binding.HttpBinding(method="POST", path_template="/assets/{assetId}/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assets/{assetId}/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateAssetsDocument(hierarchyId=input.hierarchyId, childAssetId=input.childAssetId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -5379,7 +5378,7 @@ struct IoTSiteWiseClient:
         query["alias"] = input.alias
         query["assetId"] = input.assetId
         query["propertyId"] = input.propertyId
-        auto b = binding.HttpBinding(method="POST", path_template="/timeseries/associate/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/timeseries/associate/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateTimeSeriesToAssetPropertyDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -5390,7 +5389,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
         list[str] e0 = []
@@ -5409,7 +5408,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["projectId"] = input.projectId
-        auto b = binding.HttpBinding(method="POST", path_template="/projects/{projectId}/assets/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/projects/{projectId}/assets/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.assetIds:
@@ -5427,7 +5426,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/batch-delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/batch-delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
         list[str] e0 = []
@@ -5446,7 +5445,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/data-segments/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
         list[str] e0 = []
@@ -5465,7 +5464,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["projectId"] = input.projectId
-        auto b = binding.HttpBinding(method="POST", path_template="/projects/{projectId}/assets/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/projects/{projectId}/assets/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.assetIds:
@@ -5481,7 +5480,7 @@ struct IoTSiteWiseClient:
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException
     def batch_get_asset_property_aggregates(self, BatchGetAssetPropertyAggregatesRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/aggregates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/aggregates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.entries:
@@ -5500,7 +5499,7 @@ struct IoTSiteWiseClient:
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException
     def batch_get_asset_property_value(self, BatchGetAssetPropertyValueRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/latest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/latest", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.entries:
@@ -5516,7 +5515,7 @@ struct IoTSiteWiseClient:
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException
     def batch_get_asset_property_value_history(self, BatchGetAssetPropertyValueHistoryRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/history", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/properties/batch/history", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.entries:
@@ -5535,7 +5534,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
     def batch_put_asset_property_value(self, BatchPutAssetPropertyValueRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/properties", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/properties", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.enablePartialEntryProcessing.is_some():
             auto u0 = input.enablePartialEntryProcessing.unwrap()
@@ -5554,7 +5553,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/enrichment-jobs/{jobId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/enrichment-jobs/{jobId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # CancelPipelineExecution  POST /workspaces/{workspaceName}/pipelines/{pipelineName}/executions/{pipelineExecutionId}/cancel
@@ -5565,7 +5564,7 @@ struct IoTSiteWiseClient:
         labels["workspaceName"] = input.workspaceName
         labels["pipelineName"] = input.pipelineName
         labels["pipelineExecutionId"] = input.pipelineExecutionId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions/{pipelineExecutionId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions/{pipelineExecutionId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelPipelineExecutionDocument(reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -5577,14 +5576,14 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/queries/{queryId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/queries/{queryId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # CreateAccessPolicy  POST /access-policies
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_access_policy(self, CreateAccessPolicyRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/access-policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/access-policies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"accessPolicyIdentity\":" + input.accessPolicyIdentity.to_json())
         parts.append("\"accessPolicyResource\":" + input.accessPolicyResource.to_json())
@@ -5605,7 +5604,7 @@ struct IoTSiteWiseClient:
     # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5629,7 +5628,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
     def create_asset(self, CreateAssetRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"assetName\":" + iotsitewise_json_str(input.assetName))
         parts.append("\"assetModelId\":" + iotsitewise_json_str(input.assetModelId))
@@ -5658,7 +5657,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
     def create_asset_model(self, CreateAssetModelRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/asset-models", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/asset-models", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"assetModelName\":" + iotsitewise_json_str(input.assetModelName))
         if input.assetModelType.is_some():
@@ -5716,7 +5715,7 @@ struct IoTSiteWiseClient:
             headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
         if input.matchForVersionType.is_some():
             headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/asset-models/{assetModelId}/composite-models", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/asset-models/{assetModelId}/composite-models", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.assetModelCompositeModelExternalId.is_some():
             auto u0 = input.assetModelCompositeModelExternalId.unwrap()
@@ -5751,7 +5750,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
     def create_bulk_import_job(self, CreateBulkImportJobRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + iotsitewise_json_str(input.jobName))
         parts.append("\"jobRoleArn\":" + iotsitewise_json_str(input.jobRoleArn))
@@ -5782,7 +5781,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
     def create_computation_model(self, CreateComputationModelRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/computation-models", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/computation-models", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"computationModelName\":" + iotsitewise_json_str(input.computationModelName))
         if input.computationModelDescription.is_some():
@@ -5809,7 +5808,7 @@ struct IoTSiteWiseClient:
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_dashboard(self, CreateDashboardRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/dashboards", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dashboards", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"projectId\":" + iotsitewise_json_str(input.projectId))
         parts.append("\"dashboardName\":" + iotsitewise_json_str(input.dashboardName))
@@ -5833,7 +5832,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
     def create_dataset(self, CreateDatasetRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.datasetId.is_some():
             auto u0 = input.datasetId.unwrap()
@@ -5876,7 +5875,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/dataset-export-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/dataset-export-jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -5893,7 +5892,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/enrichment-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/enrichment-jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateEnrichmentJobDocument(jobConfiguration=input.jobConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -5902,7 +5901,7 @@ struct IoTSiteWiseClient:
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
     def create_gateway(self, CreateGatewayRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/20200301/gateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/20200301/gateways", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"gatewayName\":" + iotsitewise_json_str(input.gatewayName))
         parts.append("\"gatewayPlatform\":" + input.gatewayPlatform.to_json())
@@ -5924,7 +5923,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"pipelineName\":" + iotsitewise_json_str(input.pipelineName))
         if input.description.is_some():
@@ -5956,7 +5955,7 @@ struct IoTSiteWiseClient:
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_portal(self, CreatePortalRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/portals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/portals", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"portalName\":" + iotsitewise_json_str(input.portalName))
         if input.portalDescription.is_some():
@@ -6001,7 +6000,7 @@ struct IoTSiteWiseClient:
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def create_project(self, CreateProjectRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/projects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/projects", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"portalId\":" + iotsitewise_json_str(input.portalId))
         parts.append("\"projectName\":" + iotsitewise_json_str(input.projectName))
@@ -6026,7 +6025,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"taskName\":" + iotsitewise_json_str(input.taskName))
         if input.description.is_some():
@@ -6049,7 +6048,7 @@ struct IoTSiteWiseClient:
     # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ThrottlingException
     def create_workspace(self, CreateWorkspaceRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workspaceName\":" + iotsitewise_json_str(input.workspaceName))
         if input.workspaceDescription.is_some():
@@ -6077,7 +6076,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/access-policies/{accessPolicyId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/access-policies/{accessPolicyId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteApplication  DELETE /workspaces/{workspaceName}/applications/{id}
@@ -6087,7 +6086,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}/applications/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}/applications/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteAsset  DELETE /assets/{assetId}
@@ -6099,7 +6098,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/assets/{assetId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/assets/{assetId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteAssetModel  DELETE /asset-models/{assetModelId}
@@ -6118,7 +6117,7 @@ struct IoTSiteWiseClient:
             headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
         if input.matchForVersionType.is_some():
             headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/asset-models/{assetModelId}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/asset-models/{assetModelId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteAssetModelCompositeModel  DELETE /asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}
@@ -6138,7 +6137,7 @@ struct IoTSiteWiseClient:
             headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
         if input.matchForVersionType.is_some():
             headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteAssetModelInterfaceRelationship  DELETE /asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship
@@ -6151,7 +6150,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteComputationModel  DELETE /computation-models/{computationModelId}
@@ -6163,7 +6162,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/computation-models/{computationModelId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/computation-models/{computationModelId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteDashboard  DELETE /dashboards/{dashboardId}
@@ -6175,7 +6174,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/dashboards/{dashboardId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/dashboards/{dashboardId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteDataset  DELETE /datasets/{datasetId}
@@ -6189,7 +6188,7 @@ struct IoTSiteWiseClient:
             query["workspaceName"] = input.workspaceName.unwrap_or("")
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteGateway  DELETE /20200301/gateways/{gatewayId}
@@ -6198,7 +6197,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/20200301/gateways/{gatewayId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/20200301/gateways/{gatewayId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeletePipeline  DELETE /workspaces/{workspaceName}/pipelines/{pipelineName}
@@ -6208,7 +6207,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["pipelineName"] = input.pipelineName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeletePortal  DELETE /portals/{portalId}
@@ -6220,7 +6219,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/portals/{portalId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteProject  DELETE /projects/{projectId}
@@ -6232,7 +6231,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/projects/{projectId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/projects/{projectId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteTask  DELETE /workspaces/{workspaceName}/tasks/{taskName}
@@ -6242,7 +6241,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["taskName"] = input.taskName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}/tasks/{taskName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}/tasks/{taskName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DeleteTimeSeries  POST /timeseries/delete/
@@ -6258,7 +6257,7 @@ struct IoTSiteWiseClient:
             query["propertyId"] = input.propertyId.unwrap_or("")
         if input.workspaceName.is_some():
             query["workspaceName"] = input.workspaceName.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/timeseries/delete/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/timeseries/delete/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteTimeSeriesDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6272,7 +6271,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeAccessPolicy  GET /access-policies/{accessPolicyId}
@@ -6281,7 +6280,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["accessPolicyId"] = input.accessPolicyId
-        auto b = binding.HttpBinding(method="GET", path_template="/access-policies/{accessPolicyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-policies/{accessPolicyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeAction  GET /actions/{actionId}
@@ -6290,7 +6289,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["actionId"] = input.actionId
-        auto b = binding.HttpBinding(method="GET", path_template="/actions/{actionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/actions/{actionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeApplication  GET /workspaces/{workspaceName}/applications/{id}
@@ -6300,7 +6299,20 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/applications/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/applications/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
+
+    # DescribeAsset  GET /assets/{assetId}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def describe_asset(self, DescribeAssetRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assetId"] = input.assetId
+        dict[str, str] query = {}
+        if input.excludeProperties.is_some():
+            auto qt0 = iotsitewise_bind_bool(input.excludeProperties.unwrap_or(False))
+            query["excludeProperties"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeAssetCompositeModel  GET /assets/{assetId}/composite-models/{assetCompositeModelId}
@@ -6310,7 +6322,22 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["assetId"] = input.assetId
         labels["assetCompositeModelId"] = input.assetCompositeModelId
-        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/composite-models/{assetCompositeModelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/composite-models/{assetCompositeModelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
+
+    # DescribeAssetModel  GET /asset-models/{assetModelId}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def describe_asset_model(self, DescribeAssetModelRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["assetModelId"] = input.assetModelId
+        dict[str, str] query = {}
+        if input.excludeProperties.is_some():
+            auto qt0 = iotsitewise_bind_bool(input.excludeProperties.unwrap_or(False))
+            query["excludeProperties"] = qt0
+        if input.assetModelVersion.is_some():
+            query["assetModelVersion"] = input.assetModelVersion.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeAssetModelCompositeModel  GET /asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}
@@ -6323,7 +6350,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.assetModelVersion.is_some():
             query["assetModelVersion"] = input.assetModelVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeAssetModelInterfaceRelationship  GET /asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship
@@ -6333,7 +6360,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["assetModelId"] = input.assetModelId
         labels["interfaceAssetModelId"] = input.interfaceAssetModelId
-        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeAssetProperty  GET /assets/{assetId}/properties/{propertyId}
@@ -6343,7 +6370,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["assetId"] = input.assetId
         labels["propertyId"] = input.propertyId
-        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/properties/{propertyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/properties/{propertyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeBulkImportJob  GET /jobs/{jobId}
@@ -6355,7 +6382,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.workspaceName.is_some():
             query["workspaceName"] = input.workspaceName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeComputationModel  GET /computation-models/{computationModelId}
@@ -6366,8 +6393,9 @@ struct IoTSiteWiseClient:
         labels["computationModelId"] = input.computationModelId
         dict[str, str] query = {}
         if input.computationModelVersion.is_some():
-            query["computationModelVersion"] = input.computationModelVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/computation-models/{computationModelId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.computationModelVersion.unwrap_or("")
+            query["computationModelVersion"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/computation-models/{computationModelId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeComputationModelExecutionSummary  GET /computation-models/{computationModelId}/execution-summary
@@ -6381,7 +6409,7 @@ struct IoTSiteWiseClient:
             query["resolveToResourceType"] = input.resolveToResourceType.unwrap_or("")
         if input.resolveToResourceId.is_some():
             query["resolveToResourceId"] = input.resolveToResourceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/computation-models/{computationModelId}/execution-summary", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/computation-models/{computationModelId}/execution-summary", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeDashboard  GET /dashboards/{dashboardId}
@@ -6390,7 +6418,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["dashboardId"] = input.dashboardId
-        auto b = binding.HttpBinding(method="GET", path_template="/dashboards/{dashboardId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dashboards/{dashboardId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeDataset  GET /datasets/{datasetId}
@@ -6404,7 +6432,7 @@ struct IoTSiteWiseClient:
             query["workspaceName"] = input.workspaceName.unwrap_or("")
         if input.datasetVersion.is_some():
             query["datasetVersion"] = input.datasetVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeDatasetExportJob  GET /workspaces/{workspaceName}/dataset-export-jobs/{jobId}
@@ -6414,14 +6442,14 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/dataset-export-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/dataset-export-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeDefaultEncryptionConfiguration  GET /configuration/account/encryption
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def describe_default_encryption_configuration(self) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration/account/encryption", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration/account/encryption", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeEnrichmentJob  GET /workspaces/{workspaceName}/enrichment-jobs/{jobId}
@@ -6431,7 +6459,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/enrichment-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/enrichment-jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeExecution  GET /executions/{executionId}
@@ -6440,7 +6468,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["executionId"] = input.executionId
-        auto b = binding.HttpBinding(method="GET", path_template="/executions/{executionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/executions/{executionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeGateway  GET /20200301/gateways/{gatewayId}
@@ -6449,7 +6477,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="GET", path_template="/20200301/gateways/{gatewayId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/20200301/gateways/{gatewayId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeGatewayCapabilityConfiguration  GET /20200301/gateways/{gatewayId}/capability/{capabilityNamespace}
@@ -6459,7 +6487,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["capabilityNamespace"] = input.capabilityNamespace
-        auto b = binding.HttpBinding(method="GET", path_template="/20200301/gateways/{gatewayId}/capability/{capabilityNamespace}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/20200301/gateways/{gatewayId}/capability/{capabilityNamespace}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeLoggingOptions  GET /logging
@@ -6469,7 +6497,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.workspaceName.is_some():
             query["workspaceName"] = input.workspaceName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/logging", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/logging", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribePipeline  GET /workspaces/{workspaceName}/pipelines/{pipelineName}
@@ -6482,7 +6510,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.pipelineVersion.is_some():
             query["version"] = input.pipelineVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribePipelineExecution  GET /workspaces/{workspaceName}/pipelines/{pipelineName}/executions/{pipelineExecutionId}
@@ -6498,7 +6526,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions/{pipelineExecutionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions/{pipelineExecutionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribePortal  GET /portals/{portalId}
@@ -6507,7 +6535,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.portalId
-        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portals/{portalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeProject  GET /projects/{projectId}
@@ -6516,7 +6544,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["projectId"] = input.projectId
-        auto b = binding.HttpBinding(method="GET", path_template="/projects/{projectId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/projects/{projectId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeQuery  GET /workspaces/{workspaceName}/queries/{queryId}
@@ -6526,7 +6554,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/queries/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/queries/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeSearch  GET /workspaces/{workspaceName}/searches/{searchId}
@@ -6536,14 +6564,14 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["searchId"] = input.searchId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/searches/{searchId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/searches/{searchId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeStorageConfiguration  GET /configuration/account/storage
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def describe_storage_configuration(self) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration/account/storage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration/account/storage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeTask  GET /workspaces/{workspaceName}/tasks/{taskName}
@@ -6556,7 +6584,7 @@ struct IoTSiteWiseClient:
         dict[str, str] query = {}
         if input.taskVersion.is_some():
             query["version"] = input.taskVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/tasks/{taskName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/tasks/{taskName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeTimeSeries  GET /timeseries/describe/
@@ -6572,7 +6600,7 @@ struct IoTSiteWiseClient:
             query["propertyId"] = input.propertyId.unwrap_or("")
         if input.workspaceName.is_some():
             query["workspaceName"] = input.workspaceName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/timeseries/describe/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/timeseries/describe/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DescribeWorkspace  GET /workspaces/{workspaceName}
@@ -6581,7 +6609,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # DisassociateAssets  POST /assets/{assetId}/disassociate
@@ -6590,7 +6618,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["assetId"] = input.assetId
-        auto b = binding.HttpBinding(method="POST", path_template="/assets/{assetId}/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assets/{assetId}/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateAssetsDocument(hierarchyId=input.hierarchyId, childAssetId=input.childAssetId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6603,7 +6631,7 @@ struct IoTSiteWiseClient:
         query["alias"] = input.alias
         query["assetId"] = input.assetId
         query["propertyId"] = input.propertyId
-        auto b = binding.HttpBinding(method="POST", path_template="/timeseries/disassociate/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/timeseries/disassociate/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateTimeSeriesFromAssetPropertyDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6612,7 +6640,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def execute_action(self, ExecuteActionRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/actions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/actions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteActionDocument(targetResource=input.targetResource, actionDefinitionId=input.actionDefinitionId, actionPayload=input.actionPayload, clientToken=input.clientToken, resolveTo=input.resolveTo)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6621,7 +6649,7 @@ struct IoTSiteWiseClient:
     # errors: AccessDeniedException, InternalFailureException, InvalidRequestException, QueryTimeoutException, ServiceUnavailableException, ThrottlingException, ValidationException
     def execute_query(self, ExecuteQueryRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/queries/execution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queries/execution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteQueryDocument(queryStatement=input.queryStatement, nextToken=input.nextToken, maxResults=input.maxResults, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6637,7 +6665,7 @@ struct IoTSiteWiseClient:
             query["propertyId"] = input.propertyId.unwrap_or("")
         if input.propertyAlias.is_some():
             query["propertyAlias"] = input.propertyAlias.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/properties/latest", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/properties/latest", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # GetCaptureData  POST /workspaces/{workspaceName}/get-capture-data
@@ -6646,7 +6674,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/get-capture-data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/get-capture-data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCaptureDataDocument(startTime=input.startTime, endTime=input.endTime, timeSeriesId=input.timeSeriesId, propertyAlias=input.propertyAlias, formatSettings=input.formatSettings, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6664,7 +6692,8 @@ struct IoTSiteWiseClient:
             query["propertyAlias"] = input.propertyAlias.unwrap_or("")
         query["startTimeInSeconds"] = str(input.startTimeInSeconds)
         if input.startTimeOffsetInNanos.is_some():
-            query["startTimeOffsetInNanos"] = str(input.startTimeOffsetInNanos.unwrap_or(0))
+            auto qt0 = str(input.startTimeOffsetInNanos.unwrap_or(0))
+            query["startTimeOffsetInNanos"] = qt0
         query["endTimeInSeconds"] = str(input.endTimeInSeconds)
         if input.endTimeOffsetInNanos.is_some():
             query["endTimeOffsetInNanos"] = str(input.endTimeOffsetInNanos.unwrap_or(0))
@@ -6676,8 +6705,9 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         query["type"] = input.type
         if input.intervalWindowInSeconds.is_some():
-            query["intervalWindowInSeconds"] = str(input.intervalWindowInSeconds.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/properties/interpolated", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt1 = str(input.intervalWindowInSeconds.unwrap_or(0))
+            query["intervalWindowInSeconds"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/properties/interpolated", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # GetQueryResults  GET /workspaces/{workspaceName}/queries/{queryId}/results
@@ -6692,7 +6722,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/queries/{queryId}/results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/queries/{queryId}/results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # GetSearchResults  GET /workspaces/{workspaceName}/searches/{searchId}/results
@@ -6707,14 +6737,14 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/searches/{searchId}/results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/searches/{searchId}/results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # InvokeAssistant  POST /assistant/invocation
     # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def invoke_assistant(self, InvokeAssistantRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/assistant/invocation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/assistant/invocation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = InvokeAssistantDocument(conversationId=input.conversationId, message=input.message, enableTrace=input.enableTrace)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6738,7 +6768,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/access-policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListActions  GET /actions
@@ -6756,7 +6786,7 @@ struct IoTSiteWiseClient:
             query["resolveToResourceType"] = input.resolveToResourceType.unwrap_or("")
         if input.resolveToResourceId.is_some():
             query["resolveToResourceId"] = input.resolveToResourceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/actions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/actions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListApplications  GET /applications
@@ -6768,7 +6798,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListAssetModelCompositeModels  GET /asset-models/{assetModelId}/composite-models
@@ -6784,7 +6814,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.assetModelVersion.is_some():
             query["assetModelVersion"] = input.assetModelVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/composite-models", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/composite-models", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListAssetModelProperties  GET /asset-models/{assetModelId}/properties
@@ -6802,7 +6832,7 @@ struct IoTSiteWiseClient:
             query["filter"] = input.filter.unwrap_or("")
         if input.assetModelVersion.is_some():
             query["assetModelVersion"] = input.assetModelVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/properties", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/properties", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListAssetProperties  GET /assets/{assetId}/properties
@@ -6818,7 +6848,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.filter.is_some():
             query["filter"] = input.filter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/properties", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/properties", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListAssetRelationships  GET /assets/{assetId}/assetRelationships
@@ -6833,7 +6863,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/assetRelationships", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/assetRelationships", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListAssets  GET /assets
@@ -6849,7 +6879,7 @@ struct IoTSiteWiseClient:
             query["assetModelId"] = input.assetModelId.unwrap_or("")
         if input.filter.is_some():
             query["filter"] = input.filter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/assets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListAssociatedAssets  GET /assets/{assetId}/hierarchies
@@ -6867,7 +6897,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/hierarchies", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/assets/{assetId}/hierarchies", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListBulkImportJobs  GET /jobs
@@ -6883,7 +6913,7 @@ struct IoTSiteWiseClient:
             query["filter"] = input.filter.unwrap_or("")
         if input.workspaceName.is_some():
             query["workspaceName"] = input.workspaceName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListCompositionRelationships  GET /asset-models/{assetModelId}/composition-relationships
@@ -6897,14 +6927,14 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/composition-relationships", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/asset-models/{assetModelId}/composition-relationships", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListComputationModelDataBindingUsages  POST /computation-models/data-binding-usages
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException
     def list_computation_model_data_binding_usages(self, ListComputationModelDataBindingUsagesRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/computation-models/data-binding-usages", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/computation-models/data-binding-usages", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListComputationModelDataBindingUsagesDocument(dataBindingValueFilter=input.dataBindingValueFilter, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -6920,7 +6950,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/computation-models/{computationModelId}/resolve-to-resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/computation-models/{computationModelId}/resolve-to-resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListComputationModels  GET /computation-models
@@ -6934,7 +6964,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/computation-models", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/computation-models", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListDashboards  GET /dashboards
@@ -6947,7 +6977,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/dashboards", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dashboards", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListDatasetDataSegmentRelationships  GET /datasets/{datasetId}/data-segment-relationships
@@ -6962,7 +6992,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/data-segment-relationships", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/data-segment-relationships", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListDatasetDataSegments  GET /datasets/{datasetId}/data-segments
@@ -6979,7 +7009,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/data-segments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/data-segments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListDatasetExportJobs  GET /workspaces/{workspaceName}/dataset-export-jobs
@@ -6995,7 +7025,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/dataset-export-jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/dataset-export-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListDatasets  GET /datasets
@@ -7012,7 +7042,37 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
+
+    # ListEnrichmentJobs  GET /workspaces/{workspaceName}/enrichment-jobs
+    # errors: AccessDeniedException, ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
+    def list_enrichment_jobs(self, ListEnrichmentJobsRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        dict[str, str] query = {}
+        if input.datasetId.is_some():
+            query["datasetId"] = input.datasetId.unwrap_or("")
+        if input.propertyAlias.is_some():
+            query["propertyAlias"] = input.propertyAlias.unwrap_or("")
+        if input.timeSeriesId.is_some():
+            query["timeSeriesId"] = input.timeSeriesId.unwrap_or("")
+        if input.status.is_some():
+            query["status"] = input.status.unwrap_or("")
+        if input.jobType.is_some():
+            query["jobType"] = input.jobType.unwrap_or("")
+        if input.startDate.is_some():
+            auto qt0 = datetime.strftime(input.startDate.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startDate"] = qt0
+        if input.endDate.is_some():
+            auto qt1 = datetime.strftime(input.endDate.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endDate"] = qt1
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/enrichment-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListExecutions  GET /executions
@@ -7032,7 +7092,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.actionType.is_some():
             query["actionType"] = input.actionType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/executions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/executions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListGateways  GET /20200301/gateways
@@ -7044,7 +7104,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/20200301/gateways", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/20200301/gateways", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListInterfaceRelationships  GET /interface/{interfaceAssetModelId}/asset-models
@@ -7058,7 +7118,36 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/interface/{interfaceAssetModelId}/asset-models", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/interface/{interfaceAssetModelId}/asset-models", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
+
+    # ListPipelineExecutions  GET /workspaces/{workspaceName}/pipelines/{pipelineName}/executions
+    # errors: AccessDeniedException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_pipeline_executions(self, ListPipelineExecutionsRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] labels = {}
+        labels["workspaceName"] = input.workspaceName
+        labels["pipelineName"] = input.pipelineName
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.state.is_some():
+            query["state"] = input.state.unwrap_or("")
+        if input.startTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.startTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTimeAfter"] = qt0
+        if input.startTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.startTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTimeBefore"] = qt1
+        if input.endTimeAfter.is_some():
+            auto qt2 = datetime.strftime(input.endTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTimeAfter"] = qt2
+        if input.endTimeBefore.is_some():
+            auto qt3 = datetime.strftime(input.endTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTimeBefore"] = qt3
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListPipelines  GET /workspaces/{workspaceName}/pipelines
@@ -7072,7 +7161,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/pipelines", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/pipelines", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListPortals  GET /portals
@@ -7084,7 +7173,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/portals", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/portals", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListProjectAssets  GET /projects/{projectId}/assets
@@ -7098,7 +7187,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/projects/{projectId}/assets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/projects/{projectId}/assets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListProjects  GET /projects
@@ -7111,7 +7200,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/projects", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/projects", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListQueries  GET /workspaces/{workspaceName}/queries
@@ -7127,7 +7216,7 @@ struct IoTSiteWiseClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/queries", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/queries", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListSearches  POST /workspaces/{workspaceName}/searches/list
@@ -7136,7 +7225,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/searches/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/searches/list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -7156,7 +7245,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListTasks  GET /workspaces/{workspaceName}/tasks
@@ -7170,7 +7259,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/tasks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceName}/tasks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListTimeSeries  GET /timeseries/
@@ -7190,7 +7279,7 @@ struct IoTSiteWiseClient:
             query["timeSeriesType"] = input.timeSeriesType.unwrap_or("")
         if input.workspaceName.is_some():
             query["workspaceName"] = input.workspaceName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/timeseries/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/timeseries/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # ListWorkspaces  GET /workspaces
@@ -7202,7 +7291,7 @@ struct IoTSiteWiseClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
 
     # PutAssetModelInterfaceRelationship  PUT /asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship
@@ -7212,7 +7301,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["assetModelId"] = input.assetModelId
         labels["interfaceAssetModelId"] = input.interfaceAssetModelId
-        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}/interface/{interfaceAssetModelId}/asset-model-interface-relationship", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"propertyMappingConfiguration\":" + property_mapping_configuration_to_json(input.propertyMappingConfiguration))
         if input.clientToken.is_some():
@@ -7225,7 +7314,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def put_default_encryption_configuration(self, PutDefaultEncryptionConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration/account/encryption", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration/account/encryption", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDefaultEncryptionConfigurationDocument(encryptionType=input.encryptionType, kmsKeyId=input.kmsKeyId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7234,7 +7323,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def put_logging_options(self, PutLoggingOptionsRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/logging", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/logging", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutLoggingOptionsDocument(loggingOptions=input.loggingOptions, workspaceName=input.workspaceName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7243,7 +7332,7 @@ struct IoTSiteWiseClient:
     # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ResourceNotFoundException, ThrottlingException
     def put_storage_configuration(self, PutStorageConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration/account/storage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration/account/storage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutStorageConfigurationDocument(storageType=input.storageType, multiLayerStorage=input.multiLayerStorage, disassociatedDataStorage=input.disassociatedDataStorage, retentionPeriod=input.retentionPeriod, warmTier=input.warmTier, warmTierRetentionPeriod=input.warmTierRetentionPeriod, disallowIngestNullNaN=input.disallowIngestNullNaN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7255,7 +7344,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["pipelineName"] = input.pipelineName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}/executions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.executionEnvironmentVariableOverrides.is_some():
             auto u0 = input.executionEnvironmentVariableOverrides.unwrap()
@@ -7278,7 +7367,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/queries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/queries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartQueryDocument(clientToken=input.clientToken, queryStatement=input.queryStatement)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7289,7 +7378,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/searches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceName}/searches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"queryStatement\":" + iotsitewise_json_str(input.queryStatement))
         if input.clientToken.is_some():
@@ -7313,7 +7402,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -7322,13 +7411,24 @@ struct IoTSiteWiseClient:
         auto bp = restjson.rest_json_document(b, iotsitewise_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
 
+    # UntagResource  DELETE /tags
+    # errors: ConflictingOperationException, InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        dict[str, str] query = {}
+        query["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iotsitewise_service(), self.region, host)
+
     # UpdateAccessPolicy  PUT /access-policies/{accessPolicyId}
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_access_policy(self, UpdateAccessPolicyRequest input) -> str:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["accessPolicyId"] = input.accessPolicyId
-        auto b = binding.HttpBinding(method="PUT", path_template="/access-policies/{accessPolicyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/access-policies/{accessPolicyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccessPolicyDocument(accessPolicyIdentity=input.accessPolicyIdentity, accessPolicyResource=input.accessPolicyResource, accessPolicyPermission=input.accessPolicyPermission, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7339,7 +7439,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["assetId"] = input.assetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assets/{assetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assets/{assetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssetDocument(assetExternalId=input.assetExternalId, assetName=input.assetName, clientToken=input.clientToken, assetDescription=input.assetDescription)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7357,7 +7457,7 @@ struct IoTSiteWiseClient:
             headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
         if input.matchForVersionType.is_some():
             headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.assetModelExternalId.is_some():
             auto u0 = input.assetModelExternalId.unwrap()
@@ -7404,7 +7504,7 @@ struct IoTSiteWiseClient:
             headers["If-None-Match"] = input.ifNoneMatch.unwrap_or("")
         if input.matchForVersionType.is_some():
             headers["Match-For-Version-Type"] = input.matchForVersionType.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.assetModelCompositeModelExternalId.is_some():
             auto u0 = input.assetModelCompositeModelExternalId.unwrap()
@@ -7432,7 +7532,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["assetId"] = input.assetId
         labels["propertyId"] = input.propertyId
-        auto b = binding.HttpBinding(method="PUT", path_template="/assets/{assetId}/properties/{propertyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/assets/{assetId}/properties/{propertyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssetPropertyDocument(propertyAlias=input.propertyAlias, propertyNotificationState=input.propertyNotificationState, clientToken=input.clientToken, propertyUnit=input.propertyUnit)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7443,7 +7543,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["computationModelId"] = input.computationModelId
-        auto b = binding.HttpBinding(method="POST", path_template="/computation-models/{computationModelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/computation-models/{computationModelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"computationModelName\":" + iotsitewise_json_str(input.computationModelName))
         if input.computationModelDescription.is_some():
@@ -7466,7 +7566,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["dashboardId"] = input.dashboardId
-        auto b = binding.HttpBinding(method="PUT", path_template="/dashboards/{dashboardId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/dashboards/{dashboardId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDashboardDocument(dashboardName=input.dashboardName, dashboardDescription=input.dashboardDescription, dashboardDefinition=input.dashboardDefinition, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7477,7 +7577,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.workspaceName.is_some():
             auto u0 = input.workspaceName.unwrap()
@@ -7508,7 +7608,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="PUT", path_template="/20200301/gateways/{gatewayId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/20200301/gateways/{gatewayId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGatewayDocument(gatewayName=input.gatewayName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7519,7 +7619,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="POST", path_template="/20200301/gateways/{gatewayId}/capability", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/20200301/gateways/{gatewayId}/capability", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGatewayCapabilityConfigurationDocument(capabilityNamespace=input.capabilityNamespace, capabilityConfiguration=input.capabilityConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7531,7 +7631,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["pipelineName"] = input.pipelineName
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}/pipelines/{pipelineName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -7557,7 +7657,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["portalId"] = input.portalId
-        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/portals/{portalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"portalName\":" + iotsitewise_json_str(input.portalName))
         if input.portalDescription.is_some():
@@ -7595,7 +7695,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["projectId"] = input.projectId
-        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{projectId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{projectId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProjectDocument(projectName=input.projectName, projectDescription=input.projectDescription, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7607,7 +7707,7 @@ struct IoTSiteWiseClient:
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
         labels["taskName"] = input.taskName
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}/tasks/{taskName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}/tasks/{taskName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -7624,7 +7724,7 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceName"] = input.workspaceName
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceDocument(workspaceDescription=input.workspaceDescription, encryptionConfiguration=input.encryptionConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iotsitewise_service(), self.region, host)
@@ -7941,6 +8041,19 @@ struct IoTSiteWiseClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListEnrichmentJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobs).
+    def paginate_list_enrichment_jobs(self, ListEnrichmentJobsRequest input):
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        while True:
+            auto raw = self.list_enrichment_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListExecutions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: executionSummaries).
     def paginate_list_executions(self, ListExecutionsRequest input):
@@ -7973,6 +8086,19 @@ struct IoTSiteWiseClient:
         auto host = endpoints.regional_host(iotsitewise_service(), self.region)
         while True:
             auto raw = self.list_interface_relationships(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListPipelineExecutions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: pipelineExecutionSummaries).
+    def paginate_list_pipeline_executions(self, ListPipelineExecutionsRequest input):
+        auto host = endpoints.regional_host(iotsitewise_service(), self.region)
+        while True:
+            auto raw = self.list_pipeline_executions(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

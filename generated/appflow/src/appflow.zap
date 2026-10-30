@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 22 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 23 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   210 structs (144 @derive(Json)), 41 enums, 10 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2197,7 +2197,6 @@ def appflow_error_from_code(str code) -> AppflowError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateFlow (document member `tasks: list[Task]` is not serializable)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateFlow (document member `tasks: list[Task]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -2567,7 +2566,7 @@ struct AppflowClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def cancel_flow_executions(self, CancelFlowExecutionsRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cancel-flow-executions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cancel-flow-executions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"flowName\":" + appflow_json_str(input.flowName))
         if input.executionIds.is_some():
@@ -2583,7 +2582,7 @@ struct AppflowClient:
     # errors: ConflictException, ConnectorAuthenticationException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def create_connector_profile(self, CreateConnectorProfileRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-connector-profile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-connector-profile", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"connectorProfileName\":" + appflow_json_str(input.connectorProfileName))
         if input.kmsArn.is_some():
@@ -2605,7 +2604,7 @@ struct AppflowClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException
     def delete_connector_profile(self, DeleteConnectorProfileRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-connector-profile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-connector-profile", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConnectorProfileDocument(connectorProfileName=input.connectorProfileName, forceDelete=input.forceDelete)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2614,7 +2613,7 @@ struct AppflowClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException
     def delete_flow(self, DeleteFlowRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-flow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-flow", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteFlowDocument(flowName=input.flowName, forceDelete=input.forceDelete)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2623,7 +2622,7 @@ struct AppflowClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def describe_connector(self, DescribeConnectorRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-connector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-connector", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeConnectorDocument(connectorType=input.connectorType, connectorLabel=input.connectorLabel)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2632,7 +2631,7 @@ struct AppflowClient:
     # errors: ConnectorAuthenticationException, ConnectorServerException, InternalServerException, ResourceNotFoundException, ValidationException
     def describe_connector_entity(self, DescribeConnectorEntityRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-connector-entity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-connector-entity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeConnectorEntityDocument(connectorEntityName=input.connectorEntityName, connectorType=input.connectorType, connectorProfileName=input.connectorProfileName, apiVersion=input.apiVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2641,7 +2640,7 @@ struct AppflowClient:
     # errors: InternalServerException, ValidationException
     def describe_connector_profiles(self, DescribeConnectorProfilesRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-connector-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-connector-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.connectorProfileNames.is_some():
             auto u0 = input.connectorProfileNames.unwrap()
@@ -2668,7 +2667,7 @@ struct AppflowClient:
     # errors: InternalServerException, ValidationException
     def describe_connectors(self, DescribeConnectorsRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.connectorTypes.is_some():
             auto u0 = input.connectorTypes.unwrap()
@@ -2689,7 +2688,7 @@ struct AppflowClient:
     # errors: InternalServerException, ResourceNotFoundException
     def describe_flow(self, DescribeFlowRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-flow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-flow", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeFlowDocument(flowName=input.flowName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2698,7 +2697,7 @@ struct AppflowClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def describe_flow_execution_records(self, DescribeFlowExecutionRecordsRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-flow-execution-records", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-flow-execution-records", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeFlowExecutionRecordsDocument(flowName=input.flowName, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2707,7 +2706,7 @@ struct AppflowClient:
     # errors: ConnectorAuthenticationException, ConnectorServerException, InternalServerException, ResourceNotFoundException, ValidationException
     def list_connector_entities(self, ListConnectorEntitiesRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-connector-entities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-connector-entities", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListConnectorEntitiesDocument(connectorProfileName=input.connectorProfileName, connectorType=input.connectorType, entitiesPath=input.entitiesPath, apiVersion=input.apiVersion, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2716,7 +2715,7 @@ struct AppflowClient:
     # errors: InternalServerException, ValidationException
     def list_connectors(self, ListConnectorsRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListConnectorsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2725,7 +2724,7 @@ struct AppflowClient:
     # errors: InternalServerException, ValidationException
     def list_flows(self, ListFlowsRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-flows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-flows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListFlowsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2736,14 +2735,14 @@ struct AppflowClient:
         auto host = endpoints.regional_host(appflow_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appflow_service(), self.region, host)
 
     # RegisterConnector  POST /register-connector
     # errors: AccessDeniedException, ConflictException, ConnectorAuthenticationException, ConnectorServerException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def register_connector(self, RegisterConnectorRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/register-connector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/register-connector", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterConnectorDocument(connectorLabel=input.connectorLabel, description=input.description, connectorProvisioningType=input.connectorProvisioningType, connectorProvisioningConfig=input.connectorProvisioningConfig, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2752,7 +2751,7 @@ struct AppflowClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def reset_connector_metadata_cache(self, ResetConnectorMetadataCacheRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reset-connector-metadata-cache", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reset-connector-metadata-cache", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResetConnectorMetadataCacheDocument(connectorProfileName=input.connectorProfileName, connectorType=input.connectorType, connectorEntityName=input.connectorEntityName, entitiesPath=input.entitiesPath, apiVersion=input.apiVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2761,7 +2760,7 @@ struct AppflowClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException
     def start_flow(self, StartFlowRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-flow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-flow", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartFlowDocument(flowName=input.flowName, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2770,7 +2769,7 @@ struct AppflowClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, UnsupportedOperationException
     def stop_flow(self, StopFlowRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/stop-flow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/stop-flow", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopFlowDocument(flowName=input.flowName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
@@ -2781,7 +2780,7 @@ struct AppflowClient:
         auto host = endpoints.regional_host(appflow_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2794,16 +2793,27 @@ struct AppflowClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException
     def unregister_connector(self, UnregisterConnectorRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/unregister-connector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/unregister-connector", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UnregisterConnectorDocument(connectorLabel=input.connectorLabel, forceDelete=input.forceDelete)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appflow_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, appflow_service(), self.region, host)
 
     # UpdateConnectorProfile  POST /update-connector-profile
     # errors: ConflictException, ConnectorAuthenticationException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_connector_profile(self, UpdateConnectorProfileRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-connector-profile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-connector-profile", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"connectorProfileName\":" + appflow_json_str(input.connectorProfileName))
         parts.append("\"connectionMode\":" + input.connectionMode.to_json())
@@ -2818,7 +2828,7 @@ struct AppflowClient:
     # errors: AccessDeniedException, ConflictException, ConnectorAuthenticationException, ConnectorServerException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_connector_registration(self, UpdateConnectorRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(appflow_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-connector-registration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-connector-registration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConnectorRegistrationDocument(connectorLabel=input.connectorLabel, description=input.description, connectorProvisioningConfig=input.connectorProvisioningConfig, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appflow_service(), self.region, host)

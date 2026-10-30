@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 12 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   60 structs (44 @derive(Json)), 12 enums, 11 error variants.
-#   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -616,20 +616,6 @@ def internetmonitor_error_from_code(str code) -> InternetMonitorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListHealthEvents (httpQuery `StartTime` has unsupported type DateTime)
-#   ListInternetEvents (httpQuery `StartTime` has unsupported type DateTime)
-#   ListMonitors (httpQuery `IncludeLinkedAccounts` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListHealthEvents (operation not generated)
-#   ListInternetEvents (operation not generated)
-#   ListMonitors (operation not generated)
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -681,6 +667,12 @@ def filter_parameter_to_json(FilterParameter v) -> str:
         parts.append("\"Values\":" + internetmonitor_json_arr(e3))
     return internetmonitor_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def internetmonitor_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound InternetMonitor client: credentials + region, threaded into every operation.
 struct InternetMonitorClient:
     core.Credentials creds
@@ -690,7 +682,7 @@ struct InternetMonitorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, LimitExceededException, ThrottlingException, ValidationException
     def create_monitor(self, CreateMonitorInput input) -> str:
         auto host = endpoints.regional_host(internetmonitor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v20210603/Monitors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20210603/Monitors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"MonitorName\":" + internetmonitor_json_str(input.MonitorName))
         if input.Resources.is_some():
@@ -729,7 +721,7 @@ struct InternetMonitorClient:
         auto host = endpoints.regional_host(internetmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["MonitorName"] = input.MonitorName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20210603/Monitors/{MonitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20210603/Monitors/{MonitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # GetHealthEvent  GET /v20210603/Monitors/{MonitorName}/HealthEvents/{EventId}
@@ -742,7 +734,7 @@ struct InternetMonitorClient:
         dict[str, str] query = {}
         if input.LinkedAccountId.is_some():
             query["LinkedAccountId"] = input.LinkedAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}/HealthEvents/{EventId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}/HealthEvents/{EventId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # GetInternetEvent  GET /v20210603/InternetEvents/{EventId}
@@ -751,7 +743,7 @@ struct InternetMonitorClient:
         auto host = endpoints.regional_host(internetmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["EventId"] = input.EventId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/InternetEvents/{EventId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/InternetEvents/{EventId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # GetMonitor  GET /v20210603/Monitors/{MonitorName}
@@ -763,7 +755,7 @@ struct InternetMonitorClient:
         dict[str, str] query = {}
         if input.LinkedAccountId.is_some():
             query["LinkedAccountId"] = input.LinkedAccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # GetQueryResults  GET /v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Results
@@ -778,7 +770,7 @@ struct InternetMonitorClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # GetQueryStatus  GET /v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Status
@@ -788,7 +780,70 @@ struct InternetMonitorClient:
         dict[str, str] labels = {}
         labels["MonitorName"] = input.MonitorName
         labels["QueryId"] = input.QueryId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
+
+    # ListHealthEvents  GET /v20210603/Monitors/{MonitorName}/HealthEvents
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_health_events(self, ListHealthEventsInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["MonitorName"] = input.MonitorName
+        dict[str, str] query = {}
+        if input.StartTime.is_some():
+            auto qt0 = datetime.strftime(input.StartTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["StartTime"] = qt0
+        if input.EndTime.is_some():
+            auto qt1 = datetime.strftime(input.EndTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["EndTime"] = qt1
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.EventStatus.is_some():
+            query["EventStatus"] = input.EventStatus.unwrap_or("")
+        if input.LinkedAccountId.is_some():
+            query["LinkedAccountId"] = input.LinkedAccountId.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors/{MonitorName}/HealthEvents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
+
+    # ListInternetEvents  GET /v20210603/InternetEvents
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_internet_events(self, ListInternetEventsInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["InternetEventMaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.StartTime.is_some():
+            auto qt0 = datetime.strftime(input.StartTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["StartTime"] = qt0
+        if input.EndTime.is_some():
+            auto qt1 = datetime.strftime(input.EndTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["EndTime"] = qt1
+        if input.EventStatus.is_some():
+            query["EventStatus"] = input.EventStatus.unwrap_or("")
+        if input.EventType.is_some():
+            query["EventType"] = input.EventType.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/InternetEvents", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
+
+    # ListMonitors  GET /v20210603/Monitors
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_monitors(self, ListMonitorsInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.MonitorStatus.is_some():
+            query["MonitorStatus"] = input.MonitorStatus.unwrap_or("")
+        if input.IncludeLinkedAccounts.is_some():
+            auto qt0 = internetmonitor_bind_bool(input.IncludeLinkedAccounts.unwrap_or(False))
+            query["IncludeLinkedAccounts"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/v20210603/Monitors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -797,7 +852,7 @@ struct InternetMonitorClient:
         auto host = endpoints.regional_host(internetmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # StartQuery  POST /v20210603/Monitors/{MonitorName}/Queries
@@ -806,7 +861,7 @@ struct InternetMonitorClient:
         auto host = endpoints.regional_host(internetmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["MonitorName"] = input.MonitorName
-        auto b = binding.HttpBinding(method="POST", path_template="/v20210603/Monitors/{MonitorName}/Queries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20210603/Monitors/{MonitorName}/Queries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"StartTime\":" + internetmonitor_json_ts_iso(input.StartTime))
         parts.append("\"EndTime\":" + internetmonitor_json_ts_iso(input.EndTime))
@@ -830,7 +885,7 @@ struct InternetMonitorClient:
         dict[str, str] labels = {}
         labels["MonitorName"] = input.MonitorName
         labels["QueryId"] = input.QueryId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20210603/Monitors/{MonitorName}/Queries/{QueryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20210603/Monitors/{MonitorName}/Queries/{QueryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -839,7 +894,7 @@ struct InternetMonitorClient:
         auto host = endpoints.regional_host(internetmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -848,13 +903,24 @@ struct InternetMonitorClient:
         auto bp = restjson.rest_json_document(b, internetmonitor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, internetmonitor_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, internetmonitor_service(), self.region, host)
+
     # UpdateMonitor  PATCH /v20210603/Monitors/{MonitorName}
     # errors: AccessDeniedException, InternalServerException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_monitor(self, UpdateMonitorInput input) -> str:
         auto host = endpoints.regional_host(internetmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["MonitorName"] = input.MonitorName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v20210603/Monitors/{MonitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v20210603/Monitors/{MonitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ResourcesToAdd.is_some():
             auto u0 = input.ResourcesToAdd.unwrap()
@@ -888,6 +954,45 @@ struct InternetMonitorClient:
             parts.append("\"HealthEventsConfig\":" + u9.to_json())
         auto bp = restjson.rest_json_document(b, internetmonitor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, internetmonitor_service(), self.region, host)
+
+    # Paginator for ListHealthEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: HealthEvents).
+    def paginate_list_health_events(self, ListHealthEventsInput input):
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        while True:
+            auto raw = self.list_health_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListInternetEvents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: InternetEvents).
+    def paginate_list_internet_events(self, ListInternetEventsInput input):
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        while True:
+            auto raw = self.list_internet_events(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListMonitors — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Monitors).
+    def paginate_list_monitors(self, ListMonitorsInput input):
+        auto host = endpoints.regional_host(internetmonitor_service(), self.region)
+        while True:
+            auto raw = self.list_monitors(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a InternetMonitorClient bound to credentials + region.
 def internetmonitor_client(core.Credentials creds, str region) -> InternetMonitorClient:

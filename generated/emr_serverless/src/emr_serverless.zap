@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 22 operations — 16 with a generated method,
-#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 22 operations — 19 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   87 structs (56 @derive(Json)), 5 enums, 5 error variants.
 #   1 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -809,12 +809,9 @@ def emr_serverless_error_from_code(str code) -> EMR_ServerlessError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   GetDashboardForJobRun (httpQuery `accessSystemProfileLogs` has unsupported type bool)
-#   GetResourceDashboard (httpQuery `accessSystemProfileLogs` has unsupported type bool)
 #   ListApplications (httpQuery `states` has unsupported type list[ApplicationState])
-#   ListJobRuns (httpQuery `createdAtAfter` has unsupported type DateTime)
+#   ListJobRuns (httpQuery `states` has unsupported type list[JobRunState])
 #   ListSessions (httpQuery `states` has unsupported type list[SessionState])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1010,6 +1007,12 @@ def spark_submit_to_json(SparkSubmit v) -> str:
         parts.append("\"sparkSubmitParameters\":" + emr_serverless_json_str(u2))
     return emr_serverless_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def emr_serverless_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound EMR_Serverless client: credentials + region, threaded into every operation.
 struct EMR_ServerlessClient:
     core.Credentials creds
@@ -1024,15 +1027,16 @@ struct EMR_ServerlessClient:
         labels["jobRunId"] = input.jobRunId
         dict[str, str] query = {}
         if input.shutdownGracePeriodInSeconds.is_some():
-            query["shutdownGracePeriodInSeconds"] = str(input.shutdownGracePeriodInSeconds.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = str(input.shutdownGracePeriodInSeconds.unwrap_or(0))
+            query["shutdownGracePeriodInSeconds"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # CreateApplication  POST /applications
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1109,7 +1113,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # GetApplication  GET /applications/{applicationId}
@@ -1118,7 +1122,23 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
+
+    # GetDashboardForJobRun  GET /applications/{applicationId}/jobruns/{jobRunId}/dashboard
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def get_dashboard_for_job_run(self, GetDashboardForJobRunRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["jobRunId"] = input.jobRunId
+        dict[str, str] query = {}
+        if input.attempt.is_some():
+            query["attempt"] = str(input.attempt.unwrap_or(0))
+        if input.accessSystemProfileLogs.is_some():
+            auto qt0 = emr_serverless_bind_bool(input.accessSystemProfileLogs.unwrap_or(False))
+            query["accessSystemProfileLogs"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/jobruns/{jobRunId}/dashboard", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # GetJobRun  GET /applications/{applicationId}/jobruns/{jobRunId}
@@ -1131,7 +1151,22 @@ struct EMR_ServerlessClient:
         dict[str, str] query = {}
         if input.attempt.is_some():
             query["attempt"] = str(input.attempt.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
+
+    # GetResourceDashboard  GET /applications/{applicationId}/dashboard
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def get_resource_dashboard(self, GetResourceDashboardRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        dict[str, str] query = {}
+        query["resourceId"] = input.resourceId
+        query["resourceType"] = input.resourceType
+        if input.accessSystemProfileLogs.is_some():
+            auto qt0 = emr_serverless_bind_bool(input.accessSystemProfileLogs.unwrap_or(False))
+            query["accessSystemProfileLogs"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dashboard", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # GetSession  GET /applications/{applicationId}/sessions/{sessionId}
@@ -1141,7 +1176,7 @@ struct EMR_ServerlessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # GetSessionEndpoint  GET /applications/{applicationId}/sessions/{sessionId}/endpoint
@@ -1151,7 +1186,7 @@ struct EMR_ServerlessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/sessions/{sessionId}/endpoint", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/sessions/{sessionId}/endpoint", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # ListJobRunAttempts  GET /applications/{applicationId}/jobruns/{jobRunId}/attempts
@@ -1166,7 +1201,7 @@ struct EMR_ServerlessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/jobruns/{jobRunId}/attempts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/jobruns/{jobRunId}/attempts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1175,7 +1210,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # StartApplication  POST /applications/{applicationId}/start
@@ -1184,7 +1219,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # StartJobRun  POST /applications/{applicationId}/jobruns
@@ -1193,7 +1228,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/jobruns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/jobruns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + emr_serverless_json_str(input.clientToken))
         parts.append("\"executionRoleArn\":" + emr_serverless_json_str(input.executionRoleArn))
@@ -1233,7 +1268,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/sessions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + emr_serverless_json_str(input.clientToken))
         parts.append("\"executionRoleArn\":" + emr_serverless_json_str(input.executionRoleArn))
@@ -1261,7 +1296,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1270,7 +1305,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1286,7 +1321,18 @@ struct EMR_ServerlessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(emr_serverless_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_serverless_service(), self.region, host)
 
     # UpdateApplication  PATCH /applications/{applicationId}
@@ -1295,7 +1341,7 @@ struct EMR_ServerlessClient:
         auto host = endpoints.regional_host(emr_serverless_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + emr_serverless_json_str(input.clientToken))
         if input.initialCapacity.is_some():

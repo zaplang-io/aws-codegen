@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 70 operations — 64 with a generated method,
-#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 70 operations — 69 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   313 structs (147 @derive(Json)), 46 enums, 15 error variants.
-#   12 paginators generated (4 paginated ops skipped) from paginators-1.json.
+#   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -2943,18 +2943,10 @@ def eks_error_from_code(str code) -> EKSError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   DeleteAddon (httpQuery `preserve` has unsupported type bool)
-#   DescribeAddonVersions (httpQuery `types` has unsupported type list[str])
-#   DescribeClusterVersions (httpQuery `defaultOnly` has unsupported type bool)
-#   ListClusters (httpQuery `include` has unsupported type list[str])
 #   ListEksAnywhereSubscriptions (httpQuery `includeStatus` has unsupported type list[EksAnywhereSubscriptionStatus])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   DescribeAddonVersions (operation not generated)
-#   DescribeClusterVersions (operation not generated)
-#   ListClusters (operation not generated)
 #   ListEksAnywhereSubscriptions (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -3495,6 +3487,12 @@ def vpc_config_request_to_json(VpcConfigRequest v) -> str:
         parts.append("\"controlPlaneEgressMode\":" + u8.to_json())
     return eks_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def eks_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound EKS client: credentials + region, threaded into every operation.
 struct EKSClient:
     core.Credentials creds
@@ -3507,7 +3505,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["certificateAuthorityId"] = input.certificateAuthorityId
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/certificate-authorities/{certificateAuthorityId}/activate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/certificate-authorities/{certificateAuthorityId}/activate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ActivateCertificateAuthorityDocument(clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -3519,7 +3517,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["principalArn"] = input.principalArn
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries/{principalArn}/access-policies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries/{principalArn}/access-policies", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"policyArn\":" + eks_json_str(input.policyArn))
         parts.append("\"accessScope\":" + access_scope_to_json(input.accessScope))
@@ -3532,7 +3530,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/encryption-config/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/encryption-config/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.encryptionConfig:
@@ -3550,7 +3548,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/identity-provider-configs/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/identity-provider-configs/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"oidc\":" + oidc_identity_provider_config_request_to_json(input.oidc))
         if input.tags.is_some():
@@ -3572,7 +3570,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["updateId"] = input.updateId
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/updates/{updateId}/cancel-update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/updates/{updateId}/cancel-update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelUpdateDocument(clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -3583,7 +3581,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"principalArn\":" + eks_json_str(input.principalArn))
         if input.kubernetesGroups.is_some():
@@ -3616,7 +3614,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/addons", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/addons", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"addonName\":" + eks_json_str(input.addonName))
         if input.addonVersion.is_some():
@@ -3658,7 +3656,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/capabilities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/capabilities", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"capabilityName\":" + eks_json_str(input.capabilityName))
         if input.clientRequestToken.is_some():
@@ -3685,7 +3683,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/certificate-authorities", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/certificate-authorities", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCertificateAuthorityDocument(clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -3694,7 +3692,7 @@ struct EKSClient:
     # errors: ClientException, InvalidParameterException, ResourceInUseException, ResourceLimitExceededException, ServerException, ServiceUnavailableException, UnsupportedAvailabilityZoneException
     def create_cluster(self, CreateClusterRequest input) -> str:
         auto host = endpoints.regional_host(eks_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + eks_json_str(input.name))
         if input.version.is_some():
@@ -3769,7 +3767,7 @@ struct EKSClient:
     # errors: ClientException, InvalidParameterException, ResourceLimitExceededException, ServerException, ServiceUnavailableException
     def create_eks_anywhere_subscription(self, CreateEksAnywhereSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(eks_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/eks-anywhere-subscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/eks-anywhere-subscriptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + eks_json_str(input.name))
         parts.append("\"term\":" + input.term.to_json())
@@ -3800,7 +3798,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/fargate-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/fargate-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"fargateProfileName\":" + eks_json_str(input.fargateProfileName))
         parts.append("\"podExecutionRoleArn\":" + eks_json_str(input.podExecutionRoleArn))
@@ -3834,7 +3832,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"nodegroupName\":" + eks_json_str(input.nodegroupName))
         if input.scalingConfig.is_some():
@@ -3911,7 +3909,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/pod-identity-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/pod-identity-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"namespace\":" + eks_json_str(input.namespace))
         parts.append("\"serviceAccount\":" + eks_json_str(input.serviceAccount))
@@ -3944,7 +3942,20 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["principalArn"] = input.principalArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/access-entries/{principalArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/access-entries/{principalArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
+
+    # DeleteAddon  DELETE /clusters/{name}/addons/{addonName}
+    # errors: ClientException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServerException
+    def delete_addon(self, DeleteAddonRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.clusterName
+        labels["addonName"] = input.addonName
+        dict[str, str] query = {}
+        if input.preserve.is_some():
+            query["preserve"] = eks_bind_bool(input.preserve.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/addons/{addonName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeleteCapability  DELETE /clusters/{name}/capabilities/{capabilityName}
@@ -3954,7 +3965,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["capabilityName"] = input.capabilityName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/capabilities/{capabilityName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/capabilities/{capabilityName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeleteCertificateAuthority  DELETE /clusters/{name}/certificate-authorities/{certificateAuthorityId}
@@ -3967,7 +3978,7 @@ struct EKSClient:
         dict[str, str] query = {}
         if input.clientRequestToken.is_some():
             query["clientRequestToken"] = input.clientRequestToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/certificate-authorities/{certificateAuthorityId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/certificate-authorities/{certificateAuthorityId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeleteCluster  DELETE /clusters/{name}
@@ -3976,7 +3987,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeleteEksAnywhereSubscription  DELETE /eks-anywhere-subscriptions/{id}
@@ -3985,7 +3996,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/eks-anywhere-subscriptions/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/eks-anywhere-subscriptions/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeleteFargateProfile  DELETE /clusters/{name}/fargate-profiles/{fargateProfileName}
@@ -3995,7 +4006,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["fargateProfileName"] = input.fargateProfileName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/fargate-profiles/{fargateProfileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/fargate-profiles/{fargateProfileName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeleteNodegroup  DELETE /clusters/{name}/node-groups/{nodegroupName}
@@ -4005,7 +4016,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["nodegroupName"] = input.nodegroupName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/node-groups/{nodegroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/node-groups/{nodegroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeletePodIdentityAssociation  DELETE /clusters/{name}/pod-identity-associations/{associationId}
@@ -4015,7 +4026,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/pod-identity-associations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/pod-identity-associations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DeregisterCluster  DELETE /cluster-registrations/{name}
@@ -4024,7 +4035,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster-registrations/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster-registrations/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeAccessEntry  GET /clusters/{name}/access-entries/{principalArn}
@@ -4034,7 +4045,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["principalArn"] = input.principalArn
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/access-entries/{principalArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/access-entries/{principalArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeAddon  GET /clusters/{name}/addons/{addonName}
@@ -4044,7 +4055,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["addonName"] = input.addonName
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/addons/{addonName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/addons/{addonName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeAddonConfiguration  GET /addons/configuration-schemas
@@ -4054,7 +4065,30 @@ struct EKSClient:
         dict[str, str] query = {}
         query["addonName"] = input.addonName
         query["addonVersion"] = input.addonVersion
-        auto b = binding.HttpBinding(method="GET", path_template="/addons/configuration-schemas", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/addons/configuration-schemas", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
+
+    # DescribeAddonVersions  GET /addons/supported-versions
+    # errors: InvalidParameterException, ResourceNotFoundException, ServerException
+    def describe_addon_versions(self, DescribeAddonVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] query = {}
+        if input.kubernetesVersion.is_some():
+            query["kubernetesVersion"] = input.kubernetesVersion.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.addonName.is_some():
+            query["addonName"] = input.addonName.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.types.is_some():
+            multi_query["types"] = input.types.unwrap()
+        if input.publishers.is_some():
+            multi_query["publishers"] = input.publishers.unwrap()
+        if input.owners.is_some():
+            multi_query["owners"] = input.owners.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/addons/supported-versions", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeCapability  GET /clusters/{name}/capabilities/{capabilityName}
@@ -4064,7 +4098,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["capabilityName"] = input.capabilityName
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/capabilities/{capabilityName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/capabilities/{capabilityName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeCertificateAuthority  GET /clusters/{name}/certificate-authorities/{certificateAuthorityId}
@@ -4074,7 +4108,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["certificateAuthorityId"] = input.certificateAuthorityId
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/certificate-authorities/{certificateAuthorityId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/certificate-authorities/{certificateAuthorityId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeCluster  GET /clusters/{name}
@@ -4083,7 +4117,32 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
+
+    # DescribeClusterVersions  GET /cluster-versions
+    # errors: InvalidParameterException, InvalidRequestException, ServerException
+    def describe_cluster_versions(self, DescribeClusterVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] query = {}
+        if input.clusterType.is_some():
+            query["clusterType"] = input.clusterType.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.defaultOnly.is_some():
+            query["defaultOnly"] = eks_bind_bool(input.defaultOnly.unwrap_or(False))
+        if input.includeAll.is_some():
+            query["includeAll"] = eks_bind_bool(input.includeAll.unwrap_or(False))
+        if input.status.is_some():
+            query["status"] = input.status.unwrap_or("")
+        if input.versionStatus.is_some():
+            query["versionStatus"] = input.versionStatus.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.clusterVersions.is_some():
+            multi_query["clusterVersions"] = input.clusterVersions.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster-versions", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeEksAnywhereSubscription  GET /eks-anywhere-subscriptions/{id}
@@ -4092,7 +4151,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/eks-anywhere-subscriptions/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/eks-anywhere-subscriptions/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeFargateProfile  GET /clusters/{name}/fargate-profiles/{fargateProfileName}
@@ -4102,7 +4161,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["fargateProfileName"] = input.fargateProfileName
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/fargate-profiles/{fargateProfileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/fargate-profiles/{fargateProfileName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeIdentityProviderConfig  POST /clusters/{name}/identity-provider-configs/describe
@@ -4111,7 +4170,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/identity-provider-configs/describe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/identity-provider-configs/describe", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeIdentityProviderConfigDocument(identityProviderConfig=input.identityProviderConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -4123,7 +4182,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/insights/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/insights/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeInsightsRefresh  GET /clusters/{name}/insights-refresh
@@ -4132,7 +4191,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/insights-refresh", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/insights-refresh", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeNodegroup  GET /clusters/{name}/node-groups/{nodegroupName}
@@ -4142,7 +4201,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["nodegroupName"] = input.nodegroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/node-groups/{nodegroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/node-groups/{nodegroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribePodIdentityAssociation  GET /clusters/{name}/pod-identity-associations/{associationId}
@@ -4152,7 +4211,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/pod-identity-associations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/pod-identity-associations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DescribeUpdate  GET /clusters/{name}/updates/{updateId}
@@ -4169,7 +4228,7 @@ struct EKSClient:
             query["addonName"] = input.addonName.unwrap_or("")
         if input.capabilityName.is_some():
             query["capabilityName"] = input.capabilityName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/updates/{updateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/updates/{updateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DisassociateAccessPolicy  DELETE /clusters/{name}/access-entries/{principalArn}/access-policies/{policyArn}
@@ -4180,7 +4239,7 @@ struct EKSClient:
         labels["name"] = input.clusterName
         labels["principalArn"] = input.principalArn
         labels["policyArn"] = input.policyArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/access-entries/{principalArn}/access-policies/{policyArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/clusters/{name}/access-entries/{principalArn}/access-policies/{policyArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # DisassociateIdentityProviderConfig  POST /clusters/{name}/identity-provider-configs/disassociate
@@ -4189,7 +4248,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/identity-provider-configs/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/identity-provider-configs/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateIdentityProviderConfigDocument(identityProviderConfig=input.identityProviderConfig, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -4207,7 +4266,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/access-entries", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/access-entries", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListAccessPolicies  GET /access-policies
@@ -4219,7 +4278,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/access-policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListAddons  GET /clusters/{name}/addons
@@ -4233,7 +4292,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/addons", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/addons", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListAssociatedAccessPolicies  GET /clusters/{name}/access-entries/{principalArn}/access-policies
@@ -4248,7 +4307,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/access-entries/{principalArn}/access-policies", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/access-entries/{principalArn}/access-policies", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListCapabilities  GET /clusters/{name}/capabilities
@@ -4262,7 +4321,7 @@ struct EKSClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/capabilities", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/capabilities", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListCertificateAuthorities  GET /clusters/{name}/certificate-authorities
@@ -4276,7 +4335,22 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/certificate-authorities", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/certificate-authorities", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
+
+    # ListClusters  GET /clusters
+    # errors: ClientException, InvalidParameterException, ServerException, ServiceUnavailableException
+    def list_clusters(self, ListClustersRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.include.is_some():
+            multi_query["include"] = input.include.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListFargateProfiles  GET /clusters/{name}/fargate-profiles
@@ -4290,7 +4364,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/fargate-profiles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/fargate-profiles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListIdentityProviderConfigs  GET /clusters/{name}/identity-provider-configs
@@ -4304,7 +4378,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/identity-provider-configs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/identity-provider-configs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListInsights  POST /clusters/{name}/insights
@@ -4313,7 +4387,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/insights", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/insights", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filter.is_some():
             auto u0 = input.filter.unwrap()
@@ -4338,7 +4412,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/node-groups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/node-groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListPodIdentityAssociations  GET /clusters/{name}/pod-identity-associations
@@ -4356,7 +4430,7 @@ struct EKSClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/pod-identity-associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/pod-identity-associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -4365,7 +4439,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # ListUpdates  GET /clusters/{name}/updates
@@ -4385,14 +4459,14 @@ struct EKSClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/updates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters/{name}/updates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # RegisterCluster  POST /cluster-registrations
     # errors: AccessDeniedException, ClientException, InvalidParameterException, ResourceInUseException, ResourceLimitExceededException, ResourcePropagationDelayException, ServerException, ServiceUnavailableException
     def register_cluster(self, RegisterClusterRequest input) -> str:
         auto host = endpoints.regional_host(eks_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster-registrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-registrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + eks_json_str(input.name))
         parts.append("\"connectorConfig\":" + input.connectorConfig.to_json())
@@ -4414,7 +4488,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/insights-refresh", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/insights-refresh", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -4423,7 +4497,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -4432,6 +4506,17 @@ struct EKSClient:
         auto bp = restjson.rest_json_document(b, eks_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: BadRequestException, NotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, eks_service(), self.region, host)
+
     # UpdateAccessEntry  POST /clusters/{name}/access-entries/{principalArn}
     # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServerException
     def update_access_entry(self, UpdateAccessEntryRequest input) -> str:
@@ -4439,7 +4524,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["principalArn"] = input.principalArn
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries/{principalArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/access-entries/{principalArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.kubernetesGroups.is_some():
             auto u0 = input.kubernetesGroups.unwrap()
@@ -4463,7 +4548,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["addonName"] = input.addonName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/addons/{addonName}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/addons/{addonName}/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.addonVersion.is_some():
             auto u0 = input.addonVersion.unwrap()
@@ -4496,7 +4581,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["capabilityName"] = input.capabilityName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/capabilities/{capabilityName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/capabilities/{capabilityName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.roleArn.is_some():
             auto u0 = input.roleArn.unwrap()
@@ -4519,7 +4604,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/update-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/update-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourcesVpcConfig.is_some():
             auto u0 = input.resourcesVpcConfig.unwrap()
@@ -4575,7 +4660,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/updates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/updates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateClusterVersionDocument(version=input.version, clientRequestToken=input.clientRequestToken, force=input.force, rollbackConfig=input.rollbackConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -4586,7 +4671,7 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/eks-anywhere-subscriptions/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/eks-anywhere-subscriptions/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEksAnywhereSubscriptionDocument(autoRenew=input.autoRenew, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -4598,7 +4683,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["nodegroupName"] = input.nodegroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups/{nodegroupName}/update-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups/{nodegroupName}/update-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.labels.is_some():
             auto u0 = input.labels.unwrap()
@@ -4631,7 +4716,7 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["nodegroupName"] = input.nodegroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups/{nodegroupName}/update-version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/node-groups/{nodegroupName}/update-version", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNodegroupVersionDocument(version=input.version, releaseVersion=input.releaseVersion, launchTemplate=input.launchTemplate, force=input.force, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
@@ -4643,10 +4728,36 @@ struct EKSClient:
         dict[str, str] labels = {}
         labels["name"] = input.clusterName
         labels["associationId"] = input.associationId
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/pod-identity-associations/{associationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{name}/pod-identity-associations/{associationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePodIdentityAssociationDocument(roleArn=input.roleArn, clientRequestToken=input.clientRequestToken, disableSessionTags=input.disableSessionTags, targetRoleArn=input.targetRoleArn, policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_service(), self.region, host)
+
+    # Paginator for DescribeAddonVersions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: addons).
+    def paginate_describe_addon_versions(self, DescribeAddonVersionsRequest input):
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        while True:
+            auto raw = self.describe_addon_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for DescribeClusterVersions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: clusterVersions).
+    def paginate_describe_cluster_versions(self, DescribeClusterVersionsRequest input):
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        while True:
+            auto raw = self.describe_cluster_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
     # Paginator for ListAccessEntries — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: accessEntries).
@@ -4719,6 +4830,19 @@ struct EKSClient:
         auto host = endpoints.regional_host(eks_service(), self.region)
         while True:
             auto raw = self.list_certificate_authorities(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListClusters — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: clusters).
+    def paginate_list_clusters(self, ListClustersRequest input):
+        auto host = endpoints.regional_host(eks_service(), self.region)
+        while True:
+            auto raw = self.list_clusters(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

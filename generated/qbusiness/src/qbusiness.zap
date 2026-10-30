@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 83 operations — 77 with a generated method,
-#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 83 operations — 82 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   330 structs (218 @derive(Json)), 55 enums, 10 error variants.
-#   17 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -2929,18 +2929,7 @@ def qbusiness_error_from_code(str code) -> QBusinessError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   Chat (httpQuery `userGroups` has unsupported type list[str])
-#   ChatSync (httpQuery `userGroups` has unsupported type list[str])
-#   ListDataSourceSyncJobs (httpQuery `startTime` has unsupported type DateTime)
-#   ListDocuments (httpQuery `dataSourceIds` has unsupported type list[str])
-#   ListGroups (httpQuery `updatedEarlierThan` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListDataSourceSyncJobs (operation not generated)
-#   ListDocuments (operation not generated)
-#   ListGroups (operation not generated)
+#   Chat (httpPayload member `inputStream` is a non-derivable structure)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3052,6 +3041,17 @@ def action_configuration_to_json(ActionConfiguration v) -> str:
         parts.append("\"filterConfiguration\":" + action_filter_configuration_to_json(u0))
     return qbusiness_json_obj(parts)
 
+# Serialize ActionExecution to a compact JSON object (declaration order).
+def action_execution_to_json(ActionExecution v) -> str:
+    list[str] parts = []
+    parts.append("\"pluginId\":" + qbusiness_json_str(v.pluginId))
+    list[str] m0 = []
+    for k0 in sorted(v.payload.keys()):
+        m0.append(qbusiness_json_str(k0) + ":" + v.payload[k0].to_json())
+    parts.append("\"payload\":" + qbusiness_json_obj(m0))
+    parts.append("\"payloadFieldNameSeparator\":" + qbusiness_json_str(v.payloadFieldNameSeparator))
+    return qbusiness_json_obj(parts)
+
 # Serialize ActionFilterConfiguration to a compact JSON object (declaration order).
 def action_filter_configuration_to_json(ActionFilterConfiguration v) -> str:
     list[str] parts = []
@@ -3097,6 +3097,15 @@ def attribute_filter_to_json(AttributeFilter v) -> str:
     if v.lessThanOrEquals.is_some():
         auto u11 = v.lessThanOrEquals.unwrap()
         parts.append("\"lessThanOrEquals\":" + document_attribute_to_json(u11))
+    return qbusiness_json_obj(parts)
+
+# Serialize AuthChallengeResponse to a compact JSON object (declaration order).
+def auth_challenge_response_to_json(AuthChallengeResponse v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.responseMap.keys()):
+        m0.append(qbusiness_json_str(k0) + ":" + qbusiness_json_str(v.responseMap[k0]))
+    parts.append("\"responseMap\":" + qbusiness_json_obj(m0))
     return qbusiness_json_obj(parts)
 
 # Serialize BlockedPhrasesConfigurationUpdate to a compact JSON object (declaration order).
@@ -3453,7 +3462,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"statementId\":" + qbusiness_json_str(input.statementId))
         list[str] e0 = []
@@ -3477,7 +3486,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/documents/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/documents/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.documents:
@@ -3496,7 +3505,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/documents", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/documents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.documents:
@@ -3518,8 +3527,58 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["subscriptionId"] = input.subscriptionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
+
+    # ChatSync  POST /applications/{applicationId}/conversations?sync
+    # errors: AccessDeniedException, ConflictException, ExternalResourceException, InternalServerException, LicenseNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def chat_sync(self, ChatSyncInput input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        dict[str, str] query = {}
+        if input.userId.is_some():
+            query["userId"] = input.userId.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.userGroups.is_some():
+            multi_query["userGroups"] = input.userGroups.unwrap()
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/conversations?sync", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.userMessage.is_some():
+            auto u0 = input.userMessage.unwrap()
+            parts.append("\"userMessage\":" + qbusiness_json_str(u0))
+        if input.attachments.is_some():
+            auto u1 = input.attachments.unwrap()
+            list[str] e2 = []
+            for x2 in u1:
+                e2.append(x2.to_json())
+            parts.append("\"attachments\":" + qbusiness_json_arr(e2))
+        if input.actionExecution.is_some():
+            auto u3 = input.actionExecution.unwrap()
+            parts.append("\"actionExecution\":" + action_execution_to_json(u3))
+        if input.authChallengeResponse.is_some():
+            auto u4 = input.authChallengeResponse.unwrap()
+            parts.append("\"authChallengeResponse\":" + auth_challenge_response_to_json(u4))
+        if input.conversationId.is_some():
+            auto u5 = input.conversationId.unwrap()
+            parts.append("\"conversationId\":" + qbusiness_json_str(u5))
+        if input.parentMessageId.is_some():
+            auto u6 = input.parentMessageId.unwrap()
+            parts.append("\"parentMessageId\":" + qbusiness_json_str(u6))
+        if input.attributeFilter.is_some():
+            auto u7 = input.attributeFilter.unwrap()
+            parts.append("\"attributeFilter\":" + attribute_filter_to_json(u7))
+        if input.chatMode.is_some():
+            auto u8 = input.chatMode.unwrap()
+            parts.append("\"chatMode\":" + u8.to_json())
+        if input.chatModeConfiguration.is_some():
+            auto u9 = input.chatModeConfiguration.unwrap()
+            parts.append("\"chatModeConfiguration\":" + u9.to_json())
+        if input.clientToken.is_some():
+            auto u10 = input.clientToken.unwrap()
+            parts.append("\"clientToken\":" + qbusiness_json_str(u10))
+        auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
     # CheckDocumentAccess  GET /applications/{applicationId}/index/{indexId}/users/{userId}/documents/{documentId}/check-document-access
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -3533,7 +3592,7 @@ struct QBusinessClient:
         dict[str, str] query = {}
         if input.dataSourceId.is_some():
             query["dataSourceId"] = input.dataSourceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/index/{indexId}/users/{userId}/documents/{documentId}/check-document-access", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/index/{indexId}/users/{userId}/documents/{documentId}/check-document-access", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # CreateAnonymousWebExperienceUrl  POST /applications/{applicationId}/experiences/{webExperienceId}/anonymous-url
@@ -3543,7 +3602,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["webExperienceId"] = input.webExperienceId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/experiences/{webExperienceId}/anonymous-url", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/experiences/{webExperienceId}/anonymous-url", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAnonymousWebExperienceUrlDocument(sessionDurationInMinutes=input.sessionDurationInMinutes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
@@ -3552,7 +3611,7 @@ struct QBusinessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
         if input.roleArn.is_some():
@@ -3609,7 +3668,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/chatresponseconfigurations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/chatresponseconfigurations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
         if input.clientToken.is_some():
@@ -3634,7 +3693,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataaccessors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataaccessors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"principal\":" + qbusiness_json_str(input.principal))
         list[str] e0 = []
@@ -3664,7 +3723,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
         parts.append("\"configuration\":" + input.configuration.to_json())
@@ -3704,7 +3763,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
         if input.description.is_some():
@@ -3734,7 +3793,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/plugins", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/plugins", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
         parts.append("\"type\":" + input.type.to_json())
@@ -3763,7 +3822,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/retrievers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/retrievers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + input.type.to_json())
         parts.append("\"displayName\":" + qbusiness_json_str(input.displayName))
@@ -3789,7 +3848,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/subscriptions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSubscriptionDocument(principal=input.principal, type=input.type, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
@@ -3800,7 +3859,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/users", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"userId\":" + qbusiness_json_str(input.userId))
         if input.userAliases.is_some():
@@ -3821,7 +3880,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/experiences", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/experiences", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.title.is_some():
             auto u0 = input.title.unwrap()
@@ -3871,7 +3930,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteAttachment  DELETE /applications/{applicationId}/conversations/{conversationId}/attachments/{attachmentId}
@@ -3885,7 +3944,7 @@ struct QBusinessClient:
         dict[str, str] query = {}
         if input.userId.is_some():
             query["userId"] = input.userId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/conversations/{conversationId}/attachments/{attachmentId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/conversations/{conversationId}/attachments/{attachmentId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteChatControlsConfiguration  DELETE /applications/{applicationId}/chatcontrols
@@ -3894,7 +3953,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/chatcontrols", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/chatcontrols", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteChatResponseConfiguration  DELETE /applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}
@@ -3904,7 +3963,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["chatResponseConfigurationId"] = input.chatResponseConfigurationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteConversation  DELETE /applications/{applicationId}/conversations/{conversationId}
@@ -3917,7 +3976,7 @@ struct QBusinessClient:
         dict[str, str] query = {}
         if input.userId.is_some():
             query["userId"] = input.userId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/conversations/{conversationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/conversations/{conversationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteDataAccessor  DELETE /applications/{applicationId}/dataaccessors/{dataAccessorId}
@@ -3927,7 +3986,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["dataAccessorId"] = input.dataAccessorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/dataaccessors/{dataAccessorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/dataaccessors/{dataAccessorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteDataSource  DELETE /applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}
@@ -3938,7 +3997,7 @@ struct QBusinessClient:
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteGroup  DELETE /applications/{applicationId}/indices/{indexId}/groups/{groupName}
@@ -3952,7 +4011,7 @@ struct QBusinessClient:
         dict[str, str] query = {}
         if input.dataSourceId.is_some():
             query["dataSourceId"] = input.dataSourceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/indices/{indexId}/groups/{groupName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/indices/{indexId}/groups/{groupName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteIndex  DELETE /applications/{applicationId}/indices/{indexId}
@@ -3962,7 +4021,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/indices/{indexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/indices/{indexId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeletePlugin  DELETE /applications/{applicationId}/plugins/{pluginId}
@@ -3972,7 +4031,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["pluginId"] = input.pluginId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/plugins/{pluginId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/plugins/{pluginId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteRetriever  DELETE /applications/{applicationId}/retrievers/{retrieverId}
@@ -3982,7 +4041,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["retrieverId"] = input.retrieverId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/retrievers/{retrieverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/retrievers/{retrieverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteUser  DELETE /applications/{applicationId}/users/{userId}
@@ -3992,7 +4051,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["userId"] = input.userId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/users/{userId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/users/{userId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DeleteWebExperience  DELETE /applications/{applicationId}/experiences/{webExperienceId}
@@ -4002,7 +4061,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["webExperienceId"] = input.webExperienceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/experiences/{webExperienceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/experiences/{webExperienceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # DisassociatePermission  DELETE /applications/{applicationId}/policy/{statementId}
@@ -4012,7 +4071,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["statementId"] = input.statementId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/policy/{statementId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/policy/{statementId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetApplication  GET /applications/{applicationId}
@@ -4021,7 +4080,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetChatControlsConfiguration  GET /applications/{applicationId}/chatcontrols
@@ -4035,7 +4094,7 @@ struct QBusinessClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/chatcontrols", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/chatcontrols", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetChatResponseConfiguration  GET /applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}
@@ -4045,7 +4104,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["chatResponseConfigurationId"] = input.chatResponseConfigurationId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetDataAccessor  GET /applications/{applicationId}/dataaccessors/{dataAccessorId}
@@ -4055,7 +4114,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["dataAccessorId"] = input.dataAccessorId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataaccessors/{dataAccessorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataaccessors/{dataAccessorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetDataSource  GET /applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}
@@ -4066,7 +4125,7 @@ struct QBusinessClient:
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetDocumentContent  GET /applications/{applicationId}/index/{indexId}/documents/{documentId}/content
@@ -4082,7 +4141,7 @@ struct QBusinessClient:
             query["dataSourceId"] = input.dataSourceId.unwrap_or("")
         if input.outputFormat.is_some():
             query["outputFormat"] = input.outputFormat.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/index/{indexId}/documents/{documentId}/content", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/index/{indexId}/documents/{documentId}/content", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetGroup  GET /applications/{applicationId}/indices/{indexId}/groups/{groupName}
@@ -4096,7 +4155,7 @@ struct QBusinessClient:
         dict[str, str] query = {}
         if input.dataSourceId.is_some():
             query["dataSourceId"] = input.dataSourceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/groups/{groupName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/groups/{groupName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetIndex  GET /applications/{applicationId}/indices/{indexId}
@@ -4106,7 +4165,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetMedia  GET /applications/{applicationId}/conversations/{conversationId}/messages/{messageId}/media/{mediaId}
@@ -4118,7 +4177,7 @@ struct QBusinessClient:
         labels["conversationId"] = input.conversationId
         labels["messageId"] = input.messageId
         labels["mediaId"] = input.mediaId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/conversations/{conversationId}/messages/{messageId}/media/{mediaId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/conversations/{conversationId}/messages/{messageId}/media/{mediaId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetPlugin  GET /applications/{applicationId}/plugins/{pluginId}
@@ -4128,7 +4187,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["pluginId"] = input.pluginId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/plugins/{pluginId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/plugins/{pluginId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetPolicy  GET /applications/{applicationId}/policy
@@ -4137,7 +4196,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetRetriever  GET /applications/{applicationId}/retrievers/{retrieverId}
@@ -4147,7 +4206,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["retrieverId"] = input.retrieverId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/retrievers/{retrieverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/retrievers/{retrieverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetUser  GET /applications/{applicationId}/users/{userId}
@@ -4157,7 +4216,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["userId"] = input.userId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/users/{userId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/users/{userId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # GetWebExperience  GET /applications/{applicationId}/experiences/{webExperienceId}
@@ -4167,7 +4226,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["webExperienceId"] = input.webExperienceId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/experiences/{webExperienceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/experiences/{webExperienceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListApplications  GET /applications
@@ -4179,7 +4238,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListAttachments  GET /applications/{applicationId}/attachments
@@ -4197,7 +4256,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/attachments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/attachments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListChatResponseConfigurations  GET /applications/{applicationId}/chatresponseconfigurations
@@ -4211,7 +4270,7 @@ struct QBusinessClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/chatresponseconfigurations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/chatresponseconfigurations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListConversations  GET /applications/{applicationId}/conversations
@@ -4227,7 +4286,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/conversations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/conversations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListDataAccessors  GET /applications/{applicationId}/dataaccessors
@@ -4241,7 +4300,31 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataaccessors", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataaccessors", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
+
+    # ListDataSourceSyncJobs  GET /applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/syncjobs
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_data_source_sync_jobs(self, ListDataSourceSyncJobsRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["dataSourceId"] = input.dataSourceId
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.startTime.is_some():
+            auto qt0 = datetime.strftime(input.startTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt0
+        if input.endTime.is_some():
+            auto qt1 = datetime.strftime(input.endTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt1
+        if input.statusFilter.is_some():
+            query["syncStatus"] = input.statusFilter.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/syncjobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListDataSources  GET /applications/{applicationId}/indices/{indexId}/datasources
@@ -4256,7 +4339,44 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/datasources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/datasources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
+
+    # ListDocuments  GET /applications/{applicationId}/index/{indexId}/documents
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_documents(self, ListDocumentsRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        dict[str, list[str]] multi_query = {}
+        if input.dataSourceIds.is_some():
+            multi_query["dataSourceIds"] = input.dataSourceIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/index/{indexId}/documents", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
+
+    # ListGroups  GET /applications/{applicationId}/indices/{indexId}/groups
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_groups(self, ListGroupsRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        labels["indexId"] = input.indexId
+        dict[str, str] query = {}
+        auto qt0 = datetime.strftime(input.updatedEarlierThan, "%Y-%m-%dT%H:%M:%SZ")
+        query["updatedEarlierThan"] = qt0
+        if input.dataSourceId.is_some():
+            query["dataSourceId"] = input.dataSourceId.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices/{indexId}/groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListIndices  GET /applications/{applicationId}/indices
@@ -4270,7 +4390,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/indices", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListMessages  GET /applications/{applicationId}/conversations/{conversationId}
@@ -4287,7 +4407,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/conversations/{conversationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/conversations/{conversationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListPluginActions  GET /applications/{applicationId}/plugins/{pluginId}/actions
@@ -4302,7 +4422,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/plugins/{pluginId}/actions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/plugins/{pluginId}/actions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListPluginTypeActions  GET /pluginTypes/{pluginType}/actions
@@ -4316,7 +4436,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/pluginTypes/{pluginType}/actions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/pluginTypes/{pluginType}/actions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListPluginTypeMetadata  GET /pluginTypeMetadata
@@ -4328,7 +4448,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/pluginTypeMetadata", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/pluginTypeMetadata", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListPlugins  GET /applications/{applicationId}/plugins
@@ -4342,7 +4462,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/plugins", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/plugins", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListRetrievers  GET /applications/{applicationId}/retrievers
@@ -4356,7 +4476,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/retrievers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/retrievers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListSubscriptions  GET /applications/{applicationId}/subscriptions
@@ -4370,7 +4490,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/subscriptions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/subscriptions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resourceARN}
@@ -4379,7 +4499,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceARN"] = input.resourceARN
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ListWebExperiences  GET /applications/{applicationId}/experiences
@@ -4393,7 +4513,7 @@ struct QBusinessClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/experiences", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/experiences", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # PutFeedback  POST /applications/{applicationId}/conversations/{conversationId}/messages/{messageId}/feedback
@@ -4407,7 +4527,7 @@ struct QBusinessClient:
         dict[str, str] query = {}
         if input.userId.is_some():
             query["userId"] = input.userId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/conversations/{conversationId}/messages/{messageId}/feedback", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/conversations/{conversationId}/messages/{messageId}/feedback", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFeedbackDocument(messageCopiedAt=input.messageCopiedAt, messageUsefulness=input.messageUsefulness)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
@@ -4419,7 +4539,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}/groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}/groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"groupName\":" + qbusiness_json_str(input.groupName))
         if input.dataSourceId.is_some():
@@ -4439,7 +4559,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/relevant-content", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/relevant-content", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"queryText\":" + qbusiness_json_str(input.queryText))
         parts.append("\"contentSource\":" + input.contentSource.to_json())
@@ -4463,7 +4583,7 @@ struct QBusinessClient:
         labels["dataSourceId"] = input.dataSourceId
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/startsync", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/startsync", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # StopDataSourceSyncJob  POST /applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/stopsync
@@ -4474,7 +4594,7 @@ struct QBusinessClient:
         labels["dataSourceId"] = input.dataSourceId
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/stopsync", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}/stopsync", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # TagResource  POST /v1/tags/{resourceARN}
@@ -4483,7 +4603,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceARN"] = input.resourceARN
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -4492,13 +4612,24 @@ struct QBusinessClient:
         auto bp = restjson.rest_json_document(b, qbusiness_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceARN}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceARN"] = input.resourceARN
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceARN}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
+
     # UpdateApplication  PUT /applications/{applicationId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(identityCenterInstanceArn=input.identityCenterInstanceArn, displayName=input.displayName, description=input.description, roleArn=input.roleArn, attachmentsConfiguration=input.attachmentsConfiguration, qAppsConfiguration=input.qAppsConfiguration, personalizationConfiguration=input.personalizationConfiguration, autoSubscriptionConfiguration=input.autoSubscriptionConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
@@ -4509,7 +4640,7 @@ struct QBusinessClient:
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}/chatcontrols", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}/chatcontrols", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -4551,7 +4682,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["chatResponseConfigurationId"] = input.chatResponseConfigurationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/chatresponseconfigurations/{chatResponseConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -4573,7 +4704,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["dataAccessorId"] = input.dataAccessorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/dataaccessors/{dataAccessorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/dataaccessors/{dataAccessorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.actionConfigurations:
@@ -4596,7 +4727,7 @@ struct QBusinessClient:
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
         labels["dataSourceId"] = input.dataSourceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}/datasources/{dataSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -4632,7 +4763,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["indexId"] = input.indexId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/indices/{indexId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -4659,7 +4790,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["pluginId"] = input.pluginId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/plugins/{pluginId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/plugins/{pluginId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePluginDocument(displayName=input.displayName, state=input.state, serverUrl=input.serverUrl, customPluginConfiguration=input.customPluginConfiguration, authConfiguration=input.authConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
@@ -4671,7 +4802,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["retrieverId"] = input.retrieverId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/retrievers/{retrieverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/retrievers/{retrieverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.configuration.is_some():
             auto u0 = input.configuration.unwrap()
@@ -4692,7 +4823,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["subscriptionId"] = input.subscriptionId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSubscriptionDocument(type=input.type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
@@ -4704,7 +4835,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["userId"] = input.userId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/users/{userId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/users/{userId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.userAliasesToUpdate.is_some():
             auto u0 = input.userAliasesToUpdate.unwrap()
@@ -4728,7 +4859,7 @@ struct QBusinessClient:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["webExperienceId"] = input.webExperienceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/experiences/{webExperienceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{applicationId}/experiences/{webExperienceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.roleArn.is_some():
             auto u0 = input.roleArn.unwrap()
@@ -4844,12 +4975,51 @@ struct QBusinessClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListDataSourceSyncJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: history).
+    def paginate_list_data_source_sync_jobs(self, ListDataSourceSyncJobsRequest input):
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        while True:
+            auto raw = self.list_data_source_sync_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListDataSources — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: dataSources).
     def paginate_list_data_sources(self, ListDataSourcesRequest input):
         auto host = endpoints.regional_host(qbusiness_service(), self.region)
         while True:
             auto raw = self.list_data_sources(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDocuments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: documentDetailList).
+    def paginate_list_documents(self, ListDocumentsRequest input):
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        while True:
+            auto raw = self.list_documents(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListGroups — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_groups(self, ListGroupsRequest input):
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        while True:
+            auto raw = self.list_groups(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

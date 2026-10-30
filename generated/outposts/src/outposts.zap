@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 45 operations — 38 with a generated method,
-#   7 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 45 operations — 41 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   137 structs (66 @derive(Json)), 45 enums, 6 error variants.
-#   7 paginators generated (6 paginated ops skipped) from paginators-1.json.
+#   9 paginators generated (4 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -1561,13 +1561,10 @@ def outposts_error_from_code(str code) -> OutpostsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListAssetInstances (httpQuery `AssetIdFilter` has unsupported type list[str])
-#   ListAssets (httpQuery `HostIdFilter` has unsupported type list[str])
+#   ListAssetInstances (httpQuery `AwsServiceFilter` has unsupported type list[AWSServiceName])
+#   ListAssets (httpQuery `StatusFilter` has unsupported type list[AssetState])
 #   ListCapacityTasks (httpQuery `CapacityTaskStatusFilter` has unsupported type list[CapacityTaskStatus])
 #   ListCatalogItems (httpQuery `ItemClassFilter` has unsupported type list[CatalogItemClass])
-#   ListOutposts (httpQuery `LifeCycleStatusFilter` has unsupported type list[str])
-#   ListSites (httpQuery `OperatingAddressCountryCodeFilter` has unsupported type list[str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1575,8 +1572,6 @@ def outposts_error_from_code(str code) -> OutpostsError:
 #   ListAssets (operation not generated)
 #   ListCapacityTasks (operation not generated)
 #   ListCatalogItems (operation not generated)
-#   ListOutposts (operation not generated)
-#   ListSites (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1717,7 +1712,7 @@ struct OutpostsClient:
         dict[str, str] labels = {}
         labels["CapacityTaskId"] = input.CapacityTaskId
         labels["OutpostId"] = input.OutpostIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/capacity/{CapacityTaskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/capacity/{CapacityTaskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # CancelOrder  POST /orders/{OrderId}/cancel
@@ -1726,14 +1721,14 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OrderId"] = input.OrderId
-        auto b = binding.HttpBinding(method="POST", path_template="/orders/{OrderId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/orders/{OrderId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # CreateOrder  POST /orders
     # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ServiceQuotaExceededException, ValidationException
     def create_order(self, CreateOrderInput input) -> str:
         auto host = endpoints.regional_host(outposts_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/orders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/orders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"OutpostIdentifier\":" + outposts_json_str(input.OutpostIdentifier))
         if input.QuoteIdentifier.is_some():
@@ -1759,7 +1754,7 @@ struct OutpostsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ServiceQuotaExceededException, ValidationException
     def create_outpost(self, CreateOutpostInput input) -> str:
         auto host = endpoints.regional_host(outposts_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/outposts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + outposts_json_str(input.Name))
         if input.Description.is_some():
@@ -1790,7 +1785,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostId"] = input.OutpostId
-        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/privateConnectivity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/privateConnectivity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.VpcInformationList:
@@ -1803,7 +1798,7 @@ struct OutpostsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, ValidationException
     def create_quote(self, CreateQuoteInput input) -> str:
         auto host = endpoints.regional_host(outposts_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/quotes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/quotes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.OutpostIdentifier.is_some():
             auto u0 = input.OutpostIdentifier.unwrap()
@@ -1841,7 +1836,7 @@ struct OutpostsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, ValidationException
     def create_renewal(self, CreateRenewalInput input) -> str:
         auto host = endpoints.regional_host(outposts_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/renewals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/renewals", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRenewalDocument(PaymentOption=input.PaymentOption, PaymentTerm=input.PaymentTerm, OutpostIdentifier=input.OutpostIdentifier, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
@@ -1850,7 +1845,7 @@ struct OutpostsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def create_site(self, CreateSiteInput input) -> str:
         auto host = endpoints.regional_host(outposts_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sites", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sites", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + outposts_json_str(input.Name))
         if input.Description.is_some():
@@ -1883,7 +1878,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostId"] = input.OutpostId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/outposts/{OutpostId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/outposts/{OutpostId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # DeleteQuote  DELETE /quotes/{QuoteIdentifier}
@@ -1892,7 +1887,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["QuoteIdentifier"] = input.QuoteIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/quotes/{QuoteIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/quotes/{QuoteIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # DeleteSite  DELETE /sites/{SiteId}
@@ -1901,7 +1896,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["SiteId"] = input.SiteId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sites/{SiteId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sites/{SiteId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetCapacityTask  GET /outposts/{OutpostId}/capacity/{CapacityTaskId}
@@ -1911,7 +1906,7 @@ struct OutpostsClient:
         dict[str, str] labels = {}
         labels["CapacityTaskId"] = input.CapacityTaskId
         labels["OutpostId"] = input.OutpostIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/capacity/{CapacityTaskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/capacity/{CapacityTaskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetCatalogItem  GET /catalog/item/{CatalogItemId}
@@ -1920,7 +1915,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["CatalogItemId"] = input.CatalogItemId
-        auto b = binding.HttpBinding(method="GET", path_template="/catalog/item/{CatalogItemId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/catalog/item/{CatalogItemId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetConnection  GET /connections/{ConnectionId}
@@ -1929,7 +1924,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="GET", path_template="/connections/{ConnectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connections/{ConnectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetOrder  GET /orders/{OrderId}
@@ -1938,7 +1933,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OrderId"] = input.OrderId
-        auto b = binding.HttpBinding(method="GET", path_template="/orders/{OrderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/orders/{OrderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetOutpost  GET /outposts/{OutpostId}
@@ -1947,7 +1942,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostId"] = input.OutpostId
-        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetOutpostBillingInformation  GET /outpost/{OutpostIdentifier}/billing-information
@@ -1961,7 +1956,7 @@ struct OutpostsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/outpost/{OutpostIdentifier}/billing-information", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outpost/{OutpostIdentifier}/billing-information", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetOutpostInstanceTypes  GET /outposts/{OutpostId}/instanceTypes
@@ -1975,7 +1970,7 @@ struct OutpostsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/instanceTypes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/instanceTypes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetOutpostSupportedInstanceTypes  GET /outposts/{OutpostId}/supportedInstanceTypes
@@ -1993,7 +1988,7 @@ struct OutpostsClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/supportedInstanceTypes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/supportedInstanceTypes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetPrivateConnectivityConfig  GET /outposts/{OutpostId}/privateConnectivity
@@ -2002,7 +1997,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostId"] = input.OutpostId
-        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/privateConnectivity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/privateConnectivity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetQuote  GET /quotes/{QuoteIdentifier}
@@ -2011,7 +2006,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["QuoteIdentifier"] = input.QuoteIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/quotes/{QuoteIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/quotes/{QuoteIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetRenewalPricing  GET /outpost/{OutpostIdentifier}/renewal-pricing
@@ -2020,7 +2015,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostIdentifier"] = input.OutpostIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/outpost/{OutpostIdentifier}/renewal-pricing", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outpost/{OutpostIdentifier}/renewal-pricing", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetSite  GET /sites/{SiteId}
@@ -2029,7 +2024,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["SiteId"] = input.SiteId
-        auto b = binding.HttpBinding(method="GET", path_template="/sites/{SiteId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sites/{SiteId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # GetSiteAddress  GET /sites/{SiteId}/address
@@ -2040,7 +2035,7 @@ struct OutpostsClient:
         labels["SiteId"] = input.SiteId
         dict[str, str] query = {}
         query["AddressType"] = input.AddressType
-        auto b = binding.HttpBinding(method="GET", path_template="/sites/{SiteId}/address", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sites/{SiteId}/address", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # ListBlockingInstancesForCapacityTask  GET /outposts/{OutpostId}/capacity/{CapacityTaskId}/blockingInstances
@@ -2055,7 +2050,7 @@ struct OutpostsClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/capacity/{CapacityTaskId}/blockingInstances", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/outposts/{OutpostId}/capacity/{CapacityTaskId}/blockingInstances", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # ListOrderableInstanceTypes  GET /instanceTypes
@@ -2064,12 +2059,13 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] query = {}
         if input.OutpostGenerationFilter.is_some():
-            query["OutpostGenerationFilter"] = input.OutpostGenerationFilter.unwrap_or("")
+            auto qt0 = input.OutpostGenerationFilter.unwrap_or("")
+            query["OutpostGenerationFilter"] = qt0
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/instanceTypes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instanceTypes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # ListOrders  GET /list-orders
@@ -2078,12 +2074,32 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] query = {}
         if input.OutpostIdentifierFilter.is_some():
-            query["OutpostIdentifierFilter"] = input.OutpostIdentifierFilter.unwrap_or("")
+            auto qt0 = input.OutpostIdentifierFilter.unwrap_or("")
+            query["OutpostIdentifierFilter"] = qt0
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/list-orders", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-orders", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
+
+    # ListOutposts  GET /outposts
+    # errors: AccessDeniedException, InternalServerException, ValidationException
+    def list_outposts(self, ListOutpostsInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        dict[str, list[str]] multi_query = {}
+        if input.LifeCycleStatusFilter.is_some():
+            multi_query["LifeCycleStatusFilter"] = input.LifeCycleStatusFilter.unwrap()
+        if input.AvailabilityZoneFilter.is_some():
+            multi_query["AvailabilityZoneFilter"] = input.AvailabilityZoneFilter.unwrap()
+        if input.AvailabilityZoneIdFilter.is_some():
+            multi_query["AvailabilityZoneIdFilter"] = input.AvailabilityZoneIdFilter.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/outposts", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # ListQuotes  GET /quotes
@@ -2095,7 +2111,26 @@ struct OutpostsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/quotes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/quotes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
+
+    # ListSites  GET /sites
+    # errors: AccessDeniedException, InternalServerException, ValidationException
+    def list_sites(self, ListSitesInput input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        dict[str, list[str]] multi_query = {}
+        if input.OperatingAddressCountryCodeFilter.is_some():
+            multi_query["OperatingAddressCountryCodeFilter"] = input.OperatingAddressCountryCodeFilter.unwrap()
+        if input.OperatingAddressStateOrRegionFilter.is_some():
+            multi_query["OperatingAddressStateOrRegionFilter"] = input.OperatingAddressStateOrRegionFilter.unwrap()
+        if input.OperatingAddressCityFilter.is_some():
+            multi_query["OperatingAddressCityFilter"] = input.OperatingAddressCityFilter.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/sites", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -2104,7 +2139,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
 
     # StartCapacityTask  POST /outposts/{OutpostId}/capacity
@@ -2113,7 +2148,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostId"] = input.OutpostIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/capacity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/capacity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.OrderId.is_some():
             auto u0 = input.OrderId.unwrap()
@@ -2141,7 +2176,7 @@ struct OutpostsClient:
     # errors: AccessDeniedException, InternalServerException, NotFoundException, ValidationException
     def start_connection(self, StartConnectionRequest input) -> str:
         auto host = endpoints.regional_host(outposts_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartConnectionDocument(DeviceSerialNumber=input.DeviceSerialNumber, AssetId=input.AssetId, ClientPublicKey=input.ClientPublicKey, NetworkInterfaceDeviceIndex=input.NetworkInterfaceDeviceIndex)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
@@ -2152,7 +2187,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostId"] = input.OutpostIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/decommission", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/outposts/{OutpostId}/decommission", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartOutpostDecommissionDocument(ValidateOnly=input.ValidateOnly)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
@@ -2163,7 +2198,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -2172,13 +2207,24 @@ struct OutpostsClient:
         auto bp = restjson.rest_json_document(b, outposts_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: InternalServerException, NotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, outposts_service(), self.region, host)
+
     # UpdateOutpost  PATCH /outposts/{OutpostId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, NotFoundException, ValidationException
     def update_outpost(self, UpdateOutpostInput input) -> str:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["OutpostId"] = input.OutpostId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/outposts/{OutpostId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/outposts/{OutpostId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOutpostDocument(Name=input.Name, Description=input.Description, SupportedHardwareType=input.SupportedHardwareType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
@@ -2189,7 +2235,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["QuoteIdentifier"] = input.QuoteIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/quotes/{QuoteIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/quotes/{QuoteIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.OutpostIdentifier.is_some():
             auto u0 = input.OutpostIdentifier.unwrap()
@@ -2233,7 +2279,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["SiteId"] = input.SiteId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/sites/{SiteId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/sites/{SiteId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSiteDocument(Name=input.Name, Description=input.Description, Notes=input.Notes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
@@ -2244,7 +2290,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["SiteId"] = input.SiteId
-        auto b = binding.HttpBinding(method="PUT", path_template="/sites/{SiteId}/address", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sites/{SiteId}/address", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSiteAddressDocument(AddressType=input.AddressType, Address=input.Address)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
@@ -2255,7 +2301,7 @@ struct OutpostsClient:
         auto host = endpoints.regional_host(outposts_service(), self.region)
         dict[str, str] labels = {}
         labels["SiteId"] = input.SiteId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/sites/{SiteId}/rackPhysicalProperties", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/sites/{SiteId}/rackPhysicalProperties", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSiteRackPhysicalPropertiesDocument(PowerDrawKva=input.PowerDrawKva, PowerPhase=input.PowerPhase, PowerConnector=input.PowerConnector, PowerFeedDrop=input.PowerFeedDrop, UplinkGbps=input.UplinkGbps, UplinkCount=input.UplinkCount, FiberOpticCableType=input.FiberOpticCableType, OpticalStandard=input.OpticalStandard, MaximumSupportedWeightLbs=input.MaximumSupportedWeightLbs)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, outposts_service(), self.region, host)
@@ -2338,12 +2384,38 @@ struct OutpostsClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListOutposts — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Outposts).
+    def paginate_list_outposts(self, ListOutpostsInput input):
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        while True:
+            auto raw = self.list_outposts(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListQuotes — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Quotes).
     def paginate_list_quotes(self, ListQuotesInput input):
         auto host = endpoints.regional_host(outposts_service(), self.region)
         while True:
             auto raw = self.list_quotes(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListSites — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: Sites).
+    def paginate_list_sites(self, ListSitesInput input):
+        auto host = endpoints.regional_host(outposts_service(), self.region)
+        while True:
+            auto raw = self.list_sites(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

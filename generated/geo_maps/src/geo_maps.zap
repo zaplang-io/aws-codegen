@@ -336,7 +336,7 @@ def geo_maps_error_from_code(str code) -> Geo_MapsError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   GetStaticMap (httpQuery `CropLabels` has unsupported type bool)
+#   GetStaticMap (httpQuery `Zoom` has unsupported type float64)
 #   GetStyleDescriptor (httpQuery `TravelModes` has unsupported type list[TravelMode])
 #   GetTile (httpQuery `AdditionalFeatures` has unsupported type list[TileAdditionalFeature])
 
@@ -351,7 +351,7 @@ struct Geo_MapsClient:
         dict[str, str] labels = {}
         labels["FontStack"] = input.FontStack
         labels["FontUnicodeRange"] = input.FontUnicodeRange
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/glyphs/{FontStack}/{FontUnicodeRange}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/glyphs/{FontStack}/{FontUnicodeRange}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_maps_service(), self.region, host)
 
     # GetSprites  GET /v2/styles/{Style}/{ColorScheme}/{Variant}/sprites/{FileName}
@@ -362,7 +362,7 @@ struct Geo_MapsClient:
         labels["Style"] = input.Style
         labels["ColorScheme"] = input.ColorScheme
         labels["Variant"] = input.Variant
-        auto b = binding.HttpBinding(method="GET", path_template="/v2/styles/{Style}/{ColorScheme}/{Variant}/sprites/{FileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2/styles/{Style}/{ColorScheme}/{Variant}/sprites/{FileName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, geo_maps_service(), self.region, host)
 
 # Construct a Geo_MapsClient bound to credentials + region.

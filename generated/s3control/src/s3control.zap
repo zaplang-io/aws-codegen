@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 97 operations — 91 with a generated method,
-#   6 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 97 operations — 94 with a generated method,
+#   3 skipped (a body member is not yet serializable by the XML emitter).
 #   319 structs (plain carriers), 49 enums, 12 error variants.
 #   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -2064,11 +2064,8 @@ def s3_control_error_from_code(str code) -> S3_ControlError:
 # or a residual XML-body limit — a scalar carrying its own xmlNamespace, a
 # list/map of lists/maps, or a recursive shape graph):
 #   CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional (v0 needs a required body))
-#   ListCallerAccessGrants (httpQuery `AllowedByApplication` has unsupported type bool)
 #   ListJobs (httpQuery `JobStatuses` has unsupported type list[JobStatus])
 #   PutBucketLifecycleConfiguration (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
-#   PutBucketPolicy (httpHeader `ConfirmRemoveSelfBucketAccess` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
@@ -2078,6 +2075,12 @@ def s3_control_error_from_code(str code) -> S3_ControlError:
 
 # Render a boolean as its XML text (the rest-xml codec has no bool helper).
 def s3_control_xml_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
+# Render a bool bound to a URI/query/header slot as its wire text.
+def s3_control_bind_bool(bool b) -> str:
     if b:
         return "true"
     return "false"
@@ -2092,7 +2095,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/identitycenter", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/identitycenter", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("AssociateAccessGrantsIdentityCenterRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "IdentityCenterArn", input.IdentityCenterArn)
         auto body = restxml.rest_xml_serialize(root)
@@ -2104,7 +2107,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/grant", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/grant", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateAccessGrantRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto t0 = input.AccessGrantsLocationId
         restxml.rest_xml_scalar(root, "AccessGrantsLocationId", t0)
@@ -2142,7 +2145,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateAccessGrantsInstanceRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         if input.IdentityCenterArn.is_some():
             auto t0 = input.IdentityCenterArn.unwrap()
@@ -2163,7 +2166,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/location", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/location", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateAccessGrantsLocationRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "LocationScope", input.LocationScope)
         restxml.rest_xml_scalar(root, "IAMRoleArn", input.IAMRoleArn)
@@ -2185,7 +2188,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateAccessPointRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "Bucket", input.Bucket)
         if input.VpcConfiguration.is_some():
@@ -2234,7 +2237,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateAccessPointForObjectLambdaRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "Configuration")
         auto t1 = input.Configuration.SupportingAccessPoint
@@ -2267,7 +2270,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateJobRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         if input.ConfirmationRequired.is_some():
             auto t0 = s3_control_xml_bool(input.ConfirmationRequired.unwrap())
@@ -2661,7 +2664,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateMultiRegionAccessPointRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "ClientToken", input.ClientToken)
         auto n0 = restxml.rest_xml_struct(root, "Details")
@@ -2696,7 +2699,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/storagelensgroup", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/storagelensgroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateStorageLensGroupRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "StorageLensGroup")
         restxml.rest_xml_scalar(n0, "Name", input.StorageLensGroup.Name)
@@ -2813,7 +2816,7 @@ struct S3_ControlClient:
         labels["id"] = input.AccessGrantId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/grant/{id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/grant/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessGrantsInstance  DELETE /v20180820/accessgrantsinstance
@@ -2821,7 +2824,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessGrantsInstanceResourcePolicy  DELETE /v20180820/accessgrantsinstance/resourcepolicy
@@ -2829,7 +2832,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/resourcepolicy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/resourcepolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessGrantsLocation  DELETE /v20180820/accessgrantsinstance/location/{id}
@@ -2839,7 +2842,7 @@ struct S3_ControlClient:
         labels["id"] = input.AccessGrantsLocationId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/location/{id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/location/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessPoint  DELETE /v20180820/accesspoint/{name}
@@ -2849,7 +2852,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspoint/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspoint/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessPointForObjectLambda  DELETE /v20180820/accesspointforobjectlambda/{name}
@@ -2859,7 +2862,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspointforobjectlambda/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspointforobjectlambda/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessPointPolicy  DELETE /v20180820/accesspoint/{name}/policy
@@ -2869,7 +2872,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspoint/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspoint/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessPointPolicyForObjectLambda  DELETE /v20180820/accesspointforobjectlambda/{name}/policy
@@ -2879,7 +2882,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspointforobjectlambda/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspointforobjectlambda/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteAccessPointScope  DELETE /v20180820/accesspoint/{name}/scope
@@ -2889,7 +2892,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspoint/{name}/scope", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accesspoint/{name}/scope", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteBucket  DELETE /v20180820/bucket/{name}
@@ -2899,7 +2902,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteBucketLifecycleConfiguration  DELETE /v20180820/bucket/{name}/lifecycleconfiguration
@@ -2909,7 +2912,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/lifecycleconfiguration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/lifecycleconfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteBucketPolicy  DELETE /v20180820/bucket/{name}/policy
@@ -2919,7 +2922,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteBucketReplication  DELETE /v20180820/bucket/{name}/replication
@@ -2929,7 +2932,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/replication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteBucketTagging  DELETE /v20180820/bucket/{name}/tagging
@@ -2939,7 +2942,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/bucket/{name}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteJobTagging  DELETE /v20180820/jobs/{id}/tagging
@@ -2950,7 +2953,7 @@ struct S3_ControlClient:
         labels["id"] = input.JobId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteMultiRegionAccessPoint  POST /v20180820/async-requests/mrap/delete
@@ -2958,7 +2961,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/delete", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("DeleteMultiRegionAccessPointRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "ClientToken", input.ClientToken)
         auto n0 = restxml.rest_xml_struct(root, "Details")
@@ -2972,7 +2975,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/configuration/publicAccessBlock", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/configuration/publicAccessBlock", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteStorageLensConfiguration  DELETE /v20180820/storagelens/{storagelensid}
@@ -2982,7 +2985,7 @@ struct S3_ControlClient:
         labels["storagelensid"] = input.ConfigId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/storagelens/{storagelensid}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/storagelens/{storagelensid}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteStorageLensConfigurationTagging  DELETE /v20180820/storagelens/{storagelensid}/tagging
@@ -2992,7 +2995,7 @@ struct S3_ControlClient:
         labels["storagelensid"] = input.ConfigId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/storagelens/{storagelensid}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/storagelens/{storagelensid}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DeleteStorageLensGroup  DELETE /v20180820/storagelensgroup/{name}
@@ -3002,7 +3005,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/storagelensgroup/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/storagelensgroup/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DescribeJob  GET /v20180820/jobs/{id}
@@ -3013,7 +3016,7 @@ struct S3_ControlClient:
         labels["id"] = input.JobId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/jobs/{id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/jobs/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DescribeMultiRegionAccessPointOperation  GET /v20180820/async-requests/mrap/{request_token+}
@@ -3023,7 +3026,7 @@ struct S3_ControlClient:
         greedy_labels["request_token"] = input.RequestTokenARN
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/async-requests/mrap/{request_token+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/async-requests/mrap/{request_token+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # DissociateAccessGrantsIdentityCenter  DELETE /v20180820/accessgrantsinstance/identitycenter
@@ -3031,7 +3034,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/identitycenter", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/accessgrantsinstance/identitycenter", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessGrant  GET /v20180820/accessgrantsinstance/grant/{id}
@@ -3041,7 +3044,7 @@ struct S3_ControlClient:
         labels["id"] = input.AccessGrantId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/grant/{id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/grant/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessGrantsInstance  GET /v20180820/accessgrantsinstance
@@ -3049,7 +3052,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessGrantsInstanceForPrefix  GET /v20180820/accessgrantsinstance/prefix
@@ -3059,7 +3062,7 @@ struct S3_ControlClient:
         query["s3prefix"] = input.S3Prefix
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/prefix", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/prefix", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessGrantsInstanceResourcePolicy  GET /v20180820/accessgrantsinstance/resourcepolicy
@@ -3067,7 +3070,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/resourcepolicy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/resourcepolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessGrantsLocation  GET /v20180820/accessgrantsinstance/location/{id}
@@ -3077,7 +3080,7 @@ struct S3_ControlClient:
         labels["id"] = input.AccessGrantsLocationId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/location/{id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/location/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPoint  GET /v20180820/accesspoint/{name}
@@ -3087,7 +3090,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPointConfigurationForObjectLambda  GET /v20180820/accesspointforobjectlambda/{name}/configuration
@@ -3097,7 +3100,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}/configuration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPointForObjectLambda  GET /v20180820/accesspointforobjectlambda/{name}
@@ -3107,7 +3110,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPointPolicy  GET /v20180820/accesspoint/{name}/policy
@@ -3117,7 +3120,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPointPolicyForObjectLambda  GET /v20180820/accesspointforobjectlambda/{name}/policy
@@ -3127,7 +3130,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPointPolicyStatus  GET /v20180820/accesspoint/{name}/policyStatus
@@ -3137,7 +3140,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}/policyStatus", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}/policyStatus", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPointPolicyStatusForObjectLambda  GET /v20180820/accesspointforobjectlambda/{name}/policyStatus
@@ -3147,7 +3150,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}/policyStatus", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda/{name}/policyStatus", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetAccessPointScope  GET /v20180820/accesspoint/{name}/scope
@@ -3157,7 +3160,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}/scope", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint/{name}/scope", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetBucket  GET /v20180820/bucket/{name}
@@ -3167,7 +3170,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetBucketLifecycleConfiguration  GET /v20180820/bucket/{name}/lifecycleconfiguration
@@ -3177,7 +3180,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/lifecycleconfiguration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/lifecycleconfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetBucketPolicy  GET /v20180820/bucket/{name}/policy
@@ -3187,7 +3190,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetBucketReplication  GET /v20180820/bucket/{name}/replication
@@ -3197,7 +3200,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/replication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetBucketTagging  GET /v20180820/bucket/{name}/tagging
@@ -3207,7 +3210,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetBucketVersioning  GET /v20180820/bucket/{name}/versioning
@@ -3217,7 +3220,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/versioning", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket/{name}/versioning", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetDataAccess  GET /v20180820/accessgrantsinstance/dataaccess
@@ -3236,7 +3239,7 @@ struct S3_ControlClient:
             query["auditContext"] = input.AuditContext.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/dataaccess", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/dataaccess", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetJobTagging  GET /v20180820/jobs/{id}/tagging
@@ -3247,7 +3250,7 @@ struct S3_ControlClient:
         labels["id"] = input.JobId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetMultiRegionAccessPoint  GET /v20180820/mrap/instances/{name+}
@@ -3257,7 +3260,7 @@ struct S3_ControlClient:
         greedy_labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{name+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{name+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetMultiRegionAccessPointPolicy  GET /v20180820/mrap/instances/{name+}/policy
@@ -3267,7 +3270,7 @@ struct S3_ControlClient:
         greedy_labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{name+}/policy", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{name+}/policy", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetMultiRegionAccessPointPolicyStatus  GET /v20180820/mrap/instances/{name+}/policystatus
@@ -3277,7 +3280,7 @@ struct S3_ControlClient:
         greedy_labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{name+}/policystatus", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{name+}/policystatus", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetMultiRegionAccessPointRoutes  GET /v20180820/mrap/instances/{mrap+}/routes
@@ -3287,7 +3290,7 @@ struct S3_ControlClient:
         greedy_labels["mrap"] = input.Mrap
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{mrap+}/routes", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances/{mrap+}/routes", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetPublicAccessBlock  GET /v20180820/configuration/publicAccessBlock
@@ -3296,7 +3299,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/configuration/publicAccessBlock", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/configuration/publicAccessBlock", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetStorageLensConfiguration  GET /v20180820/storagelens/{storagelensid}
@@ -3306,7 +3309,7 @@ struct S3_ControlClient:
         labels["storagelensid"] = input.ConfigId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelens/{storagelensid}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelens/{storagelensid}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetStorageLensConfigurationTagging  GET /v20180820/storagelens/{storagelensid}/tagging
@@ -3316,7 +3319,7 @@ struct S3_ControlClient:
         labels["storagelensid"] = input.ConfigId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelens/{storagelensid}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelens/{storagelensid}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # GetStorageLensGroup  GET /v20180820/storagelensgroup/{name}
@@ -3326,7 +3329,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelensgroup/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelensgroup/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListAccessGrants  GET /v20180820/accessgrantsinstance/grants
@@ -3349,7 +3352,7 @@ struct S3_ControlClient:
             query["application_arn"] = input.ApplicationArn.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/grants", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/grants", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListAccessGrantsInstances  GET /v20180820/accessgrantsinstances
@@ -3362,7 +3365,7 @@ struct S3_ControlClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstances", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstances", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListAccessGrantsLocations  GET /v20180820/accessgrantsinstance/locations
@@ -3377,7 +3380,7 @@ struct S3_ControlClient:
             query["locationscope"] = input.LocationScope.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/locations", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/locations", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListAccessPoints  GET /v20180820/accesspoint
@@ -3396,7 +3399,7 @@ struct S3_ControlClient:
             query["dataSourceType"] = input.DataSourceType.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspoint", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListAccessPointsForDirectoryBuckets  GET /v20180820/accesspointfordirectory
@@ -3411,7 +3414,7 @@ struct S3_ControlClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointfordirectory", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointfordirectory", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListAccessPointsForObjectLambda  GET /v20180820/accesspointforobjectlambda
@@ -3424,7 +3427,25 @@ struct S3_ControlClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accesspointforobjectlambda", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
+
+    # ListCallerAccessGrants  GET /v20180820/accessgrantsinstance/caller/grants
+    def list_caller_access_grants(self, ListCallerAccessGrantsRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] query = {}
+        if input.GrantScope.is_some():
+            query["grantscope"] = input.GrantScope.unwrap_or("")
+        if input.NextToken.is_some():
+            query["nextToken"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["maxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.AllowedByApplication.is_some():
+            auto qt0 = s3_control_bind_bool(input.AllowedByApplication.unwrap_or(False))
+            query["allowedByApplication"] = qt0
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/accessgrantsinstance/caller/grants", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListMultiRegionAccessPoints  GET /v20180820/mrap/instances
@@ -3437,7 +3458,7 @@ struct S3_ControlClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/mrap/instances", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListRegionalBuckets  GET /v20180820/bucket
@@ -3452,7 +3473,7 @@ struct S3_ControlClient:
         headers["x-amz-account-id"] = input.AccountId
         if input.OutpostId.is_some():
             headers["x-amz-outpost-id"] = input.OutpostId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/bucket", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListStorageLensConfigurations  GET /v20180820/storagelens
@@ -3463,7 +3484,7 @@ struct S3_ControlClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelens", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelens", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListStorageLensGroups  GET /v20180820/storagelensgroup
@@ -3474,7 +3495,7 @@ struct S3_ControlClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelensgroup", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/storagelensgroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # ListTagsForResource  GET /v20180820/tags/{resourceArn+}
@@ -3484,7 +3505,7 @@ struct S3_ControlClient:
         greedy_labels["resourceArn"] = input.ResourceArn
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20180820/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # PutAccessGrantsInstanceResourcePolicy  PUT /v20180820/accessgrantsinstance/resourcepolicy
@@ -3492,7 +3513,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accessgrantsinstance/resourcepolicy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accessgrantsinstance/resourcepolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutAccessGrantsInstanceResourcePolicyRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "Policy", input.Policy)
         if input.Organization.is_some():
@@ -3508,7 +3529,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}/configuration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutAccessPointConfigurationForObjectLambdaRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "Configuration")
         auto t1 = input.Configuration.SupportingAccessPoint
@@ -3542,7 +3563,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutAccessPointPolicyRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "Policy", input.Policy)
         auto body = restxml.rest_xml_serialize(root)
@@ -3556,7 +3577,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutAccessPointPolicyForObjectLambdaRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "Policy", input.Policy)
         auto body = restxml.rest_xml_serialize(root)
@@ -3570,7 +3591,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}/scope", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}/scope", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutAccessPointScopeRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "Scope")
         if input.Scope.Prefixes.is_some():
@@ -3583,6 +3604,23 @@ struct S3_ControlClient:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
 
+    # PutBucketPolicy  PUT /v20180820/bucket/{name}/policy
+    def put_bucket_policy(self, PutBucketPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Bucket
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        if input.ConfirmRemoveSelfBucketAccess.is_some():
+            auto qt0 = s3_control_bind_bool(input.ConfirmRemoveSelfBucketAccess.unwrap_or(False))
+            headers["x-amz-confirm-remove-self-bucket-access"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutBucketPolicyRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "Policy", input.Policy)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
     # PutBucketReplication  PUT /v20180820/bucket/{name}/replication
     def put_bucket_replication(self, PutBucketReplicationRequest input) -> str:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
@@ -3590,7 +3628,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/replication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ReplicationConfiguration", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "Role", input.ReplicationConfiguration.Role)
         auto n0 = restxml.rest_xml_struct(root, "Rules")
@@ -3689,7 +3727,7 @@ struct S3_ControlClient:
         labels["name"] = input.Bucket
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("Tagging", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "TagSet")
         for t1 in input.Tagging.TagSet:
@@ -3709,7 +3747,7 @@ struct S3_ControlClient:
         headers["x-amz-account-id"] = input.AccountId
         if input.MFA.is_some():
             headers["x-amz-mfa"] = input.MFA.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/versioning", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/versioning", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("VersioningConfiguration", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         if input.VersioningConfiguration.MFADelete.is_some():
             auto t0 = input.VersioningConfiguration.MFADelete.unwrap()
@@ -3729,7 +3767,7 @@ struct S3_ControlClient:
         labels["id"] = input.JobId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutJobTaggingRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "Tags")
         for t1 in input.Tags:
@@ -3745,7 +3783,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/put-policy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/put-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutMultiRegionAccessPointPolicyRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "ClientToken", input.ClientToken)
         auto n0 = restxml.rest_xml_struct(root, "Details")
@@ -3760,7 +3798,7 @@ struct S3_ControlClient:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/configuration/publicAccessBlock", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/configuration/publicAccessBlock", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PublicAccessBlockConfiguration", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         if input.PublicAccessBlockConfiguration.BlockPublicAcls.is_some():
             auto t0 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.BlockPublicAcls.unwrap())
@@ -3785,7 +3823,7 @@ struct S3_ControlClient:
         labels["storagelensid"] = input.ConfigId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelens/{storagelensid}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelens/{storagelensid}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutStorageLensConfigurationRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "StorageLensConfiguration")
         restxml.rest_xml_scalar(n0, "Id", input.StorageLensConfiguration.Id)
@@ -3988,7 +4026,7 @@ struct S3_ControlClient:
         labels["storagelensid"] = input.ConfigId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelens/{storagelensid}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelens/{storagelensid}/tagging", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("PutStorageLensConfigurationTaggingRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "Tags")
         for t1 in input.Tags:
@@ -4006,7 +4044,7 @@ struct S3_ControlClient:
         greedy_labels["mrap"] = input.Mrap
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v20180820/mrap/instances/{mrap+}/routes", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v20180820/mrap/instances/{mrap+}/routes", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("SubmitMultiRegionAccessPointRoutesRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "RouteUpdates")
         for t1 in input.RouteUpdates:
@@ -4028,7 +4066,7 @@ struct S3_ControlClient:
         greedy_labels["resourceArn"] = input.ResourceArn
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("TagResourceRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "Tags")
         for t1 in input.Tags:
@@ -4039,6 +4077,18 @@ struct S3_ControlClient:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
 
+    # UntagResource  DELETE /v20180820/tags/{resourceArn+}
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query=multi_query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
+
     # UpdateAccessGrantsLocation  PUT /v20180820/accessgrantsinstance/location/{id}
     def update_access_grants_location(self, UpdateAccessGrantsLocationRequest input) -> str:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
@@ -4046,7 +4096,7 @@ struct S3_ControlClient:
         labels["id"] = input.AccessGrantsLocationId
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accessgrantsinstance/location/{id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accessgrantsinstance/location/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("UpdateAccessGrantsLocationRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         restxml.rest_xml_scalar(root, "IAMRoleArn", input.IAMRoleArn)
         auto body = restxml.rest_xml_serialize(root)
@@ -4063,7 +4113,7 @@ struct S3_ControlClient:
         query["priority"] = str(input.Priority)
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs/{id}/priority", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs/{id}/priority", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # UpdateJobStatus  POST /v20180820/jobs/{id}/status
@@ -4078,7 +4128,7 @@ struct S3_ControlClient:
             query["statusUpdateReason"] = input.StatusUpdateReason.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs/{id}/status", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs/{id}/status", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
     # UpdateStorageLensGroup  PUT /v20180820/storagelensgroup/{name}
@@ -4088,7 +4138,7 @@ struct S3_ControlClient:
         labels["name"] = input.Name
         dict[str, str] headers = {}
         headers["x-amz-account-id"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelensgroup/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelensgroup/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("UpdateStorageLensGroupRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
         auto n0 = restxml.rest_xml_struct(root, "StorageLensGroup")
         restxml.rest_xml_scalar(n0, "Name", input.StorageLensGroup.Name)

@@ -154,7 +154,7 @@ struct Inspector_ScanClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def scan_sbom(self, ScanSbomRequest input) -> str:
         auto host = endpoints.regional_host(inspector_scan_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/scan/sbom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/scan/sbom", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ScanSbomDocument(sbom=input.sbom, outputFormat=input.outputFormat)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector_scan_service(), self.region, host)

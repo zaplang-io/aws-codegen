@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 14 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 15 operations — 15 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   49 structs (25 @derive(Json)), 5 enums, 4 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -469,11 +469,6 @@ def launchwizard_error_from_code(str code) -> Launch_WizardError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -588,7 +583,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceLimitException, ResourceNotFoundException, ValidationException
     def create_deployment(self, CreateDeploymentInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createDeployment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createDeployment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workloadName\":" + launchwizard_json_str(input.workloadName))
         parts.append("\"deploymentPatternName\":" + launchwizard_json_str(input.deploymentPatternName))
@@ -613,7 +608,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceLimitException, ResourceNotFoundException, ValidationException
     def delete_deployment(self, DeleteDeploymentInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteDeployment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteDeployment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteDeploymentDocument(deploymentId=input.deploymentId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -622,7 +617,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def get_deployment(self, GetDeploymentInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getDeployment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getDeployment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDeploymentDocument(deploymentId=input.deploymentId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -631,7 +626,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceNotFoundException
     def get_deployment_pattern_version(self, GetDeploymentPatternVersionInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getDeploymentPatternVersion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getDeploymentPatternVersion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDeploymentPatternVersionDocument(workloadName=input.workloadName, deploymentPatternName=input.deploymentPatternName, deploymentPatternVersionName=input.deploymentPatternVersionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -640,7 +635,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def get_workload(self, GetWorkloadInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getWorkload", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getWorkload", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWorkloadDocument(workloadName=input.workloadName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -649,7 +644,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def get_workload_deployment_pattern(self, GetWorkloadDeploymentPatternInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getWorkloadDeploymentPattern", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getWorkloadDeploymentPattern", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWorkloadDeploymentPatternDocument(workloadName=input.workloadName, deploymentPatternName=input.deploymentPatternName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -658,7 +653,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_deployment_events(self, ListDeploymentEventsInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listDeploymentEvents", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listDeploymentEvents", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDeploymentEventsDocument(deploymentId=input.deploymentId, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -667,7 +662,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_deployment_pattern_versions(self, ListDeploymentPatternVersionsInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listDeploymentPatternVersions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listDeploymentPatternVersions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workloadName\":" + launchwizard_json_str(input.workloadName))
         parts.append("\"deploymentPatternName\":" + launchwizard_json_str(input.deploymentPatternName))
@@ -690,7 +685,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ValidationException
     def list_deployments(self, ListDeploymentsInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listDeployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listDeployments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -713,14 +708,14 @@ struct Launch_WizardClient:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, launchwizard_service(), self.region, host)
 
     # ListWorkloadDeploymentPatterns  POST /listWorkloadDeploymentPatterns
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def list_workload_deployment_patterns(self, ListWorkloadDeploymentPatternsInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listWorkloadDeploymentPatterns", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listWorkloadDeploymentPatterns", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkloadDeploymentPatternsDocument(workloadName=input.workloadName, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -729,7 +724,7 @@ struct Launch_WizardClient:
     # errors: InternalServerException, ValidationException
     def list_workloads(self, ListWorkloadsInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listWorkloads", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listWorkloads", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkloadsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
@@ -740,7 +735,7 @@ struct Launch_WizardClient:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -749,11 +744,22 @@ struct Launch_WizardClient:
         auto bp = restjson.rest_json_document(b, launchwizard_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, launchwizard_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(launchwizard_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, launchwizard_service(), self.region, host)
+
     # UpdateDeployment  POST /updateDeployment
     # errors: InternalServerException, ResourceLimitException, ResourceNotFoundException, ValidationException
     def update_deployment(self, UpdateDeploymentInput input) -> str:
         auto host = endpoints.regional_host(launchwizard_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateDeployment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateDeployment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"deploymentId\":" + launchwizard_json_str(input.deploymentId))
         list[str] m0 = []

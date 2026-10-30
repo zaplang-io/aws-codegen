@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 10 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 11 operations — 11 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   31 structs (15 @derive(Json)), 5 enums, 4 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -318,11 +318,6 @@ def license_manager_linux_subscriptions_error_from_code(str code) -> License_Man
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -402,7 +397,7 @@ struct License_Manager_Linux_SubscriptionsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def deregister_subscription_provider(self, DeregisterSubscriptionProviderRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/DeregisterSubscriptionProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/DeregisterSubscriptionProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeregisterSubscriptionProviderDocument(SubscriptionProviderArn=input.SubscriptionProviderArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
@@ -411,7 +406,7 @@ struct License_Manager_Linux_SubscriptionsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_registered_subscription_provider(self, GetRegisteredSubscriptionProviderRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/GetRegisteredSubscriptionProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/GetRegisteredSubscriptionProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRegisteredSubscriptionProviderDocument(SubscriptionProviderArn=input.SubscriptionProviderArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
@@ -420,14 +415,14 @@ struct License_Manager_Linux_SubscriptionsClient:
     # errors: InternalServerException, ThrottlingException, ValidationException
     def get_service_settings(self) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/GetServiceSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/GetServiceSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, license_manager_linux_subscriptions_service(), self.region, host)
 
     # ListLinuxSubscriptionInstances  POST /subscription/ListLinuxSubscriptionInstances
     # errors: InternalServerException, ThrottlingException, ValidationException
     def list_linux_subscription_instances(self, ListLinuxSubscriptionInstancesRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListLinuxSubscriptionInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListLinuxSubscriptionInstances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -448,7 +443,7 @@ struct License_Manager_Linux_SubscriptionsClient:
     # errors: InternalServerException, ThrottlingException, ValidationException
     def list_linux_subscriptions(self, ListLinuxSubscriptionsRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListLinuxSubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListLinuxSubscriptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -469,7 +464,7 @@ struct License_Manager_Linux_SubscriptionsClient:
     # errors: InternalServerException, ThrottlingException, ValidationException
     def list_registered_subscription_providers(self, ListRegisteredSubscriptionProvidersRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListRegisteredSubscriptionProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/ListRegisteredSubscriptionProviders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -492,14 +487,14 @@ struct License_Manager_Linux_SubscriptionsClient:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, license_manager_linux_subscriptions_service(), self.region, host)
 
     # RegisterSubscriptionProvider  POST /subscription/RegisterSubscriptionProvider
     # errors: InternalServerException, ThrottlingException, ValidationException
     def register_subscription_provider(self, RegisterSubscriptionProviderRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/RegisterSubscriptionProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/RegisterSubscriptionProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SecretArn\":" + license_manager_linux_subscriptions_json_str(input.SecretArn))
         parts.append("\"SubscriptionProviderSource\":" + license_manager_linux_subscriptions_json_str(input.SubscriptionProviderSource))
@@ -518,7 +513,7 @@ struct License_Manager_Linux_SubscriptionsClient:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -527,11 +522,22 @@ struct License_Manager_Linux_SubscriptionsClient:
         auto bp = restjson.rest_json_document(b, license_manager_linux_subscriptions_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, license_manager_linux_subscriptions_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, license_manager_linux_subscriptions_service(), self.region, host)
+
     # UpdateServiceSettings  POST /subscription/UpdateServiceSettings
     # errors: InternalServerException, ThrottlingException, ValidationException
     def update_service_settings(self, UpdateServiceSettingsRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_linux_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/subscription/UpdateServiceSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/subscription/UpdateServiceSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AllowUpdate.is_some():
             auto u0 = input.AllowUpdate.unwrap()

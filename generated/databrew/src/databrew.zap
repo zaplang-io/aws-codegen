@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 43 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 44 operations — 44 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   140 structs (83 @derive(Json)), 16 enums, 6 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1290,11 +1290,6 @@ def databrew_error_from_code(str code) -> DataBrewError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1618,7 +1613,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/recipes/{name}/batchDeleteRecipeVersion", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recipes/{name}/batchDeleteRecipeVersion", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.RecipeVersions:
@@ -1631,7 +1626,7 @@ struct DataBrewClient:
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ValidationException
     def create_dataset(self, CreateDatasetRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + databrew_json_str(input.Name))
         if input.Format.is_some():
@@ -1657,7 +1652,7 @@ struct DataBrewClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_profile_job(self, CreateProfileJobRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/profileJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profileJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DatasetName\":" + databrew_json_str(input.DatasetName))
         if input.EncryptionKeyArn.is_some():
@@ -1706,7 +1701,7 @@ struct DataBrewClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def create_project(self, CreateProjectRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/projects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/projects", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DatasetName\":" + databrew_json_str(input.DatasetName))
         parts.append("\"Name\":" + databrew_json_str(input.Name))
@@ -1728,7 +1723,7 @@ struct DataBrewClient:
     # errors: ConflictException, ServiceQuotaExceededException, ValidationException
     def create_recipe(self, CreateRecipeRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/recipes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recipes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -1751,7 +1746,7 @@ struct DataBrewClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_recipe_job(self, CreateRecipeJobRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/recipeJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recipeJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DatasetName.is_some():
             auto u0 = input.DatasetName.unwrap()
@@ -1813,7 +1808,7 @@ struct DataBrewClient:
     # errors: ConflictException, ServiceQuotaExceededException, ValidationException
     def create_ruleset(self, CreateRulesetRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/rulesets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rulesets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + databrew_json_str(input.Name))
         if input.Description.is_some():
@@ -1837,7 +1832,7 @@ struct DataBrewClient:
     # errors: ConflictException, ServiceQuotaExceededException, ValidationException
     def create_schedule(self, CreateScheduleRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/schedules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/schedules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.JobNames.is_some():
             auto u0 = input.JobNames.unwrap()
@@ -1862,7 +1857,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/datasets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DeleteJob  DELETE /jobs/{name}
@@ -1871,7 +1866,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/jobs/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/jobs/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DeleteProject  DELETE /projects/{name}
@@ -1880,7 +1875,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/projects/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/projects/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DeleteRecipeVersion  DELETE /recipes/{name}/recipeVersion/{recipeVersion}
@@ -1890,7 +1885,7 @@ struct DataBrewClient:
         dict[str, str] labels = {}
         labels["name"] = input.Name
         labels["recipeVersion"] = input.RecipeVersion
-        auto b = binding.HttpBinding(method="DELETE", path_template="/recipes/{name}/recipeVersion/{recipeVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/recipes/{name}/recipeVersion/{recipeVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DeleteRuleset  DELETE /rulesets/{name}
@@ -1899,7 +1894,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/rulesets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/rulesets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DeleteSchedule  DELETE /schedules/{name}
@@ -1908,7 +1903,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/schedules/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/schedules/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DescribeDataset  GET /datasets/{name}
@@ -1917,7 +1912,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DescribeJob  GET /jobs/{name}
@@ -1926,7 +1921,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DescribeJobRun  GET /jobs/{name}/jobRun/{runId}
@@ -1936,7 +1931,7 @@ struct DataBrewClient:
         dict[str, str] labels = {}
         labels["name"] = input.Name
         labels["runId"] = input.RunId
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{name}/jobRun/{runId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{name}/jobRun/{runId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DescribeProject  GET /projects/{name}
@@ -1945,7 +1940,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/projects/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/projects/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DescribeRecipe  GET /recipes/{name}
@@ -1957,7 +1952,7 @@ struct DataBrewClient:
         dict[str, str] query = {}
         if input.RecipeVersion.is_some():
             query["recipeVersion"] = input.RecipeVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/recipes/{name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recipes/{name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DescribeRuleset  GET /rulesets/{name}
@@ -1966,7 +1961,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/rulesets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rulesets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # DescribeSchedule  GET /schedules/{name}
@@ -1975,7 +1970,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/schedules/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schedules/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListDatasets  GET /datasets
@@ -1987,7 +1982,7 @@ struct DataBrewClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListJobRuns  GET /jobs/{name}/jobRuns
@@ -2001,7 +1996,7 @@ struct DataBrewClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{name}/jobRuns", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{name}/jobRuns", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListJobs  GET /jobs
@@ -2017,7 +2012,7 @@ struct DataBrewClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.ProjectName.is_some():
             query["projectName"] = input.ProjectName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListProjects  GET /projects
@@ -2029,7 +2024,7 @@ struct DataBrewClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/projects", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/projects", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListRecipeVersions  GET /recipeVersions
@@ -2042,7 +2037,7 @@ struct DataBrewClient:
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
         query["name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/recipeVersions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recipeVersions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListRecipes  GET /recipes
@@ -2056,7 +2051,7 @@ struct DataBrewClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.RecipeVersion.is_some():
             query["recipeVersion"] = input.RecipeVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/recipes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recipes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListRulesets  GET /rulesets
@@ -2070,7 +2065,7 @@ struct DataBrewClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rulesets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rulesets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListSchedules  GET /schedules
@@ -2084,7 +2079,7 @@ struct DataBrewClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/schedules", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schedules", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -2093,7 +2088,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # PublishRecipe  POST /recipes/{name}/publishRecipe
@@ -2102,7 +2097,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/recipes/{name}/publishRecipe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recipes/{name}/publishRecipe", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PublishRecipeDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
@@ -2113,7 +2108,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}/sendProjectSessionAction", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}/sendProjectSessionAction", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Preview.is_some():
             auto u0 = input.Preview.unwrap()
@@ -2139,7 +2134,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/jobs/{name}/startJobRun", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs/{name}/startJobRun", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # StartProjectSession  PUT /projects/{name}/startProjectSession
@@ -2148,7 +2143,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}/startProjectSession", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}/startProjectSession", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartProjectSessionDocument(AssumeControl=input.AssumeControl)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
@@ -2160,7 +2155,7 @@ struct DataBrewClient:
         dict[str, str] labels = {}
         labels["name"] = input.Name
         labels["runId"] = input.RunId
-        auto b = binding.HttpBinding(method="POST", path_template="/jobs/{name}/jobRun/{runId}/stopJobRun", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs/{name}/jobRun/{runId}/stopJobRun", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -2169,7 +2164,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -2178,13 +2173,24 @@ struct DataBrewClient:
         auto bp = restjson.rest_json_document(b, databrew_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(databrew_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, databrew_service(), self.region, host)
+
     # UpdateDataset  PUT /datasets/{name}
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def update_dataset(self, UpdateDatasetRequest input) -> str:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Format.is_some():
             auto u0 = input.Format.unwrap()
@@ -2205,7 +2211,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/profileJobs/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/profileJobs/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Configuration.is_some():
             auto u0 = input.Configuration.unwrap()
@@ -2248,7 +2254,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/projects/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProjectDocument(Sample=input.Sample, RoleArn=input.RoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, databrew_service(), self.region, host)
@@ -2259,7 +2265,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/recipes/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/recipes/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2279,7 +2285,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/recipeJobs/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/recipeJobs/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.EncryptionKeyArn.is_some():
             auto u0 = input.EncryptionKeyArn.unwrap()
@@ -2327,7 +2333,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/rulesets/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/rulesets/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2345,7 +2351,7 @@ struct DataBrewClient:
         auto host = endpoints.regional_host(databrew_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/schedules/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/schedules/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.JobNames.is_some():
             auto u0 = input.JobNames.unwrap()

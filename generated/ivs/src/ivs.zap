@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 46 operations — 45 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 46 operations — 46 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   131 structs (67 @derive(Json)), 15 enums, 11 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1227,11 +1227,6 @@ def ivs_error_from_code(str code) -> ivsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1503,7 +1498,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ServiceUnavailable, ValidationException
     def batch_get_channel(self, BatchGetChannelRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.arns:
@@ -1516,7 +1511,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ServiceUnavailable, ValidationException
     def batch_get_stream_key(self, BatchGetStreamKeyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetStreamKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGetStreamKey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.arns:
@@ -1529,7 +1524,7 @@ struct ivsClient:
     # errors: AccessDeniedException, PendingVerification, ThrottlingException, ValidationException
     def batch_start_viewer_session_revocation(self, BatchStartViewerSessionRevocationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchStartViewerSessionRevocation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchStartViewerSessionRevocation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.viewerSessions:
@@ -1542,7 +1537,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_ad_configuration(self, CreateAdConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateAdConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateAdConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1567,7 +1562,7 @@ struct ivsClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_channel(self, CreateChannelRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1618,7 +1613,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_failover_slate_configuration(self, CreateFailoverSlateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1645,7 +1640,7 @@ struct ivsClient:
     # errors: AccessDeniedException, PendingVerification, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_playback_restriction_policy(self, CreatePlaybackRestrictionPolicyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreatePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreatePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.allowedCountries.is_some():
             auto u0 = input.allowedCountries.unwrap()
@@ -1678,7 +1673,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ServiceQuotaExceededException, ValidationException
     def create_recording_configuration(self, CreateRecordingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecordingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecordingConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1706,7 +1701,7 @@ struct ivsClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_stream_key(self, CreateStreamKeyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateStreamKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateStreamKey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"channelArn\":" + ivs_json_str(input.channelArn))
         if input.tags.is_some():
@@ -1722,7 +1717,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_ad_configuration(self, DeleteAdConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteAdConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteAdConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAdConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1731,7 +1726,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_channel(self, DeleteChannelRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteChannelDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1740,7 +1735,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_failover_slate_configuration(self, DeleteFailoverSlateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteFailoverSlateConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1749,7 +1744,7 @@ struct ivsClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_playback_key_pair(self, DeletePlaybackKeyPairRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeletePlaybackKeyPair", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeletePlaybackKeyPair", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePlaybackKeyPairDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1758,7 +1753,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_playback_restriction_policy(self, DeletePlaybackRestrictionPolicyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeletePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeletePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePlaybackRestrictionPolicyDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1767,7 +1762,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_recording_configuration(self, DeleteRecordingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecordingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecordingConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRecordingConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1776,7 +1771,7 @@ struct ivsClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_stream_key(self, DeleteStreamKeyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteStreamKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteStreamKey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteStreamKeyDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1785,7 +1780,7 @@ struct ivsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def get_ad_configuration(self, GetAdConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetAdConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetAdConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetAdConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1794,7 +1789,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_channel(self, GetChannelRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetChannelDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1803,7 +1798,7 @@ struct ivsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def get_failover_slate_configuration(self, GetFailoverSlateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetFailoverSlateConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1812,7 +1807,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_playback_key_pair(self, GetPlaybackKeyPairRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetPlaybackKeyPair", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetPlaybackKeyPair", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPlaybackKeyPairDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1821,7 +1816,7 @@ struct ivsClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
     def get_playback_restriction_policy(self, GetPlaybackRestrictionPolicyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetPlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetPlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPlaybackRestrictionPolicyDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1830,7 +1825,7 @@ struct ivsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
     def get_recording_configuration(self, GetRecordingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRecordingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRecordingConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRecordingConfigurationDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1839,7 +1834,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ChannelNotBroadcasting, ResourceNotFoundException, ValidationException
     def get_stream(self, GetStreamRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetStreamDocument(channelArn=input.channelArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1848,7 +1843,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_stream_key(self, GetStreamKeyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetStreamKey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetStreamKey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetStreamKeyDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1857,7 +1852,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_stream_session(self, GetStreamSessionRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetStreamSession", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetStreamSession", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetStreamSessionDocument(channelArn=input.channelArn, streamId=input.streamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1866,7 +1861,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ServiceQuotaExceededException, ValidationException
     def import_playback_key_pair(self, ImportPlaybackKeyPairRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ImportPlaybackKeyPair", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ImportPlaybackKeyPair", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"publicKeyMaterial\":" + ivs_json_str(input.publicKeyMaterial))
         if input.name.is_some():
@@ -1885,7 +1880,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ChannelNotBroadcasting, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def insert_ad_break(self, InsertAdBreakRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/InsertAdBreak", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/InsertAdBreak", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = InsertAdBreakDocument(channelArn=input.channelArn, durationSeconds=input.durationSeconds, adBreakId=input.adBreakId, targetStartAt=input.targetStartAt)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1894,7 +1889,7 @@ struct ivsClient:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_ad_configurations(self, ListAdConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListAdConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListAdConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAdConfigurationsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1903,7 +1898,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, ValidationException
     def list_channels(self, ListChannelsRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListChannels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListChannels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListChannelsDocument(filterByName=input.filterByName, filterByRecordingConfigurationArn=input.filterByRecordingConfigurationArn, filterByPlaybackRestrictionPolicyArn=input.filterByPlaybackRestrictionPolicyArn, filterByAdConfigurationArn=input.filterByAdConfigurationArn, filterByFailoverSlateConfigurationArn=input.filterByFailoverSlateConfigurationArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1912,7 +1907,7 @@ struct ivsClient:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_failover_slate_configurations(self, ListFailoverSlateConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListFailoverSlateConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListFailoverSlateConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListFailoverSlateConfigurationsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1921,7 +1916,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ValidationException
     def list_playback_key_pairs(self, ListPlaybackKeyPairsRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPlaybackKeyPairs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPlaybackKeyPairs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPlaybackKeyPairsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1930,7 +1925,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ValidationException
     def list_playback_restriction_policies(self, ListPlaybackRestrictionPoliciesRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPlaybackRestrictionPolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPlaybackRestrictionPolicies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPlaybackRestrictionPoliciesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1939,7 +1934,7 @@ struct ivsClient:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def list_recording_configurations(self, ListRecordingConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRecordingConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRecordingConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecordingConfigurationsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1948,7 +1943,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def list_stream_keys(self, ListStreamKeysRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListStreamKeys", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListStreamKeys", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStreamKeysDocument(channelArn=input.channelArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1957,7 +1952,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def list_stream_sessions(self, ListStreamSessionsRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListStreamSessions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListStreamSessions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStreamSessionsDocument(channelArn=input.channelArn, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1966,7 +1961,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ValidationException
     def list_streams(self, ListStreamsRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListStreams", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListStreams", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStreamsDocument(filterBy=input.filterBy, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1977,14 +1972,14 @@ struct ivsClient:
         auto host = endpoints.regional_host(ivs_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ivs_service(), self.region, host)
 
     # PutMetadata  POST /PutMetadata
     # errors: AccessDeniedException, ChannelNotBroadcasting, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_metadata(self, PutMetadataRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutMetadata", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutMetadata", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutMetadataDocument(channelArn=input.channelArn, metadata=input.metadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -1993,7 +1988,7 @@ struct ivsClient:
     # errors: AccessDeniedException, InternalServerException, PendingVerification, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_viewer_session_revocation(self, StartViewerSessionRevocationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartViewerSessionRevocation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartViewerSessionRevocation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartViewerSessionRevocationDocument(channelArn=input.channelArn, viewerId=input.viewerId, viewerSessionVersionsLessThanOrEqualTo=input.viewerSessionVersionsLessThanOrEqualTo)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -2002,7 +1997,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ChannelNotBroadcasting, ResourceNotFoundException, StreamUnavailable, ValidationException
     def stop_stream(self, StopStreamRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopStreamDocument(channelArn=input.channelArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -2013,7 +2008,7 @@ struct ivsClient:
         auto host = endpoints.regional_host(ivs_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -2022,11 +2017,22 @@ struct ivsClient:
         auto bp = restjson.rest_json_document(b, ivs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ivs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, ivs_service(), self.region, host)
+
     # UpdateAdConfiguration  POST /UpdateAdConfiguration
     # errors: AccessDeniedException, ConflictException, InternalServerException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_ad_configuration(self, UpdateAdConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateAdConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateAdConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + ivs_json_str(input.arn))
         if input.name.is_some():
@@ -2048,7 +2054,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_channel(self, UpdateChannelRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelDocument(arn=input.arn, name=input.name, latencyMode=input.latencyMode, type=input.type, authorized=input.authorized, recordingConfigurationArn=input.recordingConfigurationArn, insecureIngest=input.insecureIngest, preset=input.preset, playbackRestrictionPolicyArn=input.playbackRestrictionPolicyArn, multitrackInputConfiguration=input.multitrackInputConfiguration, containerFormat=input.containerFormat, adConfigurationArn=input.adConfigurationArn, failoverSlateConfigurationArn=input.failoverSlateConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -2057,7 +2063,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_failover_slate_configuration(self, UpdateFailoverSlateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateFailoverSlateConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFailoverSlateConfigurationDocument(arn=input.arn, name=input.name, activationThresholdSeconds=input.activationThresholdSeconds, minSlateDisplaySeconds=input.minSlateDisplaySeconds, maxSlateDisplaySeconds=input.maxSlateDisplaySeconds)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivs_service(), self.region, host)
@@ -2066,7 +2072,7 @@ struct ivsClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def update_playback_restriction_policy(self, UpdatePlaybackRestrictionPolicyRequest input) -> str:
         auto host = endpoints.regional_host(ivs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdatePlaybackRestrictionPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"arn\":" + ivs_json_str(input.arn))
         if input.allowedCountries.is_some():

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 102 operations — 101 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 102 operations — 102 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   484 structs (294 @derive(Json)), 80 enums, 5 error variants.
 #   17 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -4326,11 +4326,6 @@ def guardduty_error_from_code(str code) -> GuardDutyError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4761,7 +4756,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/administrator", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/administrator", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptAdministratorInvitationDocument(AdministratorId=input.AdministratorId, InvitationId=input.InvitationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -4772,7 +4767,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/master", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/master", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptInvitationDocument(MasterId=input.MasterId, InvitationId=input.InvitationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -4783,7 +4778,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/archive", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/archive", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.FindingIds:
@@ -4796,7 +4791,7 @@ struct GuardDutyClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException, ResourceNotFoundException
     def create_custom_detection_rule_association(self, CreateCustomDetectionRuleAssociationRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/association", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/association", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ruleId\":" + guardduty_json_str(input.RuleId))
         parts.append("\"mode\":" + input.Mode.to_json())
@@ -4816,7 +4811,7 @@ struct GuardDutyClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException, ResourceNotFoundException
     def create_custom_detection_rule_org_configuration(self, CreateCustomDetectionRuleOrgConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/org-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/org-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ruleId\":" + guardduty_json_str(input.RuleId))
         parts.append("\"mode\":" + input.Mode.to_json())
@@ -4842,7 +4837,7 @@ struct GuardDutyClient:
     # errors: BadRequestException, InternalServerErrorException
     def create_detector(self, CreateDetectorRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/detector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"enable\":" + json.dumps(JsonValue.Bool(input.Enable)))
         if input.ClientToken.is_some():
@@ -4875,7 +4870,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/filter", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/filter", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + guardduty_json_str(input.Name))
         if input.Description.is_some():
@@ -4906,7 +4901,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/ipset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/ipset", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + guardduty_json_str(input.Name))
         parts.append("\"format\":" + input.Format.to_json())
@@ -4933,7 +4928,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/investigation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/investigation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateInvestigationDocument(TriggerPrompt=input.TriggerPrompt, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -4942,7 +4937,7 @@ struct GuardDutyClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException
     def create_malware_protection_plan(self, CreateMalwareProtectionPlanRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/malware-protection-plan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/malware-protection-plan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -4967,7 +4962,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountDetails:
@@ -4982,7 +4977,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/publishingDestination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/publishingDestination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"destinationType\":" + guardduty_json_str(input.DestinationType))
         parts.append("\"destinationProperties\":" + input.DestinationProperties.to_json())
@@ -5004,7 +4999,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/create", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FindingTypes.is_some():
             auto u0 = input.FindingTypes.unwrap()
@@ -5021,7 +5016,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatentityset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatentityset", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + guardduty_json_str(input.Name))
         parts.append("\"format\":" + input.Format.to_json())
@@ -5048,7 +5043,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatintelset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatintelset", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + guardduty_json_str(input.Name))
         parts.append("\"format\":" + input.Format.to_json())
@@ -5075,7 +5070,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/trustedentityset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/trustedentityset", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + guardduty_json_str(input.Name))
         parts.append("\"format\":" + input.Format.to_json())
@@ -5100,7 +5095,7 @@ struct GuardDutyClient:
     # errors: BadRequestException, InternalServerErrorException
     def decline_invitations(self, DeclineInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitation/decline", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitation/decline", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5116,7 +5111,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["RuleId"] = input.RuleId
         labels["AssociationId"] = input.AssociationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-detection-rule/rule/{RuleId}/association/{AssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-detection-rule/rule/{RuleId}/association/{AssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteCustomDetectionRuleOrgConfiguration  DELETE /custom-detection-rule/org-configuration/{RuleId}
@@ -5127,7 +5122,7 @@ struct GuardDutyClient:
         labels["RuleId"] = input.RuleId
         dict[str, str] query = {}
         query["mode"] = input.Mode
-        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-detection-rule/org-configuration/{RuleId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-detection-rule/org-configuration/{RuleId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteDetector  DELETE /detector/{DetectorId}
@@ -5136,7 +5131,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteFilter  DELETE /detector/{DetectorId}/filter/{FilterName}
@@ -5146,7 +5141,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["FilterName"] = input.FilterName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteIPSet  DELETE /detector/{DetectorId}/ipset/{IpSetId}
@@ -5156,14 +5151,14 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["IpSetId"] = input.IpSetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteInvitations  POST /invitation/delete
     # errors: BadRequestException, InternalServerErrorException
     def delete_invitations(self, DeleteInvitationsRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/invitation/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/invitation/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5178,7 +5173,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["MalwareProtectionPlanId"] = input.MalwareProtectionPlanId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteMembers  POST /detector/{DetectorId}/member/delete
@@ -5187,7 +5182,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5203,7 +5198,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["DestinationId"] = input.DestinationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/publishingDestination/{DestinationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/publishingDestination/{DestinationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteThreatEntitySet  DELETE /detector/{DetectorId}/threatentityset/{ThreatEntitySetId}
@@ -5213,7 +5208,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["ThreatEntitySetId"] = input.ThreatEntitySetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/threatentityset/{ThreatEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/threatentityset/{ThreatEntitySetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteThreatIntelSet  DELETE /detector/{DetectorId}/threatintelset/{ThreatIntelSetId}
@@ -5223,7 +5218,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["ThreatIntelSetId"] = input.ThreatIntelSetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/threatintelset/{ThreatIntelSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/threatintelset/{ThreatIntelSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DeleteTrustedEntitySet  DELETE /detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}
@@ -5233,7 +5228,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["TrustedEntitySetId"] = input.TrustedEntitySetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DescribeMalwareScans  POST /detector/{DetectorId}/malware-scans
@@ -5242,7 +5237,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/malware-scans", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/malware-scans", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -5270,7 +5265,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/admin", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/admin", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DescribePublishingDestination  GET /detector/{DetectorId}/publishingDestination/{DestinationId}
@@ -5280,14 +5275,14 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["DestinationId"] = input.DestinationId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/publishingDestination/{DestinationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/publishingDestination/{DestinationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DisableOrganizationAdminAccount  POST /admin/disable
     # errors: BadRequestException, InternalServerErrorException
     def disable_organization_admin_account(self, DisableOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/admin/disable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/admin/disable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableOrganizationAdminAccountDocument(AdminAccountId=input.AdminAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -5298,7 +5293,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/administrator/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/administrator/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DisassociateFromMasterAccount  POST /detector/{DetectorId}/master/disassociate
@@ -5307,7 +5302,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/master/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/master/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # DisassociateMembers  POST /detector/{DetectorId}/member/disassociate
@@ -5316,7 +5311,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5329,7 +5324,7 @@ struct GuardDutyClient:
     # errors: BadRequestException, InternalServerErrorException
     def enable_organization_admin_account(self, EnableOrganizationAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/admin/enable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/admin/enable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableOrganizationAdminAccountDocument(AdminAccountId=input.AdminAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -5340,7 +5335,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/administrator", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/administrator", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetCoverageStatistics  POST /detector/{DetectorId}/coverage/statistics
@@ -5349,7 +5344,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/coverage/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/coverage/statistics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FilterCriteria.is_some():
             auto u0 = input.FilterCriteria.unwrap()
@@ -5367,7 +5362,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["RuleId"] = input.RuleId
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/rule/{RuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/rule/{RuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetCustomDetectionRuleAssociation  GET /custom-detection-rule/rule/{RuleId}/association/{AssociationId}
@@ -5377,7 +5372,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["RuleId"] = input.RuleId
         labels["AssociationId"] = input.AssociationId
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/rule/{RuleId}/association/{AssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/rule/{RuleId}/association/{AssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetCustomDetectionRuleOrgConfiguration  GET /custom-detection-rule/org-configuration/{RuleId}
@@ -5388,7 +5383,7 @@ struct GuardDutyClient:
         labels["RuleId"] = input.RuleId
         dict[str, str] query = {}
         query["mode"] = input.Mode
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/org-configuration/{RuleId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/org-configuration/{RuleId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetDetector  GET /detector/{DetectorId}
@@ -5397,7 +5392,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetFilter  GET /detector/{DetectorId}/filter/{FilterName}
@@ -5407,7 +5402,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["FilterName"] = input.FilterName
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetFindings  POST /detector/{DetectorId}/findings/get
@@ -5416,7 +5411,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/get", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/get", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.FindingIds:
@@ -5434,7 +5429,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/statistics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FindingStatisticTypes.is_some():
             auto u0 = input.FindingStatisticTypes.unwrap()
@@ -5464,7 +5459,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["IpSetId"] = input.IpSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetInvestigation  GET /detector/{DetectorId}/investigation/{InvestigationId}
@@ -5474,14 +5469,14 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["InvestigationId"] = input.InvestigationId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/investigation/{InvestigationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/investigation/{InvestigationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetInvitationsCount  GET /invitation/count
     # errors: BadRequestException, InternalServerErrorException
     def get_invitations_count(self) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/invitation/count", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/invitation/count", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetMalwareProtectionPlan  GET /malware-protection-plan/{MalwareProtectionPlanId}
@@ -5490,7 +5485,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["MalwareProtectionPlanId"] = input.MalwareProtectionPlanId
-        auto b = binding.HttpBinding(method="GET", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetMalwareScan  GET /malware-scan/{ScanId}
@@ -5499,7 +5494,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["ScanId"] = input.ScanId
-        auto b = binding.HttpBinding(method="GET", path_template="/malware-scan/{ScanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/malware-scan/{ScanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetMalwareScanSettings  GET /detector/{DetectorId}/malware-scan-settings
@@ -5508,7 +5503,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/malware-scan-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/malware-scan-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetMasterAccount  GET /detector/{DetectorId}/master
@@ -5517,7 +5512,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/master", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/master", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetMemberDetectors  POST /detector/{DetectorId}/member/detector/get
@@ -5526,7 +5521,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/detector/get", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/detector/get", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5541,7 +5536,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/get", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/get", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5554,7 +5549,7 @@ struct GuardDutyClient:
     # errors: BadRequestException, InternalServerErrorException
     def get_organization_statistics(self) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/organization/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/organization/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetRemainingFreeTrialDays  POST /detector/{DetectorId}/freeTrial/daysRemaining
@@ -5563,7 +5558,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/freeTrial/daysRemaining", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/freeTrial/daysRemaining", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5579,7 +5574,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["ThreatEntitySetId"] = input.ThreatEntitySetId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatentityset/{ThreatEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatentityset/{ThreatEntitySetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetThreatIntelSet  GET /detector/{DetectorId}/threatintelset/{ThreatIntelSetId}
@@ -5589,7 +5584,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["ThreatIntelSetId"] = input.ThreatIntelSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatintelset/{ThreatIntelSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatintelset/{ThreatIntelSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetTrustedEntitySet  GET /detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}
@@ -5599,7 +5594,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["TrustedEntitySetId"] = input.TrustedEntitySetId
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # GetUsageStatistics  POST /detector/{DetectorId}/usage/statistics
@@ -5608,7 +5603,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/usage/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/usage/statistics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"usageStatisticsType\":" + input.UsageStatisticType.to_json())
         parts.append("\"usageCriteria\":" + usage_criteria_to_json(input.UsageCriteria))
@@ -5630,7 +5625,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/invite", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/invite", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5651,7 +5646,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/coverage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/coverage", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -5681,7 +5676,7 @@ struct GuardDutyClient:
             query["ruleId"] = input.RuleId.unwrap_or("")
         if input.Mode.is_some():
             query["mode"] = input.Mode.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/association", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/association", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListCustomDetectionRuleOrgConfigurations  GET /custom-detection-rule/org-configuration
@@ -5695,14 +5690,14 @@ struct GuardDutyClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.Status.is_some():
             query["status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/org-configuration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-detection-rule/org-configuration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListCustomDetectionRules  POST /custom-detection-rule/rule
     # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
     def list_custom_detection_rules(self, ListCustomDetectionRulesRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/rule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-detection-rule/rule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -5728,7 +5723,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListFilters  GET /detector/{DetectorId}/filter
@@ -5742,7 +5737,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/filter", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/filter", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListFindings  POST /detector/{DetectorId}/findings
@@ -5751,7 +5746,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FindingCriteria.is_some():
             auto u0 = input.FindingCriteria.unwrap()
@@ -5779,7 +5774,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/ipset", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/ipset", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListInvestigations  POST /detector/{DetectorId}/investigation/list
@@ -5788,7 +5783,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/investigation/list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/investigation/list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListInvestigationsDocument(SortCriteria=input.SortCriteria, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -5802,7 +5797,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/invitation", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/invitation", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListMalwareProtectionPlans  GET /malware-protection-plan
@@ -5812,7 +5807,7 @@ struct GuardDutyClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/malware-protection-plan", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/malware-protection-plan", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListMalwareScans  POST /malware-scan
@@ -5824,7 +5819,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/malware-scan", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/malware-scan", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FilterCriteria.is_some():
             auto u0 = input.FilterCriteria.unwrap()
@@ -5848,7 +5843,7 @@ struct GuardDutyClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.OnlyAssociated.is_some():
             query["onlyAssociated"] = input.OnlyAssociated.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/member", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/member", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListOrganizationAdminAccounts  GET /admin
@@ -5860,7 +5855,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/admin", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/admin", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListPublishingDestinations  GET /detector/{DetectorId}/publishingDestination
@@ -5874,7 +5869,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/publishingDestination", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/publishingDestination", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -5883,7 +5878,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListThreatEntitySets  GET /detector/{DetectorId}/threatentityset
@@ -5897,7 +5892,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatentityset", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatentityset", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListThreatIntelSets  GET /detector/{DetectorId}/threatintelset
@@ -5911,7 +5906,7 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatintelset", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/threatintelset", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # ListTrustedEntitySets  GET /detector/{DetectorId}/trustedentityset
@@ -5925,14 +5920,14 @@ struct GuardDutyClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/trustedentityset", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detector/{DetectorId}/trustedentityset", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
 
     # SendObjectMalwareScan  POST /object-malware-scan/send
     # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
     def send_object_malware_scan(self, SendObjectMalwareScanRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/object-malware-scan/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/object-malware-scan/send", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendObjectMalwareScanDocument(S3Object=input.S3Object)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -5941,7 +5936,7 @@ struct GuardDutyClient:
     # errors: BadRequestException, ConflictException, InternalServerErrorException
     def start_malware_scan(self, StartMalwareScanRequest input) -> str:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/malware-scan/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/malware-scan/start", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMalwareScanDocument(ResourceArn=input.ResourceArn, ClientToken=input.ClientToken, ScanConfiguration=input.ScanConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -5952,7 +5947,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5967,7 +5962,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -5982,7 +5977,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -5997,7 +5992,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/unarchive", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/unarchive", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.FindingIds:
@@ -6006,6 +6001,17 @@ struct GuardDutyClient:
         auto bp = restjson.rest_json_document(b, guardduty_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, BadRequestException, InternalServerErrorException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(guardduty_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, guardduty_service(), self.region, host)
+
     # UpdateCustomDetectionRuleAssociation  PUT /custom-detection-rule/rule/{RuleId}/association/{AssociationId}
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerErrorException, ResourceNotFoundException
     def update_custom_detection_rule_association(self, UpdateCustomDetectionRuleAssociationRequest input) -> str:
@@ -6013,7 +6019,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["RuleId"] = input.RuleId
         labels["AssociationId"] = input.AssociationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/custom-detection-rule/rule/{RuleId}/association/{AssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/custom-detection-rule/rule/{RuleId}/association/{AssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCustomDetectionRuleAssociationDocument(Mode=input.Mode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -6024,7 +6030,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["RuleId"] = input.RuleId
-        auto b = binding.HttpBinding(method="PUT", path_template="/custom-detection-rule/org-configuration/{RuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/custom-detection-rule/org-configuration/{RuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"mode\":" + input.Mode.to_json())
         if input.IncludeAccountIds.is_some():
@@ -6048,7 +6054,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Enable.is_some():
             auto u0 = input.Enable.unwrap()
@@ -6075,7 +6081,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["FilterName"] = input.FilterName
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/filter/{FilterName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -6098,7 +6104,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/findings/feedback", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.FindingIds:
@@ -6118,7 +6124,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["IpSetId"] = input.IpSetId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/ipset/{IpSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIPSetDocument(Name=input.Name, Location=input.Location, Activate=input.Activate, ExpectedBucketOwner=input.ExpectedBucketOwner)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -6129,7 +6135,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["MalwareProtectionPlanId"] = input.MalwareProtectionPlanId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/malware-protection-plan/{MalwareProtectionPlanId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Role.is_some():
             auto u0 = input.Role.unwrap()
@@ -6149,7 +6155,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/malware-scan-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/malware-scan-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ScanResourceCriteria.is_some():
             auto u0 = input.ScanResourceCriteria.unwrap()
@@ -6166,7 +6172,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/detector/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/member/detector/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -6190,7 +6196,7 @@ struct GuardDutyClient:
         auto host = endpoints.regional_host(guardduty_service(), self.region)
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/admin", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/admin", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AutoEnable.is_some():
             auto u0 = input.AutoEnable.unwrap()
@@ -6217,7 +6223,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["DestinationId"] = input.DestinationId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/publishingDestination/{DestinationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/publishingDestination/{DestinationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePublishingDestinationDocument(DestinationProperties=input.DestinationProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -6229,7 +6235,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["ThreatEntitySetId"] = input.ThreatEntitySetId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatentityset/{ThreatEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatentityset/{ThreatEntitySetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateThreatEntitySetDocument(Name=input.Name, Location=input.Location, ExpectedBucketOwner=input.ExpectedBucketOwner, Activate=input.Activate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -6241,7 +6247,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["ThreatIntelSetId"] = input.ThreatIntelSetId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatintelset/{ThreatIntelSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/threatintelset/{ThreatIntelSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateThreatIntelSetDocument(Name=input.Name, Location=input.Location, Activate=input.Activate, ExpectedBucketOwner=input.ExpectedBucketOwner)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)
@@ -6253,7 +6259,7 @@ struct GuardDutyClient:
         dict[str, str] labels = {}
         labels["DetectorId"] = input.DetectorId
         labels["TrustedEntitySetId"] = input.TrustedEntitySetId
-        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/detector/{DetectorId}/trustedentityset/{TrustedEntitySetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTrustedEntitySetDocument(Name=input.Name, Location=input.Location, ExpectedBucketOwner=input.ExpectedBucketOwner, Activate=input.Activate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, guardduty_service(), self.region, host)

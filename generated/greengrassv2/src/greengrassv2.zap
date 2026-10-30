@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 29 operations — 28 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 29 operations — 29 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   104 structs (62 @derive(Json)), 21 enums, 8 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -980,11 +980,6 @@ def greengrass_error_from_code(str code) -> GreengrassV2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1220,7 +1215,7 @@ struct GreengrassV2Client:
     # errors: InternalServerException, ValidationException
     def associate_service_role_to_account(self, AssociateServiceRoleToAccountRequest input) -> str:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/greengrass/servicerole", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/greengrass/servicerole", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateServiceRoleToAccountDocument(roleArn=input.roleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
@@ -1231,7 +1226,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["coreDeviceThingName"] = input.coreDeviceThingName
-        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/associateClientDevices", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/associateClientDevices", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.entries.is_some():
             auto u0 = input.entries.unwrap()
@@ -1248,7 +1243,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["coreDeviceThingName"] = input.coreDeviceThingName
-        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/disassociateClientDevices", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/disassociateClientDevices", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.entries.is_some():
             auto u0 = input.entries.unwrap()
@@ -1265,14 +1260,14 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["deploymentId"] = input.deploymentId
-        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/deployments/{deploymentId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/deployments/{deploymentId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # CreateComponentVersion  POST /greengrass/v2/createComponentVersion
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestAlreadyInProgressException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_component_version(self, CreateComponentVersionRequest input) -> str:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/createComponentVersion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/createComponentVersion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.inlineRecipe.is_some():
             auto u0 = input.inlineRecipe.unwrap()
@@ -1296,7 +1291,7 @@ struct GreengrassV2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestAlreadyInProgressException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_deployment(self, CreateDeploymentRequest input) -> str:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/deployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/deployments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"targetArn\":" + greengrass_json_str(input.targetArn))
         if input.deploymentName.is_some():
@@ -1335,7 +1330,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/v2/components/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/v2/components/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # DeleteCoreDevice  DELETE /greengrass/v2/coreDevices/{coreDeviceThingName}
@@ -1344,7 +1339,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["coreDeviceThingName"] = input.coreDeviceThingName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # DeleteDeployment  DELETE /greengrass/v2/deployments/{deploymentId}
@@ -1353,7 +1348,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["deploymentId"] = input.deploymentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/v2/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/v2/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # DescribeComponent  GET /greengrass/v2/components/{arn}/metadata
@@ -1362,14 +1357,14 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # DisassociateServiceRoleFromAccount  DELETE /greengrass/servicerole
     # errors: InternalServerException
     def disassociate_service_role_from_account(self) -> str:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/servicerole", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/greengrass/servicerole", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # GetComponent  GET /greengrass/v2/components/{arn}
@@ -1381,7 +1376,7 @@ struct GreengrassV2Client:
         dict[str, str] query = {}
         if input.recipeOutputFormat.is_some():
             query["recipeOutputFormat"] = input.recipeOutputFormat.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # GetComponentVersionArtifact  GET /greengrass/v2/components/{arn}/artifacts/{artifactName+}
@@ -1398,7 +1393,7 @@ struct GreengrassV2Client:
         dict[str, str] headers = {}
         if input.iotEndpointType.is_some():
             headers["x-amz-iot-endpoint-type"] = input.iotEndpointType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}/artifacts/{artifactName+}", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}/artifacts/{artifactName+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # GetConnectivityInfo  GET /greengrass/things/{thingName}/connectivityInfo
@@ -1407,7 +1402,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/things/{thingName}/connectivityInfo", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/things/{thingName}/connectivityInfo", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # GetCoreDevice  GET /greengrass/v2/coreDevices/{coreDeviceThingName}
@@ -1416,7 +1411,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["coreDeviceThingName"] = input.coreDeviceThingName
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # GetDeployment  GET /greengrass/v2/deployments/{deploymentId}
@@ -1425,14 +1420,14 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["deploymentId"] = input.deploymentId
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # GetServiceRoleForAccount  GET /greengrass/servicerole
     # errors: InternalServerException
     def get_service_role_for_account(self) -> str:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/servicerole", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/servicerole", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListClientDevicesAssociatedWithCoreDevice  GET /greengrass/v2/coreDevices/{coreDeviceThingName}/associatedClientDevices
@@ -1446,7 +1441,7 @@ struct GreengrassV2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/associatedClientDevices", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/associatedClientDevices", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListComponentVersions  GET /greengrass/v2/components/{arn}/versions
@@ -1460,7 +1455,7 @@ struct GreengrassV2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components/{arn}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListComponents  GET /greengrass/v2/components
@@ -1474,7 +1469,7 @@ struct GreengrassV2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/components", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListCoreDevices  GET /greengrass/v2/coreDevices
@@ -1492,7 +1487,7 @@ struct GreengrassV2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.runtime.is_some():
             query["runtime"] = input.runtime.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListDeployments  GET /greengrass/v2/deployments
@@ -1510,7 +1505,7 @@ struct GreengrassV2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/deployments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/deployments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListEffectiveDeployments  GET /greengrass/v2/coreDevices/{coreDeviceThingName}/effectiveDeployments
@@ -1524,7 +1519,7 @@ struct GreengrassV2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/effectiveDeployments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/effectiveDeployments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListInstalledComponents  GET /greengrass/v2/coreDevices/{coreDeviceThingName}/installedComponents
@@ -1540,7 +1535,7 @@ struct GreengrassV2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.topologyFilter.is_some():
             query["topologyFilter"] = input.topologyFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/installedComponents", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/greengrass/v2/coreDevices/{coreDeviceThingName}/installedComponents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1549,14 +1544,14 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
 
     # ResolveComponentCandidates  POST /greengrass/v2/resolveComponentCandidates
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def resolve_component_candidates(self, ResolveComponentCandidatesRequest input) -> str:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/resolveComponentCandidates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/greengrass/v2/resolveComponentCandidates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.platform.is_some():
             auto u0 = input.platform.unwrap()
@@ -1576,7 +1571,7 @@ struct GreengrassV2Client:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1585,13 +1580,24 @@ struct GreengrassV2Client:
         auto bp = restjson.rest_json_document(b, greengrass_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, greengrass_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(greengrass_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, greengrass_service(), self.region, host)
+
     # UpdateConnectivityInfo  PUT /greengrass/things/{thingName}/connectivityInfo
     # errors: InternalServerException, ValidationException
     def update_connectivity_info(self, UpdateConnectivityInfoRequest input) -> str:
         auto host = endpoints.regional_host(greengrass_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="PUT", path_template="/greengrass/things/{thingName}/connectivityInfo", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/greengrass/things/{thingName}/connectivityInfo", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.connectivityInfo:

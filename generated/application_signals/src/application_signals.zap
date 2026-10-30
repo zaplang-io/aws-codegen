@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 22 with a generated method,
-#   8 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 30 operations — 30 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   137 structs (55 @derive(Json)), 18 enums, 6 error variants.
-#   5 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -1341,26 +1341,6 @@ def application_signals_error_from_code(str code) -> Application_SignalsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetService (httpQuery `StartTime` has unsupported type DateTime)
-#   ListAuditFindings (httpQuery `StartTime` has unsupported type DateTime)
-#   ListGroupingAttributeDefinitions (httpQuery `IncludeLinkedAccounts` has unsupported type bool)
-#   ListServiceDependencies (httpQuery `StartTime` has unsupported type DateTime)
-#   ListServiceDependents (httpQuery `StartTime` has unsupported type DateTime)
-#   ListServiceLevelObjectives (httpQuery `IncludeLinkedAccounts` has unsupported type bool)
-#   ListServiceOperations (httpQuery `StartTime` has unsupported type DateTime)
-#   ListServices (httpQuery `StartTime` has unsupported type DateTime)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListServiceDependencies (operation not generated)
-#   ListServiceDependents (operation not generated)
-#   ListServiceLevelObjectives (operation not generated)
-#   ListServiceOperations (operation not generated)
-#   ListServices (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1723,6 +1703,12 @@ def service_level_indicator_metric_config_to_json(ServiceLevelIndicatorMetricCon
         parts.append("\"CompositeSliConfig\":" + composite_sli_config_to_json(u11))
     return application_signals_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def application_signals_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Application_Signals client: credentials + region, threaded into every operation.
 struct Application_SignalsClient:
     core.Credentials creds
@@ -1732,7 +1718,7 @@ struct Application_SignalsClient:
     # errors: ThrottlingException, ValidationException
     def batch_delete_instrumentation_configurations(self, BatchDeleteInstrumentationConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/batch-delete-instrumentation-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/batch-delete-instrumentation-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DeletionTarget\":" + batch_delete_deletion_target_to_json(input.DeletionTarget))
         auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
@@ -1742,7 +1728,7 @@ struct Application_SignalsClient:
     # errors: ThrottlingException, ValidationException
     def batch_get_service_level_objective_budget_report(self, BatchGetServiceLevelObjectiveBudgetReportInput input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/budget-report", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/budget-report", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Timestamp\":" + str(datetime.to_timestamp(input.Timestamp)))
         list[str] e0 = []
@@ -1756,7 +1742,7 @@ struct Application_SignalsClient:
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_update_exclusion_windows(self, BatchUpdateExclusionWindowsInput input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/exclusion-windows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/exclusion-windows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SloIds:
@@ -1781,7 +1767,7 @@ struct Application_SignalsClient:
     # errors: ConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_instrumentation_configuration(self, CreateInstrumentationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-instrumentation-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-instrumentation-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstrumentationType\":" + input.InstrumentationType.to_json())
         parts.append("\"Service\":" + application_signals_json_str(input.Service))
@@ -1817,7 +1803,7 @@ struct Application_SignalsClient:
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service_level_objective(self, CreateServiceLevelObjectiveInput input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/slo", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/slo", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + application_signals_json_str(input.Name))
         if input.Description.is_some():
@@ -1857,14 +1843,14 @@ struct Application_SignalsClient:
     # errors: AccessDeniedException, ThrottlingException, ValidationException
     def delete_grouping_configuration(self) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/grouping-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/grouping-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
     # DeleteInstrumentationConfiguration  POST /delete-instrumentation-configuration
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_instrumentation_configuration(self, DeleteInstrumentationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-instrumentation-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-instrumentation-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteInstrumentationConfigurationDocument(InstrumentationType=input.InstrumentationType, Service=input.Service, Environment=input.Environment, SignalType=input.SignalType, LocationIdentifier=input.LocationIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
@@ -1875,14 +1861,14 @@ struct Application_SignalsClient:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
     # GetInstrumentationConfiguration  POST /get-instrumentation-configuration
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
     def get_instrumentation_configuration(self, GetInstrumentationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-instrumentation-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-instrumentation-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetInstrumentationConfigurationDocument(InstrumentationType=input.InstrumentationType, Service=input.Service, Environment=input.Environment, SignalType=input.SignalType, LocationIdentifier=input.LocationIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
@@ -1891,9 +1877,25 @@ struct Application_SignalsClient:
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
     def get_instrumentation_configuration_status(self, GetInstrumentationConfigurationStatusRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-instrumentation-configuration-status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-instrumentation-configuration-status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetInstrumentationConfigurationStatusDocument(InstrumentationType=input.InstrumentationType, Service=input.Service, Environment=input.Environment, SignalType=input.SignalType, LocationIdentifier=input.LocationIdentifier, Status=input.Status, StartTime=input.StartTime, EndTime=input.EndTime, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # GetService  POST /service
+    # errors: ThrottlingException, ValidationException
+    def get_service(self, GetServiceInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        query["StartTime"] = datetime.strftime(input.StartTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndTime"] = datetime.strftime(input.EndTime, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="POST", path_template="/service", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.KeyAttributes.keys()):
+            m0.append(application_signals_json_str(k0) + ":" + application_signals_json_str(input.KeyAttributes[k0]))
+        parts.append("\"KeyAttributes\":" + application_signals_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
 
     # GetServiceLevelObjective  GET /slo/{Id}
@@ -1902,8 +1904,39 @@ struct Application_SignalsClient:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
+
+    # ListAuditFindings  POST /auditFindings
+    # errors: ThrottlingException, ValidationException
+    def list_audit_findings(self, ListAuditFindingsInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        query["StartTime"] = datetime.strftime(input.StartTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndTime"] = datetime.strftime(input.EndTime, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="POST", path_template="/auditFindings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.Auditors.is_some():
+            auto u0 = input.Auditors.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(application_signals_json_str(x1))
+            parts.append("\"Auditors\":" + application_signals_json_arr(e1))
+        list[str] e2 = []
+        for x2 in input.AuditTargets:
+            e2.append(x2.to_json())
+        parts.append("\"AuditTargets\":" + application_signals_json_arr(e2))
+        if input.DetailLevel.is_some():
+            auto u3 = input.DetailLevel.unwrap()
+            parts.append("\"DetailLevel\":" + u3.to_json())
+        if input.NextToken.is_some():
+            auto u4 = input.NextToken.unwrap()
+            parts.append("\"NextToken\":" + application_signals_json_str(u4))
+        if input.MaxResults.is_some():
+            auto u5 = input.MaxResults.unwrap()
+            parts.append("\"MaxResults\":" + str(u5))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
 
     # ListEntityEvents  POST /events
     # errors: ThrottlingException, ValidationException
@@ -1914,7 +1947,7 @@ struct Application_SignalsClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Entity.keys()):
@@ -1925,13 +1958,68 @@ struct Application_SignalsClient:
         auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
 
+    # ListGroupingAttributeDefinitions  POST /grouping-attribute-definitions
+    # errors: AccessDeniedException, ThrottlingException, ValidationException
+    def list_grouping_attribute_definitions(self, ListGroupingAttributeDefinitionsInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.AwsAccountId.is_some():
+            query["AwsAccountId"] = input.AwsAccountId.unwrap_or("")
+        if input.IncludeLinkedAccounts.is_some():
+            auto qt0 = application_signals_bind_bool(input.IncludeLinkedAccounts.unwrap_or(False))
+            query["IncludeLinkedAccounts"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/grouping-attribute-definitions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
+
     # ListInstrumentationConfigurations  POST /list-instrumentation-configurations
     # errors: ResourceNotFoundException, ThrottlingException, ValidationException
     def list_instrumentation_configurations(self, ListInstrumentationConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-instrumentation-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-instrumentation-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListInstrumentationConfigurationsDocument(Service=input.Service, Environment=input.Environment, InstrumentationType=input.InstrumentationType, SyncedAt=input.SyncedAt, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # ListServiceDependencies  POST /service-dependencies
+    # errors: ThrottlingException, ValidationException
+    def list_service_dependencies(self, ListServiceDependenciesInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        query["StartTime"] = datetime.strftime(input.StartTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndTime"] = datetime.strftime(input.EndTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/service-dependencies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.KeyAttributes.keys()):
+            m0.append(application_signals_json_str(k0) + ":" + application_signals_json_str(input.KeyAttributes[k0]))
+        parts.append("\"KeyAttributes\":" + application_signals_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # ListServiceDependents  POST /service-dependents
+    # errors: ThrottlingException, ValidationException
+    def list_service_dependents(self, ListServiceDependentsInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        query["StartTime"] = datetime.strftime(input.StartTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndTime"] = datetime.strftime(input.EndTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/service-dependents", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.KeyAttributes.keys()):
+            m0.append(application_signals_json_str(k0) + ":" + application_signals_json_str(input.KeyAttributes[k0]))
+        parts.append("\"KeyAttributes\":" + application_signals_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
 
     # ListServiceLevelObjectiveExclusionWindows  GET /slo/{Id}/exclusion-windows
@@ -1945,14 +2033,73 @@ struct Application_SignalsClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/slo/{Id}/exclusion-windows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/slo/{Id}/exclusion-windows", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
+
+    # ListServiceLevelObjectives  POST /slos
+    # errors: ThrottlingException, ValidationException
+    def list_service_level_objectives(self, ListServiceLevelObjectivesInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        if input.OperationName.is_some():
+            query["OperationName"] = input.OperationName.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.IncludeLinkedAccounts.is_some():
+            auto qt0 = application_signals_bind_bool(input.IncludeLinkedAccounts.unwrap_or(False))
+            query["IncludeLinkedAccounts"] = qt0
+        if input.SloOwnerAwsAccountId.is_some():
+            query["SloOwnerAwsAccountId"] = input.SloOwnerAwsAccountId.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/slos", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.KeyAttributes.is_some():
+            auto u0 = input.KeyAttributes.unwrap()
+            list[str] m1 = []
+            for k1 in sorted(u0.keys()):
+                m1.append(application_signals_json_str(k1) + ":" + application_signals_json_str(u0[k1]))
+            parts.append("\"KeyAttributes\":" + application_signals_json_obj(m1))
+        if input.DependencyConfig.is_some():
+            auto u2 = input.DependencyConfig.unwrap()
+            parts.append("\"DependencyConfig\":" + dependency_config_to_json(u2))
+        if input.MetricSourceTypes.is_some():
+            auto u3 = input.MetricSourceTypes.unwrap()
+            list[str] e4 = []
+            for x4 in u3:
+                e4.append(x4.to_json())
+            parts.append("\"MetricSourceTypes\":" + application_signals_json_arr(e4))
+        if input.MetricSource.is_some():
+            auto u5 = input.MetricSource.unwrap()
+            parts.append("\"MetricSource\":" + metric_source_to_json(u5))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
+
+    # ListServiceOperations  POST /service-operations
+    # errors: ThrottlingException, ValidationException
+    def list_service_operations(self, ListServiceOperationsInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        query["StartTime"] = datetime.strftime(input.StartTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndTime"] = datetime.strftime(input.EndTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/service-operations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] m0 = []
+        for k0 in sorted(input.KeyAttributes.keys()):
+            m0.append(application_signals_json_str(k0) + ":" + application_signals_json_str(input.KeyAttributes[k0]))
+        parts.append("\"KeyAttributes\":" + application_signals_json_obj(m0))
+        auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
 
     # ListServiceStates  POST /service/states
     # errors: ThrottlingException, ValidationException
     def list_service_states(self, ListServiceStatesInput input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/service/states", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/service/states", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
         parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
@@ -1977,20 +2124,39 @@ struct Application_SignalsClient:
         auto bp = restjson.rest_json_document(b, application_signals_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, application_signals_service(), self.region, host)
 
+    # ListServices  GET /services
+    # errors: ThrottlingException, ValidationException
+    def list_services(self, ListServicesInput input) -> str:
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        dict[str, str] query = {}
+        query["StartTime"] = datetime.strftime(input.StartTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndTime"] = datetime.strftime(input.EndTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.MaxResults.is_some():
+            query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.IncludeLinkedAccounts.is_some():
+            auto qt0 = application_signals_bind_bool(input.IncludeLinkedAccounts.unwrap_or(False))
+            query["IncludeLinkedAccounts"] = qt0
+        if input.AwsAccountId.is_some():
+            query["AwsAccountId"] = input.AwsAccountId.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/services", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
+
     # ListTagsForResource  GET /tags
     # errors: ResourceNotFoundException, ThrottlingException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
         dict[str, str] query = {}
         query["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
     # PutGroupingConfiguration  PUT /grouping-configuration
     # errors: AccessDeniedException, ThrottlingException, ValidationException
     def put_grouping_configuration(self, PutGroupingConfigurationInput input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/grouping-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/grouping-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.GroupingAttributeDefinitions:
@@ -2003,7 +2169,7 @@ struct Application_SignalsClient:
     # errors: ThrottlingException, ValidationException
     def report_instrumentation_configuration_status(self, ReportInstrumentationConfigurationStatusRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/report-instrumentation-configuration-status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/report-instrumentation-configuration-status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Service\":" + application_signals_json_str(input.Service))
         parts.append("\"Environment\":" + application_signals_json_str(input.Environment))
@@ -2018,14 +2184,14 @@ struct Application_SignalsClient:
     # errors: AccessDeniedException, ThrottlingException, ValidationException
     def start_discovery(self) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/start-discovery", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/start-discovery", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_signals_service(), self.region, host)
 
     # TagResource  POST /tag-resource
     # errors: ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + application_signals_json_str(input.ResourceArn))
         list[str] e0 = []
@@ -2039,7 +2205,7 @@ struct Application_SignalsClient:
     # errors: ResourceNotFoundException, ThrottlingException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + application_signals_json_str(input.ResourceArn))
         list[str] e0 = []
@@ -2055,7 +2221,7 @@ struct Application_SignalsClient:
         auto host = endpoints.regional_host(application_signals_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/slo/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2120,6 +2286,32 @@ struct Application_SignalsClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListServiceDependencies — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ServiceDependencies).
+    def paginate_list_service_dependencies(self, ListServiceDependenciesInput input):
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        while True:
+            auto raw = self.list_service_dependencies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListServiceDependents — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ServiceDependents).
+    def paginate_list_service_dependents(self, ListServiceDependentsInput input):
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        while True:
+            auto raw = self.list_service_dependents(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListServiceLevelObjectiveExclusionWindows — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: ExclusionWindows).
     def paginate_list_service_level_objective_exclusion_windows(self, ListServiceLevelObjectiveExclusionWindowsInput input):
@@ -2133,12 +2325,51 @@ struct Application_SignalsClient:
                 break
             input.NextToken = Optional.Some(np.token)
 
+    # Paginator for ListServiceLevelObjectives — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: SloSummaries).
+    def paginate_list_service_level_objectives(self, ListServiceLevelObjectivesInput input):
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        while True:
+            auto raw = self.list_service_level_objectives(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListServiceOperations — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ServiceOperations).
+    def paginate_list_service_operations(self, ListServiceOperationsInput input):
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        while True:
+            auto raw = self.list_service_operations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
     # Paginator for ListServiceStates — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: ServiceStates).
     def paginate_list_service_states(self, ListServiceStatesInput input):
         auto host = endpoints.regional_host(application_signals_service(), self.region)
         while True:
             auto raw = self.list_service_states(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
+
+    # Paginator for ListServices — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until it is absent (result key: ServiceSummaries).
+    def paginate_list_services(self, ListServicesInput input):
+        auto host = endpoints.regional_host(application_signals_service(), self.region)
+        while True:
+            auto raw = self.list_services(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "NextToken")

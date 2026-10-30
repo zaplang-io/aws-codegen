@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 64 operations — 63 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 64 operations — 64 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   270 structs (193 @derive(Json)), 27 enums, 17 error variants.
 #   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2175,11 +2175,6 @@ def kafka_error_from_code(str code) -> KafkaError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -2622,7 +2617,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SecretArnList:
@@ -2637,7 +2632,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SecretArnList:
@@ -2652,7 +2647,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/channels", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/channels", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"channelName\":" + kafka_json_str(input.ChannelName))
         if input.EncryptionConfiguration.is_some():
@@ -2684,7 +2679,7 @@ struct KafkaClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_cluster(self, CreateClusterRequest input) -> str:
         auto host = endpoints.regional_host(kafka_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"brokerNodeGroupInfo\":" + broker_node_group_info_to_json(input.BrokerNodeGroupInfo))
         if input.Rebalancing.is_some():
@@ -2727,7 +2722,7 @@ struct KafkaClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_cluster_v2(self, CreateClusterV2Request input) -> str:
         auto host = endpoints.regional_host(kafka_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v2/clusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v2/clusters", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clusterName\":" + kafka_json_str(input.ClusterName))
         if input.Tags.is_some():
@@ -2749,7 +2744,7 @@ struct KafkaClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_configuration(self, CreateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(kafka_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2769,7 +2764,7 @@ struct KafkaClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_replicator(self, CreateReplicatorRequest input) -> str:
         auto host = endpoints.regional_host(kafka_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/replication/v1/replicators", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/replication/v1/replicators", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2802,7 +2797,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/topics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/clusters/{clusterArn}/topics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTopicDocument(TopicName=input.TopicName, PartitionCount=input.PartitionCount, ReplicationFactor=input.ReplicationFactor, Configs=input.Configs)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -2811,7 +2806,7 @@ struct KafkaClient:
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, TooManyRequestsException, UnauthorizedException
     def create_vpc_connection(self, CreateVpcConnectionRequest input) -> str:
         auto host = endpoints.regional_host(kafka_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/vpc-connection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/vpc-connection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"targetClusterArn\":" + kafka_json_str(input.TargetClusterArn))
         parts.append("\"authentication\":" + kafka_json_str(input.Authentication))
@@ -2840,7 +2835,7 @@ struct KafkaClient:
         dict[str, str] labels = {}
         labels["channelArn"] = input.ChannelArn
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DeleteCluster  DELETE /v1/clusters/{clusterArn}
@@ -2852,7 +2847,7 @@ struct KafkaClient:
         dict[str, str] query = {}
         if input.CurrentVersion.is_some():
             query["currentVersion"] = input.CurrentVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DeleteClusterPolicy  DELETE /v1/clusters/{clusterArn}/policy
@@ -2861,7 +2856,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DeleteConfiguration  DELETE /v1/configurations/{arn}
@@ -2870,7 +2865,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/configurations/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/configurations/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DeleteReplicator  DELETE /replication/v1/replicators/{replicatorArn}
@@ -2882,7 +2877,7 @@ struct KafkaClient:
         dict[str, str] query = {}
         if input.CurrentVersion.is_some():
             query["currentVersion"] = input.CurrentVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/replication/v1/replicators/{replicatorArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/replication/v1/replicators/{replicatorArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DeleteTopic  DELETE /v1/clusters/{clusterArn}/topics/{topicName}
@@ -2892,7 +2887,7 @@ struct KafkaClient:
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
         labels["topicName"] = input.TopicName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}/topics/{topicName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/clusters/{clusterArn}/topics/{topicName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DeleteVpcConnection  DELETE /v1/vpc-connection/{arn}
@@ -2901,7 +2896,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/vpc-connection/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/vpc-connection/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeChannel  GET /v1/clusters/{clusterArn}/channels/{channelArn}
@@ -2911,7 +2906,7 @@ struct KafkaClient:
         dict[str, str] labels = {}
         labels["channelArn"] = input.ChannelArn
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeCluster  GET /v1/clusters/{clusterArn}
@@ -2920,7 +2915,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeClusterOperation  GET /v1/operations/{clusterOperationArn}
@@ -2929,7 +2924,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterOperationArn"] = input.ClusterOperationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/operations/{clusterOperationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/operations/{clusterOperationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeClusterOperationV2  GET /api/v2/operations/{clusterOperationArn}
@@ -2938,7 +2933,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterOperationArn"] = input.ClusterOperationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/operations/{clusterOperationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/operations/{clusterOperationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeClusterV2  GET /api/v2/clusters/{clusterArn}
@@ -2947,7 +2942,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/clusters/{clusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/clusters/{clusterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeConfiguration  GET /v1/configurations/{arn}
@@ -2956,7 +2951,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeConfigurationRevision  GET /v1/configurations/{arn}/revisions/{revision}
@@ -2966,7 +2961,7 @@ struct KafkaClient:
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
         labels["revision"] = str(input.Revision)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{arn}/revisions/{revision}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{arn}/revisions/{revision}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeReplicator  GET /replication/v1/replicators/{replicatorArn}
@@ -2975,7 +2970,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["replicatorArn"] = input.ReplicatorArn
-        auto b = binding.HttpBinding(method="GET", path_template="/replication/v1/replicators/{replicatorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/replication/v1/replicators/{replicatorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeTopic  GET /v1/clusters/{clusterArn}/topics/{topicName}
@@ -2985,7 +2980,7 @@ struct KafkaClient:
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
         labels["topicName"] = input.TopicName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/topics/{topicName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/topics/{topicName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeTopicPartitions  GET /v1/clusters/{clusterArn}/topics/{topicName}/partitions
@@ -3000,7 +2995,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/topics/{topicName}/partitions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/topics/{topicName}/partitions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # DescribeVpcConnection  GET /v1/vpc-connection/{arn}
@@ -3009,7 +3004,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/vpc-connection/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/vpc-connection/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # GetBootstrapBrokers  GET /v1/clusters/{clusterArn}/bootstrap-brokers
@@ -3018,7 +3013,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/bootstrap-brokers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/bootstrap-brokers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # GetClusterPolicy  GET /v1/clusters/{clusterArn}/policy
@@ -3027,7 +3022,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # GetCompatibleKafkaVersions  GET /v1/compatible-kafka-versions
@@ -3037,7 +3032,7 @@ struct KafkaClient:
         dict[str, str] query = {}
         if input.ClusterArn.is_some():
             query["clusterArn"] = input.ClusterArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/compatible-kafka-versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/compatible-kafka-versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListChannels  GET /v1/clusters/{clusterArn}/channels
@@ -3053,7 +3048,7 @@ struct KafkaClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.TopicNameFilter.is_some():
             query["topicNameFilter"] = input.TopicNameFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/channels", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/channels", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListClientVpcConnections  GET /v1/clusters/{clusterArn}/client-vpc-connections
@@ -3067,7 +3062,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/client-vpc-connections", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/client-vpc-connections", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListClusterOperations  GET /v1/clusters/{clusterArn}/operations
@@ -3081,7 +3076,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/operations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/operations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListClusterOperationsV2  GET /api/v2/clusters/{clusterArn}/operations
@@ -3095,7 +3090,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/clusters/{clusterArn}/operations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/clusters/{clusterArn}/operations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListClusters  GET /v1/clusters
@@ -3109,7 +3104,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListClustersV2  GET /api/v2/clusters
@@ -3125,7 +3120,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/clusters", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v2/clusters", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListConfigurationRevisions  GET /v1/configurations/{arn}/revisions
@@ -3139,7 +3134,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{arn}/revisions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations/{arn}/revisions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListConfigurations  GET /v1/configurations
@@ -3151,7 +3146,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/configurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListKafkaVersions  GET /v1/kafka-versions
@@ -3163,7 +3158,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/kafka-versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/kafka-versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListNodes  GET /v1/clusters/{clusterArn}/nodes
@@ -3177,7 +3172,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/nodes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/nodes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListReplicators  GET /replication/v1/replicators
@@ -3191,7 +3186,7 @@ struct KafkaClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.ReplicatorNameFilter.is_some():
             query["replicatorNameFilter"] = input.ReplicatorNameFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/replication/v1/replicators", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/replication/v1/replicators", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListScramSecrets  GET /v1/clusters/{clusterArn}/scram-secrets
@@ -3205,7 +3200,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/scram-secrets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/tags/{resourceArn}
@@ -3214,7 +3209,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListTopics  GET /v1/clusters/{clusterArn}/topics
@@ -3230,7 +3225,7 @@ struct KafkaClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.TopicNameFilter.is_some():
             query["topicNameFilter"] = input.TopicNameFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/topics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/clusters/{clusterArn}/topics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # ListVpcConnections  GET /v1/vpc-connections
@@ -3242,7 +3237,7 @@ struct KafkaClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/vpc-connections", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/vpc-connections", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
 
     # PutClusterPolicy  PUT /v1/clusters/{clusterArn}/policy
@@ -3251,7 +3246,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutClusterPolicyDocument(CurrentVersion=input.CurrentVersion, Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3262,7 +3257,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/reboot-broker", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/reboot-broker", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.BrokerIds:
@@ -3277,7 +3272,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/client-vpc-connection", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/client-vpc-connection", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RejectClientVpcConnectionDocument(VpcConnectionArn=input.VpcConnectionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3288,7 +3283,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -3297,13 +3292,24 @@ struct KafkaClient:
         auto bp = restjson.rest_json_document(b, kafka_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/tags/{resourceArn}
+    # errors: BadRequestException, InternalServerErrorException, NotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(kafka_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, kafka_service(), self.region, host)
+
     # UpdateBrokerCount  PUT /v1/clusters/{clusterArn}/nodes/count
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableException, UnauthorizedException
     def update_broker_count(self, UpdateBrokerCountRequest input) -> str:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/count", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/count", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrokerCountDocument(CurrentVersion=input.CurrentVersion, TargetNumberOfBrokerNodes=input.TargetNumberOfBrokerNodes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3314,7 +3320,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/storage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/storage", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"currentVersion\":" + kafka_json_str(input.CurrentVersion))
         list[str] e0 = []
@@ -3330,7 +3336,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/type", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/nodes/type", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBrokerTypeDocument(CurrentVersion=input.CurrentVersion, TargetInstanceType=input.TargetInstanceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3342,7 +3348,7 @@ struct KafkaClient:
         dict[str, str] labels = {}
         labels["channelArn"] = input.ChannelArn
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/channels/{channelArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelDocument(IcebergDestinationUpdate=input.IcebergDestinationUpdate, S3DestinationUpdate=input.S3DestinationUpdate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3353,7 +3359,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateClusterConfigurationDocument(ConfigurationInfo=input.ConfigurationInfo, CurrentVersion=input.CurrentVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3364,7 +3370,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/version", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateClusterKafkaVersionDocument(ConfigurationInfo=input.ConfigurationInfo, CurrentVersion=input.CurrentVersion, TargetKafkaVersion=input.TargetKafkaVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3375,7 +3381,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.Arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/configurations/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/configurations/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConfigurationDocument(Description=input.Description, ServerProperties=input.ServerProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3386,7 +3392,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/connectivity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/connectivity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConnectivityDocument(ConnectivityInfo=input.ConnectivityInfo, CurrentVersion=input.CurrentVersion, ZookeeperAccess=input.ZookeeperAccess)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3397,7 +3403,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/monitoring", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/monitoring", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMonitoringDocument(CurrentVersion=input.CurrentVersion, EnhancedMonitoring=input.EnhancedMonitoring, OpenMonitoring=input.OpenMonitoring, LoggingInfo=input.LoggingInfo)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3408,7 +3414,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/rebalancing", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/rebalancing", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRebalancingDocument(CurrentVersion=input.CurrentVersion, Rebalancing=input.Rebalancing)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3419,7 +3425,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["replicatorArn"] = input.ReplicatorArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/replication/v1/replicators/{replicatorArn}/replication-info", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/replication/v1/replicators/{replicatorArn}/replication-info", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ConsumerGroupReplication.is_some():
             auto u0 = input.ConsumerGroupReplication.unwrap()
@@ -3452,7 +3458,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/clusters/{clusterArn}/security", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/clusters/{clusterArn}/security", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientAuthentication.is_some():
             auto u0 = input.ClientAuthentication.unwrap()
@@ -3470,7 +3476,7 @@ struct KafkaClient:
         auto host = endpoints.regional_host(kafka_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/storage", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/storage", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateStorageDocument(CurrentVersion=input.CurrentVersion, ProvisionedThroughput=input.ProvisionedThroughput, StorageMode=input.StorageMode, VolumeSizeGB=input.VolumeSizeGB)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)
@@ -3482,7 +3488,7 @@ struct KafkaClient:
         dict[str, str] labels = {}
         labels["clusterArn"] = input.ClusterArn
         labels["topicName"] = input.TopicName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/topics/{topicName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/clusters/{clusterArn}/topics/{topicName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTopicDocument(Configs=input.Configs, PartitionCount=input.PartitionCount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kafka_service(), self.region, host)

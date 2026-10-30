@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 29 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 30 operations — 30 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   115 structs (67 @derive(Json)), 33 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1524,11 +1524,6 @@ def mediapackagev2_error_from_code(str code) -> MediaPackageV2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1930,7 +1925,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ETag.is_some():
             headers["x-amzn-update-if-match"] = input.ETag.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # CreateChannel  POST /channelGroup/{ChannelGroupName}/channel
@@ -1942,7 +1937,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChannelName\":" + mediapackagev2_json_str(input.ChannelName))
         if input.InputType.is_some():
@@ -1979,7 +1974,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChannelGroupName\":" + mediapackagev2_json_str(input.ChannelGroupName))
         if input.Description.is_some():
@@ -2005,7 +2000,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2035,7 +2030,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ClientToken.is_some():
             headers["x-amzn-client-token"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"OriginEndpointName\":" + mediapackagev2_json_str(input.OriginEndpointName))
         parts.append("\"ContainerType\":" + input.ContainerType.to_json())
@@ -2097,7 +2092,7 @@ struct MediaPackageV2Client:
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # DeleteChannelGroup  DELETE /channelGroup/{ChannelGroupName}
@@ -2106,7 +2101,7 @@ struct MediaPackageV2Client:
         auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # DeleteChannelPolicy  DELETE /channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy
@@ -2116,7 +2111,7 @@ struct MediaPackageV2Client:
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # DeleteOriginEndpoint  DELETE /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}
@@ -2127,7 +2122,7 @@ struct MediaPackageV2Client:
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
         labels["OriginEndpointName"] = input.OriginEndpointName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # DeleteOriginEndpointPolicy  DELETE /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy
@@ -2138,7 +2133,7 @@ struct MediaPackageV2Client:
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
         labels["OriginEndpointName"] = input.OriginEndpointName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # GetChannel  GET /channelGroup/{ChannelGroupName}/channel/{ChannelName}/
@@ -2148,7 +2143,7 @@ struct MediaPackageV2Client:
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # GetChannelGroup  GET /channelGroup/{ChannelGroupName}
@@ -2157,7 +2152,7 @@ struct MediaPackageV2Client:
         auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # GetChannelPolicy  GET /channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy
@@ -2167,7 +2162,7 @@ struct MediaPackageV2Client:
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # GetHarvestJob  GET /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}
@@ -2179,7 +2174,7 @@ struct MediaPackageV2Client:
         labels["ChannelName"] = input.ChannelName
         labels["OriginEndpointName"] = input.OriginEndpointName
         labels["HarvestJobName"] = input.HarvestJobName
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # GetOriginEndpoint  GET /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}
@@ -2190,7 +2185,7 @@ struct MediaPackageV2Client:
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
         labels["OriginEndpointName"] = input.OriginEndpointName
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # GetOriginEndpointPolicy  GET /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy
@@ -2201,7 +2196,7 @@ struct MediaPackageV2Client:
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
         labels["OriginEndpointName"] = input.OriginEndpointName
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # ListChannelGroups  GET /channelGroup
@@ -2213,7 +2208,7 @@ struct MediaPackageV2Client:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # ListChannels  GET /channelGroup/{ChannelGroupName}/channel
@@ -2227,7 +2222,7 @@ struct MediaPackageV2Client:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # ListHarvestJobs  GET /channelGroup/{ChannelGroupName}/harvestJob
@@ -2247,7 +2242,7 @@ struct MediaPackageV2Client:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/harvestJob", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/harvestJob", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # ListOriginEndpoints  GET /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint
@@ -2262,7 +2257,7 @@ struct MediaPackageV2Client:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -2271,7 +2266,7 @@ struct MediaPackageV2Client:
         auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # PutChannelPolicy  PUT /channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy
@@ -2281,7 +2276,7 @@ struct MediaPackageV2Client:
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutChannelPolicyDocument(Policy=input.Policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
@@ -2294,7 +2289,7 @@ struct MediaPackageV2Client:
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
         labels["OriginEndpointName"] = input.OriginEndpointName
-        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Policy\":" + mediapackagev2_json_str(input.Policy))
         if input.CdnAuthConfiguration.is_some():
@@ -2310,7 +2305,7 @@ struct MediaPackageV2Client:
         dict[str, str] labels = {}
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
-        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/reset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/reset", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # ResetOriginEndpointState  POST /channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/reset
@@ -2321,7 +2316,7 @@ struct MediaPackageV2Client:
         labels["ChannelGroupName"] = input.ChannelGroupName
         labels["ChannelName"] = input.ChannelName
         labels["OriginEndpointName"] = input.OriginEndpointName
-        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/reset", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/reset", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -2330,7 +2325,7 @@ struct MediaPackageV2Client:
         auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -2338,6 +2333,17 @@ struct MediaPackageV2Client:
         parts.append("\"tags\":" + mediapackagev2_json_obj(m0))
         auto bp = restjson.rest_json_document(b, mediapackagev2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mediapackagev2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mediapackagev2_service(), self.region, host)
 
     # UpdateChannel  PUT /channelGroup/{ChannelGroupName}/channel/{ChannelName}/
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2349,7 +2355,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ETag.is_some():
             headers["x-amzn-update-if-match"] = input.ETag.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2375,7 +2381,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ETag.is_some():
             headers["x-amzn-update-if-match"] = input.ETag.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateChannelGroupDocument(Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mediapackagev2_service(), self.region, host)
@@ -2391,7 +2397,7 @@ struct MediaPackageV2Client:
         dict[str, str] headers = {}
         if input.ETag.is_some():
             headers["x-amzn-update-if-match"] = input.ETag.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ContainerType\":" + input.ContainerType.to_json())
         if input.Segment.is_some():

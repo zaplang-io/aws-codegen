@@ -125,7 +125,7 @@ struct ApiGatewayManagementApiClient:
         auto host = endpoints.regional_host(execute_api_service(), self.region)
         dict[str, str] labels = {}
         labels["connectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/@connections/{connectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/@connections/{connectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, execute_api_service(), self.region, host)
 
     # GetConnection  GET /@connections/{connectionId}
@@ -134,7 +134,7 @@ struct ApiGatewayManagementApiClient:
         auto host = endpoints.regional_host(execute_api_service(), self.region)
         dict[str, str] labels = {}
         labels["connectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="GET", path_template="/@connections/{connectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/@connections/{connectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, execute_api_service(), self.region, host)
 
     # PostToConnection  POST /@connections/{connectionId}
@@ -143,7 +143,7 @@ struct ApiGatewayManagementApiClient:
         auto host = endpoints.regional_host(execute_api_service(), self.region)
         dict[str, str] labels = {}
         labels["connectionId"] = input.ConnectionId
-        auto b = binding.HttpBinding(method="POST", path_template="/@connections/{connectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/@connections/{connectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Data), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, execute_api_service(), self.region, host)
 

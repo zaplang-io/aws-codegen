@@ -236,7 +236,7 @@ struct S3OutpostsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, OutpostOfflineException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_endpoint(self, CreateEndpointRequest input) -> str:
         auto host = endpoints.regional_host(s3_outposts_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/S3Outposts/CreateEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/S3Outposts/CreateEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateEndpointDocument(OutpostId=input.OutpostId, SubnetId=input.SubnetId, SecurityGroupId=input.SecurityGroupId, AccessType=input.AccessType, CustomerOwnedIpv4Pool=input.CustomerOwnedIpv4Pool)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3_outposts_service(), self.region, host)
@@ -248,7 +248,7 @@ struct S3OutpostsClient:
         dict[str, str] query = {}
         query["endpointId"] = input.EndpointId
         query["outpostId"] = input.OutpostId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/S3Outposts/DeleteEndpoint", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/S3Outposts/DeleteEndpoint", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3_outposts_service(), self.region, host)
 
     # ListEndpoints  GET /S3Outposts/ListEndpoints
@@ -260,7 +260,7 @@ struct S3OutpostsClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/S3Outposts/ListEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/S3Outposts/ListEndpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3_outposts_service(), self.region, host)
 
     # ListOutpostsWithS3  GET /S3Outposts/ListOutpostsWithS3
@@ -272,7 +272,7 @@ struct S3OutpostsClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/S3Outposts/ListOutpostsWithS3", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/S3Outposts/ListOutpostsWithS3", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3_outposts_service(), self.region, host)
 
     # ListSharedEndpoints  GET /S3Outposts/ListSharedEndpoints
@@ -285,7 +285,7 @@ struct S3OutpostsClient:
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         query["outpostId"] = input.OutpostId
-        auto b = binding.HttpBinding(method="GET", path_template="/S3Outposts/ListSharedEndpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/S3Outposts/ListSharedEndpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3_outposts_service(), self.region, host)
 
     # Paginator for ListEndpoints — yields each Response page, threading the

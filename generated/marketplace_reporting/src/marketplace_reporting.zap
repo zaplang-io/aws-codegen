@@ -105,7 +105,7 @@ struct Marketplace_ReportingClient:
     # errors: AccessDeniedException, BadRequestException, InternalServerException, UnauthorizedException
     def get_buyer_dashboard(self, GetBuyerDashboardInput input) -> str:
         auto host = endpoints.regional_host(reporting_marketplace_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getBuyerDashboard", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getBuyerDashboard", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"dashboardIdentifier\":" + reporting_marketplace_json_str(input.dashboardIdentifier))
         list[str] e0 = []

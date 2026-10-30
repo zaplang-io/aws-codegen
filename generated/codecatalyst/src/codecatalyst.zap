@@ -1150,7 +1150,7 @@ struct CodeCatalystClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_access_token(self, CreateAccessTokenRequest input) -> str:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accessTokens", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/accessTokens", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAccessTokenDocument(name=input.name, expiresTime=input.expiresTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1162,7 +1162,7 @@ struct CodeCatalystClient:
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.repositories.is_some():
             auto u0 = input.repositories.unwrap()
@@ -1199,7 +1199,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateProjectDocument(displayName=input.displayName, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1212,7 +1212,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSourceRepositoryDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1226,7 +1226,7 @@ struct CodeCatalystClient:
         labels["projectName"] = input.projectName
         labels["sourceRepositoryName"] = input.sourceRepositoryName
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{sourceRepositoryName}/branches/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{sourceRepositoryName}/branches/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSourceRepositoryBranchDocument(headCommitId=input.headCommitId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1237,7 +1237,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/accessTokens/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/accessTokens/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # DeleteDevEnvironment  DELETE /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}
@@ -1248,7 +1248,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # DeleteProject  DELETE /v1/spaces/{spaceName}/projects/{name}
@@ -1258,7 +1258,7 @@ struct CodeCatalystClient:
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # DeleteSourceRepository  DELETE /v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}
@@ -1269,7 +1269,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # DeleteSpace  DELETE /v1/spaces/{name}
@@ -1278,7 +1278,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetDevEnvironment  GET /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}
@@ -1289,7 +1289,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetProject  GET /v1/spaces/{spaceName}/projects/{name}
@@ -1299,7 +1299,7 @@ struct CodeCatalystClient:
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetSourceRepository  GET /v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}
@@ -1310,7 +1310,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetSourceRepositoryCloneUrls  GET /v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{sourceRepositoryName}/cloneUrls
@@ -1321,7 +1321,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["sourceRepositoryName"] = input.sourceRepositoryName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{sourceRepositoryName}/cloneUrls", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{sourceRepositoryName}/cloneUrls", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetSpace  GET /v1/spaces/{name}
@@ -1330,7 +1330,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetSubscription  GET /v1/spaces/{spaceName}/subscription
@@ -1339,7 +1339,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/subscription", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/subscription", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetUserDetails  GET /userDetails
@@ -1351,7 +1351,7 @@ struct CodeCatalystClient:
             query["id"] = input.id.unwrap_or("")
         if input.userName.is_some():
             query["userName"] = input.userName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/userDetails", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/userDetails", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetWorkflow  GET /v1/spaces/{spaceName}/projects/{projectName}/workflows/{id}
@@ -1362,7 +1362,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["id"] = input.id
         labels["projectName"] = input.projectName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflows/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflows/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # GetWorkflowRun  GET /v1/spaces/{spaceName}/projects/{projectName}/workflowRuns/{id}
@@ -1373,14 +1373,14 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["id"] = input.id
         labels["projectName"] = input.projectName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # ListAccessTokens  POST /v1/accessTokens
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_access_tokens(self, ListAccessTokensRequest input) -> str:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/accessTokens", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/accessTokens", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAccessTokensDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1393,7 +1393,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["devEnvironmentId"] = input.devEnvironmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{devEnvironmentId}/sessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{devEnvironmentId}/sessions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDevEnvironmentSessionsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1404,7 +1404,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/devEnvironments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/devEnvironments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.projectName.is_some():
             auto u0 = input.projectName.unwrap()
@@ -1430,7 +1430,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/eventLogs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/eventLogs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListEventLogsDocument(startTime=input.startTime, endTime=input.endTime, eventName=input.eventName, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1441,7 +1441,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.nextToken.is_some():
             auto u0 = input.nextToken.unwrap()
@@ -1465,7 +1465,7 @@ struct CodeCatalystClient:
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSourceRepositoriesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1478,7 +1478,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["sourceRepositoryName"] = input.sourceRepositoryName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{sourceRepositoryName}/branches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/sourceRepositories/{sourceRepositoryName}/branches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSourceRepositoryBranchesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1487,7 +1487,7 @@ struct CodeCatalystClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_spaces(self, ListSpacesRequest input) -> str:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSpacesDocument(nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1506,7 +1506,7 @@ struct CodeCatalystClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.sortBy.is_some():
             auto u0 = input.sortBy.unwrap()
@@ -1529,7 +1529,7 @@ struct CodeCatalystClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflows", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.sortBy.is_some():
             auto u0 = input.sortBy.unwrap()
@@ -1548,7 +1548,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ides.is_some():
             auto u0 = input.ides.unwrap()
@@ -1573,7 +1573,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sessionConfiguration\":" + dev_environment_session_configuration_to_json(input.sessionConfiguration))
         auto bp = restjson.rest_json_document(b, codecatalyst_json_obj(parts))
@@ -1588,7 +1588,7 @@ struct CodeCatalystClient:
         labels["projectName"] = input.projectName
         dict[str, str] query = {}
         query["workflowId"] = input.workflowId
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartWorkflowRunDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1601,7 +1601,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # StopDevEnvironmentSession  DELETE /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session/{sessionId}
@@ -1613,7 +1613,7 @@ struct CodeCatalystClient:
         labels["projectName"] = input.projectName
         labels["id"] = input.id
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}/session/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # UpdateDevEnvironment  PATCH /v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}
@@ -1624,7 +1624,7 @@ struct CodeCatalystClient:
         labels["spaceName"] = input.spaceName
         labels["projectName"] = input.projectName
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.alias.is_some():
             auto u0 = input.alias.unwrap()
@@ -1654,7 +1654,7 @@ struct CodeCatalystClient:
         dict[str, str] labels = {}
         labels["spaceName"] = input.spaceName
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/spaces/{spaceName}/projects/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/spaces/{spaceName}/projects/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProjectDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1665,7 +1665,7 @@ struct CodeCatalystClient:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/spaces/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/spaces/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSpaceDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codecatalyst_service(), self.region, host)
@@ -1674,7 +1674,7 @@ struct CodeCatalystClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def verify_session(self) -> str:
         auto host = endpoints.regional_host(codecatalyst_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/session", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/session", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codecatalyst_service(), self.region, host)
 
     # Paginator for ListAccessTokens — yields each Response page, threading the

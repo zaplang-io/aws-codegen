@@ -1803,7 +1803,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def add_notification_channel(self, AddNotificationChannelRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/channels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/channels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Config\":" + notification_channel_config_to_json(input.Config))
         auto bp = restjson.rest_json_document(b, devops_guru_json_obj(parts))
@@ -1815,21 +1815,21 @@ struct DevOps_GuruClient:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/insights/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/insights/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # DescribeAccountHealth  GET /accounts/health
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_account_health(self) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/health", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/health", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # DescribeAccountOverview  POST /accounts/overview
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_account_overview(self, DescribeAccountOverviewRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/overview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/overview", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAccountOverviewDocument(FromTime=input.FromTime, ToTime=input.ToTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -1843,21 +1843,21 @@ struct DevOps_GuruClient:
         dict[str, str] query = {}
         if input.AccountId.is_some():
             query["AccountId"] = input.AccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/anomalies/{Id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/anomalies/{Id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # DescribeEventSourcesConfig  POST /event-sources
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_event_sources_config(self) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/event-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/event-sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # DescribeFeedback  POST /feedback
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_feedback(self, DescribeFeedbackRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/feedback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/feedback", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeFeedbackDocument(InsightId=input.InsightId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -1871,14 +1871,14 @@ struct DevOps_GuruClient:
         dict[str, str] query = {}
         if input.AccountId.is_some():
             query["AccountId"] = input.AccountId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/insights/{Id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/insights/{Id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # DescribeOrganizationHealth  POST /organization/health
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_organization_health(self, DescribeOrganizationHealthRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/health", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/health", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccountIds.is_some():
             auto u0 = input.AccountIds.unwrap()
@@ -1899,7 +1899,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_organization_overview(self, DescribeOrganizationOverviewRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/overview", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/overview", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FromTime\":" + str(datetime.to_timestamp(input.FromTime)))
         if input.ToTime.is_some():
@@ -1924,7 +1924,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_organization_resource_collection_health(self, DescribeOrganizationResourceCollectionHealthRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/health/resource-collection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/health/resource-collection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"OrganizationResourceCollectionType\":" + input.OrganizationResourceCollectionType.to_json())
         if input.AccountIds.is_some():
@@ -1957,14 +1957,14 @@ struct DevOps_GuruClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/health/resource-collection/{ResourceCollectionType}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/health/resource-collection/{ResourceCollectionType}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # DescribeServiceIntegration  GET /service-integrations
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def describe_service_integration(self) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/service-integrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/service-integrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # GetCostEstimation  GET /cost-estimation
@@ -1974,7 +1974,7 @@ struct DevOps_GuruClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/cost-estimation", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cost-estimation", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # GetResourceCollection  GET /resource-collections/{ResourceCollectionType}
@@ -1986,7 +1986,7 @@ struct DevOps_GuruClient:
         dict[str, str] query = {}
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-collections/{ResourceCollectionType}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-collections/{ResourceCollectionType}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # ListAnomaliesForInsight  POST /anomalies/insight/{InsightId}
@@ -1995,7 +1995,7 @@ struct DevOps_GuruClient:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
         dict[str, str] labels = {}
         labels["InsightId"] = input.InsightId
-        auto b = binding.HttpBinding(method="POST", path_template="/anomalies/insight/{InsightId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/anomalies/insight/{InsightId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.StartTimeRange.is_some():
             auto u0 = input.StartTimeRange.unwrap()
@@ -2019,7 +2019,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_anomalous_log_groups(self, ListAnomalousLogGroupsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-log-anomalies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-log-anomalies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAnomalousLogGroupsDocument(InsightId=input.InsightId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -2028,7 +2028,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_events(self, ListEventsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Filters\":" + list_events_filters_to_json(input.Filters))
         if input.MaxResults.is_some():
@@ -2047,7 +2047,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_insights(self, ListInsightsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/insights", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListInsightsDocument(StatusFilter=input.StatusFilter, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -2056,7 +2056,7 @@ struct DevOps_GuruClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_monitored_resources(self, ListMonitoredResourcesRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/monitoredResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/monitoredResources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Filters.is_some():
             auto u0 = input.Filters.unwrap()
@@ -2074,7 +2074,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_notification_channels(self, ListNotificationChannelsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/channels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/channels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListNotificationChannelsDocument(NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -2083,7 +2083,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_organization_insights(self, ListOrganizationInsightsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/insights", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/insights", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"StatusFilter\":" + input.StatusFilter.to_json())
         if input.MaxResults.is_some():
@@ -2111,7 +2111,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_recommendations(self, ListRecommendationsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/recommendations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recommendations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecommendationsDocument(InsightId=input.InsightId, NextToken=input.NextToken, Locale=input.Locale, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -2120,7 +2120,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_feedback(self, PutFeedbackRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/feedback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/feedback", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFeedbackDocument(InsightFeedback=input.InsightFeedback)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -2131,14 +2131,14 @@ struct DevOps_GuruClient:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/channels/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, devops_guru_service(), self.region, host)
 
     # SearchInsights  POST /insights/search
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def search_insights(self, SearchInsightsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/insights/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/insights/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"StartTimeRange\":" + input.StartTimeRange.to_json())
         if input.Filters.is_some():
@@ -2158,7 +2158,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def search_organization_insights(self, SearchOrganizationInsightsRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organization/insights/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organization/insights/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AccountIds:
@@ -2182,7 +2182,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_cost_estimation(self, StartCostEstimationRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/cost-estimation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cost-estimation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceCollection\":" + cost_estimation_resource_collection_filter_to_json(input.ResourceCollection))
         if input.ClientToken.is_some():
@@ -2195,7 +2195,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_event_sources_config(self, UpdateEventSourcesConfigRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/event-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/event-sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventSourcesConfigDocument(EventSources=input.EventSources)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)
@@ -2204,7 +2204,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def update_resource_collection(self, UpdateResourceCollectionRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/resource-collections", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resource-collections", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Action\":" + input.Action.to_json())
         parts.append("\"ResourceCollection\":" + update_resource_collection_filter_to_json(input.ResourceCollection))
@@ -2215,7 +2215,7 @@ struct DevOps_GuruClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def update_service_integration(self, UpdateServiceIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(devops_guru_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/service-integrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/service-integrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServiceIntegrationDocument(ServiceIntegration=input.ServiceIntegration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, devops_guru_service(), self.region, host)

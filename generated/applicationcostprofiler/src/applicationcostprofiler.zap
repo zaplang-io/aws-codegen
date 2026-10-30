@@ -244,7 +244,7 @@ struct ApplicationCostProfilerClient:
         auto host = endpoints.regional_host(application_cost_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["reportId"] = input.reportId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/reportDefinition/{reportId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/reportDefinition/{reportId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_cost_profiler_service(), self.region, host)
 
     # GetReportDefinition  GET /reportDefinition/{reportId}
@@ -253,14 +253,14 @@ struct ApplicationCostProfilerClient:
         auto host = endpoints.regional_host(application_cost_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["reportId"] = input.reportId
-        auto b = binding.HttpBinding(method="GET", path_template="/reportDefinition/{reportId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reportDefinition/{reportId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_cost_profiler_service(), self.region, host)
 
     # ImportApplicationUsage  POST /importApplicationUsage
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def import_application_usage(self, ImportApplicationUsageRequest input) -> str:
         auto host = endpoints.regional_host(application_cost_profiler_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/importApplicationUsage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/importApplicationUsage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ImportApplicationUsageDocument(sourceS3Location=input.sourceS3Location)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, application_cost_profiler_service(), self.region, host)
@@ -274,14 +274,14 @@ struct ApplicationCostProfilerClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/reportDefinition", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/reportDefinition", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, application_cost_profiler_service(), self.region, host)
 
     # PutReportDefinition  POST /reportDefinition
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def put_report_definition(self, PutReportDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(application_cost_profiler_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reportDefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reportDefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutReportDefinitionDocument(reportId=input.reportId, reportDescription=input.reportDescription, reportFrequency=input.reportFrequency, format=input.format, destinationS3Location=input.destinationS3Location)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, application_cost_profiler_service(), self.region, host)
@@ -292,7 +292,7 @@ struct ApplicationCostProfilerClient:
         auto host = endpoints.regional_host(application_cost_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["reportId"] = input.reportId
-        auto b = binding.HttpBinding(method="PUT", path_template="/reportDefinition/{reportId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/reportDefinition/{reportId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateReportDefinitionDocument(reportDescription=input.reportDescription, reportFrequency=input.reportFrequency, format=input.format, destinationS3Location=input.destinationS3Location)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, application_cost_profiler_service(), self.region, host)

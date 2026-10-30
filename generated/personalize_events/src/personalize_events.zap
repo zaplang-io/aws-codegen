@@ -252,7 +252,7 @@ struct Personalize_EventsClient:
     # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
     def put_action_interactions(self, PutActionInteractionsRequest input) -> str:
         auto host = endpoints.regional_host(personalize_events_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/action-interactions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/action-interactions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"trackingId\":" + personalize_events_json_str(input.trackingId))
         list[str] e0 = []
@@ -266,7 +266,7 @@ struct Personalize_EventsClient:
     # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
     def put_actions(self, PutActionsRequest input) -> str:
         auto host = endpoints.regional_host(personalize_events_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/actions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/actions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"datasetArn\":" + personalize_events_json_str(input.datasetArn))
         list[str] e0 = []
@@ -280,7 +280,7 @@ struct Personalize_EventsClient:
     # errors: InvalidInputException
     def put_events(self, PutEventsRequest input) -> str:
         auto host = endpoints.regional_host(personalize_events_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/events", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"trackingId\":" + personalize_events_json_str(input.trackingId))
         if input.userId.is_some():
@@ -298,7 +298,7 @@ struct Personalize_EventsClient:
     # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
     def put_items(self, PutItemsRequest input) -> str:
         auto host = endpoints.regional_host(personalize_events_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/items", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/items", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"datasetArn\":" + personalize_events_json_str(input.datasetArn))
         list[str] e0 = []
@@ -312,7 +312,7 @@ struct Personalize_EventsClient:
     # errors: InvalidInputException, ResourceInUseException, ResourceNotFoundException
     def put_users(self, PutUsersRequest input) -> str:
         auto host = endpoints.regional_host(personalize_events_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/users", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"datasetArn\":" + personalize_events_json_str(input.datasetArn))
         list[str] e0 = []

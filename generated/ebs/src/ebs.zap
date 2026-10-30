@@ -319,8 +319,9 @@ struct EBSClient:
         if input.ChecksumAlgorithm.is_some():
             headers["x-amz-Checksum-Algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
         if input.ChecksumAggregationMethod.is_some():
-            headers["x-amz-Checksum-Aggregation-Method"] = input.ChecksumAggregationMethod.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/snapshots/completion/{snapshotId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ChecksumAggregationMethod.unwrap_or("")
+            headers["x-amz-Checksum-Aggregation-Method"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/snapshots/completion/{snapshotId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ebs_service(), self.region, host)
 
     # GetSnapshotBlock  GET /snapshots/{snapshotId}/blocks/{blockIndex}
@@ -332,7 +333,7 @@ struct EBSClient:
         labels["blockIndex"] = str(input.BlockIndex)
         dict[str, str] query = {}
         query["blockToken"] = input.BlockToken
-        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{snapshotId}/blocks/{blockIndex}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{snapshotId}/blocks/{blockIndex}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ebs_service(), self.region, host)
 
     # ListChangedBlocks  GET /snapshots/{secondSnapshotId}/changedblocks
@@ -350,7 +351,7 @@ struct EBSClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.StartingBlockIndex.is_some():
             query["startingBlockIndex"] = str(input.StartingBlockIndex.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{secondSnapshotId}/changedblocks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{secondSnapshotId}/changedblocks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ebs_service(), self.region, host)
 
     # ListSnapshotBlocks  GET /snapshots/{snapshotId}/blocks
@@ -366,7 +367,7 @@ struct EBSClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.StartingBlockIndex.is_some():
             query["startingBlockIndex"] = str(input.StartingBlockIndex.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{snapshotId}/blocks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{snapshotId}/blocks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ebs_service(), self.region, host)
 
     # PutSnapshotBlock  PUT /snapshots/{snapshotId}/blocks/{blockIndex}
@@ -382,7 +383,7 @@ struct EBSClient:
             headers["x-amz-Progress"] = str(input.Progress.unwrap_or(0))
         headers["x-amz-Checksum"] = input.Checksum
         headers["x-amz-Checksum-Algorithm"] = input.ChecksumAlgorithm
-        auto b = binding.HttpBinding(method="PUT", path_template="/snapshots/{snapshotId}/blocks/{blockIndex}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/snapshots/{snapshotId}/blocks/{blockIndex}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.BlockData), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, ebs_service(), self.region, host)
 
@@ -390,7 +391,7 @@ struct EBSClient:
     # errors: AccessDeniedException, ConcurrentLimitExceededException, ConflictException, InternalServerException, RequestThrottledException, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def start_snapshot(self, StartSnapshotRequest input) -> str:
         auto host = endpoints.regional_host(ebs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/snapshots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/snapshots", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"VolumeSize\":" + str(input.VolumeSize))
         if input.ParentSnapshotId.is_some():

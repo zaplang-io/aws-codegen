@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 30 operations — 28 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 30 operations — 30 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   79 structs (42 @derive(Json)), 15 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -942,12 +942,6 @@ def gameliftstreams_error_from_code(str code) -> GameLiftStreamsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   RemoveStreamGroupLocations (httpQuery `Locations` has unsupported type list[str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1039,7 +1033,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/locations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/locations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.LocationConfigurations:
@@ -1054,7 +1048,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ApplicationIdentifiers:
@@ -1067,7 +1061,7 @@ struct GameLiftStreamsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_application(self, CreateApplicationInput input) -> str:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Description\":" + gameliftstreams_json_str(input.Description))
         parts.append("\"RuntimeEnvironment\":" + input.RuntimeEnvironment.to_json())
@@ -1098,7 +1092,7 @@ struct GameLiftStreamsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_stream_group(self, CreateStreamGroupInput input) -> str:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Description\":" + gameliftstreams_json_str(input.Description))
         parts.append("\"StreamClass\":" + input.StreamClass.to_json())
@@ -1130,7 +1124,7 @@ struct GameLiftStreamsClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         labels["StreamSessionIdentifier"] = input.StreamSessionIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/access", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/access", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # CreateStreamSessionConnection  POST /streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/connections
@@ -1140,7 +1134,7 @@ struct GameLiftStreamsClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         labels["StreamSessionIdentifier"] = input.StreamSessionIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/connections", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/connections", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateStreamSessionConnectionDocument(ClientToken=input.ClientToken, SignalRequest=input.SignalRequest)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
@@ -1151,7 +1145,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamurls", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamurls", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ApplicationIdentifier\":" + gameliftstreams_json_str(input.ApplicationIdentifier))
         parts.append("\"Protocol\":" + gameliftstreams_json_str(input.Protocol))
@@ -1199,7 +1193,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # DeleteStreamGroup  DELETE /streamgroups/{Identifier}
@@ -1208,7 +1202,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # DisassociateApplications  POST /streamgroups/{Identifier}/disassociations
@@ -1217,7 +1211,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/disassociations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/disassociations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ApplicationIdentifiers:
@@ -1233,7 +1227,7 @@ struct GameLiftStreamsClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         labels["StreamSessionIdentifier"] = input.StreamSessionIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/exportfiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/exportfiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExportStreamSessionFilesDocument(OutputUri=input.OutputUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
@@ -1244,7 +1238,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # GetStreamGroup  GET /streamgroups/{Identifier}
@@ -1253,7 +1247,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # GetStreamSession  GET /streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}
@@ -1263,7 +1257,7 @@ struct GameLiftStreamsClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         labels["StreamSessionIdentifier"] = input.StreamSessionIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # GetStreamUrl  GET /streamgroups/{Identifier}/streamurls/{StreamUrlIdentifier}
@@ -1273,7 +1267,7 @@ struct GameLiftStreamsClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         labels["StreamUrlIdentifier"] = input.StreamUrlIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}/streamurls/{StreamUrlIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}/streamurls/{StreamUrlIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # ListApplicationShaderCaches  GET /applications/{Identifier}/shadercaches
@@ -1282,7 +1276,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{Identifier}/shadercaches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{Identifier}/shadercaches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # ListApplications  GET /applications
@@ -1294,7 +1288,7 @@ struct GameLiftStreamsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # ListStreamGroups  GET /streamgroups
@@ -1306,7 +1300,7 @@ struct GameLiftStreamsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # ListStreamSessions  GET /streamgroups/{Identifier}/streamsessions
@@ -1324,7 +1318,7 @@ struct GameLiftStreamsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}/streamsessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streamgroups/{Identifier}/streamsessions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # ListStreamSessionsByAccount  GET /streamsessions
@@ -1340,7 +1334,7 @@ struct GameLiftStreamsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/streamsessions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streamsessions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # ListStreamUrls  GET /streamurls
@@ -1356,7 +1350,7 @@ struct GameLiftStreamsClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/streamurls", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streamurls", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -1365,7 +1359,18 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
+
+    # RemoveStreamGroupLocations  DELETE /streamgroups/{Identifier}/locations
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def remove_stream_group_locations(self, RemoveStreamGroupLocationsInput input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Identifier"] = input.Identifier
+        dict[str, list[str]] multi_query = {}
+        multi_query["locations"] = input.Locations
+        auto b = binding.HttpBinding(method="DELETE", path_template="/streamgroups/{Identifier}/locations", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # RevokeStreamUrl  POST /streamgroups/{Identifier}/streamurls/{StreamUrlIdentifier}/revoke
@@ -1375,7 +1380,7 @@ struct GameLiftStreamsClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         labels["StreamUrlIdentifier"] = input.StreamUrlIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamurls/{StreamUrlIdentifier}/revoke", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamurls/{StreamUrlIdentifier}/revoke", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeStreamUrlDocument(RevocationMode=input.RevocationMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, gameliftstreams_service(), self.region, host)
@@ -1386,7 +1391,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamsessions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streamgroups/{Identifier}/streamsessions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -1442,7 +1447,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1458,7 +1463,18 @@ struct GameLiftStreamsClient:
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
         labels["StreamSessionIdentifier"] = input.StreamSessionIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, gameliftstreams_service(), self.region, host)
 
     # UpdateApplication  PATCH /applications/{Identifier}
@@ -1467,7 +1483,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -1490,7 +1506,7 @@ struct GameLiftStreamsClient:
         auto host = endpoints.regional_host(gameliftstreams_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/streamgroups/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.LocationConfigurations.is_some():
             auto u0 = input.LocationConfigurations.unwrap()

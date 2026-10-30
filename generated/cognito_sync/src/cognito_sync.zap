@@ -517,7 +517,7 @@ struct Cognito_SyncClient:
         auto host = endpoints.regional_host(cognito_sync_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
-        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/bulkpublish", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/bulkpublish", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # DeleteDataset  DELETE /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}
@@ -528,7 +528,7 @@ struct Cognito_SyncClient:
         labels["IdentityPoolId"] = input.IdentityPoolId
         labels["IdentityId"] = input.IdentityId
         labels["DatasetName"] = input.DatasetName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # DescribeDataset  GET /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}
@@ -539,7 +539,7 @@ struct Cognito_SyncClient:
         labels["IdentityPoolId"] = input.IdentityPoolId
         labels["IdentityId"] = input.IdentityId
         labels["DatasetName"] = input.DatasetName
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # DescribeIdentityPoolUsage  GET /identitypools/{IdentityPoolId}
@@ -548,7 +548,7 @@ struct Cognito_SyncClient:
         auto host = endpoints.regional_host(cognito_sync_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # DescribeIdentityUsage  GET /identitypools/{IdentityPoolId}/identities/{IdentityId}
@@ -558,7 +558,7 @@ struct Cognito_SyncClient:
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
         labels["IdentityId"] = input.IdentityId
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # GetBulkPublishDetails  POST /identitypools/{IdentityPoolId}/getBulkPublishDetails
@@ -567,7 +567,7 @@ struct Cognito_SyncClient:
         auto host = endpoints.regional_host(cognito_sync_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
-        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/getBulkPublishDetails", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/getBulkPublishDetails", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # GetCognitoEvents  GET /identitypools/{IdentityPoolId}/events
@@ -576,7 +576,7 @@ struct Cognito_SyncClient:
         auto host = endpoints.regional_host(cognito_sync_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/events", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # GetIdentityPoolConfiguration  GET /identitypools/{IdentityPoolId}/configuration
@@ -585,7 +585,7 @@ struct Cognito_SyncClient:
         auto host = endpoints.regional_host(cognito_sync_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # ListDatasets  GET /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets
@@ -600,7 +600,7 @@ struct Cognito_SyncClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # ListIdentityPoolUsage  GET /identitypools
@@ -612,7 +612,7 @@ struct Cognito_SyncClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # ListRecords  GET /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/records
@@ -632,7 +632,7 @@ struct Cognito_SyncClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.SyncSessionToken.is_some():
             query["syncSessionToken"] = input.SyncSessionToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/records", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/records", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # RegisterDevice  POST /identitypools/{IdentityPoolId}/identity/{IdentityId}/device
@@ -642,7 +642,7 @@ struct Cognito_SyncClient:
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
         labels["IdentityId"] = input.IdentityId
-        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/identity/{IdentityId}/device", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/identity/{IdentityId}/device", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterDeviceDocument(Platform=input.Platform, Token=input.Token)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, cognito_sync_service(), self.region, host)
@@ -653,7 +653,7 @@ struct Cognito_SyncClient:
         auto host = endpoints.regional_host(cognito_sync_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
-        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/events", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/events", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Events.keys()):
@@ -668,7 +668,7 @@ struct Cognito_SyncClient:
         auto host = endpoints.regional_host(cognito_sync_service(), self.region)
         dict[str, str] labels = {}
         labels["IdentityPoolId"] = input.IdentityPoolId
-        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.PushSync.is_some():
             auto u0 = input.PushSync.unwrap()
@@ -688,7 +688,7 @@ struct Cognito_SyncClient:
         labels["IdentityId"] = input.IdentityId
         labels["DatasetName"] = input.DatasetName
         labels["DeviceId"] = input.DeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/subscriptions/{DeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/subscriptions/{DeviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # UnsubscribeFromDataset  DELETE /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/subscriptions/{DeviceId}
@@ -700,7 +700,7 @@ struct Cognito_SyncClient:
         labels["IdentityId"] = input.IdentityId
         labels["DatasetName"] = input.DatasetName
         labels["DeviceId"] = input.DeviceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/subscriptions/{DeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}/subscriptions/{DeviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, cognito_sync_service(), self.region, host)
 
     # UpdateRecords  POST /identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}
@@ -714,7 +714,7 @@ struct Cognito_SyncClient:
         dict[str, str] headers = {}
         if input.ClientContext.is_some():
             headers["x-amz-Client-Context"] = input.ClientContext.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identitypools/{IdentityPoolId}/identities/{IdentityId}/datasets/{DatasetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DeviceId.is_some():
             auto u0 = input.DeviceId.unwrap()

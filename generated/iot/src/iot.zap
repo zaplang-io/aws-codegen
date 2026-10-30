@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 272 operations — 226 with a generated method,
-#   46 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 272 operations — 268 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   791 structs (553 @derive(Json)), 82 enums, 33 error variants.
-#   41 paginators generated (23 paginated ops skipped) from paginators-1.json.
+#   64 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The IoT rest-json protocol: SigV4 service "iot" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -6482,78 +6483,10 @@ def iot_error_from_code(str code) -> IoTError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   AcceptCertificateTransfer (httpQuery `setAsActive` has unsupported type bool)
-#   CancelJob (httpQuery `force` has unsupported type bool)
-#   CancelJobExecution (httpQuery `force` has unsupported type bool)
-#   CreateCertificateFromCsr (httpQuery `setAsActive` has unsupported type bool)
-#   CreateKeysAndCertificate (httpQuery `setAsActive` has unsupported type bool)
-#   CreatePolicyVersion (httpQuery `setAsDefault` has unsupported type bool)
-#   CreateProvisioningTemplateVersion (httpQuery `setAsDefault` has unsupported type bool)
 #   CreateTopicRule (httpPayload member `topicRulePayload` is a non-derivable structure)
-#   DeleteAccountAuditConfiguration (httpQuery `deleteScheduledAudits` has unsupported type bool)
-#   DeleteCertificate (httpQuery `forceDelete` has unsupported type bool)
-#   DeleteJob (httpQuery `force` has unsupported type bool)
-#   DeleteJobExecution (httpQuery `force` has unsupported type bool)
-#   DeleteOTAUpdate (httpQuery `deleteStream` has unsupported type bool)
-#   DescribeJob (httpQuery `beforeSubstitution` has unsupported type bool)
-#   GetCommandExecution (httpQuery `includeResult` has unsupported type bool)
-#   GetJobDocument (httpQuery `beforeSubstitution` has unsupported type bool)
-#   GetV2LoggingOptions (httpQuery `verbose` has unsupported type bool)
-#   ListActiveViolations (httpQuery `listSuppressedAlerts` has unsupported type bool)
-#   ListAttachedPolicies (httpQuery `recursive` has unsupported type bool)
-#   ListAuditMitigationActionsTasks (httpQuery `startTime` has unsupported type DateTime)
-#   ListAuditTasks (httpQuery `startTime` has unsupported type DateTime)
-#   ListAuthorizers (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListCACertificates (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListCertificateProviders (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListCertificates (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListCertificatesByCA (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListDetectMitigationActionsExecutions (httpQuery `startTime` has unsupported type DateTime)
-#   ListDetectMitigationActionsTasks (httpQuery `startTime` has unsupported type DateTime)
-#   ListMetricValues (httpQuery `startTime` has unsupported type DateTime)
-#   ListOutgoingCertificates (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListPolicies (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListPolicyPrincipals (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListPrincipalPolicies (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListRoleAliases (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListSecurityProfilesForTarget (httpQuery `recursive` has unsupported type bool)
-#   ListStreams (httpQuery `ascendingOrder` has unsupported type bool)
-#   ListThingGroups (httpQuery `recursive` has unsupported type bool)
-#   ListThings (httpQuery `usePrefixAttributeValue` has unsupported type bool)
-#   ListThingsInThingGroup (httpQuery `recursive` has unsupported type bool)
-#   ListTopicRules (httpQuery `ruleDisabled` has unsupported type bool)
-#   ListViolationEvents (httpQuery `startTime` has unsupported type DateTime)
-#   RegisterCACertificate (httpQuery `setAsActive` has unsupported type bool)
-#   RegisterCertificate (httpQuery `setAsActive` has unsupported type bool)
 #   ReplaceTopicRule (httpPayload member `topicRulePayload` is a non-derivable structure)
 #   UpdateAccountAuditConfiguration (document member `auditCheckConfigurations: dict[str, AuditCheckConfiguration]` is not serializable)
 #   UpdateEventConfigurations (document member `eventConfigurations: dict[EventType, Configuration]` is not serializable)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListActiveViolations (operation not generated)
-#   ListAttachedPolicies (operation not generated)
-#   ListAuditMitigationActionsTasks (operation not generated)
-#   ListAuditTasks (operation not generated)
-#   ListAuthorizers (operation not generated)
-#   ListCACertificates (operation not generated)
-#   ListCertificates (operation not generated)
-#   ListCertificatesByCA (operation not generated)
-#   ListDetectMitigationActionsExecutions (operation not generated)
-#   ListDetectMitigationActionsTasks (operation not generated)
-#   ListMetricValues (operation not generated)
-#   ListOutgoingCertificates (operation not generated)
-#   ListPolicies (operation not generated)
-#   ListPolicyPrincipals (operation not generated)
-#   ListPrincipalPolicies (operation not generated)
-#   ListRoleAliases (operation not generated)
-#   ListSecurityProfilesForTarget (operation not generated)
-#   ListStreams (operation not generated)
-#   ListThingGroups (operation not generated)
-#   ListThings (operation not generated)
-#   ListThingsInThingGroup (operation not generated)
-#   ListTopicRules (operation not generated)
-#   ListViolationEvents (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -6586,6 +6519,12 @@ struct AttachPolicyDocument:
     str target
 
 @derive(Json)
+struct CancelJobDocument:
+    # document members of CancelJob
+    Optional[str] reasonCode
+    Optional[str] comment
+
+@derive(Json)
 struct CreateAuditSuppressionDocument:
     # document members of CreateAuditSuppression
     str checkName
@@ -6594,6 +6533,21 @@ struct CreateAuditSuppressionDocument:
     Optional[bool] suppressIndefinitely
     Optional[str] description
     str clientRequestToken
+
+@derive(Json)
+struct CreateCertificateFromCsrDocument:
+    # document members of CreateCertificateFromCsr
+    str certificateSigningRequest
+
+@derive(Json)
+struct CreatePolicyVersionDocument:
+    # document members of CreatePolicyVersion
+    str policyDocument
+
+@derive(Json)
+struct CreateProvisioningTemplateVersionDocument:
+    # document members of CreateProvisioningTemplateVersion
+    str templateBody
 
 @derive(Json)
 struct DeleteAuditSuppressionDocument:
@@ -6690,6 +6644,13 @@ struct PutVerificationStateOnViolationDocument:
     # document members of PutVerificationStateOnViolation
     VerificationState verificationState
     Optional[str] verificationStateDescription
+
+@derive(Json)
+struct RegisterCertificateDocument:
+    # document members of RegisterCertificate
+    str certificatePem
+    Optional[str] caCertificatePem
+    Optional[CertificateStatus] status
 
 @derive(Json)
 struct RegisterCertificateWithoutCADocument:
@@ -7355,16 +7316,34 @@ def vpc_destination_configuration_to_json(VpcDestinationConfiguration v) -> str:
     parts.append("\"roleArn\":" + iot_json_str(v.roleArn))
     return iot_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def iot_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound IoT client: credentials + region, threaded into every operation.
 struct IoTClient:
     core.Credentials creds
     str region
 
+    # AcceptCertificateTransfer  PATCH /accept-certificate-transfer/{certificateId}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, TransferAlreadyCompletedException, UnauthorizedException
+    def accept_certificate_transfer(self, AcceptCertificateTransferRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["certificateId"] = input.certificateId
+        dict[str, str] query = {}
+        if input.setAsActive.is_some():
+            query["setAsActive"] = iot_bind_bool(input.setAsActive.unwrap_or(False))
+        auto b = binding.HttpBinding(method="PATCH", path_template="/accept-certificate-transfer/{certificateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
     # AddThingToBillingGroup  PUT /billing-groups/addThingToBillingGroup
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def add_thing_to_billing_group(self, AddThingToBillingGroupRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/billing-groups/addThingToBillingGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/billing-groups/addThingToBillingGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddThingToBillingGroupDocument(billingGroupName=input.billingGroupName, billingGroupArn=input.billingGroupArn, thingName=input.thingName, thingArn=input.thingArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -7373,7 +7352,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def add_thing_to_thing_group(self, AddThingToThingGroupRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/addThingToThingGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/addThingToThingGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddThingToThingGroupDocument(thingGroupName=input.thingGroupName, thingGroupArn=input.thingGroupArn, thingName=input.thingName, thingArn=input.thingArn, overrideDynamicGroups=input.overrideDynamicGroups)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -7388,7 +7367,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}/versions/{versionName}/sbom", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}/versions/{versionName}/sbom", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateSbomWithPackageVersionDocument(sbom=input.sbom)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -7402,7 +7381,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.namespaceId.is_some():
             query["namespaceId"] = input.namespaceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/jobs/{jobId}/targets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs/{jobId}/targets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targets:
@@ -7420,7 +7399,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
-        auto b = binding.HttpBinding(method="PUT", path_template="/target-policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/target-policies/{policyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AttachPolicyDocument(target=input.target)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -7433,7 +7412,7 @@ struct IoTClient:
         labels["policyName"] = input.policyName
         dict[str, str] headers = {}
         headers["x-amzn-iot-principal"] = input.principal
-        auto b = binding.HttpBinding(method="PUT", path_template="/principal-policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/principal-policies/{policyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # AttachSecurityProfile  PUT /security-profiles/{securityProfileName}/targets
@@ -7444,7 +7423,7 @@ struct IoTClient:
         labels["securityProfileName"] = input.securityProfileName
         dict[str, str] query = {}
         query["securityProfileTargetArn"] = input.securityProfileTargetArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/security-profiles/{securityProfileName}/targets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/security-profiles/{securityProfileName}/targets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # AttachThingPrincipal  PUT /things/{thingName}/principals
@@ -7458,7 +7437,7 @@ struct IoTClient:
             query["thingPrincipalType"] = input.thingPrincipalType.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amzn-principal"] = input.principal
-        auto b = binding.HttpBinding(method="PUT", path_template="/things/{thingName}/principals", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/things/{thingName}/principals", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # CancelAuditMitigationActionsTask  PUT /audit/mitigationactions/tasks/{taskId}/cancel
@@ -7467,7 +7446,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="PUT", path_template="/audit/mitigationactions/tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/audit/mitigationactions/tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # CancelAuditTask  PUT /audit/tasks/{taskId}/cancel
@@ -7476,7 +7455,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="PUT", path_template="/audit/tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/audit/tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # CancelCertificateTransfer  PATCH /cancel-certificate-transfer/{certificateId}
@@ -7485,7 +7464,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["certificateId"] = input.certificateId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/cancel-certificate-transfer/{certificateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/cancel-certificate-transfer/{certificateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # CancelDetectMitigationActionsTask  PUT /detect/mitigationactions/tasks/{taskId}/cancel
@@ -7494,14 +7473,52 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="PUT", path_template="/detect/mitigationactions/tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/detect/mitigationactions/tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # CancelJob  PUT /jobs/{jobId}/cancel
+    # errors: InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def cancel_job(self, CancelJobRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = iot_bind_bool(input.force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="PUT", path_template="/jobs/{jobId}/cancel", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = CancelJobDocument(reasonCode=input.reasonCode, comment=input.comment)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # CancelJobExecution  PUT /things/{thingName}/jobs/{jobId}/cancel
+    # errors: InvalidRequestException, InvalidStateTransitionException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, VersionConflictException
+    def cancel_job_execution(self, CancelJobExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        labels["thingName"] = input.thingName
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = iot_bind_bool(input.force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="PUT", path_template="/things/{thingName}/jobs/{jobId}/cancel", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.expectedVersion.is_some():
+            auto u0 = input.expectedVersion.unwrap()
+            parts.append("\"expectedVersion\":" + str(u0))
+        if input.statusDetails.is_some():
+            auto u1 = input.statusDetails.unwrap()
+            list[str] m2 = []
+            for k2 in sorted(u1.keys()):
+                m2.append(iot_json_str(k2) + ":" + iot_json_str(u1[k2]))
+            parts.append("\"statusDetails\":" + iot_json_obj(m2))
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
     # ClearDefaultAuthorizer  DELETE /default-authorizer
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def clear_default_authorizer(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/default-authorizer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/default-authorizer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ConfirmTopicRuleDestination  GET /confirmdestination/{confirmationToken+}
@@ -7510,14 +7527,14 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["confirmationToken"] = input.confirmationToken
-        auto b = binding.HttpBinding(method="GET", path_template="/confirmdestination/{confirmationToken+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/confirmdestination/{confirmationToken+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # CreateAuditSuppression  POST /audit/suppressions/create
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
     def create_audit_suppression(self, CreateAuditSuppressionRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAuditSuppressionDocument(checkName=input.checkName, resourceIdentifier=input.resourceIdentifier, expirationDate=input.expirationDate, suppressIndefinitely=input.suppressIndefinitely, description=input.description, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -7528,7 +7545,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["authorizerName"] = input.authorizerName
-        auto b = binding.HttpBinding(method="POST", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"authorizerFunctionArn\":" + iot_json_str(input.authorizerFunctionArn))
         if input.tokenKeyName.is_some():
@@ -7564,7 +7581,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["billingGroupName"] = input.billingGroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.billingGroupProperties.is_some():
             auto u0 = input.billingGroupProperties.unwrap()
@@ -7578,13 +7595,25 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # CreateCertificateFromCsr  POST /certificates
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_certificate_from_csr(self, CreateCertificateFromCsrRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.setAsActive.is_some():
+            query["setAsActive"] = iot_bind_bool(input.setAsActive.unwrap_or(False))
+        auto b = binding.HttpBinding(method="POST", path_template="/certificates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = CreateCertificateFromCsrDocument(certificateSigningRequest=input.certificateSigningRequest)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # CreateCertificateProvider  POST /certificate-providers/{certificateProviderName}
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def create_certificate_provider(self, CreateCertificateProviderRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["certificateProviderName"] = input.certificateProviderName
-        auto b = binding.HttpBinding(method="POST", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"lambdaFunctionArn\":" + iot_json_str(input.lambdaFunctionArn))
         list[str] e0 = []
@@ -7609,7 +7638,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["commandId"] = input.commandId
-        auto b = binding.HttpBinding(method="PUT", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.namespace.is_some():
             auto u0 = input.namespace.unwrap()
@@ -7653,7 +7682,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["metricName"] = input.metricName
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -7675,7 +7704,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"type\":" + iot_json_str(input.type))
         list[str] e0 = []
@@ -7698,7 +7727,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["domainConfigurationName"] = input.domainConfigurationName
-        auto b = binding.HttpBinding(method="POST", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.domainName.is_some():
             auto u0 = input.domainName.unwrap()
@@ -7748,7 +7777,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingGroupName"] = input.thingGroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.thingGroupProperties.is_some():
             auto u0 = input.thingGroupProperties.unwrap()
@@ -7775,7 +7804,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["metricName"] = input.metricName
-        auto b = binding.HttpBinding(method="PUT", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"queryString\":" + iot_json_str(input.queryString))
         parts.append("\"aggregationType\":" + aggregation_type_to_json(input.aggregationType))
@@ -7808,7 +7837,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="PUT", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targets:
@@ -7877,7 +7906,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["jobTemplateId"] = input.jobTemplateId
-        auto b = binding.HttpBinding(method="PUT", path_template="/job-templates/{jobTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/job-templates/{jobTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.jobArn.is_some():
             auto u0 = input.jobArn.unwrap()
@@ -7925,13 +7954,23 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # CreateKeysAndCertificate  POST /keys-and-certificate
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def create_keys_and_certificate(self, CreateKeysAndCertificateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.setAsActive.is_some():
+            query["setAsActive"] = iot_bind_bool(input.setAsActive.unwrap_or(False))
+        auto b = binding.HttpBinding(method="POST", path_template="/keys-and-certificate", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
     # CreateMitigationAction  POST /mitigationactions/actions/{actionName}
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException
     def create_mitigation_action(self, CreateMitigationActionRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["actionName"] = input.actionName
-        auto b = binding.HttpBinding(method="POST", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"roleArn\":" + iot_json_str(input.roleArn))
         parts.append("\"actionParams\":" + mitigation_action_params_to_json(input.actionParams))
@@ -7950,7 +7989,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["otaUpdateId"] = input.otaUpdateId
-        auto b = binding.HttpBinding(method="POST", path_template="/otaUpdates/{otaUpdateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/otaUpdates/{otaUpdateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -8009,7 +8048,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -8033,7 +8072,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -8065,7 +8104,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
-        auto b = binding.HttpBinding(method="POST", path_template="/policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{policyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"policyDocument\":" + iot_json_str(input.policyDocument))
         if input.tags.is_some():
@@ -8077,20 +8116,34 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # CreatePolicyVersion  POST /policies/{policyName}/version
+    # errors: InternalFailureException, InvalidRequestException, MalformedPolicyException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, VersionsLimitExceededException
+    def create_policy_version(self, CreatePolicyVersionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyName"] = input.policyName
+        dict[str, str] query = {}
+        if input.setAsDefault.is_some():
+            query["setAsDefault"] = iot_bind_bool(input.setAsDefault.unwrap_or(False))
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{policyName}/version", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = CreatePolicyVersionDocument(policyDocument=input.policyDocument)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # CreateProvisioningClaim  POST /provisioning-templates/{templateName}/provisioning-claim
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def create_provisioning_claim(self, CreateProvisioningClaimRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["templateName"] = input.templateName
-        auto b = binding.HttpBinding(method="POST", path_template="/provisioning-templates/{templateName}/provisioning-claim", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/provisioning-templates/{templateName}/provisioning-claim", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # CreateProvisioningTemplate  POST /provisioning-templates
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ThrottlingException, UnauthorizedException
     def create_provisioning_template(self, CreateProvisioningTemplateRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/provisioning-templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/provisioning-templates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"templateName\":" + iot_json_str(input.templateName))
         if input.description.is_some():
@@ -8116,13 +8169,27 @@ struct IoTClient:
         auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # CreateProvisioningTemplateVersion  POST /provisioning-templates/{templateName}/versions
+    # errors: ConflictingResourceUpdateException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, VersionsLimitExceededException
+    def create_provisioning_template_version(self, CreateProvisioningTemplateVersionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["templateName"] = input.templateName
+        dict[str, str] query = {}
+        if input.setAsDefault.is_some():
+            query["setAsDefault"] = iot_bind_bool(input.setAsDefault.unwrap_or(False))
+        auto b = binding.HttpBinding(method="POST", path_template="/provisioning-templates/{templateName}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = CreateProvisioningTemplateVersionDocument(templateBody=input.templateBody)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
     # CreateRoleAlias  POST /role-aliases/{roleAlias}
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def create_role_alias(self, CreateRoleAliasRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["roleAlias"] = input.roleAlias
-        auto b = binding.HttpBinding(method="POST", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"roleArn\":" + iot_json_str(input.roleArn))
         if input.credentialDurationSeconds.is_some():
@@ -8143,7 +8210,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["scheduledAuditName"] = input.scheduledAuditName
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"frequency\":" + input.frequency.to_json())
         if input.dayOfMonth.is_some():
@@ -8171,7 +8238,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["securityProfileName"] = input.securityProfileName
-        auto b = binding.HttpBinding(method="POST", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.securityProfileDescription.is_some():
             auto u0 = input.securityProfileDescription.unwrap()
@@ -8218,7 +8285,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["streamId"] = input.streamId
-        auto b = binding.HttpBinding(method="POST", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -8243,7 +8310,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.thingTypeName.is_some():
             auto u0 = input.thingTypeName.unwrap()
@@ -8263,7 +8330,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingGroupName"] = input.thingGroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.parentGroupName.is_some():
             auto u0 = input.parentGroupName.unwrap()
@@ -8286,7 +8353,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingTypeName"] = input.thingTypeName
-        auto b = binding.HttpBinding(method="POST", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.thingTypeProperties.is_some():
             auto u0 = input.thingTypeProperties.unwrap()
@@ -8304,17 +8371,28 @@ struct IoTClient:
     # errors: ConflictingResourceUpdateException, InternalException, InvalidRequestException, ResourceAlreadyExistsException, ServiceUnavailableException, UnauthorizedException
     def create_topic_rule_destination(self, CreateTopicRuleDestinationRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/destinations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"destinationConfiguration\":" + topic_rule_destination_configuration_to_json(input.destinationConfiguration))
         auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
+    # DeleteAccountAuditConfiguration  DELETE /audit/configuration
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def delete_account_audit_configuration(self, DeleteAccountAuditConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.deleteScheduledAudits.is_some():
+            auto qt0 = iot_bind_bool(input.deleteScheduledAudits.unwrap_or(False))
+            query["deleteScheduledAudits"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/audit/configuration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
     # DeleteAuditSuppression  POST /audit/suppressions/delete
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException
     def delete_audit_suppression(self, DeleteAuditSuppressionRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAuditSuppressionDocument(checkName=input.checkName, resourceIdentifier=input.resourceIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -8325,7 +8403,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["authorizerName"] = input.authorizerName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteBillingGroup  DELETE /billing-groups/{billingGroupName}
@@ -8337,7 +8415,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.expectedVersion.is_some():
             query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteCACertificate  DELETE /cacertificate/{caCertificateId}
@@ -8346,7 +8424,19 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["caCertificateId"] = input.certificateId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cacertificate/{caCertificateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cacertificate/{caCertificateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # DeleteCertificate  DELETE /certificates/{certificateId}
+    # errors: CertificateStateException, DeleteConflictException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def delete_certificate(self, DeleteCertificateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["certificateId"] = input.certificateId
+        dict[str, str] query = {}
+        if input.forceDelete.is_some():
+            query["forceDelete"] = iot_bind_bool(input.forceDelete.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/certificates/{certificateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteCertificateProvider  DELETE /certificate-providers/{certificateProviderName}
@@ -8355,7 +8445,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["certificateProviderName"] = input.certificateProviderName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteCommand  DELETE /commands/{commandId}
@@ -8364,7 +8454,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["commandId"] = input.commandId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteCommandExecution  DELETE /command-executions/{executionId}
@@ -8375,7 +8465,7 @@ struct IoTClient:
         labels["executionId"] = input.executionId
         dict[str, str] query = {}
         query["targetArn"] = input.targetArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/command-executions/{executionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/command-executions/{executionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteCustomMetric  DELETE /custom-metric/{metricName}
@@ -8384,7 +8474,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["metricName"] = input.metricName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteDimension  DELETE /dimensions/{name}
@@ -8393,7 +8483,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteDomainConfiguration  DELETE /domainConfigurations/{domainConfigurationName}
@@ -8402,7 +8492,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["domainConfigurationName"] = input.domainConfigurationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteDynamicThingGroup  DELETE /dynamic-thing-groups/{thingGroupName}
@@ -8414,7 +8504,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.expectedVersion.is_some():
             query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteFleetMetric  DELETE /fleet-metric/{metricName}
@@ -8426,7 +8516,37 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.expectedVersion.is_some():
             query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # DeleteJob  DELETE /jobs/{jobId}
+    # errors: InvalidRequestException, InvalidStateTransitionException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def delete_job(self, DeleteJobRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = iot_bind_bool(input.force.unwrap_or(False))
+        if input.namespaceId.is_some():
+            query["namespaceId"] = input.namespaceId.unwrap_or("")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # DeleteJobExecution  DELETE /things/{thingName}/jobs/{jobId}/executionNumber/{executionNumber}
+    # errors: InvalidRequestException, InvalidStateTransitionException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def delete_job_execution(self, DeleteJobExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        labels["thingName"] = input.thingName
+        labels["executionNumber"] = str(input.executionNumber)
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = iot_bind_bool(input.force.unwrap_or(False))
+        if input.namespaceId.is_some():
+            query["namespaceId"] = input.namespaceId.unwrap_or("")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/things/{thingName}/jobs/{jobId}/executionNumber/{executionNumber}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteJobTemplate  DELETE /job-templates/{jobTemplateId}
@@ -8435,7 +8555,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["jobTemplateId"] = input.jobTemplateId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/job-templates/{jobTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/job-templates/{jobTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteMitigationAction  DELETE /mitigationactions/actions/{actionName}
@@ -8444,7 +8564,22 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["actionName"] = input.actionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # DeleteOTAUpdate  DELETE /otaUpdates/{otaUpdateId}
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, VersionConflictException
+    def delete_ota_update(self, DeleteOTAUpdateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["otaUpdateId"] = input.otaUpdateId
+        dict[str, str] query = {}
+        if input.deleteStream.is_some():
+            query["deleteStream"] = iot_bind_bool(input.deleteStream.unwrap_or(False))
+        if input.forceDeleteAWSJob.is_some():
+            auto qt0 = iot_bind_bool(input.forceDeleteAWSJob.unwrap_or(False))
+            query["forceDeleteAWSJob"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/otaUpdates/{otaUpdateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeletePackage  DELETE /packages/{packageName}
@@ -8456,7 +8591,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeletePackageVersion  DELETE /packages/{packageName}/versions/{versionName}
@@ -8469,7 +8604,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeletePolicy  DELETE /policies/{policyName}
@@ -8478,7 +8613,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeletePolicyVersion  DELETE /policies/{policyName}/version/{policyVersionId}
@@ -8488,7 +8623,7 @@ struct IoTClient:
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
         labels["policyVersionId"] = input.policyVersionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyName}/version/{policyVersionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{policyName}/version/{policyVersionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteProvisioningTemplate  DELETE /provisioning-templates/{templateName}
@@ -8497,7 +8632,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["templateName"] = input.templateName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/provisioning-templates/{templateName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/provisioning-templates/{templateName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteProvisioningTemplateVersion  DELETE /provisioning-templates/{templateName}/versions/{versionId}
@@ -8507,14 +8642,14 @@ struct IoTClient:
         dict[str, str] labels = {}
         labels["templateName"] = input.templateName
         labels["versionId"] = str(input.versionId)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/provisioning-templates/{templateName}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/provisioning-templates/{templateName}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteRegistrationCode  DELETE /registrationcode
     # errors: InternalFailureException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def delete_registration_code(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/registrationcode", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/registrationcode", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteRoleAlias  DELETE /role-aliases/{roleAlias}
@@ -8523,7 +8658,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["roleAlias"] = input.roleAlias
-        auto b = binding.HttpBinding(method="DELETE", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteScheduledAudit  DELETE /audit/scheduledaudits/{scheduledAuditName}
@@ -8532,7 +8667,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["scheduledAuditName"] = input.scheduledAuditName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteSecurityProfile  DELETE /security-profiles/{securityProfileName}
@@ -8544,7 +8679,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.expectedVersion.is_some():
             query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteStream  DELETE /streams/{streamId}
@@ -8553,7 +8688,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["streamId"] = input.streamId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteThing  DELETE /things/{thingName}
@@ -8565,7 +8700,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.expectedVersion.is_some():
             query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteThingGroup  DELETE /thing-groups/{thingGroupName}
@@ -8577,7 +8712,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.expectedVersion.is_some():
             query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteThingType  DELETE /thing-types/{thingTypeName}
@@ -8586,7 +8721,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingTypeName"] = input.thingTypeName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteTopicRule  DELETE /rules/{ruleName}
@@ -8595,7 +8730,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleName"] = input.ruleName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{ruleName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{ruleName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteTopicRuleDestination  DELETE /destinations/{arn+}
@@ -8604,7 +8739,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/destinations/{arn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/destinations/{arn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeleteV2LoggingLevel  DELETE /v2LoggingLevel
@@ -8614,7 +8749,7 @@ struct IoTClient:
         dict[str, str] query = {}
         query["targetType"] = input.targetType
         query["targetName"] = input.targetName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v2LoggingLevel", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v2LoggingLevel", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DeprecateThingType  POST /thing-types/{thingTypeName}/deprecate
@@ -8623,7 +8758,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingTypeName"] = input.thingTypeName
-        auto b = binding.HttpBinding(method="POST", path_template="/thing-types/{thingTypeName}/deprecate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/thing-types/{thingTypeName}/deprecate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeprecateThingTypeDocument(undoDeprecate=input.undoDeprecate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -8632,7 +8767,7 @@ struct IoTClient:
     # errors: InternalFailureException, ThrottlingException
     def describe_account_audit_configuration(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeAuditFinding  GET /audit/findings/{findingId}
@@ -8641,7 +8776,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["findingId"] = input.findingId
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/findings/{findingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/findings/{findingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeAuditMitigationActionsTask  GET /audit/mitigationactions/tasks/{taskId}
@@ -8650,14 +8785,14 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeAuditSuppression  POST /audit/suppressions/describe
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def describe_audit_suppression(self, DescribeAuditSuppressionRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/describe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeAuditSuppressionDocument(checkName=input.checkName, resourceIdentifier=input.resourceIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -8668,7 +8803,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeAuthorizer  GET /authorizer/{authorizerName}
@@ -8677,7 +8812,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["authorizerName"] = input.authorizerName
-        auto b = binding.HttpBinding(method="GET", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeBillingGroup  GET /billing-groups/{billingGroupName}
@@ -8686,7 +8821,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["billingGroupName"] = input.billingGroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeCACertificate  GET /cacertificate/{caCertificateId}
@@ -8695,7 +8830,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["caCertificateId"] = input.certificateId
-        auto b = binding.HttpBinding(method="GET", path_template="/cacertificate/{caCertificateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cacertificate/{caCertificateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeCertificate  GET /certificates/{certificateId}
@@ -8704,7 +8839,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["certificateId"] = input.certificateId
-        auto b = binding.HttpBinding(method="GET", path_template="/certificates/{certificateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/certificates/{certificateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeCertificateProvider  GET /certificate-providers/{certificateProviderName}
@@ -8713,7 +8848,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["certificateProviderName"] = input.certificateProviderName
-        auto b = binding.HttpBinding(method="GET", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeCustomMetric  GET /custom-metric/{metricName}
@@ -8722,14 +8857,14 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["metricName"] = input.metricName
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeDefaultAuthorizer  GET /default-authorizer
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def describe_default_authorizer(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/default-authorizer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/default-authorizer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeDetectMitigationActionsTask  GET /detect/mitigationactions/tasks/{taskId}
@@ -8738,7 +8873,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/detect/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/detect/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeDimension  GET /dimensions/{name}
@@ -8747,7 +8882,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeDomainConfiguration  GET /domainConfigurations/{domainConfigurationName}
@@ -8756,14 +8891,14 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["domainConfigurationName"] = input.domainConfigurationName
-        auto b = binding.HttpBinding(method="GET", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeEncryptionConfiguration  GET /encryption-configuration
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def describe_encryption_configuration(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/encryption-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/encryption-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeEndpoint  GET /endpoint
@@ -8773,14 +8908,14 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.endpointType.is_some():
             query["endpointType"] = input.endpointType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/endpoint", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/endpoint", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeEventConfigurations  GET /event-configurations
     # errors: InternalFailureException, ThrottlingException
     def describe_event_configurations(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/event-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeFleetMetric  GET /fleet-metric/{metricName}
@@ -8789,7 +8924,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["metricName"] = input.metricName
-        auto b = binding.HttpBinding(method="GET", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeIndex  GET /indices/{indexName}
@@ -8798,7 +8933,20 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["indexName"] = input.indexName
-        auto b = binding.HttpBinding(method="GET", path_template="/indices/{indexName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/indices/{indexName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # DescribeJob  GET /jobs/{jobId}
+    # errors: InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def describe_job(self, DescribeJobRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        dict[str, str] query = {}
+        if input.beforeSubstitution.is_some():
+            auto qt0 = iot_bind_bool(input.beforeSubstitution.unwrap_or(False))
+            query["beforeSubstitution"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeJobExecution  GET /things/{thingName}/jobs/{jobId}
@@ -8811,7 +8959,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.executionNumber.is_some():
             query["executionNumber"] = str(input.executionNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeJobTemplate  GET /job-templates/{jobTemplateId}
@@ -8820,7 +8968,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["jobTemplateId"] = input.jobTemplateId
-        auto b = binding.HttpBinding(method="GET", path_template="/job-templates/{jobTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/job-templates/{jobTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeManagedJobTemplate  GET /managed-job-templates/{templateName}
@@ -8832,7 +8980,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.templateVersion.is_some():
             query["templateVersion"] = input.templateVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-job-templates/{templateName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-job-templates/{templateName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeMitigationAction  GET /mitigationactions/actions/{actionName}
@@ -8841,7 +8989,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["actionName"] = input.actionName
-        auto b = binding.HttpBinding(method="GET", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeProvisioningTemplate  GET /provisioning-templates/{templateName}
@@ -8850,7 +8998,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["templateName"] = input.templateName
-        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates/{templateName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates/{templateName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeProvisioningTemplateVersion  GET /provisioning-templates/{templateName}/versions/{versionId}
@@ -8860,7 +9008,7 @@ struct IoTClient:
         dict[str, str] labels = {}
         labels["templateName"] = input.templateName
         labels["versionId"] = str(input.versionId)
-        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates/{templateName}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates/{templateName}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeRoleAlias  GET /role-aliases/{roleAlias}
@@ -8869,7 +9017,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["roleAlias"] = input.roleAlias
-        auto b = binding.HttpBinding(method="GET", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeScheduledAudit  GET /audit/scheduledaudits/{scheduledAuditName}
@@ -8878,7 +9026,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["scheduledAuditName"] = input.scheduledAuditName
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeSecurityProfile  GET /security-profiles/{securityProfileName}
@@ -8887,7 +9035,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["securityProfileName"] = input.securityProfileName
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeStream  GET /streams/{streamId}
@@ -8896,7 +9044,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["streamId"] = input.streamId
-        auto b = binding.HttpBinding(method="GET", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeThing  GET /things/{thingName}
@@ -8905,7 +9053,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeThingGroup  GET /thing-groups/{thingGroupName}
@@ -8914,7 +9062,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingGroupName"] = input.thingGroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeThingRegistrationTask  GET /thing-registration-tasks/{taskId}
@@ -8923,7 +9071,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/thing-registration-tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-registration-tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DescribeThingType  GET /thing-types/{thingTypeName}
@@ -8932,7 +9080,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingTypeName"] = input.thingTypeName
-        auto b = binding.HttpBinding(method="GET", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DetachPolicy  POST /target-policies/{policyName}
@@ -8941,7 +9089,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
-        auto b = binding.HttpBinding(method="POST", path_template="/target-policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/target-policies/{policyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DetachPolicyDocument(target=input.target)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -8954,7 +9102,7 @@ struct IoTClient:
         labels["policyName"] = input.policyName
         dict[str, str] headers = {}
         headers["x-amzn-iot-principal"] = input.principal
-        auto b = binding.HttpBinding(method="DELETE", path_template="/principal-policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/principal-policies/{policyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DetachSecurityProfile  DELETE /security-profiles/{securityProfileName}/targets
@@ -8965,7 +9113,7 @@ struct IoTClient:
         labels["securityProfileName"] = input.securityProfileName
         dict[str, str] query = {}
         query["securityProfileTargetArn"] = input.securityProfileTargetArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/security-profiles/{securityProfileName}/targets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/security-profiles/{securityProfileName}/targets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DetachThingPrincipal  DELETE /things/{thingName}/principals
@@ -8976,7 +9124,7 @@ struct IoTClient:
         labels["thingName"] = input.thingName
         dict[str, str] headers = {}
         headers["x-amzn-principal"] = input.principal
-        auto b = binding.HttpBinding(method="DELETE", path_template="/things/{thingName}/principals", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/things/{thingName}/principals", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DisableTopicRule  POST /rules/{ruleName}/disable
@@ -8985,7 +9133,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleName"] = input.ruleName
-        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleName}/disable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleName}/disable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # DisassociateSbomFromPackageVersion  DELETE /packages/{packageName}/versions/{versionName}/sbom
@@ -8998,7 +9146,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/packages/{packageName}/versions/{versionName}/sbom", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/packages/{packageName}/versions/{versionName}/sbom", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # EnableTopicRule  POST /rules/{ruleName}/enable
@@ -9007,7 +9155,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleName"] = input.ruleName
-        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleName}/enable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rules/{ruleName}/enable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetBehaviorModelTrainingSummaries  GET /behavior-model-training/summaries
@@ -9021,14 +9169,14 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/behavior-model-training/summaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/behavior-model-training/summaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetBucketsAggregation  POST /indices/buckets
     # errors: IndexNotReadyException, InternalFailureException, InvalidAggregationException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def get_buckets_aggregation(self, GetBucketsAggregationRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/indices/buckets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/indices/buckets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetBucketsAggregationDocument(indexName=input.indexName, queryString=input.queryString, aggregationField=input.aggregationField, queryVersion=input.queryVersion, bucketsAggregationType=input.bucketsAggregationType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9037,7 +9185,7 @@ struct IoTClient:
     # errors: IndexNotReadyException, InternalFailureException, InvalidAggregationException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def get_cardinality(self, GetCardinalityRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/indices/cardinality", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/indices/cardinality", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCardinalityDocument(indexName=input.indexName, queryString=input.queryString, aggregationField=input.aggregationField, queryVersion=input.queryVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9048,7 +9196,20 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["commandId"] = input.commandId
-        auto b = binding.HttpBinding(method="GET", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # GetCommandExecution  GET /command-executions/{executionId}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_command_execution(self, GetCommandExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["executionId"] = input.executionId
+        dict[str, str] query = {}
+        query["targetArn"] = input.targetArn
+        if input.includeResult.is_some():
+            query["includeResult"] = iot_bind_bool(input.includeResult.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/command-executions/{executionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetEffectivePolicies  POST /effective-policies
@@ -9058,7 +9219,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.thingName.is_some():
             query["thingName"] = input.thingName.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/effective-policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/effective-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetEffectivePoliciesDocument(principal=input.principal, cognitoIdentityPoolId=input.cognitoIdentityPoolId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9067,14 +9228,27 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def get_indexing_configuration(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/indexing/config", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/indexing/config", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # GetJobDocument  GET /jobs/{jobId}/job-document
+    # errors: InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException
+    def get_job_document(self, GetJobDocumentRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobId"] = input.jobId
+        dict[str, str] query = {}
+        if input.beforeSubstitution.is_some():
+            auto qt0 = iot_bind_bool(input.beforeSubstitution.unwrap_or(False))
+            query["beforeSubstitution"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}/job-document", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetLoggingOptions  GET /loggingOptions
     # errors: InternalException, InvalidRequestException, ServiceUnavailableException
     def get_logging_options(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/loggingOptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/loggingOptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetOTAUpdate  GET /otaUpdates/{otaUpdateId}
@@ -9083,7 +9257,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["otaUpdateId"] = input.otaUpdateId
-        auto b = binding.HttpBinding(method="GET", path_template="/otaUpdates/{otaUpdateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/otaUpdates/{otaUpdateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetPackage  GET /packages/{packageName}
@@ -9092,14 +9266,14 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["packageName"] = input.packageName
-        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetPackageConfiguration  GET /package-configuration
     # errors: InternalServerException, ThrottlingException
     def get_package_configuration(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/package-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/package-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetPackageVersion  GET /packages/{packageName}/versions/{versionName}
@@ -9109,14 +9283,14 @@ struct IoTClient:
         dict[str, str] labels = {}
         labels["packageName"] = input.packageName
         labels["versionName"] = input.versionName
-        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetPercentiles  POST /indices/percentiles
     # errors: IndexNotReadyException, InternalFailureException, InvalidAggregationException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def get_percentiles(self, GetPercentilesRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/indices/percentiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/indices/percentiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.indexName.is_some():
             auto u0 = input.indexName.unwrap()
@@ -9143,7 +9317,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
-        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetPolicyVersion  GET /policies/{policyName}/version/{policyVersionId}
@@ -9153,21 +9327,21 @@ struct IoTClient:
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
         labels["policyVersionId"] = input.policyVersionId
-        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyName}/version/{policyVersionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyName}/version/{policyVersionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetRegistrationCode  GET /registrationcode
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def get_registration_code(self) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/registrationcode", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/registrationcode", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetStatistics  POST /indices/statistics
     # errors: IndexNotReadyException, InternalFailureException, InvalidAggregationException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def get_statistics(self, GetStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/indices/statistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/indices/statistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetStatisticsDocument(indexName=input.indexName, queryString=input.queryString, aggregationField=input.aggregationField, queryVersion=input.queryVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9178,7 +9352,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}/connectivity-data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}/connectivity-data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetThingConnectivityDataDocument(includeSocketInformation=input.includeSocketInformation)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9189,7 +9363,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["ruleName"] = input.ruleName
-        auto b = binding.HttpBinding(method="GET", path_template="/rules/{ruleName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules/{ruleName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # GetTopicRuleDestination  GET /destinations/{arn+}
@@ -9198,14 +9372,63 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/destinations/{arn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/destinations/{arn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # GetV2LoggingOptions  GET /v2LoggingOptions
+    # errors: InternalException, NotConfiguredException, ServiceUnavailableException
+    def get_v2_logging_options(self, GetV2LoggingOptionsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.verbose.is_some():
+            query["verbose"] = iot_bind_bool(input.verbose.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/v2LoggingOptions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListActiveViolations  GET /active-violations
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_active_violations(self, ListActiveViolationsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.thingName.is_some():
+            query["thingName"] = input.thingName.unwrap_or("")
+        if input.securityProfileName.is_some():
+            query["securityProfileName"] = input.securityProfileName.unwrap_or("")
+        if input.behaviorCriteriaType.is_some():
+            query["behaviorCriteriaType"] = input.behaviorCriteriaType.unwrap_or("")
+        if input.listSuppressedAlerts.is_some():
+            auto qt0 = iot_bind_bool(input.listSuppressedAlerts.unwrap_or(False))
+            query["listSuppressedAlerts"] = qt0
+        if input.verificationState.is_some():
+            query["verificationState"] = input.verificationState.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/active-violations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListAttachedPolicies  POST /attached-policies/{target}
+    # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_attached_policies(self, ListAttachedPoliciesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["target"] = input.target
+        dict[str, str] query = {}
+        if input.recursive.is_some():
+            query["recursive"] = iot_bind_bool(input.recursive.unwrap_or(False))
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        auto b = binding.HttpBinding(method="POST", path_template="/attached-policies/{target}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListAuditFindings  POST /audit/findings
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException
     def list_audit_findings(self, ListAuditFindingsRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/findings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/findings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAuditFindingsDocument(taskId=input.taskId, checkName=input.checkName, resourceIdentifier=input.resourceIdentifier, maxResults=input.maxResults, nextToken=input.nextToken, startTime=input.startTime, endTime=input.endTime, listSuppressedFindings=input.listSuppressedFindings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9223,17 +9446,72 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/mitigationactions/executions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/mitigationactions/executions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListAuditMitigationActionsTasks  GET /audit/mitigationactions/tasks
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def list_audit_mitigation_actions_tasks(self, ListAuditMitigationActionsTasksRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.auditTaskId.is_some():
+            query["auditTaskId"] = input.auditTaskId.unwrap_or("")
+        if input.findingId.is_some():
+            query["findingId"] = input.findingId.unwrap_or("")
+        if input.taskStatus.is_some():
+            query["taskStatus"] = input.taskStatus.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/mitigationactions/tasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListAuditSuppressions  POST /audit/suppressions/list
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException
     def list_audit_suppressions(self, ListAuditSuppressionsRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/suppressions/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAuditSuppressionsDocument(checkName=input.checkName, resourceIdentifier=input.resourceIdentifier, ascendingOrder=input.ascendingOrder, nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # ListAuditTasks  GET /audit/tasks
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def list_audit_tasks(self, ListAuditTasksRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.taskType.is_some():
+            query["taskType"] = input.taskType.unwrap_or("")
+        if input.taskStatus.is_some():
+            query["taskStatus"] = input.taskStatus.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/tasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListAuthorizers  GET /authorizers/
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_authorizers(self, ListAuthorizersRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        if input.status.is_some():
+            query["status"] = input.status.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/authorizers/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListBillingGroups  GET /billing-groups
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
@@ -9246,7 +9524,69 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.namePrefixFilter.is_some():
             query["namePrefixFilter"] = input.namePrefixFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/billing-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/billing-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListCACertificates  GET /cacertificates
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_ca_certificates(self, ListCACertificatesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        if input.templateName.is_some():
+            query["templateName"] = input.templateName.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/cacertificates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListCertificateProviders  GET /certificate-providers/
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_certificate_providers(self, ListCertificateProvidersRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/certificate-providers/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListCertificates  GET /certificates
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_certificates(self, ListCertificatesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/certificates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListCertificatesByCA  GET /certificates-by-ca/{caCertificateId}
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_certificates_by_ca(self, ListCertificatesByCARequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["caCertificateId"] = input.caCertificateId
+        dict[str, str] query = {}
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/certificates-by-ca/{caCertificateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListCommandExecutions  POST /command-executions
@@ -9258,7 +9598,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/command-executions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/command-executions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCommandExecutionsDocument(namespace=input.namespace, status=input.status, sortOrder=input.sortOrder, startedTimeFilter=input.startedTimeFilter, completedTimeFilter=input.completedTimeFilter, targetArn=input.targetArn, commandArn=input.commandArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9278,7 +9618,7 @@ struct IoTClient:
             query["commandParameterName"] = input.commandParameterName.unwrap_or("")
         if input.sortOrder.is_some():
             query["sortOrder"] = input.sortOrder.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/commands", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/commands", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListCustomMetrics  GET /custom-metrics
@@ -9290,7 +9630,45 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-metrics", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-metrics", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListDetectMitigationActionsExecutions  GET /detect/mitigationactions/executions
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def list_detect_mitigation_actions_executions(self, ListDetectMitigationActionsExecutionsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.taskId.is_some():
+            query["taskId"] = input.taskId.unwrap_or("")
+        if input.violationId.is_some():
+            query["violationId"] = input.violationId.unwrap_or("")
+        if input.thingName.is_some():
+            query["thingName"] = input.thingName.unwrap_or("")
+        if input.startTime.is_some():
+            auto qt0 = datetime.strftime(input.startTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt0
+        if input.endTime.is_some():
+            auto qt1 = datetime.strftime(input.endTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt1
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/detect/mitigationactions/executions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListDetectMitigationActionsTasks  GET /detect/mitigationactions/tasks
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def list_detect_mitigation_actions_tasks(self, ListDetectMitigationActionsTasksRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/detect/mitigationactions/tasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListDimensions  GET /dimensions
@@ -9302,7 +9680,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/dimensions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dimensions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListDomainConfigurations  GET /domainConfigurations
@@ -9316,7 +9694,7 @@ struct IoTClient:
             query["pageSize"] = str(input.pageSize.unwrap_or(0))
         if input.serviceType.is_some():
             query["serviceType"] = input.serviceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domainConfigurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainConfigurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListFleetMetrics  GET /fleet-metrics
@@ -9328,7 +9706,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/fleet-metrics", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/fleet-metrics", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListIndices  GET /indices
@@ -9340,7 +9718,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/indices", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/indices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListJobExecutionsForJob  GET /jobs/{jobId}/things
@@ -9356,7 +9734,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}/things", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs/{jobId}/things", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListJobExecutionsForThing  GET /things/{thingName}/jobs
@@ -9376,7 +9754,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.jobId.is_some():
             query["jobId"] = input.jobId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListJobTemplates  GET /job-templates
@@ -9388,7 +9766,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/job-templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/job-templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListJobs  GET /jobs
@@ -9410,7 +9788,7 @@ struct IoTClient:
             query["thingGroupId"] = input.thingGroupId.unwrap_or("")
         if input.namespaceId.is_some():
             query["namespaceId"] = input.namespaceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListManagedJobTemplates  GET /managed-job-templates
@@ -9424,7 +9802,27 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-job-templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-job-templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListMetricValues  GET /metric-values
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_metric_values(self, ListMetricValuesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        query["thingName"] = input.thingName
+        query["metricName"] = input.metricName
+        if input.dimensionName.is_some():
+            query["dimensionName"] = input.dimensionName.unwrap_or("")
+        if input.dimensionValueOperator.is_some():
+            query["dimensionValueOperator"] = input.dimensionValueOperator.unwrap_or("")
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/metric-values", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListMitigationActions  GET /mitigationactions/actions
@@ -9438,7 +9836,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/mitigationactions/actions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/mitigationactions/actions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListOTAUpdates  GET /otaUpdates
@@ -9452,7 +9850,22 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.otaUpdateStatus.is_some():
             query["otaUpdateStatus"] = input.otaUpdateStatus.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/otaUpdates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/otaUpdates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListOutgoingCertificates  GET /certificates-out-going
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_outgoing_certificates(self, ListOutgoingCertificatesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/certificates-out-going", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListPackageVersions  GET /packages/{packageName}/versions
@@ -9468,7 +9881,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListPackages  GET /packages
@@ -9480,7 +9893,39 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/packages", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packages", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListPolicies  GET /policies
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_policies(self, ListPoliciesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListPolicyPrincipals  GET /policy-principals
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_policy_principals(self, ListPolicyPrincipalsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        dict[str, str] headers = {}
+        headers["x-amzn-iot-policy"] = input.policyName
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-principals", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListPolicyVersions  GET /policies/{policyName}/version
@@ -9489,7 +9934,24 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
-        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyName}/version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies/{policyName}/version", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListPrincipalPolicies  GET /principal-policies
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_principal_policies(self, ListPrincipalPoliciesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        dict[str, str] headers = {}
+        headers["x-amzn-iot-principal"] = input.principal
+        auto b = binding.HttpBinding(method="GET", path_template="/principal-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListPrincipalThings  GET /principals/things
@@ -9503,7 +9965,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         dict[str, str] headers = {}
         headers["x-amzn-principal"] = input.principal
-        auto b = binding.HttpBinding(method="GET", path_template="/principals/things", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/principals/things", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListPrincipalThingsV2  GET /principals/things-v2
@@ -9519,7 +9981,7 @@ struct IoTClient:
             query["thingPrincipalType"] = input.thingPrincipalType.unwrap_or("")
         dict[str, str] headers = {}
         headers["x-amzn-principal"] = input.principal
-        auto b = binding.HttpBinding(method="GET", path_template="/principals/things-v2", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/principals/things-v2", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListProvisioningTemplateVersions  GET /provisioning-templates/{templateName}/versions
@@ -9533,7 +9995,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates/{templateName}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates/{templateName}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListProvisioningTemplates  GET /provisioning-templates
@@ -9545,7 +10007,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/provisioning-templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListRelatedResourcesForAuditFinding  GET /audit/relatedResources
@@ -9558,7 +10020,22 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/relatedResources", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/relatedResources", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListRoleAliases  GET /role-aliases
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_role_aliases(self, ListRoleAliasesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.pageSize.is_some():
+            query["pageSize"] = str(input.pageSize.unwrap_or(0))
+        if input.marker.is_some():
+            query["marker"] = input.marker.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/role-aliases", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListSbomValidationResults  GET /packages/{packageName}/versions/{versionName}/sbom-validation-results
@@ -9575,7 +10052,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}/versions/{versionName}/sbom-validation-results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/packages/{packageName}/versions/{versionName}/sbom-validation-results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListScheduledAudits  GET /audit/scheduledaudits
@@ -9587,7 +10064,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/audit/scheduledaudits", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/audit/scheduledaudits", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListSecurityProfiles  GET /security-profiles
@@ -9603,7 +10080,37 @@ struct IoTClient:
             query["dimensionName"] = input.dimensionName.unwrap_or("")
         if input.metricName.is_some():
             query["metricName"] = input.metricName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListSecurityProfilesForTarget  GET /security-profiles-for-target
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_security_profiles_for_target(self, ListSecurityProfilesForTargetRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.recursive.is_some():
+            query["recursive"] = iot_bind_bool(input.recursive.unwrap_or(False))
+        query["securityProfileTargetArn"] = input.securityProfileTargetArn
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-for-target", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListStreams  GET /streams
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_streams(self, ListStreamsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.ascendingOrder.is_some():
+            auto qt0 = iot_bind_bool(input.ascendingOrder.unwrap_or(False))
+            query["isAscendingOrder"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/streams", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListTagsForResource  GET /tags
@@ -9614,7 +10121,7 @@ struct IoTClient:
         query["resourceArn"] = input.resourceArn
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListTargetsForPolicy  POST /policy-targets/{policyName}
@@ -9628,7 +10135,7 @@ struct IoTClient:
             query["marker"] = input.marker.unwrap_or("")
         if input.pageSize.is_some():
             query["pageSize"] = str(input.pageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/policy-targets/{policyName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy-targets/{policyName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListTargetsForSecurityProfile  GET /security-profiles/{securityProfileName}/targets
@@ -9642,7 +10149,25 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles/{securityProfileName}/targets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles/{securityProfileName}/targets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListThingGroups  GET /thing-groups
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_thing_groups(self, ListThingGroupsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.parentGroup.is_some():
+            query["parentGroup"] = input.parentGroup.unwrap_or("")
+        if input.namePrefixFilter.is_some():
+            query["namePrefixFilter"] = input.namePrefixFilter.unwrap_or("")
+        if input.recursive.is_some():
+            query["recursive"] = iot_bind_bool(input.recursive.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListThingGroupsForThing  GET /things/{thingName}/thing-groups
@@ -9656,7 +10181,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/thing-groups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/thing-groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListThingPrincipals  GET /things/{thingName}/principals
@@ -9670,7 +10195,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/principals", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/principals", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListThingPrincipalsV2  GET /things/{thingName}/principals-v2
@@ -9686,7 +10211,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.thingPrincipalType.is_some():
             query["thingPrincipalType"] = input.thingPrincipalType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/principals-v2", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/principals-v2", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListThingRegistrationTaskReports  GET /thing-registration-tasks/{taskId}/reports
@@ -9701,7 +10226,7 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/thing-registration-tasks/{taskId}/reports", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-registration-tasks/{taskId}/reports", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListThingRegistrationTasks  GET /thing-registration-tasks
@@ -9715,7 +10240,7 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/thing-registration-tasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-registration-tasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListThingTypes  GET /thing-types
@@ -9729,7 +10254,28 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.thingTypeName.is_some():
             query["thingTypeName"] = input.thingTypeName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/thing-types", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-types", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListThings  GET /things
+    # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def list_things(self, ListThingsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.attributeName.is_some():
+            query["attributeName"] = input.attributeName.unwrap_or("")
+        if input.attributeValue.is_some():
+            query["attributeValue"] = input.attributeValue.unwrap_or("")
+        if input.thingTypeName.is_some():
+            query["thingTypeName"] = input.thingTypeName.unwrap_or("")
+        if input.usePrefixAttributeValue.is_some():
+            auto qt0 = iot_bind_bool(input.usePrefixAttributeValue.unwrap_or(False))
+            query["usePrefixAttributeValue"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/things", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListThingsInBillingGroup  GET /billing-groups/{billingGroupName}/things
@@ -9743,7 +10289,23 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/billing-groups/{billingGroupName}/things", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/billing-groups/{billingGroupName}/things", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListThingsInThingGroup  GET /thing-groups/{thingGroupName}/things
+    # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def list_things_in_thing_group(self, ListThingsInThingGroupRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["thingGroupName"] = input.thingGroupName
+        dict[str, str] query = {}
+        if input.recursive.is_some():
+            query["recursive"] = iot_bind_bool(input.recursive.unwrap_or(False))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/thing-groups/{thingGroupName}/things", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListTopicRuleDestinations  GET /destinations
@@ -9755,7 +10317,23 @@ struct IoTClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/destinations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/destinations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListTopicRules  GET /rules
+    # errors: InternalException, InvalidRequestException, ServiceUnavailableException, UnauthorizedException
+    def list_topic_rules(self, ListTopicRulesRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.topic.is_some():
+            query["topic"] = input.topic.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.ruleDisabled.is_some():
+            query["ruleDisabled"] = iot_bind_bool(input.ruleDisabled.unwrap_or(False))
+        auto b = binding.HttpBinding(method="GET", path_template="/rules", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # ListV2LoggingLevels  GET /v2LoggingLevel
@@ -9769,7 +10347,32 @@ struct IoTClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v2LoggingLevel", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v2LoggingLevel", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
+
+    # ListViolationEvents  GET /violation-events
+    # errors: InternalFailureException, InvalidRequestException, ThrottlingException
+    def list_violation_events(self, ListViolationEventsRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.thingName.is_some():
+            query["thingName"] = input.thingName.unwrap_or("")
+        if input.securityProfileName.is_some():
+            query["securityProfileName"] = input.securityProfileName.unwrap_or("")
+        if input.behaviorCriteriaType.is_some():
+            query["behaviorCriteriaType"] = input.behaviorCriteriaType.unwrap_or("")
+        if input.listSuppressedAlerts.is_some():
+            auto qt0 = iot_bind_bool(input.listSuppressedAlerts.unwrap_or(False))
+            query["listSuppressedAlerts"] = qt0
+        if input.verificationState.is_some():
+            query["verificationState"] = input.verificationState.unwrap_or("")
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/violation-events", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # PutVerificationStateOnViolation  POST /violations/verification-state/{violationId}
@@ -9778,8 +10381,51 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["violationId"] = input.violationId
-        auto b = binding.HttpBinding(method="POST", path_template="/violations/verification-state/{violationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/violations/verification-state/{violationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutVerificationStateOnViolationDocument(verificationState=input.verificationState, verificationStateDescription=input.verificationStateDescription)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # RegisterCACertificate  POST /cacertificate
+    # errors: CertificateValidationException, InternalFailureException, InvalidRequestException, LimitExceededException, RegistrationCodeValidationException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def register_ca_certificate(self, RegisterCACertificateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.setAsActive.is_some():
+            query["setAsActive"] = iot_bind_bool(input.setAsActive.unwrap_or(False))
+        if input.allowAutoRegistration.is_some():
+            auto qt0 = iot_bind_bool(input.allowAutoRegistration.unwrap_or(False))
+            query["allowAutoRegistration"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/cacertificate", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"caCertificate\":" + iot_json_str(input.caCertificate))
+        if input.verificationCertificate.is_some():
+            auto u0 = input.verificationCertificate.unwrap()
+            parts.append("\"verificationCertificate\":" + iot_json_str(u0))
+        if input.registrationConfig.is_some():
+            auto u1 = input.registrationConfig.unwrap()
+            parts.append("\"registrationConfig\":" + u1.to_json())
+        if input.tags.is_some():
+            auto u2 = input.tags.unwrap()
+            list[str] e3 = []
+            for x3 in u2:
+                e3.append(x3.to_json())
+            parts.append("\"tags\":" + iot_json_arr(e3))
+        if input.certificateMode.is_some():
+            auto u4 = input.certificateMode.unwrap()
+            parts.append("\"certificateMode\":" + u4.to_json())
+        auto bp = restjson.rest_json_document(b, iot_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
+
+    # RegisterCertificate  POST /certificate/register
+    # errors: CertificateConflictException, CertificateStateException, CertificateValidationException, InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
+    def register_certificate(self, RegisterCertificateRequest input) -> str:
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        dict[str, str] query = {}
+        if input.setAsActive.is_some():
+            query["setAsActive"] = iot_bind_bool(input.setAsActive.unwrap_or(False))
+        auto b = binding.HttpBinding(method="POST", path_template="/certificate/register", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = RegisterCertificateDocument(certificatePem=input.certificatePem, caCertificatePem=input.caCertificatePem, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
@@ -9787,7 +10433,7 @@ struct IoTClient:
     # errors: CertificateStateException, CertificateValidationException, InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def register_certificate_without_ca(self, RegisterCertificateWithoutCARequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/certificate/register-no-ca", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/certificate/register-no-ca", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterCertificateWithoutCADocument(certificatePem=input.certificatePem, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9796,7 +10442,7 @@ struct IoTClient:
     # errors: ConflictingResourceUpdateException, InternalFailureException, InvalidRequestException, ResourceRegistrationFailureException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def register_thing(self, RegisterThingRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/things", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/things", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"templateBody\":" + iot_json_str(input.templateBody))
         if input.parameters.is_some():
@@ -9814,7 +10460,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["certificateId"] = input.certificateId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/reject-certificate-transfer/{certificateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/reject-certificate-transfer/{certificateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RejectCertificateTransferDocument(rejectReason=input.rejectReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9823,7 +10469,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def remove_thing_from_billing_group(self, RemoveThingFromBillingGroupRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/billing-groups/removeThingFromBillingGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/billing-groups/removeThingFromBillingGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveThingFromBillingGroupDocument(billingGroupName=input.billingGroupName, billingGroupArn=input.billingGroupArn, thingName=input.thingName, thingArn=input.thingArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9832,7 +10478,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def remove_thing_from_thing_group(self, RemoveThingFromThingGroupRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/removeThingFromThingGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/removeThingFromThingGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveThingFromThingGroupDocument(thingGroupName=input.thingGroupName, thingGroupArn=input.thingGroupArn, thingName=input.thingName, thingArn=input.thingArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9841,7 +10487,7 @@ struct IoTClient:
     # errors: IndexNotReadyException, InternalFailureException, InvalidQueryException, InvalidRequestException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def search_index(self, SearchIndexRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/indices/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/indices/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchIndexDocument(indexName=input.indexName, queryString=input.queryString, nextToken=input.nextToken, maxResults=input.maxResults, queryVersion=input.queryVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9850,7 +10496,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ResourceAlreadyExistsException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def set_default_authorizer(self, SetDefaultAuthorizerRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/default-authorizer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/default-authorizer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SetDefaultAuthorizerDocument(authorizerName=input.authorizerName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9862,14 +10508,14 @@ struct IoTClient:
         dict[str, str] labels = {}
         labels["policyName"] = input.policyName
         labels["policyVersionId"] = input.policyVersionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyName}/version/{policyVersionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/policies/{policyName}/version/{policyVersionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # SetLoggingOptions  POST /loggingOptions
     # errors: InternalException, InvalidRequestException, ServiceUnavailableException
     def set_logging_options(self, SetLoggingOptionsRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/loggingOptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/loggingOptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.loggingOptionsPayload.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
 
@@ -9877,7 +10523,7 @@ struct IoTClient:
     # errors: InternalException, InvalidRequestException, LimitExceededException, NotConfiguredException, ServiceUnavailableException
     def set_v2_logging_level(self, SetV2LoggingLevelRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2LoggingLevel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2LoggingLevel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SetV2LoggingLevelDocument(logTarget=input.logTarget, logLevel=input.logLevel)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9886,7 +10532,7 @@ struct IoTClient:
     # errors: InternalException, InvalidRequestException, ServiceUnavailableException
     def set_v2_logging_options(self, SetV2LoggingOptionsRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2LoggingOptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2LoggingOptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.roleArn.is_some():
             auto u0 = input.roleArn.unwrap()
@@ -9912,7 +10558,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"target\":" + audit_mitigation_actions_task_target_to_json(input.target))
         list[str] m0 = []
@@ -9932,7 +10578,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="PUT", path_template="/detect/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/detect/mitigationactions/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"target\":" + detect_mitigation_actions_task_target_to_json(input.target))
         list[str] e0 = []
@@ -9956,7 +10602,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ThrottlingException
     def start_on_demand_audit_task(self, StartOnDemandAuditTaskRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/audit/tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/audit/tasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targetCheckNames:
@@ -9969,7 +10615,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException, UnauthorizedException
     def start_thing_registration_task(self, StartThingRegistrationTaskRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/thing-registration-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/thing-registration-tasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartThingRegistrationTaskDocument(templateBody=input.templateBody, inputFileBucket=input.inputFileBucket, inputFileKey=input.inputFileKey, roleArn=input.roleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -9980,14 +10626,14 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="PUT", path_template="/thing-registration-tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/thing-registration-tasks/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # TagResource  POST /tags
     # errors: InternalFailureException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + iot_json_str(input.resourceArn))
         list[str] e0 = []
@@ -10004,7 +10650,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientId.is_some():
             query["clientId"] = input.clientId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/test-authorization", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/test-authorization", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.principal.is_some():
             auto u0 = input.principal.unwrap()
@@ -10037,7 +10683,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["authorizerName"] = input.authorizerName
-        auto b = binding.HttpBinding(method="POST", path_template="/authorizer/{authorizerName}/test", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/authorizer/{authorizerName}/test", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.token.is_some():
             auto u0 = input.token.unwrap()
@@ -10065,7 +10711,7 @@ struct IoTClient:
         labels["certificateId"] = input.certificateId
         dict[str, str] query = {}
         query["targetAwsAccount"] = input.targetAwsAccount
-        auto b = binding.HttpBinding(method="PATCH", path_template="/transfer-certificate/{certificateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/transfer-certificate/{certificateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TransferCertificateDocument(transferMessage=input.transferMessage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10074,7 +10720,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untag", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + iot_json_str(input.resourceArn))
         list[str] e0 = []
@@ -10088,7 +10734,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_audit_suppression(self, UpdateAuditSuppressionRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/audit/suppressions/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/audit/suppressions/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAuditSuppressionDocument(checkName=input.checkName, resourceIdentifier=input.resourceIdentifier, expirationDate=input.expirationDate, suppressIndefinitely=input.suppressIndefinitely, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10099,7 +10745,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["authorizerName"] = input.authorizerName
-        auto b = binding.HttpBinding(method="PUT", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/authorizer/{authorizerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.authorizerFunctionArn.is_some():
             auto u0 = input.authorizerFunctionArn.unwrap()
@@ -10128,7 +10774,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["billingGroupName"] = input.billingGroupName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/billing-groups/{billingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBillingGroupDocument(billingGroupProperties=input.billingGroupProperties, expectedVersion=input.expectedVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10143,8 +10789,9 @@ struct IoTClient:
         if input.newStatus.is_some():
             query["newStatus"] = input.newStatus.unwrap_or("")
         if input.newAutoRegistrationStatus.is_some():
-            query["newAutoRegistrationStatus"] = input.newAutoRegistrationStatus.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/cacertificate/{caCertificateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.newAutoRegistrationStatus.unwrap_or("")
+            query["newAutoRegistrationStatus"] = qt0
+        auto b = binding.HttpBinding(method="PUT", path_template="/cacertificate/{caCertificateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCACertificateDocument(registrationConfig=input.registrationConfig, removeAutoRegistration=input.removeAutoRegistration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10157,7 +10804,7 @@ struct IoTClient:
         labels["certificateId"] = input.certificateId
         dict[str, str] query = {}
         query["newStatus"] = input.newStatus
-        auto b = binding.HttpBinding(method="PUT", path_template="/certificates/{certificateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/certificates/{certificateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, iot_service(), self.region, host)
 
     # UpdateCertificateProvider  PUT /certificate-providers/{certificateProviderName}
@@ -10166,7 +10813,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["certificateProviderName"] = input.certificateProviderName
-        auto b = binding.HttpBinding(method="PUT", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/certificate-providers/{certificateProviderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.lambdaFunctionArn.is_some():
             auto u0 = input.lambdaFunctionArn.unwrap()
@@ -10186,7 +10833,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["commandId"] = input.commandId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/commands/{commandId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCommandDocument(displayName=input.displayName, description=input.description, deprecated=input.deprecated)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10197,7 +10844,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["metricName"] = input.metricName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/custom-metric/{metricName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCustomMetricDocument(displayName=input.displayName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10208,7 +10855,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dimensions/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.stringValues:
@@ -10223,7 +10870,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["domainConfigurationName"] = input.domainConfigurationName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domainConfigurations/{domainConfigurationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDomainConfigurationDocument(authorizerConfig=input.authorizerConfig, domainConfigurationStatus=input.domainConfigurationStatus, removeAuthorizerConfig=input.removeAuthorizerConfig, tlsConfig=input.tlsConfig, serverCertificateConfig=input.serverCertificateConfig, authenticationType=input.authenticationType, applicationProtocol=input.applicationProtocol, clientCertificateConfig=input.clientCertificateConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10234,7 +10881,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingGroupName"] = input.thingGroupName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dynamic-thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"thingGroupProperties\":" + thing_group_properties_to_json(input.thingGroupProperties))
         if input.expectedVersion.is_some():
@@ -10256,7 +10903,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def update_encryption_configuration(self, UpdateEncryptionConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/encryption-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/encryption-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEncryptionConfigurationDocument(encryptionType=input.encryptionType, kmsKeyArn=input.kmsKeyArn, kmsAccessRoleArn=input.kmsAccessRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10267,7 +10914,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["metricName"] = input.metricName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/fleet-metric/{metricName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.queryString.is_some():
             auto u0 = input.queryString.unwrap()
@@ -10301,7 +10948,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ServiceUnavailableException, ThrottlingException, UnauthorizedException
     def update_indexing_configuration(self, UpdateIndexingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/indexing/config", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/indexing/config", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.thingIndexingConfiguration.is_some():
             auto u0 = input.thingIndexingConfiguration.unwrap()
@@ -10321,7 +10968,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.namespaceId.is_some():
             query["namespaceId"] = input.namespaceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/jobs/{jobId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -10350,7 +10997,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["actionName"] = input.actionName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/mitigationactions/actions/{actionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.roleArn.is_some():
             auto u0 = input.roleArn.unwrap()
@@ -10370,7 +11017,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/packages/{packageName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackageDocument(description=input.description, defaultVersionName=input.defaultVersionName, unsetDefaultVersion=input.unsetDefaultVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10382,7 +11029,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/package-configuration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/package-configuration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePackageConfigurationDocument(versionUpdateByJobsConfig=input.versionUpdateByJobsConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10397,7 +11044,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/packages/{packageName}/versions/{versionName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -10426,7 +11073,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["templateName"] = input.templateName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/provisioning-templates/{templateName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/provisioning-templates/{templateName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProvisioningTemplateDocument(description=input.description, enabled=input.enabled, defaultVersionId=input.defaultVersionId, provisioningRoleArn=input.provisioningRoleArn, preProvisioningHook=input.preProvisioningHook, removePreProvisioningHook=input.removePreProvisioningHook)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10437,7 +11084,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["roleAlias"] = input.roleAlias
-        auto b = binding.HttpBinding(method="PUT", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/role-aliases/{roleAlias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoleAliasDocument(roleArn=input.roleArn, credentialDurationSeconds=input.credentialDurationSeconds)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10448,7 +11095,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["scheduledAuditName"] = input.scheduledAuditName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/audit/scheduledaudits/{scheduledAuditName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.frequency.is_some():
             auto u0 = input.frequency.unwrap()
@@ -10477,7 +11124,7 @@ struct IoTClient:
         dict[str, str] query = {}
         if input.expectedVersion.is_some():
             query["expectedVersion"] = str(input.expectedVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="PATCH", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/security-profiles/{securityProfileName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.securityProfileDescription.is_some():
             auto u0 = input.securityProfileDescription.unwrap()
@@ -10530,7 +11177,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["streamId"] = input.streamId
-        auto b = binding.HttpBinding(method="PUT", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/streams/{streamId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -10553,7 +11200,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingName"] = input.thingName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/things/{thingName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.thingTypeName.is_some():
             auto u0 = input.thingTypeName.unwrap()
@@ -10576,7 +11223,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingGroupName"] = input.thingGroupName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/thing-groups/{thingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"thingGroupProperties\":" + thing_group_properties_to_json(input.thingGroupProperties))
         if input.expectedVersion.is_some():
@@ -10589,7 +11236,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def update_thing_groups_for_thing(self, UpdateThingGroupsForThingRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/updateThingGroupsForThing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/thing-groups/updateThingGroupsForThing", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.thingName.is_some():
             auto u0 = input.thingName.unwrap()
@@ -10618,7 +11265,7 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         dict[str, str] labels = {}
         labels["thingTypeName"] = input.thingTypeName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/thing-types/{thingTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.thingTypeProperties.is_some():
             auto u0 = input.thingTypeProperties.unwrap()
@@ -10630,7 +11277,7 @@ struct IoTClient:
     # errors: ConflictingResourceUpdateException, InternalException, InvalidRequestException, ServiceUnavailableException, UnauthorizedException
     def update_topic_rule_destination(self, UpdateTopicRuleDestinationRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/destinations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/destinations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTopicRuleDestinationDocument(arn=input.arn, status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, iot_service(), self.region, host)
@@ -10639,7 +11286,7 @@ struct IoTClient:
     # errors: InternalFailureException, InvalidRequestException, ThrottlingException
     def validate_security_profile_behaviors(self, ValidateSecurityProfileBehaviorsRequest input) -> str:
         auto host = endpoints.regional_host(iot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/security-profile-behaviors/validate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/security-profile-behaviors/validate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.behaviors:
@@ -10660,6 +11307,32 @@ struct IoTClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListActiveViolations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: activeViolations).
+    def paginate_list_active_violations(self, ListActiveViolationsRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_active_violations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAttachedPolicies — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: policies).
+    def paginate_list_attached_policies(self, ListAttachedPoliciesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_attached_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
 
     # Paginator for ListAuditFindings — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: findings).
@@ -10687,6 +11360,19 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListAuditMitigationActionsTasks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: tasks).
+    def paginate_list_audit_mitigation_actions_tasks(self, ListAuditMitigationActionsTasksRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_audit_mitigation_actions_tasks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListAuditSuppressions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: suppressions).
     def paginate_list_audit_suppressions(self, ListAuditSuppressionsRequest input):
@@ -10700,6 +11386,32 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListAuditTasks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: tasks).
+    def paginate_list_audit_tasks(self, ListAuditTasksRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_audit_tasks(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListAuthorizers — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: authorizers).
+    def paginate_list_authorizers(self, ListAuthorizersRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_authorizers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
     # Paginator for ListBillingGroups — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: billingGroups).
     def paginate_list_billing_groups(self, ListBillingGroupsRequest input):
@@ -10712,6 +11424,45 @@ struct IoTClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListCACertificates — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: certificates).
+    def paginate_list_ca_certificates(self, ListCACertificatesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_ca_certificates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
+    # Paginator for ListCertificates — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: certificates).
+    def paginate_list_certificates(self, ListCertificatesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_certificates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
+    # Paginator for ListCertificatesByCA — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: certificates).
+    def paginate_list_certificates_by_ca(self, ListCertificatesByCARequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_certificates_by_ca(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
 
     # Paginator for ListCommandExecutions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: commandExecutions).
@@ -10745,6 +11496,32 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         while True:
             auto raw = self.list_custom_metrics(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDetectMitigationActionsExecutions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: actionsExecutions).
+    def paginate_list_detect_mitigation_actions_executions(self, ListDetectMitigationActionsExecutionsRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_detect_mitigation_actions_executions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListDetectMitigationActionsTasks — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: tasks).
+    def paginate_list_detect_mitigation_actions_tasks(self, ListDetectMitigationActionsTasksRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_detect_mitigation_actions_tasks(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -10869,6 +11646,19 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListMetricValues — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: metricDatumList).
+    def paginate_list_metric_values(self, ListMetricValuesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_metric_values(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListMitigationActions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: actionIdentifiers).
     def paginate_list_mitigation_actions(self, ListMitigationActionsRequest input):
@@ -10895,6 +11685,19 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListOutgoingCertificates — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: outgoingCertificates).
+    def paginate_list_outgoing_certificates(self, ListOutgoingCertificatesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_outgoing_certificates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
     # Paginator for ListPackageVersions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: packageVersionSummaries).
     def paginate_list_package_versions(self, ListPackageVersionsRequest input):
@@ -10920,6 +11723,45 @@ struct IoTClient:
             if not np.has_more:
                 break
             input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListPolicies — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: policies).
+    def paginate_list_policies(self, ListPoliciesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
+    # Paginator for ListPolicyPrincipals — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: principals).
+    def paginate_list_policy_principals(self, ListPolicyPrincipalsRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_policy_principals(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
+    # Paginator for ListPrincipalPolicies — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: policies).
+    def paginate_list_principal_policies(self, ListPrincipalPoliciesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_principal_policies(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
 
     # Paginator for ListPrincipalThings — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: things).
@@ -10986,6 +11828,19 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListRoleAliases — yields each Response page, threading the
+    # nextMarker -> marker continuation token until it is absent (result key: roleAliases).
+    def paginate_list_role_aliases(self, ListRoleAliasesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_role_aliases(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextMarker")
+            if not np.has_more:
+                break
+            input.marker = Optional.Some(np.token)
+
     # Paginator for ListSbomValidationResults — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: validationResultSummaries).
     def paginate_list_sbom_validation_results(self, ListSbomValidationResultsRequest input):
@@ -11025,6 +11880,32 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListSecurityProfilesForTarget — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: securityProfileTargetMappings).
+    def paginate_list_security_profiles_for_target(self, ListSecurityProfilesForTargetRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_security_profiles_for_target(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListStreams — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: streams).
+    def paginate_list_streams(self, ListStreamsRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_streams(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListTagsForResource — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: tags).
     def paginate_list_tags_for_resource(self, ListTagsForResourceRequest input):
@@ -11057,6 +11938,19 @@ struct IoTClient:
         auto host = endpoints.regional_host(iot_service(), self.region)
         while True:
             auto raw = self.list_targets_for_security_profile(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListThingGroups — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: thingGroups).
+    def paginate_list_thing_groups(self, ListThingGroupsRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_thing_groups(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -11142,12 +12036,38 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListThings — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: things).
+    def paginate_list_things(self, ListThingsRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_things(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListThingsInBillingGroup — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: things).
     def paginate_list_things_in_billing_group(self, ListThingsInBillingGroupRequest input):
         auto host = endpoints.regional_host(iot_service(), self.region)
         while True:
             auto raw = self.list_things_in_billing_group(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListThingsInThingGroup — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: things).
+    def paginate_list_things_in_thing_group(self, ListThingsInThingGroupRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_things_in_thing_group(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -11168,12 +12088,38 @@ struct IoTClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListTopicRules — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: rules).
+    def paginate_list_topic_rules(self, ListTopicRulesRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_topic_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListV2LoggingLevels — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: logTargetConfigurations).
     def paginate_list_v2_logging_levels(self, ListV2LoggingLevelsRequest input):
         auto host = endpoints.regional_host(iot_service(), self.region)
         while True:
             auto raw = self.list_v2_logging_levels(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListViolationEvents — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: violationEvents).
+    def paginate_list_violation_events(self, ListViolationEventsRequest input):
+        auto host = endpoints.regional_host(iot_service(), self.region)
+        while True:
+            auto raw = self.list_violation_events(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 18 operations — 14 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 18 operations — 17 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   70 structs (54 @derive(Json)), 9 enums, 9 error variants.
 #   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -664,10 +664,7 @@ def medical_imaging_error_from_code(str code) -> Medical_ImagingError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CopyImageSet (httpQuery `force` has unsupported type bool)
 #   SearchImageSets (httpPayload member `searchCriteria` is a non-derivable structure)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-#   UpdateImageSetMetadata (httpQuery `force` has unsupported type bool)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -720,16 +717,39 @@ def import_configuration_to_json(ImportConfiguration v) -> str:
         parts.append("\"dicomJsonMetadataImportConfiguration\":" + dicom_json_metadata_import_configuration_to_json(u0))
     return medical_imaging_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def medical_imaging_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Medical_Imaging client: credentials + region, threaded into every operation.
 struct Medical_ImagingClient:
     core.Credentials creds
     str region
 
+    # CopyImageSet  POST /datastore/{datastoreId}/imageSet/{sourceImageSetId}/copyImageSet
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def copy_image_set(self, CopyImageSetRequest input) -> str:
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datastoreId"] = input.datastoreId
+        labels["sourceImageSetId"] = input.sourceImageSetId
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = medical_imaging_bind_bool(input.force.unwrap_or(False))
+        if input.promoteToPrimary.is_some():
+            auto qt0 = medical_imaging_bind_bool(input.promoteToPrimary.unwrap_or(False))
+            query["promoteToPrimary"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{sourceImageSetId}/copyImageSet", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, input.copyImageSetInformation.to_json(), "application/json")
+        return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
+
     # CreateDatastore  POST /datastore
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_datastore(self, CreateDatastoreRequest input) -> str:
         auto host = endpoints.regional_host(medical_imaging_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/datastore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.datastoreName.is_some():
             auto u0 = input.datastoreName.unwrap()
@@ -759,7 +779,7 @@ struct Medical_ImagingClient:
         auto host = endpoints.regional_host(medical_imaging_service(), self.region)
         dict[str, str] labels = {}
         labels["datastoreId"] = input.datastoreId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/datastore/{datastoreId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/datastore/{datastoreId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # DeleteImageSet  POST /datastore/{datastoreId}/imageSet/{imageSetId}/deleteImageSet
@@ -769,7 +789,7 @@ struct Medical_ImagingClient:
         dict[str, str] labels = {}
         labels["datastoreId"] = input.datastoreId
         labels["imageSetId"] = input.imageSetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/deleteImageSet", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/deleteImageSet", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # GetDICOMImportJob  GET /getDICOMImportJob/datastore/{datastoreId}/job/{jobId}
@@ -779,7 +799,7 @@ struct Medical_ImagingClient:
         dict[str, str] labels = {}
         labels["datastoreId"] = input.datastoreId
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/getDICOMImportJob/datastore/{datastoreId}/job/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/getDICOMImportJob/datastore/{datastoreId}/job/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # GetDatastore  GET /datastore/{datastoreId}
@@ -788,7 +808,7 @@ struct Medical_ImagingClient:
         auto host = endpoints.regional_host(medical_imaging_service(), self.region)
         dict[str, str] labels = {}
         labels["datastoreId"] = input.datastoreId
-        auto b = binding.HttpBinding(method="GET", path_template="/datastore/{datastoreId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datastore/{datastoreId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # GetImageFrame  POST /datastore/{datastoreId}/imageSet/{imageSetId}/getImageFrame
@@ -798,7 +818,7 @@ struct Medical_ImagingClient:
         dict[str, str] labels = {}
         labels["datastoreId"] = input.datastoreId
         labels["imageSetId"] = input.imageSetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/getImageFrame", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/getImageFrame", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.imageFrameInformation.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
 
@@ -812,7 +832,7 @@ struct Medical_ImagingClient:
         dict[str, str] query = {}
         if input.versionId.is_some():
             query["version"] = input.versionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/getImageSet", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/getImageSet", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # GetImageSetMetadata  POST /datastore/{datastoreId}/imageSet/{imageSetId}/getImageSetMetadata
@@ -825,7 +845,7 @@ struct Medical_ImagingClient:
         dict[str, str] query = {}
         if input.versionId.is_some():
             query["version"] = input.versionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/getImageSetMetadata", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/getImageSetMetadata", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # ListDICOMImportJobs  GET /listDICOMImportJobs/datastore/{datastoreId}
@@ -841,7 +861,7 @@ struct Medical_ImagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/listDICOMImportJobs/datastore/{datastoreId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/listDICOMImportJobs/datastore/{datastoreId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # ListDatastores  GET /datastore
@@ -855,7 +875,7 @@ struct Medical_ImagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/datastore", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datastore", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # ListImageSetVersions  POST /datastore/{datastoreId}/imageSet/{imageSetId}/listImageSetVersions
@@ -870,7 +890,7 @@ struct Medical_ImagingClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/listImageSetVersions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/listImageSetVersions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -879,7 +899,7 @@ struct Medical_ImagingClient:
         auto host = endpoints.regional_host(medical_imaging_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
     # StartDICOMImportJob  POST /startDICOMImportJob/datastore/{datastoreId}
@@ -888,7 +908,7 @@ struct Medical_ImagingClient:
         auto host = endpoints.regional_host(medical_imaging_service(), self.region)
         dict[str, str] labels = {}
         labels["datastoreId"] = input.datastoreId
-        auto b = binding.HttpBinding(method="POST", path_template="/startDICOMImportJob/datastore/{datastoreId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/startDICOMImportJob/datastore/{datastoreId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.jobName.is_some():
             auto u0 = input.jobName.unwrap()
@@ -912,13 +932,42 @@ struct Medical_ImagingClient:
         auto host = endpoints.regional_host(medical_imaging_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
             m0.append(medical_imaging_json_str(k0) + ":" + medical_imaging_json_str(input.tags[k0]))
         parts.append("\"tags\":" + medical_imaging_json_obj(m0))
         auto bp = restjson.rest_json_document(b, medical_imaging_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
+
+    # UpdateImageSetMetadata  POST /datastore/{datastoreId}/imageSet/{imageSetId}/updateImageSetMetadata
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def update_image_set_metadata(self, UpdateImageSetMetadataRequest input) -> str:
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datastoreId"] = input.datastoreId
+        labels["imageSetId"] = input.imageSetId
+        dict[str, str] query = {}
+        query["latestVersion"] = input.latestVersionId
+        if input.force.is_some():
+            query["force"] = medical_imaging_bind_bool(input.force.unwrap_or(False))
+        if input.includeStudyImageSets.is_some():
+            auto qt0 = medical_imaging_bind_bool(input.includeStudyImageSets.unwrap_or(False))
+            query["includeStudyImageSets"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/imageSet/{imageSetId}/updateImageSetMetadata", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, input.updateImageSetMetadataUpdates.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
 
     # Paginator for ListDICOMImportJobs — yields each Response page, threading the

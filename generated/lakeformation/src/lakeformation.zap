@@ -2331,7 +2331,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def add_lf_tags_to_resource(self, AddLFTagsToResourceRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AddLFTagsToResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AddLFTagsToResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2348,7 +2348,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def assume_decorated_role_with_saml(self, AssumeDecoratedRoleWithSAMLRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AssumeDecoratedRoleWithSAML", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AssumeDecoratedRoleWithSAML", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssumeDecoratedRoleWithSAMLDocument(SAMLAssertion=input.SAMLAssertion, RoleArn=input.RoleArn, PrincipalArn=input.PrincipalArn, DurationSeconds=input.DurationSeconds)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2357,7 +2357,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def attach_rls_policy(self, AttachRLSPolicyRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AttachRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AttachRLSPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + lakeformation_json_str(input.Name))
         parts.append("\"Resource\":" + resource_to_json(input.Resource))
@@ -2377,7 +2377,7 @@ struct LakeFormationClient:
     # errors: InvalidInputException, OperationTimeoutException
     def batch_grant_permissions(self, BatchGrantPermissionsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchGrantPermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchGrantPermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2393,7 +2393,7 @@ struct LakeFormationClient:
     # errors: InvalidInputException, OperationTimeoutException
     def batch_revoke_permissions(self, BatchRevokePermissionsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchRevokePermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchRevokePermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2409,7 +2409,7 @@ struct LakeFormationClient:
     # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, TransactionCommitInProgressException, TransactionCommittedException
     def cancel_transaction(self, CancelTransactionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CancelTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CancelTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelTransactionDocument(TransactionId=input.TransactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2418,7 +2418,7 @@ struct LakeFormationClient:
     # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, TransactionCanceledException
     def commit_transaction(self, CommitTransactionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CommitTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CommitTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CommitTransactionDocument(TransactionId=input.TransactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2427,7 +2427,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, AlreadyExistsException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def create_data_cells_filter(self, CreateDataCellsFilterRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateDataCellsFilter", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateDataCellsFilter", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TableData\":" + data_cells_filter_to_json(input.TableData))
         auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
@@ -2437,7 +2437,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def create_lf_tag(self, CreateLFTagRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLFTag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLFTag", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2454,7 +2454,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def create_lf_tag_expression(self, CreateLFTagExpressionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLFTagExpression", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLFTagExpression", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + lakeformation_json_str(input.Name))
         if input.Description.is_some():
@@ -2474,7 +2474,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def create_lake_formation_identity_center_configuration(self, CreateLakeFormationIdentityCenterConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2504,7 +2504,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def create_lake_formation_opt_in(self, CreateLakeFormationOptInRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLakeFormationOptIn", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLakeFormationOptIn", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Principal\":" + input.Principal.to_json())
         parts.append("\"Resource\":" + resource_to_json(input.Resource))
@@ -2518,7 +2518,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, AlreadyExistsException, ConcurrentModificationException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def create_rls_policy(self, CreateRLSPolicyRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRLSPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + lakeformation_json_str(input.Name))
         list[str] e0 = []
@@ -2533,7 +2533,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def delete_data_cells_filter(self, DeleteDataCellsFilterRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteDataCellsFilter", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteDataCellsFilter", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteDataCellsFilterDocument(TableCatalogId=input.TableCatalogId, DatabaseName=input.DatabaseName, TableName=input.TableName, Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2542,7 +2542,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def delete_lf_tag(self, DeleteLFTagRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLFTag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLFTag", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLFTagDocument(CatalogId=input.CatalogId, TagKey=input.TagKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2551,7 +2551,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def delete_lf_tag_expression(self, DeleteLFTagExpressionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLFTagExpression", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLFTagExpression", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLFTagExpressionDocument(Name=input.Name, CatalogId=input.CatalogId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2560,7 +2560,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def delete_lake_formation_identity_center_configuration(self, DeleteLakeFormationIdentityCenterConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLakeFormationIdentityCenterConfigurationDocument(CatalogId=input.CatalogId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2569,7 +2569,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def delete_lake_formation_opt_in(self, DeleteLakeFormationOptInRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLakeFormationOptIn", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLakeFormationOptIn", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Principal\":" + input.Principal.to_json())
         parts.append("\"Resource\":" + resource_to_json(input.Resource))
@@ -2583,7 +2583,7 @@ struct LakeFormationClient:
     # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, TransactionCanceledException, TransactionCommittedException
     def delete_objects_on_cancel(self, DeleteObjectsOnCancelRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteObjectsOnCancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteObjectsOnCancel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2602,7 +2602,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def delete_rls_policy(self, DeleteRLSPolicyRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRLSPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRLSPolicyDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2611,7 +2611,7 @@ struct LakeFormationClient:
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def deregister_resource(self, DeregisterResourceRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeregisterResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeregisterResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeregisterResourceDocument(ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2620,7 +2620,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def describe_lake_formation_identity_center_configuration(self, DescribeLakeFormationIdentityCenterConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeLakeFormationIdentityCenterConfigurationDocument(CatalogId=input.CatalogId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2629,7 +2629,7 @@ struct LakeFormationClient:
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def describe_resource(self, DescribeResourceRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeResourceDocument(ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2638,7 +2638,7 @@ struct LakeFormationClient:
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def describe_transaction(self, DescribeTransactionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeTransactionDocument(TransactionId=input.TransactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2647,7 +2647,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def detach_rls_policy(self, DetachRLSPolicyRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DetachRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DetachRLSPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + lakeformation_json_str(input.Name))
         parts.append("\"Resource\":" + resource_to_json(input.Resource))
@@ -2667,7 +2667,7 @@ struct LakeFormationClient:
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, TransactionCanceledException, TransactionCommitInProgressException, TransactionCommittedException
     def extend_transaction(self, ExtendTransactionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ExtendTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ExtendTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExtendTransactionDocument(TransactionId=input.TransactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2676,7 +2676,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_data_cells_filter(self, GetDataCellsFilterRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetDataCellsFilter", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetDataCellsFilter", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDataCellsFilterDocument(TableCatalogId=input.TableCatalogId, DatabaseName=input.DatabaseName, TableName=input.TableName, Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2685,14 +2685,14 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, InternalServiceException, OperationTimeoutException
     def get_data_lake_principal(self) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetDataLakePrincipal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetDataLakePrincipal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lakeformation_service(), self.region, host)
 
     # GetDataLakeSettings  POST /GetDataLakeSettings
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException
     def get_data_lake_settings(self, GetDataLakeSettingsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetDataLakeSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetDataLakeSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDataLakeSettingsDocument(CatalogId=input.CatalogId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2701,7 +2701,7 @@ struct LakeFormationClient:
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_effective_permissions_for_path(self, GetEffectivePermissionsForPathRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetEffectivePermissionsForPath", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetEffectivePermissionsForPath", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetEffectivePermissionsForPathDocument(CatalogId=input.CatalogId, ResourceArn=input.ResourceArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2710,7 +2710,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_lf_tag(self, GetLFTagRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetLFTag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetLFTag", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLFTagDocument(CatalogId=input.CatalogId, TagKey=input.TagKey)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2719,7 +2719,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_lf_tag_expression(self, GetLFTagExpressionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetLFTagExpression", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetLFTagExpression", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLFTagExpressionDocument(Name=input.Name, CatalogId=input.CatalogId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2728,7 +2728,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidInputException
     def get_query_state(self, GetQueryStateRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetQueryState", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetQueryState", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetQueryStateDocument(QueryId=input.QueryId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2737,7 +2737,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ExpiredException, InternalServiceException, InvalidInputException, StatisticsNotReadyYetException, ThrottledException
     def get_query_statistics(self, GetQueryStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetQueryStatistics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetQueryStatistics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetQueryStatisticsDocument(QueryId=input.QueryId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2746,7 +2746,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_rls_policy(self, GetRLSPolicyRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRLSPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRLSPolicyDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2755,7 +2755,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_resource_lf_tags(self, GetResourceLFTagsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetResourceLFTags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetResourceLFTags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2771,7 +2771,7 @@ struct LakeFormationClient:
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, TransactionCanceledException, TransactionCommittedException
     def get_table_objects(self, GetTableObjectsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTableObjects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTableObjects", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTableObjectsDocument(CatalogId=input.CatalogId, DatabaseName=input.DatabaseName, TableName=input.TableName, TransactionId=input.TransactionId, QueryAsOfTime=input.QueryAsOfTime, PartitionPredicate=input.PartitionPredicate, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2780,7 +2780,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConflictException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def get_temporary_data_location_credentials(self, GetTemporaryDataLocationCredentialsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryDataLocationCredentials", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryDataLocationCredentials", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DurationSeconds.is_some():
             auto u0 = input.DurationSeconds.unwrap()
@@ -2804,7 +2804,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, PermissionTypeMismatchException
     def get_temporary_glue_partition_credentials(self, GetTemporaryGluePartitionCredentialsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryGluePartitionCredentials", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryGluePartitionCredentials", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TableArn\":" + lakeformation_json_str(input.TableArn))
         parts.append("\"Partition\":" + partition_value_list_to_json(input.Partition))
@@ -2833,7 +2833,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, PermissionTypeMismatchException
     def get_temporary_glue_table_credentials(self, GetTemporaryGlueTableCredentialsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryGlueTableCredentials", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetTemporaryGlueTableCredentials", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TableArn\":" + lakeformation_json_str(input.TableArn))
         if input.Permissions.is_some():
@@ -2867,7 +2867,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ExpiredException, InternalServiceException, InvalidInputException, ThrottledException
     def get_work_unit_results(self, GetWorkUnitResultsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetWorkUnitResults", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetWorkUnitResults", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWorkUnitResultsDocument(QueryId=input.QueryId, WorkUnitId=input.WorkUnitId, WorkUnitToken=input.WorkUnitToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2876,7 +2876,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ExpiredException, InternalServiceException, InvalidInputException, WorkUnitsNotReadyYetException
     def get_work_units(self, GetWorkUnitsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetWorkUnits", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetWorkUnits", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWorkUnitsDocument(NextToken=input.NextToken, PageSize=input.PageSize, QueryId=input.QueryId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2885,7 +2885,7 @@ struct LakeFormationClient:
     # errors: ConcurrentModificationException, EntityNotFoundException, InvalidInputException
     def grant_permissions(self, GrantPermissionsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GrantPermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GrantPermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2912,7 +2912,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_data_cells_filter(self, ListDataCellsFilterRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListDataCellsFilter", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListDataCellsFilter", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDataCellsFilterDocument(Table=input.Table, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2921,7 +2921,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_lf_tag_expressions(self, ListLFTagExpressionsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLFTagExpressions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLFTagExpressions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLFTagExpressionsDocument(CatalogId=input.CatalogId, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2930,7 +2930,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_lf_tags(self, ListLFTagsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLFTags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLFTags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLFTagsDocument(CatalogId=input.CatalogId, ResourceShareType=input.ResourceShareType, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2939,7 +2939,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, AccessDeniedException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_lake_formation_opt_ins(self, ListLakeFormationOptInsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLakeFormationOptIns", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLakeFormationOptIns", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Principal.is_some():
             auto u0 = input.Principal.unwrap()
@@ -2960,7 +2960,7 @@ struct LakeFormationClient:
     # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_permissions(self, ListPermissionsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListPermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListPermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -2990,7 +2990,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_rls_policies(self, ListRLSPoliciesRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRLSPolicies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRLSPolicies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRLSPoliciesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -2999,7 +2999,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_rls_policy_attachments(self, ListRLSPolicyAttachmentsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRLSPolicyAttachments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRLSPolicyAttachments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Resource.is_some():
             auto u0 = input.Resource.unwrap()
@@ -3023,7 +3023,7 @@ struct LakeFormationClient:
     # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_resources(self, ListResourcesRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListResources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListResources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FilterConditionList.is_some():
             auto u0 = input.FilterConditionList.unwrap()
@@ -3044,7 +3044,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException
     def list_table_storage_optimizers(self, ListTableStorageOptimizersRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTableStorageOptimizers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTableStorageOptimizers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTableStorageOptimizersDocument(CatalogId=input.CatalogId, DatabaseName=input.DatabaseName, TableName=input.TableName, StorageOptimizerType=input.StorageOptimizerType, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -3053,7 +3053,7 @@ struct LakeFormationClient:
     # errors: InternalServiceException, InvalidInputException, OperationTimeoutException
     def list_transactions(self, ListTransactionsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTransactions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTransactions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTransactionsDocument(CatalogId=input.CatalogId, StatusFilter=input.StatusFilter, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -3062,7 +3062,7 @@ struct LakeFormationClient:
     # errors: InternalServiceException, InvalidInputException
     def put_data_lake_settings(self, PutDataLakeSettingsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutDataLakeSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutDataLakeSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -3075,7 +3075,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, AlreadyExistsException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def register_resource(self, RegisterResourceRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RegisterResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RegisterResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterResourceDocument(ResourceArn=input.ResourceArn, UseServiceLinkedRole=input.UseServiceLinkedRole, RoleArn=input.RoleArn, WithFederation=input.WithFederation, HybridAccessEnabled=input.HybridAccessEnabled, WithPrivilegedAccess=input.WithPrivilegedAccess, ExpectedResourceOwnerAccount=input.ExpectedResourceOwnerAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -3084,7 +3084,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def remove_lf_tags_from_resource(self, RemoveLFTagsFromResourceRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RemoveLFTagsFromResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RemoveLFTagsFromResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -3101,7 +3101,7 @@ struct LakeFormationClient:
     # errors: ConcurrentModificationException, EntityNotFoundException, InvalidInputException
     def revoke_permissions(self, RevokePermissionsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RevokePermissions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RevokePermissions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -3128,7 +3128,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def search_databases_by_lf_tags(self, SearchDatabasesByLFTagsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/SearchDatabasesByLFTags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/SearchDatabasesByLFTags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -3150,7 +3150,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, GlueEncryptionException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def search_tables_by_lf_tags(self, SearchTablesByLFTagsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/SearchTablesByLFTags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/SearchTablesByLFTags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.NextToken.is_some():
             auto u0 = input.NextToken.unwrap()
@@ -3172,7 +3172,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidInputException, ThrottledException
     def start_query_planning(self, StartQueryPlanningRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartQueryPlanning", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartQueryPlanning", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"QueryPlanningContext\":" + query_planning_context_to_json(input.QueryPlanningContext))
         parts.append("\"QueryString\":" + lakeformation_json_str(input.QueryString))
@@ -3183,7 +3183,7 @@ struct LakeFormationClient:
     # errors: InternalServiceException, OperationTimeoutException
     def start_transaction(self, StartTransactionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTransactionDocument(TransactionType=input.TransactionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -3192,7 +3192,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def update_data_cells_filter(self, UpdateDataCellsFilterRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateDataCellsFilter", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateDataCellsFilter", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TableData\":" + data_cells_filter_to_json(input.TableData))
         auto bp = restjson.rest_json_document(b, lakeformation_json_obj(parts))
@@ -3202,7 +3202,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def update_lf_tag(self, UpdateLFTagRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLFTag", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLFTag", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -3227,7 +3227,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def update_lf_tag_expression(self, UpdateLFTagExpressionRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLFTagExpression", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLFTagExpression", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + lakeformation_json_str(input.Name))
         if input.Description.is_some():
@@ -3247,7 +3247,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def update_lake_formation_identity_center_configuration(self, UpdateLakeFormationIdentityCenterConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLakeFormationIdentityCenterConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()
@@ -3277,7 +3277,7 @@ struct LakeFormationClient:
     # errors: AccessDeniedException, ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNumberLimitExceededException
     def update_rls_policy(self, UpdateRLSPolicyRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRLSPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRLSPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRLSPolicyDocument(Name=input.Name, FilterExpression=input.FilterExpression)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -3286,7 +3286,7 @@ struct LakeFormationClient:
     # errors: EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException
     def update_resource(self, UpdateResourceRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateResourceDocument(RoleArn=input.RoleArn, ResourceArn=input.ResourceArn, WithFederation=input.WithFederation, HybridAccessEnabled=input.HybridAccessEnabled, ExpectedResourceOwnerAccount=input.ExpectedResourceOwnerAccount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lakeformation_service(), self.region, host)
@@ -3295,7 +3295,7 @@ struct LakeFormationClient:
     # errors: ConcurrentModificationException, EntityNotFoundException, InternalServiceException, InvalidInputException, OperationTimeoutException, ResourceNotReadyException, TransactionCanceledException, TransactionCommitInProgressException, TransactionCommittedException
     def update_table_objects(self, UpdateTableObjectsRequest input) -> str:
         auto host = endpoints.regional_host(lakeformation_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTableObjects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateTableObjects", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CatalogId.is_some():
             auto u0 = input.CatalogId.unwrap()

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 107 operations — 98 with a generated method,
-#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 107 operations — 103 with a generated method,
+#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   307 structs (193 @derive(Json)), 46 enums, 10 error variants.
 #   25 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3203,13 +3203,8 @@ def omics_error_from_code(str code) -> OmicsError:
 # document member, or an unsupported httpPayload):
 #   CreateAnnotationStore (document member `storeOptions: StoreOptions` is not serializable)
 #   CreateAnnotationStoreVersion (document member `versionOptions: VersionOptions` is not serializable)
-#   DeleteAnnotationStore (httpQuery `force` has unsupported type bool)
-#   DeleteAnnotationStoreVersions (httpQuery `force` has unsupported type bool)
-#   DeleteVariantStore (httpQuery `force` has unsupported type bool)
-#   GetRun (httpQuery `export` has unsupported type list[str])
 #   GetWorkflow (httpQuery `export` has unsupported type list[WorkflowExport])
 #   GetWorkflowVersion (httpQuery `export` has unsupported type list[WorkflowExport])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3609,6 +3604,12 @@ def vpc_config_to_json(VpcConfig v) -> str:
         parts.append("\"vpcOwnerAccountId\":" + omics_json_str(u4))
     return omics_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def omics_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Omics client: credentials + region, threaded into every operation.
 struct OmicsClient:
     core.Credentials creds
@@ -3621,7 +3622,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
         labels["uploadId"] = input.uploadId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/abort", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/abort", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # AcceptShare  POST /share/{shareId}
@@ -3630,7 +3631,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["shareId"] = input.shareId
-        auto b = binding.HttpBinding(method="POST", path_template="/share/{shareId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/share/{shareId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # BatchDeleteReadSet  POST /sequencestore/{sequenceStoreId}/readset/batch/delete
@@ -3639,7 +3640,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/readset/batch/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/readset/batch/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ids:
@@ -3654,7 +3655,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/import/annotation/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/import/annotation/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # CancelRun  POST /run/{id}/cancel
@@ -3663,14 +3664,14 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/run/{id}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/run/{id}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # CancelRunBatch  POST /runBatch/cancel
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def cancel_run_batch(self, CancelRunBatchRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/runBatch/cancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runBatch/cancel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelRunBatchDocument(batchId=input.batchId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -3681,7 +3682,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/import/variant/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/import/variant/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # CompleteMultipartReadSetUpload  POST /sequencestore/{sequenceStoreId}/upload/{uploadId}/complete
@@ -3691,7 +3692,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
         labels["uploadId"] = input.uploadId
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/complete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/complete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.parts:
@@ -3704,7 +3705,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_configuration(self, CreateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + omics_json_str(input.name))
         if input.description.is_some():
@@ -3727,7 +3728,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3758,7 +3759,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_reference_store(self, CreateReferenceStoreRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/referencestore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/referencestore", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + omics_json_str(input.name))
         if input.description.is_some():
@@ -3783,7 +3784,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_run_cache(self, CreateRunCacheRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/runCache", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runCache", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.cacheBehavior.is_some():
             auto u0 = input.cacheBehavior.unwrap()
@@ -3812,7 +3813,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_run_group(self, CreateRunGroupRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/runGroup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runGroup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -3843,7 +3844,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, InternalServerException, RequestTimeoutException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_sequence_store(self, CreateSequenceStoreRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + omics_json_str(input.name))
         if input.description.is_some():
@@ -3883,7 +3884,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_share(self, CreateShareRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/share", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/share", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateShareDocument(resourceArn=input.resourceArn, principalSubscriber=input.principalSubscriber, shareName=input.shareName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -3892,7 +3893,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_variant_store(self, CreateVariantStoreRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/variantStore", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/variantStore", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"reference\":" + input.reference.to_json())
         if input.name.is_some():
@@ -3917,7 +3918,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_workflow(self, CreateWorkflowRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -3992,7 +3993,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowId"] = input.workflowId
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow/{workflowId}/version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow/{workflowId}/version", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"versionName\":" + omics_json_str(input.versionName))
         if input.definitionZip.is_some():
@@ -4059,13 +4060,43 @@ struct OmicsClient:
         auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
+    # DeleteAnnotationStore  DELETE /annotationStore/{name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_annotation_store(self, DeleteAnnotationStoreRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.name
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = omics_bind_bool(input.force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/annotationStore/{name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
+
+    # DeleteAnnotationStoreVersions  POST /annotationStore/{name}/versions/delete
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_annotation_store_versions(self, DeleteAnnotationStoreVersionsRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.name
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = omics_bind_bool(input.force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}/versions/delete", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.versions:
+            e0.append(omics_json_str(x0))
+        parts.append("\"versions\":" + omics_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
+
     # DeleteBatch  DELETE /runBatch/{batchId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def delete_batch(self, DeleteBatchRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["batchId"] = input.batchId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/runBatch/{batchId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/runBatch/{batchId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteConfiguration  DELETE /configuration/{name}
@@ -4074,7 +4105,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/configuration/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/configuration/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteReference  DELETE /referencestore/{referenceStoreId}/reference/{id}
@@ -4084,7 +4115,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["id"] = input.id
         labels["referenceStoreId"] = input.referenceStoreId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/referencestore/{referenceStoreId}/reference/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/referencestore/{referenceStoreId}/reference/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteReferenceStore  DELETE /referencestore/{id}
@@ -4093,7 +4124,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/referencestore/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/referencestore/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteRun  DELETE /run/{id}
@@ -4102,14 +4133,14 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/run/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/run/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteRunBatch  POST /runBatch/delete
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def delete_run_batch(self, DeleteRunBatchRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/runBatch/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runBatch/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRunBatchDocument(batchId=input.batchId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4120,7 +4151,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/runCache/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/runCache/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteRunGroup  DELETE /runGroup/{id}
@@ -4129,7 +4160,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/runGroup/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/runGroup/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteS3AccessPolicy  DELETE /s3accesspolicy/{s3AccessPointArn}
@@ -4138,7 +4169,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["s3AccessPointArn"] = input.s3AccessPointArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/s3accesspolicy/{s3AccessPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/s3accesspolicy/{s3AccessPointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteSequenceStore  DELETE /sequencestore/{id}
@@ -4147,7 +4178,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/sequencestore/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/sequencestore/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteShare  DELETE /share/{shareId}
@@ -4156,7 +4187,19 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["shareId"] = input.shareId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/share/{shareId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/share/{shareId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
+
+    # DeleteVariantStore  DELETE /variantStore/{name}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_variant_store(self, DeleteVariantStoreRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.name
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = omics_bind_bool(input.force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/variantStore/{name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteWorkflow  DELETE /workflow/{id}
@@ -4165,7 +4208,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # DeleteWorkflowVersion  DELETE /workflow/{workflowId}/version/{versionName}
@@ -4175,7 +4218,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["workflowId"] = input.workflowId
         labels["versionName"] = input.versionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow/{workflowId}/version/{versionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workflow/{workflowId}/version/{versionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetAnnotationImportJob  GET /import/annotation/{jobId}
@@ -4184,7 +4227,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/import/annotation/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/import/annotation/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetAnnotationStore  GET /annotationStore/{name}
@@ -4193,7 +4236,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/annotationStore/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/annotationStore/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetAnnotationStoreVersion  GET /annotationStore/{name}/version/{versionName}
@@ -4203,7 +4246,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["versionName"] = input.versionName
-        auto b = binding.HttpBinding(method="GET", path_template="/annotationStore/{name}/version/{versionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/annotationStore/{name}/version/{versionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetBatch  GET /runBatch/{batchId}
@@ -4212,7 +4255,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["batchId"] = input.batchId
-        auto b = binding.HttpBinding(method="GET", path_template="/runBatch/{batchId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runBatch/{batchId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetConfiguration  GET /configuration/{name}
@@ -4221,7 +4264,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReadSet  GET /sequencestore/{sequenceStoreId}/readset/{id}
@@ -4235,7 +4278,7 @@ struct OmicsClient:
         if input.file.is_some():
             query["file"] = input.file.unwrap_or("")
         query["partNumber"] = str(input.partNumber)
-        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/readset/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/readset/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReadSetActivationJob  GET /sequencestore/{sequenceStoreId}/activationjob/{id}
@@ -4245,7 +4288,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["id"] = input.id
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/activationjob/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/activationjob/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReadSetExportJob  GET /sequencestore/{sequenceStoreId}/exportjob/{id}
@@ -4255,7 +4298,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/exportjob/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/exportjob/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReadSetImportJob  GET /sequencestore/{sequenceStoreId}/importjob/{id}
@@ -4265,7 +4308,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["id"] = input.id
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/importjob/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/importjob/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReadSetMetadata  GET /sequencestore/{sequenceStoreId}/readset/{id}/metadata
@@ -4275,7 +4318,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["id"] = input.id
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/readset/{id}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{sequenceStoreId}/readset/{id}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReference  GET /referencestore/{referenceStoreId}/reference/{id}
@@ -4292,7 +4335,7 @@ struct OmicsClient:
         dict[str, str] headers = {}
         if input.range_.is_some():
             headers["Range"] = input.range_.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{referenceStoreId}/reference/{id}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{referenceStoreId}/reference/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReferenceImportJob  GET /referencestore/{referenceStoreId}/importjob/{id}
@@ -4302,7 +4345,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["id"] = input.id
         labels["referenceStoreId"] = input.referenceStoreId
-        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{referenceStoreId}/importjob/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{referenceStoreId}/importjob/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReferenceMetadata  GET /referencestore/{referenceStoreId}/reference/{id}/metadata
@@ -4312,7 +4355,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["id"] = input.id
         labels["referenceStoreId"] = input.referenceStoreId
-        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{referenceStoreId}/reference/{id}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{referenceStoreId}/reference/{id}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetReferenceStore  GET /referencestore/{id}
@@ -4321,7 +4364,19 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/referencestore/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
+
+    # GetRun  GET /run/{id}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def get_run(self, GetRunRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.id
+        dict[str, list[str]] multi_query = {}
+        if input.export.is_some():
+            multi_query["export"] = input.export.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/run/{id}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetRunCache  GET /runCache/{id}
@@ -4330,7 +4385,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/runCache/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runCache/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetRunGroup  GET /runGroup/{id}
@@ -4339,7 +4394,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/runGroup/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runGroup/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetRunTask  GET /run/{id}/task/{taskId}
@@ -4349,7 +4404,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["id"] = input.id
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/run/{id}/task/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/run/{id}/task/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetS3AccessPolicy  GET /s3accesspolicy/{s3AccessPointArn}
@@ -4358,7 +4413,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["s3AccessPointArn"] = input.s3AccessPointArn
-        auto b = binding.HttpBinding(method="GET", path_template="/s3accesspolicy/{s3AccessPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/s3accesspolicy/{s3AccessPointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetSequenceStore  GET /sequencestore/{id}
@@ -4367,7 +4422,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/sequencestore/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetShare  GET /share/{shareId}
@@ -4376,7 +4431,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["shareId"] = input.shareId
-        auto b = binding.HttpBinding(method="GET", path_template="/share/{shareId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/share/{shareId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetVariantImportJob  GET /import/variant/{jobId}
@@ -4385,7 +4440,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/import/variant/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/import/variant/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # GetVariantStore  GET /variantStore/{name}
@@ -4394,7 +4449,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/variantStore/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/variantStore/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListAnnotationImportJobs  POST /import/annotations
@@ -4406,7 +4461,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/import/annotations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/import/annotations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ids.is_some():
             auto u0 = input.ids.unwrap()
@@ -4431,7 +4486,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAnnotationStoreVersionsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4445,7 +4500,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/annotationStores", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/annotationStores", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ids.is_some():
             auto u0 = input.ids.unwrap()
@@ -4474,7 +4529,7 @@ struct OmicsClient:
             query["name"] = input.name.unwrap_or("")
         if input.runGroupId.is_some():
             query["runGroupId"] = input.runGroupId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/runBatch", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runBatch", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListConfigurations  GET /configuration
@@ -4486,7 +4541,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.startingToken.is_some():
             query["startingToken"] = input.startingToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListMultipartReadSetUploads  POST /sequencestore/{sequenceStoreId}/uploads
@@ -4500,7 +4555,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/uploads", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/uploads", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListReadSetActivationJobs  POST /sequencestore/{sequenceStoreId}/activationjobs
@@ -4514,7 +4569,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/activationjobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/activationjobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReadSetActivationJobsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4530,7 +4585,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/exportjobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/exportjobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReadSetExportJobsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4546,7 +4601,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/importjobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/importjobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReadSetImportJobsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4563,7 +4618,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/parts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/parts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReadSetUploadPartsDocument(partSource=input.partSource, filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4579,7 +4634,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/readsets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/readsets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReadSetsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4595,7 +4650,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/referencestore/{referenceStoreId}/importjobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/referencestore/{referenceStoreId}/importjobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReferenceImportJobsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4609,7 +4664,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/referencestores", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/referencestores", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReferenceStoresDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4625,7 +4680,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/referencestore/{referenceStoreId}/references", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/referencestore/{referenceStoreId}/references", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListReferencesDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4639,7 +4694,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.startingToken.is_some():
             query["startingToken"] = input.startingToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/runCache", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runCache", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListRunGroups  GET /runGroup
@@ -4653,7 +4708,7 @@ struct OmicsClient:
             query["startingToken"] = input.startingToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/runGroup", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runGroup", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListRunTasks  GET /run/{id}/task
@@ -4669,7 +4724,7 @@ struct OmicsClient:
             query["startingToken"] = input.startingToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/run/{id}/task", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/run/{id}/task", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListRuns  GET /run
@@ -4689,7 +4744,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/run", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/run", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListRunsInBatch  GET /runBatch/{batchId}/run
@@ -4709,7 +4764,7 @@ struct OmicsClient:
             query["runSettingId"] = input.runSettingId.unwrap_or("")
         if input.runId.is_some():
             query["runId"] = input.runId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/runBatch/{batchId}/run", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runBatch/{batchId}/run", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListSequenceStores  POST /sequencestores
@@ -4721,7 +4776,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestores", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestores", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSequenceStoresDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4735,7 +4790,7 @@ struct OmicsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/shares", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/shares", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceOwner\":" + input.resourceOwner.to_json())
         if input.filter.is_some():
@@ -4750,7 +4805,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListVariantImportJobs  POST /import/variants
@@ -4762,7 +4817,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/import/variants", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/import/variants", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ids.is_some():
             auto u0 = input.ids.unwrap()
@@ -4785,7 +4840,7 @@ struct OmicsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/variantStores", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/variantStores", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ids.is_some():
             auto u0 = input.ids.unwrap()
@@ -4814,7 +4869,7 @@ struct OmicsClient:
             query["startingToken"] = input.startingToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workflow/{workflowId}/version", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflow/{workflowId}/version", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # ListWorkflows  GET /workflow
@@ -4830,7 +4885,7 @@ struct OmicsClient:
             query["startingToken"] = input.startingToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workflow", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflow", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
 
     # PutS3AccessPolicy  PUT /s3accesspolicy/{s3AccessPointArn}
@@ -4839,7 +4894,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["s3AccessPointArn"] = input.s3AccessPointArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/s3accesspolicy/{s3AccessPointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/s3accesspolicy/{s3AccessPointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutS3AccessPolicyDocument(s3AccessPolicy=input.s3AccessPolicy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -4848,7 +4903,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_annotation_import_job(self, StartAnnotationImportRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/import/annotation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/import/annotation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"destinationName\":" + omics_json_str(input.destinationName))
         parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
@@ -4880,7 +4935,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/activationjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/activationjob", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -4898,7 +4953,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/exportjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/exportjob", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"destination\":" + omics_json_str(input.destination))
         parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
@@ -4918,7 +4973,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["sequenceStoreId"] = input.sequenceStoreId
-        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/importjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sequencestore/{sequenceStoreId}/importjob", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
         if input.clientToken.is_some():
@@ -4937,7 +4992,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["referenceStoreId"] = input.referenceStoreId
-        auto b = binding.HttpBinding(method="POST", path_template="/referencestore/{referenceStoreId}/importjob", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/referencestore/{referenceStoreId}/importjob", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
         if input.clientToken.is_some():
@@ -4954,7 +5009,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_run(self, StartRunRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/run", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/run", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.workflowId.is_some():
             auto u0 = input.workflowId.unwrap()
@@ -5032,7 +5087,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_run_batch(self, StartRunBatchRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/runBatch", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runBatch", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.batchName.is_some():
             auto u0 = input.batchName.unwrap()
@@ -5053,7 +5108,7 @@ struct OmicsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_variant_import_job(self, StartVariantImportRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/import/variant", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/import/variant", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"destinationName\":" + omics_json_str(input.destinationName))
         parts.append("\"roleArn\":" + omics_json_str(input.roleArn))
@@ -5079,7 +5134,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -5088,13 +5143,24 @@ struct OmicsClient:
         auto bp = restjson.rest_json_document(b, omics_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, RequestTimeoutException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(omics_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, omics_service(), self.region, host)
+
     # UpdateAnnotationStore  POST /annotationStore/{name}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_annotation_store(self, UpdateAnnotationStoreRequest input) -> str:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAnnotationStoreDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -5106,7 +5172,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["versionName"] = input.versionName
-        auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}/version/{versionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/annotationStore/{name}/version/{versionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAnnotationStoreVersionDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -5117,7 +5183,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/runCache/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runCache/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRunCacheDocument(cacheBehavior=input.cacheBehavior, description=input.description, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -5128,7 +5194,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/runGroup/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runGroup/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRunGroupDocument(name=input.name, maxCpus=input.maxCpus, maxRuns=input.maxRuns, maxDuration=input.maxDuration, maxGpus=input.maxGpus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -5139,7 +5205,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/sequencestore/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/sequencestore/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -5171,7 +5237,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/variantStore/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/variantStore/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVariantStoreDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -5182,7 +5248,7 @@ struct OmicsClient:
         auto host = endpoints.regional_host(omics_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkflowDocument(name=input.name, description=input.description, storageType=input.storageType, storageCapacity=input.storageCapacity, readmeMarkdown=input.readmeMarkdown)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -5194,7 +5260,7 @@ struct OmicsClient:
         dict[str, str] labels = {}
         labels["workflowId"] = input.workflowId
         labels["versionName"] = input.versionName
-        auto b = binding.HttpBinding(method="POST", path_template="/workflow/{workflowId}/version/{versionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflow/{workflowId}/version/{versionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkflowVersionDocument(description=input.description, storageType=input.storageType, storageCapacity=input.storageCapacity, readmeMarkdown=input.readmeMarkdown)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
@@ -5209,7 +5275,7 @@ struct OmicsClient:
         dict[str, str] query = {}
         query["partSource"] = input.partSource
         query["partNumber"] = str(input.partNumber)
-        auto b = binding.HttpBinding(method="PUT", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/part", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/sequencestore/{sequenceStoreId}/upload/{uploadId}/part", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.payload), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, omics_service(), self.region, host)
 

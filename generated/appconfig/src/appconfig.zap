@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 56 operations — 52 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 56 operations — 54 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   112 structs (62 @derive(Json)), 14 enums, 6 error variants.
 #   11 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1153,8 +1153,6 @@ def appconfig_error_from_code(str code) -> AppConfigError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateExtension (document member `Actions: dict[ActionPoint, list[Action]]` is not serializable)
-#   StopDeployment (httpHeader `AllowRevert` has unsupported type bool)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 #   UpdateExtension (document member `Actions: dict[ActionPoint, list[Action]]` is not serializable)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -1287,6 +1285,12 @@ def treatment_overrides_to_json(TreatmentOverrides v) -> str:
         parts.append("\"Inline\":" + appconfig_json_obj(m1))
     return appconfig_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def appconfig_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound AppConfig client: credentials + region, threaded into every operation.
 struct AppConfigClient:
     core.Credentials creds
@@ -1296,7 +1300,7 @@ struct AppConfigClient:
     # errors: BadRequestException, InternalServerException, ServiceQuotaExceededException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + appconfig_json_str(input.Name))
         if input.Description.is_some():
@@ -1317,7 +1321,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/configurationprofiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/configurationprofiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + appconfig_json_str(input.Name))
         if input.Description.is_some():
@@ -1352,7 +1356,7 @@ struct AppConfigClient:
     # errors: BadRequestException, InternalServerException, ServiceQuotaExceededException
     def create_deployment_strategy(self, CreateDeploymentStrategyRequest input) -> str:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deploymentstrategies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deploymentstrategies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + appconfig_json_str(input.Name))
         if input.Description.is_some():
@@ -1384,7 +1388,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/environments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/environments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + appconfig_json_str(input.Name))
         if input.Description.is_some():
@@ -1411,7 +1415,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + appconfig_json_str(input.Name))
         parts.append("\"ConfigurationProfileIdentifier\":" + appconfig_json_str(input.ConfigurationProfileIdentifier))
@@ -1445,7 +1449,7 @@ struct AppConfigClient:
     # errors: BadRequestException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException
     def create_extension_association(self, CreateExtensionAssociationRequest input) -> str:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/extensionassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/extensionassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ExtensionIdentifier\":" + appconfig_json_str(input.ExtensionIdentifier))
         if input.ExtensionVersionNumber.is_some():
@@ -1479,10 +1483,11 @@ struct AppConfigClient:
             headers["Description"] = input.Description.unwrap_or("")
         headers["Content-Type"] = input.ContentType
         if input.LatestVersionNumber.is_some():
-            headers["Latest-Version-Number"] = str(input.LatestVersionNumber.unwrap_or(0))
+            auto qt0 = str(input.LatestVersionNumber.unwrap_or(0))
+            headers["Latest-Version-Number"] = qt0
         if input.VersionLabel.is_some():
             headers["VersionLabel"] = input.VersionLabel.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Content), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
 
@@ -1492,7 +1497,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # DeleteConfigurationProfile  DELETE /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}
@@ -1504,8 +1509,9 @@ struct AppConfigClient:
         labels["ConfigurationProfileId"] = input.ConfigurationProfileId
         dict[str, str] headers = {}
         if input.DeletionProtectionCheck.is_some():
-            headers["x-amzn-deletion-protection-check"] = input.DeletionProtectionCheck.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.DeletionProtectionCheck.unwrap_or("")
+            headers["x-amzn-deletion-protection-check"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # DeleteDeploymentStrategy  DELETE /deployementstrategies/{DeploymentStrategyId}
@@ -1514,7 +1520,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["DeploymentStrategyId"] = input.DeploymentStrategyId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/deployementstrategies/{DeploymentStrategyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/deployementstrategies/{DeploymentStrategyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # DeleteEnvironment  DELETE /applications/{ApplicationId}/environments/{EnvironmentId}
@@ -1526,8 +1532,9 @@ struct AppConfigClient:
         labels["ApplicationId"] = input.ApplicationId
         dict[str, str] headers = {}
         if input.DeletionProtectionCheck.is_some():
-            headers["x-amzn-deletion-protection-check"] = input.DeletionProtectionCheck.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.DeletionProtectionCheck.unwrap_or("")
+            headers["x-amzn-deletion-protection-check"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # DeleteExperimentDefinition  DELETE /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}
@@ -1540,7 +1547,7 @@ struct AppConfigClient:
         dict[str, str] query = {}
         if input.DeleteType.is_some():
             query["delete_type"] = input.DeleteType.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # DeleteExtension  DELETE /extensions/{ExtensionIdentifier}
@@ -1552,7 +1559,7 @@ struct AppConfigClient:
         dict[str, str] query = {}
         if input.VersionNumber.is_some():
             query["version"] = str(input.VersionNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/extensions/{ExtensionIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/extensions/{ExtensionIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # DeleteExtensionAssociation  DELETE /extensionassociations/{ExtensionAssociationId}
@@ -1561,7 +1568,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ExtensionAssociationId"] = input.ExtensionAssociationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/extensionassociations/{ExtensionAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/extensionassociations/{ExtensionAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # DeleteHostedConfigurationVersion  DELETE /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}
@@ -1572,14 +1579,14 @@ struct AppConfigClient:
         labels["ApplicationId"] = input.ApplicationId
         labels["ConfigurationProfileId"] = input.ConfigurationProfileId
         labels["VersionNumber"] = str(input.VersionNumber)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetAccountSettings  GET /settings
     # errors: BadRequestException, InternalServerException
     def get_account_settings(self) -> str:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetApplication  GET /applications/{ApplicationId}
@@ -1588,7 +1595,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetConfiguration  GET /applications/{Application}/environments/{Environment}/configurations/{Configuration}
@@ -1602,8 +1609,9 @@ struct AppConfigClient:
         dict[str, str] query = {}
         query["client_id"] = input.ClientId
         if input.ClientConfigurationVersion.is_some():
-            query["client_configuration_version"] = input.ClientConfigurationVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{Application}/environments/{Environment}/configurations/{Configuration}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.ClientConfigurationVersion.unwrap_or("")
+            query["client_configuration_version"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{Application}/environments/{Environment}/configurations/{Configuration}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetConfigurationProfile  GET /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}
@@ -1613,7 +1621,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
         labels["ConfigurationProfileId"] = input.ConfigurationProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetDeployment  GET /applications/{ApplicationId}/environments/{EnvironmentId}/deployments/{DeploymentNumber}
@@ -1624,7 +1632,7 @@ struct AppConfigClient:
         labels["ApplicationId"] = input.ApplicationId
         labels["EnvironmentId"] = input.EnvironmentId
         labels["DeploymentNumber"] = str(input.DeploymentNumber)
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments/{DeploymentNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments/{DeploymentNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetDeploymentStrategy  GET /deploymentstrategies/{DeploymentStrategyId}
@@ -1633,7 +1641,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["DeploymentStrategyId"] = input.DeploymentStrategyId
-        auto b = binding.HttpBinding(method="GET", path_template="/deploymentstrategies/{DeploymentStrategyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/deploymentstrategies/{DeploymentStrategyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetEnvironment  GET /applications/{ApplicationId}/environments/{EnvironmentId}
@@ -1643,7 +1651,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
         labels["EnvironmentId"] = input.EnvironmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetExperimentDefinition  GET /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}
@@ -1653,7 +1661,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetExperimentRun  GET /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}
@@ -1664,7 +1672,7 @@ struct AppConfigClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
         labels["Run"] = str(input.Run)
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetExtension  GET /extensions/{ExtensionIdentifier}
@@ -1676,7 +1684,7 @@ struct AppConfigClient:
         dict[str, str] query = {}
         if input.VersionNumber.is_some():
             query["version_number"] = str(input.VersionNumber.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/extensions/{ExtensionIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/extensions/{ExtensionIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetExtensionAssociation  GET /extensionassociations/{ExtensionAssociationId}
@@ -1685,7 +1693,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ExtensionAssociationId"] = input.ExtensionAssociationId
-        auto b = binding.HttpBinding(method="GET", path_template="/extensionassociations/{ExtensionAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/extensionassociations/{ExtensionAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # GetHostedConfigurationVersion  GET /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}
@@ -1696,7 +1704,7 @@ struct AppConfigClient:
         labels["ApplicationId"] = input.ApplicationId
         labels["ConfigurationProfileId"] = input.ConfigurationProfileId
         labels["VersionNumber"] = str(input.VersionNumber)
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListApplications  GET /applications
@@ -1708,7 +1716,7 @@ struct AppConfigClient:
             query["max_results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next_token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListConfigurationProfiles  GET /applications/{ApplicationId}/configurationprofiles
@@ -1724,7 +1732,7 @@ struct AppConfigClient:
             query["next_token"] = input.NextToken.unwrap_or("")
         if input.Type.is_some():
             query["type"] = input.Type.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListDeploymentStrategies  GET /deploymentstrategies
@@ -1736,7 +1744,7 @@ struct AppConfigClient:
             query["max_results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next_token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/deploymentstrategies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/deploymentstrategies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListDeployments  GET /applications/{ApplicationId}/environments/{EnvironmentId}/deployments
@@ -1751,7 +1759,7 @@ struct AppConfigClient:
             query["max_results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next_token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListEnvironments  GET /applications/{ApplicationId}/environments
@@ -1765,7 +1773,7 @@ struct AppConfigClient:
             query["max_results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next_token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/environments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListExperimentDefinitions  GET /experimentdefinitions
@@ -1776,7 +1784,8 @@ struct AppConfigClient:
         if input.ApplicationIdentifier.is_some():
             query["application_identifier"] = input.ApplicationIdentifier.unwrap_or("")
         if input.ConfigurationProfileIdentifier.is_some():
-            query["configuration_profile_identifier"] = input.ConfigurationProfileIdentifier.unwrap_or("")
+            auto qt0 = input.ConfigurationProfileIdentifier.unwrap_or("")
+            query["configuration_profile_identifier"] = qt0
         if input.EnvironmentIdentifier.is_some():
             query["environment_identifier"] = input.EnvironmentIdentifier.unwrap_or("")
         if input.Status.is_some():
@@ -1785,7 +1794,7 @@ struct AppConfigClient:
             query["max_results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next_token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/experimentdefinitions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/experimentdefinitions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListExperimentRunEvents  GET /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/events
@@ -1801,7 +1810,7 @@ struct AppConfigClient:
             query["max_results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next_token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/events", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/events", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListExperimentRuns  GET /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns
@@ -1818,7 +1827,7 @@ struct AppConfigClient:
             query["next_token"] = input.NextToken.unwrap_or("")
         if input.Status.is_some():
             query["status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListExtensionAssociations  GET /extensionassociations
@@ -1831,12 +1840,13 @@ struct AppConfigClient:
         if input.ExtensionIdentifier.is_some():
             query["extension_identifier"] = input.ExtensionIdentifier.unwrap_or("")
         if input.ExtensionVersionNumber.is_some():
-            query["extension_version_number"] = str(input.ExtensionVersionNumber.unwrap_or(0))
+            auto qt0 = str(input.ExtensionVersionNumber.unwrap_or(0))
+            query["extension_version_number"] = qt0
         if input.MaxResults.is_some():
             query["max_results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next_token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/extensionassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/extensionassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListExtensions  GET /extensions
@@ -1850,7 +1860,7 @@ struct AppConfigClient:
             query["next_token"] = input.NextToken.unwrap_or("")
         if input.Name.is_some():
             query["name"] = input.Name.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/extensions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/extensions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListHostedConfigurationVersions  GET /applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions
@@ -1867,7 +1877,7 @@ struct AppConfigClient:
             query["next_token"] = input.NextToken.unwrap_or("")
         if input.VersionLabel.is_some():
             query["version_label"] = input.VersionLabel.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -1876,7 +1886,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # StartDeployment  POST /applications/{ApplicationId}/environments/{EnvironmentId}/deployments
@@ -1886,7 +1896,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
         labels["EnvironmentId"] = input.EnvironmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DeploymentStrategyId\":" + appconfig_json_str(input.DeploymentStrategyId))
         parts.append("\"ConfigurationProfileId\":" + appconfig_json_str(input.ConfigurationProfileId))
@@ -1922,7 +1932,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -1945,6 +1955,21 @@ struct AppConfigClient:
         auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
 
+    # StopDeployment  DELETE /applications/{ApplicationId}/environments/{EnvironmentId}/deployments/{DeploymentNumber}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def stop_deployment(self, StopDeploymentRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ApplicationId"] = input.ApplicationId
+        labels["EnvironmentId"] = input.EnvironmentId
+        labels["DeploymentNumber"] = str(input.DeploymentNumber)
+        dict[str, str] headers = {}
+        if input.AllowRevert.is_some():
+            auto qt0 = appconfig_bind_bool(input.AllowRevert.unwrap_or(False))
+            headers["Allow-Revert"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}/deployments/{DeploymentNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
+
     # StopExperimentRun  PATCH /applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/stop
     # errors: BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException
     def stop_experiment_run(self, StopExperimentRunRequest input) -> str:
@@ -1953,7 +1978,7 @@ struct AppConfigClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
         labels["Run"] = str(input.Run)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Result.is_some():
             auto u0 = input.Result.unwrap()
@@ -1970,7 +1995,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1979,11 +2004,22 @@ struct AppConfigClient:
         auto bp = restjson.rest_json_document(b, appconfig_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appconfig_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
+
     # UpdateAccountSettings  PATCH /settings
     # errors: BadRequestException, InternalServerException
     def update_account_settings(self, UpdateAccountSettingsRequest input) -> str:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountSettingsDocument(DeletionProtection=input.DeletionProtection, VendedMetrics=input.VendedMetrics)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
@@ -1994,7 +2030,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
@@ -2006,7 +2042,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
         labels["ConfigurationProfileId"] = input.ConfigurationProfileId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -2035,7 +2071,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["DeploymentStrategyId"] = input.DeploymentStrategyId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/deploymentstrategies/{DeploymentStrategyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/deploymentstrategies/{DeploymentStrategyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDeploymentStrategyDocument(Description=input.Description, DeploymentDurationInMinutes=input.DeploymentDurationInMinutes, FinalBakeTimeInMinutes=input.FinalBakeTimeInMinutes, GrowthFactor=input.GrowthFactor, GrowthType=input.GrowthType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appconfig_service(), self.region, host)
@@ -2047,7 +2083,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationId"] = input.ApplicationId
         labels["EnvironmentId"] = input.EnvironmentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationId}/environments/{EnvironmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -2071,7 +2107,7 @@ struct AppConfigClient:
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Treatments.is_some():
             auto u0 = input.Treatments.unwrap()
@@ -2105,7 +2141,7 @@ struct AppConfigClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["ExperimentDefinitionIdentifier"] = input.ExperimentDefinitionIdentifier
         labels["Run"] = str(input.Run)
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -2128,7 +2164,7 @@ struct AppConfigClient:
         auto host = endpoints.regional_host(appconfig_service(), self.region)
         dict[str, str] labels = {}
         labels["ExtensionAssociationId"] = input.ExtensionAssociationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/extensionassociations/{ExtensionAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/extensionassociations/{ExtensionAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Parameters.is_some():
             auto u0 = input.Parameters.unwrap()
@@ -2148,7 +2184,7 @@ struct AppConfigClient:
         labels["ConfigurationProfileId"] = input.ConfigurationProfileId
         dict[str, str] query = {}
         query["configuration_version"] = input.ConfigurationVersion
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/validators", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/validators", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appconfig_service(), self.region, host)
 
     # Paginator for ListApplications — yields each Response page, threading the

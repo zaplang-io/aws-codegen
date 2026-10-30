@@ -1338,7 +1338,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=associate-phone-number", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=associate-phone-number", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociatePhoneNumberWithUserDocument(E164PhoneNumber=input.E164PhoneNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1349,7 +1349,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}?operation=associate-signin-delegate-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}?operation=associate-signin-delegate-groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SigninDelegateGroups:
@@ -1365,7 +1365,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/memberships?operation=batch-create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/memberships?operation=batch-create", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.MembershipItemList:
@@ -1378,7 +1378,7 @@ struct ChimeClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def batch_delete_phone_number(self, BatchDeletePhoneNumberRequest input) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.PhoneNumberIds:
@@ -1393,7 +1393,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=suspend", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=suspend", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UserIdList:
@@ -1408,7 +1408,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=unsuspend", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=unsuspend", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UserIdList:
@@ -1421,7 +1421,7 @@ struct ChimeClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def batch_update_phone_number(self, BatchUpdatePhoneNumberRequest input) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers?operation=batch-update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UpdatePhoneNumberRequestItems:
@@ -1436,7 +1436,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UpdateUserRequestItems:
@@ -1449,7 +1449,7 @@ struct ChimeClient:
     # errors: BadRequestException, ForbiddenException, NotFoundException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_account(self, CreateAccountRequest input) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAccountDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1460,7 +1460,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/bots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/bots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBotDocument(DisplayName=input.DisplayName, Domain=input.Domain)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1471,7 +1471,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["meetingId"] = input.MeetingId
-        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{meetingId}/dial-outs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/meetings/{meetingId}/dial-outs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMeetingDialOutDocument(FromPhoneNumber=input.FromPhoneNumber, ToPhoneNumber=input.ToPhoneNumber, JoinToken=input.JoinToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1480,7 +1480,7 @@ struct ChimeClient:
     # errors: AccessDeniedException, BadRequestException, ForbiddenException, ResourceLimitExceededException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def create_phone_number_order(self, CreatePhoneNumberOrderRequest input) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-number-orders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number-orders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ProductType\":" + input.ProductType.to_json())
         list[str] e0 = []
@@ -1496,7 +1496,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRoomDocument(Name=input.Name, ClientRequestToken=input.ClientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1508,7 +1508,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/memberships", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/memberships", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateRoomMembershipDocument(MemberId=input.MemberId, Role=input.Role)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1519,7 +1519,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=create", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateUserDocument(Username=input.Username, Email=input.Email, UserType=input.UserType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1530,7 +1530,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # DeleteEventsConfiguration  DELETE /accounts/{accountId}/bots/{botId}/events-configuration
@@ -1540,7 +1540,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["botId"] = input.BotId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}/bots/{botId}/events-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}/bots/{botId}/events-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # DeletePhoneNumber  DELETE /phone-numbers/{phoneNumberId}
@@ -1549,7 +1549,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # DeleteRoom  DELETE /accounts/{accountId}/rooms/{roomId}
@@ -1559,7 +1559,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}/rooms/{roomId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}/rooms/{roomId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # DeleteRoomMembership  DELETE /accounts/{accountId}/rooms/{roomId}/memberships/{memberId}
@@ -1570,7 +1570,7 @@ struct ChimeClient:
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
         labels["memberId"] = input.MemberId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}/rooms/{roomId}/memberships/{memberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accounts/{accountId}/rooms/{roomId}/memberships/{memberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # DisassociatePhoneNumberFromUser  POST /accounts/{accountId}/users/{userId}?operation=disassociate-phone-number
@@ -1580,7 +1580,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=disassociate-phone-number", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=disassociate-phone-number", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # DisassociateSigninDelegateGroupsFromAccount  POST /accounts/{accountId}?operation=disassociate-signin-delegate-groups
@@ -1589,7 +1589,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}?operation=disassociate-signin-delegate-groups", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}?operation=disassociate-signin-delegate-groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.GroupNames:
@@ -1604,7 +1604,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetAccountSettings  GET /accounts/{accountId}/settings
@@ -1613,7 +1613,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetBot  GET /accounts/{accountId}/bots/{botId}
@@ -1623,7 +1623,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["botId"] = input.BotId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetEventsConfiguration  GET /accounts/{accountId}/bots/{botId}/events-configuration
@@ -1633,14 +1633,14 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["botId"] = input.BotId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/bots/{botId}/events-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/bots/{botId}/events-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetGlobalSettings  GET /settings
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def get_global_settings(self) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetPhoneNumber  GET /phone-numbers/{phoneNumberId}
@@ -1649,7 +1649,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetPhoneNumberOrder  GET /phone-number-orders/{phoneNumberOrderId}
@@ -1658,14 +1658,14 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberOrderId"] = input.PhoneNumberOrderId
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders/{phoneNumberOrderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders/{phoneNumberOrderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetPhoneNumberSettings  GET /settings/phone-number
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def get_phone_number_settings(self) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetRetentionSettings  GET /accounts/{accountId}/retention-settings
@@ -1674,7 +1674,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/retention-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/retention-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetRoom  GET /accounts/{accountId}/rooms/{roomId}
@@ -1684,7 +1684,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/rooms/{roomId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/rooms/{roomId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetUser  GET /accounts/{accountId}/users/{userId}
@@ -1694,7 +1694,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/users/{userId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/users/{userId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # GetUserSettings  GET /accounts/{accountId}/users/{userId}/settings
@@ -1704,7 +1704,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/users/{userId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/users/{userId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # InviteUsers  POST /accounts/{accountId}/users?operation=add
@@ -1713,7 +1713,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=add", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users?operation=add", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UserEmailList:
@@ -1738,7 +1738,7 @@ struct ChimeClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ListBots  GET /accounts/{accountId}/bots
@@ -1752,7 +1752,7 @@ struct ChimeClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/bots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/bots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ListPhoneNumberOrders  GET /phone-number-orders
@@ -1764,7 +1764,7 @@ struct ChimeClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-orders", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ListPhoneNumbers  GET /phone-numbers
@@ -1784,7 +1784,7 @@ struct ChimeClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-numbers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ListRoomMemberships  GET /accounts/{accountId}/rooms/{roomId}/memberships
@@ -1799,7 +1799,7 @@ struct ChimeClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/rooms/{roomId}/memberships", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/rooms/{roomId}/memberships", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ListRooms  GET /accounts/{accountId}/rooms
@@ -1815,7 +1815,7 @@ struct ChimeClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/rooms", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/rooms", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ListSupportedPhoneNumberCountries  GET /phone-number-countries
@@ -1824,7 +1824,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] query = {}
         query["product-type"] = input.ProductType
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-countries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-number-countries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ListUsers  GET /accounts/{accountId}/users
@@ -1842,7 +1842,7 @@ struct ChimeClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/users", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accounts/{accountId}/users", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # LogoutUser  POST /accounts/{accountId}/users/{userId}?operation=logout
@@ -1852,7 +1852,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=logout", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=logout", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # PutEventsConfiguration  PUT /accounts/{accountId}/bots/{botId}/events-configuration
@@ -1862,7 +1862,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["botId"] = input.BotId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/bots/{botId}/events-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/bots/{botId}/events-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutEventsConfigurationDocument(OutboundEventsHTTPSEndpoint=input.OutboundEventsHTTPSEndpoint, LambdaFunctionArn=input.LambdaFunctionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1873,7 +1873,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/retention-settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/retention-settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutRetentionSettingsDocument(RetentionSettings=input.RetentionSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1886,7 +1886,7 @@ struct ChimeClient:
         labels["accountId"] = input.AccountId
         labels["conversationId"] = input.ConversationId
         labels["messageId"] = input.MessageId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/conversations/{conversationId}/messages/{messageId}?operation=redact", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/conversations/{conversationId}/messages/{messageId}?operation=redact", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # RedactRoomMessage  POST /accounts/{accountId}/rooms/{roomId}/messages/{messageId}?operation=redact
@@ -1897,7 +1897,7 @@ struct ChimeClient:
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
         labels["messageId"] = input.MessageId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/messages/{messageId}?operation=redact", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/messages/{messageId}?operation=redact", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # RegenerateSecurityToken  POST /accounts/{accountId}/bots/{botId}?operation=regenerate-security-token
@@ -1907,7 +1907,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["botId"] = input.BotId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/bots/{botId}?operation=regenerate-security-token", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/bots/{botId}?operation=regenerate-security-token", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # ResetPersonalPIN  POST /accounts/{accountId}/users/{userId}?operation=reset-personal-pin
@@ -1917,7 +1917,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=reset-personal-pin", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}?operation=reset-personal-pin", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # RestorePhoneNumber  POST /phone-numbers/{phoneNumberId}?operation=restore
@@ -1926,7 +1926,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}?operation=restore", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}?operation=restore", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # SearchAvailablePhoneNumbers  GET /search?type=phone-numbers
@@ -1950,7 +1950,7 @@ struct ChimeClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/search?type=phone-numbers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/search?type=phone-numbers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chime_service(), self.region, host)
 
     # UpdateAccount  POST /accounts/{accountId}
@@ -1959,7 +1959,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountDocument(Name=input.Name, DefaultLicense=input.DefaultLicense)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1970,7 +1970,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountSettingsDocument(AccountSettings=input.AccountSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1982,7 +1982,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["botId"] = input.BotId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBotDocument(Disabled=input.Disabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -1991,7 +1991,7 @@ struct ChimeClient:
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def update_global_settings(self, UpdateGlobalSettingsRequest input) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGlobalSettingsDocument(BusinessCalling=input.BusinessCalling, VoiceConnector=input.VoiceConnector)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -2002,7 +2002,7 @@ struct ChimeClient:
         auto host = endpoints.regional_host(chime_service(), self.region)
         dict[str, str] labels = {}
         labels["phoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-numbers/{phoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePhoneNumberDocument(ProductType=input.ProductType, CallingName=input.CallingName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -2011,7 +2011,7 @@ struct ChimeClient:
     # errors: BadRequestException, ForbiddenException, ServiceFailureException, ServiceUnavailableException, ThrottledClientException, UnauthorizedClientException
     def update_phone_number_settings(self, UpdatePhoneNumberSettingsRequest input) -> str:
         auto host = endpoints.regional_host(chime_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/settings/phone-number", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePhoneNumberSettingsDocument(CallingName=input.CallingName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -2023,7 +2023,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoomDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -2036,7 +2036,7 @@ struct ChimeClient:
         labels["accountId"] = input.AccountId
         labels["roomId"] = input.RoomId
         labels["memberId"] = input.MemberId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/memberships/{memberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/rooms/{roomId}/memberships/{memberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoomMembershipDocument(Role=input.Role)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -2048,7 +2048,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accounts/{accountId}/users/{userId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserDocument(LicenseType=input.LicenseType, UserType=input.UserType, AlexaForBusinessMetadata=input.AlexaForBusinessMetadata)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)
@@ -2060,7 +2060,7 @@ struct ChimeClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.AccountId
         labels["userId"] = input.UserId
-        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/users/{userId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/accounts/{accountId}/users/{userId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserSettingsDocument(UserSettings=input.UserSettings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chime_service(), self.region, host)

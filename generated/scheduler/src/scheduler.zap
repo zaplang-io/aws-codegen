@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 11 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 12 operations — 12 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   49 structs (35 @derive(Json)), 8 enums, 6 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -465,11 +465,6 @@ def scheduler_error_from_code(str code) -> SchedulerError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -639,7 +634,7 @@ struct SchedulerClient:
         auto host = endpoints.regional_host(scheduler_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ActionAfterCompletion.is_some():
             auto u0 = input.ActionAfterCompletion.unwrap()
@@ -680,7 +675,7 @@ struct SchedulerClient:
         auto host = endpoints.regional_host(scheduler_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/schedule-groups/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/schedule-groups/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -705,7 +700,7 @@ struct SchedulerClient:
             query["clientToken"] = input.ClientToken.unwrap_or("")
         if input.GroupName.is_some():
             query["groupName"] = input.GroupName.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
 
     # DeleteScheduleGroup  DELETE /schedule-groups/{Name}
@@ -717,7 +712,7 @@ struct SchedulerClient:
         dict[str, str] query = {}
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/schedule-groups/{Name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/schedule-groups/{Name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
 
     # GetSchedule  GET /schedules/{Name}
@@ -729,7 +724,7 @@ struct SchedulerClient:
         dict[str, str] query = {}
         if input.GroupName.is_some():
             query["groupName"] = input.GroupName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
 
     # GetScheduleGroup  GET /schedule-groups/{Name}
@@ -738,7 +733,7 @@ struct SchedulerClient:
         auto host = endpoints.regional_host(scheduler_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/schedule-groups/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schedule-groups/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
 
     # ListScheduleGroups  GET /schedule-groups
@@ -752,7 +747,7 @@ struct SchedulerClient:
             query["NamePrefix"] = input.NamePrefix.unwrap_or("")
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/schedule-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schedule-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
 
     # ListSchedules  GET /schedules
@@ -770,7 +765,7 @@ struct SchedulerClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.State.is_some():
             query["State"] = input.State.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/schedules", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schedules", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -779,7 +774,7 @@ struct SchedulerClient:
         auto host = endpoints.regional_host(scheduler_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -788,7 +783,7 @@ struct SchedulerClient:
         auto host = endpoints.regional_host(scheduler_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -797,13 +792,24 @@ struct SchedulerClient:
         auto bp = restjson.rest_json_document(b, scheduler_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, scheduler_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(scheduler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["TagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, scheduler_service(), self.region, host)
+
     # UpdateSchedule  PUT /schedules/{Name}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_schedule(self, UpdateScheduleInput input) -> str:
         auto host = endpoints.regional_host(scheduler_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/schedules/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ActionAfterCompletion.is_some():
             auto u0 = input.ActionAfterCompletion.unwrap()

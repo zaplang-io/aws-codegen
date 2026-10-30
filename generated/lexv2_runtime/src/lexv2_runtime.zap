@@ -772,7 +772,7 @@ struct Lex_Runtime_V2Client:
         labels["botAliasId"] = input.botAliasId
         labels["localeId"] = input.localeId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, runtime_v2_lex_service(), self.region, host)
 
     # GetSession  GET /bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}
@@ -784,7 +784,7 @@ struct Lex_Runtime_V2Client:
         labels["botAliasId"] = input.botAliasId
         labels["localeId"] = input.localeId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, runtime_v2_lex_service(), self.region, host)
 
     # PutSession  POST /bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}
@@ -799,7 +799,7 @@ struct Lex_Runtime_V2Client:
         dict[str, str] headers = {}
         if input.responseContentType.is_some():
             headers["ResponseContentType"] = input.responseContentType.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.messages.is_some():
             auto u0 = input.messages.unwrap()
@@ -826,7 +826,7 @@ struct Lex_Runtime_V2Client:
         labels["botAliasId"] = input.botAliasId
         labels["localeId"] = input.localeId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}/text", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}/text", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"text\":" + runtime_v2_lex_json_str(input.text))
         if input.sessionState.is_some():
@@ -854,11 +854,12 @@ struct Lex_Runtime_V2Client:
         if input.sessionState.is_some():
             headers["x-amz-lex-session-state"] = input.sessionState.unwrap_or("")
         if input.requestAttributes.is_some():
-            headers["x-amz-lex-request-attributes"] = input.requestAttributes.unwrap_or("")
+            auto qt0 = input.requestAttributes.unwrap_or("")
+            headers["x-amz-lex-request-attributes"] = qt0
         headers["Content-Type"] = input.requestContentType
         if input.responseContentType.is_some():
             headers["Response-Content-Type"] = input.responseContentType.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}/utterance", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}/utterance", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.inputStream.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, runtime_v2_lex_service(), self.region, host)
 

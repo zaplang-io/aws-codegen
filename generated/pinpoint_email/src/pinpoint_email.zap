@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 42 operations — 38 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 42 operations — 42 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   130 structs (93 @derive(Json)), 10 enums, 10 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -974,14 +974,6 @@ def email_error_from_code(str code) -> Pinpoint_EmailError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetBlacklistReports (httpQuery `BlacklistItemNames` has unsupported type list[str])
-#   GetDomainStatisticsReport (httpQuery `StartDate` has unsupported type DateTime)
-#   ListDomainDeliverabilityCampaigns (httpQuery `StartDate` has unsupported type DateTime)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1167,7 +1159,7 @@ struct Pinpoint_EmailClient:
     # errors: AlreadyExistsException, BadRequestException, ConcurrentModificationException, LimitExceededException, NotFoundException, TooManyRequestsException
     def create_configuration_set(self, CreateConfigurationSetRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/configuration-sets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/configuration-sets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ConfigurationSetName\":" + email_json_str(input.ConfigurationSetName))
         if input.TrackingOptions.is_some():
@@ -1197,7 +1189,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"EventDestinationName\":" + email_json_str(input.EventDestinationName))
         parts.append("\"EventDestination\":" + event_destination_definition_to_json(input.EventDestination))
@@ -1208,7 +1200,7 @@ struct Pinpoint_EmailClient:
     # errors: AlreadyExistsException, BadRequestException, ConcurrentModificationException, LimitExceededException, TooManyRequestsException
     def create_dedicated_ip_pool(self, CreateDedicatedIpPoolRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/dedicated-ip-pools", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/dedicated-ip-pools", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"PoolName\":" + email_json_str(input.PoolName))
         if input.Tags.is_some():
@@ -1224,7 +1216,7 @@ struct Pinpoint_EmailClient:
     # errors: AccountSuspendedException, BadRequestException, ConcurrentModificationException, LimitExceededException, MailFromDomainNotVerifiedException, MessageRejected, NotFoundException, SendingPausedException, TooManyRequestsException
     def create_deliverability_test_report(self, CreateDeliverabilityTestReportRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/deliverability-dashboard/test", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/deliverability-dashboard/test", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ReportName.is_some():
             auto u0 = input.ReportName.unwrap()
@@ -1244,7 +1236,7 @@ struct Pinpoint_EmailClient:
     # errors: BadRequestException, ConcurrentModificationException, LimitExceededException, TooManyRequestsException
     def create_email_identity(self, CreateEmailIdentityRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/identities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/identities", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"EmailIdentity\":" + email_json_str(input.EmailIdentity))
         if input.Tags.is_some():
@@ -1262,7 +1254,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/configuration-sets/{ConfigurationSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/configuration-sets/{ConfigurationSetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # DeleteConfigurationSetEventDestination  DELETE /v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}
@@ -1272,7 +1264,7 @@ struct Pinpoint_EmailClient:
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
         labels["EventDestinationName"] = input.EventDestinationName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # DeleteDedicatedIpPool  DELETE /v1/email/dedicated-ip-pools/{PoolName}
@@ -1281,7 +1273,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["PoolName"] = input.PoolName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/dedicated-ip-pools/{PoolName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/dedicated-ip-pools/{PoolName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # DeleteEmailIdentity  DELETE /v1/email/identities/{EmailIdentity}
@@ -1290,14 +1282,23 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["EmailIdentity"] = input.EmailIdentity
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/identities/{EmailIdentity}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/identities/{EmailIdentity}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetAccount  GET /v1/email/account
     # errors: BadRequestException, TooManyRequestsException
     def get_account(self) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/account", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/account", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
+
+    # GetBlacklistReports  GET /v1/email/deliverability-dashboard/blacklist-report
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException
+    def get_blacklist_reports(self, GetBlacklistReportsRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        dict[str, list[str]] multi_query = {}
+        multi_query["BlacklistItemNames"] = input.BlacklistItemNames
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/blacklist-report", labels={}, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetConfigurationSet  GET /v1/email/configuration-sets/{ConfigurationSetName}
@@ -1306,7 +1307,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/configuration-sets/{ConfigurationSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/configuration-sets/{ConfigurationSetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetConfigurationSetEventDestinations  GET /v1/email/configuration-sets/{ConfigurationSetName}/event-destinations
@@ -1315,7 +1316,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetDedicatedIp  GET /v1/email/dedicated-ips/{IP}
@@ -1324,7 +1325,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["IP"] = input.Ip
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/dedicated-ips/{IP}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/dedicated-ips/{IP}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetDedicatedIps  GET /v1/email/dedicated-ips
@@ -1338,14 +1339,14 @@ struct Pinpoint_EmailClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["PageSize"] = str(input.PageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/dedicated-ips", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/dedicated-ips", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetDeliverabilityDashboardOptions  GET /v1/email/deliverability-dashboard
     # errors: BadRequestException, LimitExceededException, TooManyRequestsException
     def get_deliverability_dashboard_options(self) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetDeliverabilityTestReport  GET /v1/email/deliverability-dashboard/test-reports/{ReportId}
@@ -1354,7 +1355,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ReportId"] = input.ReportId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/test-reports/{ReportId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/test-reports/{ReportId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetDomainDeliverabilityCampaign  GET /v1/email/deliverability-dashboard/campaigns/{CampaignId}
@@ -1363,7 +1364,19 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["CampaignId"] = input.CampaignId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/campaigns/{CampaignId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/campaigns/{CampaignId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
+
+    # GetDomainStatisticsReport  GET /v1/email/deliverability-dashboard/statistics-report/{Domain}
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException
+    def get_domain_statistics_report(self, GetDomainStatisticsReportRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Domain"] = input.Domain
+        dict[str, str] query = {}
+        query["StartDate"] = datetime.strftime(input.StartDate, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndDate"] = datetime.strftime(input.EndDate, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/statistics-report/{Domain}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # GetEmailIdentity  GET /v1/email/identities/{EmailIdentity}
@@ -1372,7 +1385,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["EmailIdentity"] = input.EmailIdentity
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/identities/{EmailIdentity}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/identities/{EmailIdentity}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # ListConfigurationSets  GET /v1/email/configuration-sets
@@ -1384,7 +1397,7 @@ struct Pinpoint_EmailClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["PageSize"] = str(input.PageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/configuration-sets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/configuration-sets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # ListDedicatedIpPools  GET /v1/email/dedicated-ip-pools
@@ -1396,7 +1409,7 @@ struct Pinpoint_EmailClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["PageSize"] = str(input.PageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/dedicated-ip-pools", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/dedicated-ip-pools", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # ListDeliverabilityTestReports  GET /v1/email/deliverability-dashboard/test-reports
@@ -1408,7 +1421,23 @@ struct Pinpoint_EmailClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["PageSize"] = str(input.PageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/test-reports", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/test-reports", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
+
+    # ListDomainDeliverabilityCampaigns  GET /v1/email/deliverability-dashboard/domains/{SubscribedDomain}/campaigns
+    # errors: BadRequestException, NotFoundException, TooManyRequestsException
+    def list_domain_deliverability_campaigns(self, ListDomainDeliverabilityCampaignsRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        dict[str, str] labels = {}
+        labels["SubscribedDomain"] = input.SubscribedDomain
+        dict[str, str] query = {}
+        query["StartDate"] = datetime.strftime(input.StartDate, "%Y-%m-%dT%H:%M:%SZ")
+        query["EndDate"] = datetime.strftime(input.EndDate, "%Y-%m-%dT%H:%M:%SZ")
+        if input.NextToken.is_some():
+            query["NextToken"] = input.NextToken.unwrap_or("")
+        if input.PageSize.is_some():
+            query["PageSize"] = str(input.PageSize.unwrap_or(0))
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/deliverability-dashboard/domains/{SubscribedDomain}/campaigns", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # ListEmailIdentities  GET /v1/email/identities
@@ -1420,7 +1449,7 @@ struct Pinpoint_EmailClient:
             query["NextToken"] = input.NextToken.unwrap_or("")
         if input.PageSize.is_some():
             query["PageSize"] = str(input.PageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/identities", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/identities", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # ListTagsForResource  GET /v1/email/tags
@@ -1429,14 +1458,14 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] query = {}
         query["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/email/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
 
     # PutAccountDedicatedIpWarmupAttributes  PUT /v1/email/account/dedicated-ips/warmup
     # errors: BadRequestException, TooManyRequestsException
     def put_account_dedicated_ip_warmup_attributes(self, PutAccountDedicatedIpWarmupAttributesRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/account/dedicated-ips/warmup", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/account/dedicated-ips/warmup", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountDedicatedIpWarmupAttributesDocument(AutoWarmupEnabled=input.AutoWarmupEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1445,7 +1474,7 @@ struct Pinpoint_EmailClient:
     # errors: BadRequestException, TooManyRequestsException
     def put_account_sending_attributes(self, PutAccountSendingAttributesRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/account/sending", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/account/sending", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountSendingAttributesDocument(SendingEnabled=input.SendingEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1456,7 +1485,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/delivery-options", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/delivery-options", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutConfigurationSetDeliveryOptionsDocument(TlsPolicy=input.TlsPolicy, SendingPoolName=input.SendingPoolName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1467,7 +1496,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/reputation-options", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/reputation-options", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutConfigurationSetReputationOptionsDocument(ReputationMetricsEnabled=input.ReputationMetricsEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1478,7 +1507,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/sending", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/sending", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutConfigurationSetSendingOptionsDocument(SendingEnabled=input.SendingEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1489,7 +1518,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/tracking-options", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/tracking-options", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutConfigurationSetTrackingOptionsDocument(CustomRedirectDomain=input.CustomRedirectDomain)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1500,7 +1529,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["IP"] = input.Ip
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/dedicated-ips/{IP}/pool", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/dedicated-ips/{IP}/pool", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDedicatedIpInPoolDocument(DestinationPoolName=input.DestinationPoolName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1511,7 +1540,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["IP"] = input.Ip
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/dedicated-ips/{IP}/warmup", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/dedicated-ips/{IP}/warmup", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutDedicatedIpWarmupAttributesDocument(WarmupPercentage=input.WarmupPercentage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1520,7 +1549,7 @@ struct Pinpoint_EmailClient:
     # errors: AlreadyExistsException, BadRequestException, LimitExceededException, NotFoundException, TooManyRequestsException
     def put_deliverability_dashboard_option(self, PutDeliverabilityDashboardOptionRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/deliverability-dashboard", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/deliverability-dashboard", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DashboardEnabled\":" + json.dumps(JsonValue.Bool(input.DashboardEnabled)))
         if input.SubscribedDomains.is_some():
@@ -1538,7 +1567,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["EmailIdentity"] = input.EmailIdentity
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/identities/{EmailIdentity}/dkim", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/identities/{EmailIdentity}/dkim", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutEmailIdentityDkimAttributesDocument(SigningEnabled=input.SigningEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1549,7 +1578,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["EmailIdentity"] = input.EmailIdentity
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/identities/{EmailIdentity}/feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/identities/{EmailIdentity}/feedback", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutEmailIdentityFeedbackAttributesDocument(EmailForwardingEnabled=input.EmailForwardingEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1560,7 +1589,7 @@ struct Pinpoint_EmailClient:
         auto host = endpoints.regional_host(email_service(), self.region)
         dict[str, str] labels = {}
         labels["EmailIdentity"] = input.EmailIdentity
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/identities/{EmailIdentity}/mail-from", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/identities/{EmailIdentity}/mail-from", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutEmailIdentityMailFromAttributesDocument(MailFromDomain=input.MailFromDomain, BehaviorOnMxFailure=input.BehaviorOnMxFailure)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
@@ -1569,7 +1598,7 @@ struct Pinpoint_EmailClient:
     # errors: AccountSuspendedException, BadRequestException, LimitExceededException, MailFromDomainNotVerifiedException, MessageRejected, NotFoundException, SendingPausedException, TooManyRequestsException
     def send_email(self, SendEmailRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/outbound-emails", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/outbound-emails", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FromEmailAddress.is_some():
             auto u0 = input.FromEmailAddress.unwrap()
@@ -1601,7 +1630,7 @@ struct Pinpoint_EmailClient:
     # errors: BadRequestException, ConcurrentModificationException, NotFoundException, TooManyRequestsException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(email_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/email/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + email_json_str(input.ResourceArn))
         list[str] e0 = []
@@ -1611,6 +1640,17 @@ struct Pinpoint_EmailClient:
         auto bp = restjson.rest_json_document(b, email_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, email_service(), self.region, host)
 
+    # UntagResource  DELETE /v1/email/tags
+    # errors: BadRequestException, ConcurrentModificationException, NotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(email_service(), self.region)
+        dict[str, str] query = {}
+        query["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["TagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/email/tags", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, email_service(), self.region, host)
+
     # UpdateConfigurationSetEventDestination  PUT /v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}
     # errors: BadRequestException, NotFoundException, TooManyRequestsException
     def update_configuration_set_event_destination(self, UpdateConfigurationSetEventDestinationRequest input) -> str:
@@ -1618,7 +1658,7 @@ struct Pinpoint_EmailClient:
         dict[str, str] labels = {}
         labels["ConfigurationSetName"] = input.ConfigurationSetName
         labels["EventDestinationName"] = input.EventDestinationName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/email/configuration-sets/{ConfigurationSetName}/event-destinations/{EventDestinationName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"EventDestination\":" + event_destination_definition_to_json(input.EventDestination))
         auto bp = restjson.rest_json_document(b, email_json_obj(parts))

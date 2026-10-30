@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 19 operations — 18 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 19 operations — 19 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   53 structs (25 @derive(Json)), 5 enums, 7 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -509,11 +509,6 @@ def docdb_elastic_error_from_code(str code) -> DocDB_ElasticError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -534,7 +529,7 @@ struct DocDB_ElasticClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def apply_pending_maintenance_action(self, ApplyPendingMaintenanceActionInput input) -> str:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/pending-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/pending-action", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ApplyPendingMaintenanceActionDocument(applyAction=input.applyAction, applyOn=input.applyOn, optInType=input.optInType, resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
@@ -545,7 +540,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["snapshotArn"] = input.snapshotArn
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot/{snapshotArn}/copy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot/{snapshotArn}/copy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.copyTags.is_some():
             auto u0 = input.copyTags.unwrap()
@@ -567,7 +562,7 @@ struct DocDB_ElasticClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_cluster(self, CreateClusterInput input) -> str:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"adminUserName\":" + docdb_elastic_json_str(input.adminUserName))
         parts.append("\"adminUserPassword\":" + docdb_elastic_json_str(input.adminUserPassword))
@@ -618,7 +613,7 @@ struct DocDB_ElasticClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_cluster_snapshot(self, CreateClusterSnapshotInput input) -> str:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clusterArn\":" + docdb_elastic_json_str(input.clusterArn))
         parts.append("\"snapshotName\":" + docdb_elastic_json_str(input.snapshotName))
@@ -637,7 +632,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.clusterArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{clusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster/{clusterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # DeleteClusterSnapshot  DELETE /cluster-snapshot/{snapshotArn}
@@ -646,7 +641,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["snapshotArn"] = input.snapshotArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster-snapshot/{snapshotArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cluster-snapshot/{snapshotArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # GetCluster  GET /cluster/{clusterArn}
@@ -655,7 +650,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.clusterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{clusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster/{clusterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # GetClusterSnapshot  GET /cluster-snapshot/{snapshotArn}
@@ -664,7 +659,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["snapshotArn"] = input.snapshotArn
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster-snapshot/{snapshotArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster-snapshot/{snapshotArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # GetPendingMaintenanceAction  GET /pending-action/{resourceArn}
@@ -673,7 +668,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/pending-action/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/pending-action/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # ListClusterSnapshots  GET /cluster-snapshots
@@ -689,7 +684,7 @@ struct DocDB_ElasticClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.snapshotType.is_some():
             query["snapshotType"] = input.snapshotType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/cluster-snapshots", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cluster-snapshots", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # ListClusters  GET /clusters
@@ -701,7 +696,7 @@ struct DocDB_ElasticClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/clusters", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/clusters", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # ListPendingMaintenanceActions  GET /pending-actions
@@ -713,7 +708,7 @@ struct DocDB_ElasticClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/pending-actions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/pending-actions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -722,7 +717,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # RestoreClusterFromSnapshot  POST /cluster-snapshot/{snapshotArn}/restore
@@ -731,7 +726,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["snapshotArn"] = input.snapshotArn
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot/{snapshotArn}/restore", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster-snapshot/{snapshotArn}/restore", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clusterName\":" + docdb_elastic_json_str(input.clusterName))
         if input.kmsKeyId.is_some():
@@ -770,7 +765,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.clusterArn
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{clusterArn}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{clusterArn}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # StopCluster  POST /cluster/{clusterArn}/stop
@@ -779,7 +774,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.clusterArn
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{clusterArn}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster/{clusterArn}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -788,7 +783,7 @@ struct DocDB_ElasticClient:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -797,13 +792,24 @@ struct DocDB_ElasticClient:
         auto bp = restjson.rest_json_document(b, docdb_elastic_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, docdb_elastic_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, docdb_elastic_service(), self.region, host)
+
     # UpdateCluster  PUT /cluster/{clusterArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_cluster(self, UpdateClusterInput input) -> str:
         auto host = endpoints.regional_host(docdb_elastic_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterArn"] = input.clusterArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/cluster/{clusterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cluster/{clusterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.adminUserPassword.is_some():
             auto u0 = input.adminUserPassword.unwrap()

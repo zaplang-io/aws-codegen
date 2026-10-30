@@ -490,7 +490,7 @@ struct AccountClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def accept_primary_email_update(self, AcceptPrimaryEmailUpdateRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/acceptPrimaryEmailUpdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/acceptPrimaryEmailUpdate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AcceptPrimaryEmailUpdateDocument(AccountId=input.AccountId, PrimaryEmail=input.PrimaryEmail, Otp=input.Otp)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -499,7 +499,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def delete_alternate_contact(self, DeleteAlternateContactRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteAlternateContact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteAlternateContact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteAlternateContactDocument(AlternateContactType=input.AlternateContactType, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -508,7 +508,7 @@ struct AccountClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException, ValidationException
     def disable_region(self, DisableRegionRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disableRegion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disableRegion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableRegionDocument(AccountId=input.AccountId, RegionName=input.RegionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -517,7 +517,7 @@ struct AccountClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, TooManyRequestsException, ValidationException
     def enable_region(self, EnableRegionRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/enableRegion", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/enableRegion", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableRegionDocument(AccountId=input.AccountId, RegionName=input.RegionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -526,7 +526,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def get_account_information(self, GetAccountInformationRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getAccountInformation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getAccountInformation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetAccountInformationDocument(AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -535,7 +535,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_alternate_contact(self, GetAlternateContactRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getAlternateContact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getAlternateContact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetAlternateContactDocument(AlternateContactType=input.AlternateContactType, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -544,7 +544,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_contact_information(self, GetContactInformationRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getContactInformation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getContactInformation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetContactInformationDocument(AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -553,7 +553,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ResourceUnavailableException, TooManyRequestsException, ValidationException
     def get_gov_cloud_account_information(self, GetGovCloudAccountInformationRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getGovCloudAccountInformation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getGovCloudAccountInformation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetGovCloudAccountInformationDocument(StandardAccountId=input.StandardAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -562,7 +562,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_primary_email(self, GetPrimaryEmailRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getPrimaryEmail", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getPrimaryEmail", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPrimaryEmailDocument(AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -571,7 +571,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def get_primary_email_update_status(self, GetPrimaryEmailUpdateStatusRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getPrimaryEmailUpdateStatus", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getPrimaryEmailUpdateStatus", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPrimaryEmailUpdateStatusDocument(AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -580,7 +580,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def get_region_opt_status(self, GetRegionOptStatusRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getRegionOptStatus", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getRegionOptStatus", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRegionOptStatusDocument(AccountId=input.AccountId, RegionName=input.RegionName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -589,7 +589,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def list_regions(self, ListRegionsRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listRegions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listRegions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccountId.is_some():
             auto u0 = input.AccountId.unwrap()
@@ -613,7 +613,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def put_account_name(self, PutAccountNameRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/putAccountName", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/putAccountName", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountNameDocument(AccountName=input.AccountName, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -622,7 +622,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def put_alternate_contact(self, PutAlternateContactRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/putAlternateContact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/putAlternateContact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAlternateContactDocument(Name=input.Name, Title=input.Title, EmailAddress=input.EmailAddress, PhoneNumber=input.PhoneNumber, AlternateContactType=input.AlternateContactType, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -631,7 +631,7 @@ struct AccountClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsException, ValidationException
     def put_contact_information(self, PutContactInformationRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/putContactInformation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/putContactInformation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutContactInformationDocument(ContactInformation=input.ContactInformation, AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -640,7 +640,7 @@ struct AccountClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def send_phone_number_verification(self, SendPhoneNumberVerificationRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sendPhoneNumberVerification", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sendPhoneNumberVerification", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendPhoneNumberVerificationDocument(AccountId=input.AccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -649,7 +649,7 @@ struct AccountClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def start_primary_email_update(self, StartPrimaryEmailUpdateRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/startPrimaryEmailUpdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/startPrimaryEmailUpdate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartPrimaryEmailUpdateDocument(AccountId=input.AccountId, PrimaryEmail=input.PrimaryEmail)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)
@@ -658,7 +658,7 @@ struct AccountClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, TooManyRequestsException, ValidationException
     def verify_phone_number(self, VerifyPhoneNumberRequest input) -> str:
         auto host = endpoints.regional_host(account_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/verifyPhoneNumber", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/verifyPhoneNumber", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = VerifyPhoneNumberDocument(AccountId=input.AccountId, Otp=input.Otp)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, account_service(), self.region, host)

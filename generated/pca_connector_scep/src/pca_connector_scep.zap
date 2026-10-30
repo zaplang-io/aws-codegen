@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 12 operations — 11 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 12 operations — 12 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   36 structs (29 @derive(Json)), 4 enums, 8 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -333,11 +333,6 @@ def pca_connector_scep_error_from_code(str code) -> Pca_Connector_ScepError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # A bound Pca_Connector_Scep client: credentials + region, threaded into every operation.
 struct Pca_Connector_ScepClient:
     core.Credentials creds
@@ -347,7 +342,7 @@ struct Pca_Connector_ScepClient:
     # errors: AccessDeniedException, BadRequestException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_challenge(self, CreateChallengeRequest input) -> str:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/challenges", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/challenges", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ConnectorArn\":" + pca_connector_scep_json_str(input.ConnectorArn))
         if input.ClientToken.is_some():
@@ -366,7 +361,7 @@ struct Pca_Connector_ScepClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_connector(self, CreateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CertificateAuthorityArn\":" + pca_connector_scep_json_str(input.CertificateAuthorityArn))
         if input.MobileDeviceManagement.is_some():
@@ -393,7 +388,7 @@ struct Pca_Connector_ScepClient:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
         dict[str, str] labels = {}
         labels["ChallengeArn"] = input.ChallengeArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/challenges/{ChallengeArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/challenges/{ChallengeArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # DeleteConnector  DELETE /connectors/{ConnectorArn}
@@ -402,7 +397,7 @@ struct Pca_Connector_ScepClient:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectorArn"] = input.ConnectorArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # GetChallengeMetadata  GET /challengeMetadata/{ChallengeArn}
@@ -411,7 +406,7 @@ struct Pca_Connector_ScepClient:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
         dict[str, str] labels = {}
         labels["ChallengeArn"] = input.ChallengeArn
-        auto b = binding.HttpBinding(method="GET", path_template="/challengeMetadata/{ChallengeArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/challengeMetadata/{ChallengeArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # GetChallengePassword  GET /challengePasswords/{ChallengeArn}
@@ -420,7 +415,7 @@ struct Pca_Connector_ScepClient:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
         dict[str, str] labels = {}
         labels["ChallengeArn"] = input.ChallengeArn
-        auto b = binding.HttpBinding(method="GET", path_template="/challengePasswords/{ChallengeArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/challengePasswords/{ChallengeArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # GetConnector  GET /connectors/{ConnectorArn}
@@ -429,7 +424,7 @@ struct Pca_Connector_ScepClient:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectorArn"] = input.ConnectorArn
-        auto b = binding.HttpBinding(method="GET", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # ListChallengeMetadata  GET /challengeMetadata
@@ -442,7 +437,7 @@ struct Pca_Connector_ScepClient:
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
         query["ConnectorArn"] = input.ConnectorArn
-        auto b = binding.HttpBinding(method="GET", path_template="/challengeMetadata", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/challengeMetadata", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # ListConnectors  GET /connectors
@@ -454,7 +449,7 @@ struct Pca_Connector_ScepClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/connectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -463,7 +458,7 @@ struct Pca_Connector_ScepClient:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -472,7 +467,7 @@ struct Pca_Connector_ScepClient:
         auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -480,6 +475,17 @@ struct Pca_Connector_ScepClient:
         parts.append("\"Tags\":" + pca_connector_scep_json_obj(m0))
         auto bp = restjson.rest_json_document(b, pca_connector_scep_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, pca_connector_scep_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_scep_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, pca_connector_scep_service(), self.region, host)
 
     # Paginator for ListChallengeMetadata — yields each Response page, threading the
     # NextToken -> NextToken continuation token until it is absent (result key: Challenges).

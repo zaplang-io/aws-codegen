@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 34 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 37 operations — 35 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   141 structs (75 @derive(Json)), 19 enums, 7 error variants.
 #   6 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1482,7 +1482,6 @@ def dataexchange_error_from_code(str code) -> DataExchangeError:
 # document member, or an unsupported httpPayload):
 #   ListReceivedDataGrants (httpQuery `AcceptanceState` has unsupported type list[AcceptanceStateFilterValue])
 #   SendApiAsset (httpQuery `QueryStringParameters` has unsupported type dict[str, str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -1804,7 +1803,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataGrantArn"] = input.DataGrantArn
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-grants/{DataGrantArn}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-grants/{DataGrantArn}/accept", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # CancelJob  DELETE /v1/jobs/{JobId}
@@ -1813,14 +1812,14 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # CreateDataGrant  POST /v1/data-grants
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceLimitExceededException, ThrottlingException, ValidationException
     def create_data_grant(self, CreateDataGrantRequest input) -> str:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-grants", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-grants", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + dataexchange_json_str(input.Name))
         parts.append("\"GrantDistributionScope\":" + input.GrantDistributionScope.to_json())
@@ -1845,7 +1844,7 @@ struct DataExchangeClient:
     # errors: AccessDeniedException, InternalServerException, ServiceLimitExceededException, ThrottlingException, ValidationException
     def create_data_set(self, CreateDataSetRequest input) -> str:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AssetType\":" + input.AssetType.to_json())
         parts.append("\"Description\":" + dataexchange_json_str(input.Description))
@@ -1863,7 +1862,7 @@ struct DataExchangeClient:
     # errors: AccessDeniedException, InternalServerException, ServiceLimitExceededException, ThrottlingException, ValidationException
     def create_event_action(self, CreateEventActionRequest input) -> str:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/event-actions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/event-actions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Action\":" + input.Action.to_json())
         parts.append("\"Event\":" + input.Event.to_json())
@@ -1880,7 +1879,7 @@ struct DataExchangeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_job(self, CreateJobRequest input) -> str:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AssetConfiguration.is_some():
             auto u0 = input.AssetConfiguration.unwrap()
@@ -1896,7 +1895,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/revisions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/revisions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Comment.is_some():
             auto u0 = input.Comment.unwrap()
@@ -1918,7 +1917,7 @@ struct DataExchangeClient:
         labels["AssetId"] = input.AssetId
         labels["DataSetId"] = input.DataSetId
         labels["RevisionId"] = input.RevisionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # DeleteDataGrant  DELETE /v1/data-grants/{DataGrantId}
@@ -1927,7 +1926,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataGrantId"] = input.DataGrantId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-grants/{DataGrantId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-grants/{DataGrantId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # DeleteDataSet  DELETE /v1/data-sets/{DataSetId}
@@ -1936,7 +1935,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # DeleteEventAction  DELETE /v1/event-actions/{EventActionId}
@@ -1945,7 +1944,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["EventActionId"] = input.EventActionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/event-actions/{EventActionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/event-actions/{EventActionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # DeleteRevision  DELETE /v1/data-sets/{DataSetId}/revisions/{RevisionId}
@@ -1955,7 +1954,7 @@ struct DataExchangeClient:
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
         labels["RevisionId"] = input.RevisionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # GetAsset  GET /v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}
@@ -1966,7 +1965,7 @@ struct DataExchangeClient:
         labels["AssetId"] = input.AssetId
         labels["DataSetId"] = input.DataSetId
         labels["RevisionId"] = input.RevisionId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # GetDataGrant  GET /v1/data-grants/{DataGrantId}
@@ -1975,7 +1974,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataGrantId"] = input.DataGrantId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-grants/{DataGrantId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-grants/{DataGrantId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # GetDataSet  GET /v1/data-sets/{DataSetId}
@@ -1984,7 +1983,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # GetEventAction  GET /v1/event-actions/{EventActionId}
@@ -1993,7 +1992,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["EventActionId"] = input.EventActionId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/event-actions/{EventActionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/event-actions/{EventActionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # GetJob  GET /v1/jobs/{JobId}
@@ -2002,7 +2001,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # GetReceivedDataGrant  GET /v1/received-data-grants/{DataGrantArn}
@@ -2011,7 +2010,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataGrantArn"] = input.DataGrantArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/received-data-grants/{DataGrantArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/received-data-grants/{DataGrantArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # GetRevision  GET /v1/data-sets/{DataSetId}/revisions/{RevisionId}
@@ -2021,7 +2020,7 @@ struct DataExchangeClient:
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
         labels["RevisionId"] = input.RevisionId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # ListDataGrants  GET /v1/data-grants
@@ -2033,7 +2032,7 @@ struct DataExchangeClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-grants", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-grants", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # ListDataSetRevisions  GET /v1/data-sets/{DataSetId}/revisions
@@ -2047,7 +2046,7 @@ struct DataExchangeClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # ListDataSets  GET /v1/data-sets
@@ -2061,7 +2060,7 @@ struct DataExchangeClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.Origin.is_some():
             query["origin"] = input.Origin.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # ListEventActions  GET /v1/event-actions
@@ -2075,7 +2074,7 @@ struct DataExchangeClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/event-actions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/event-actions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # ListJobs  GET /v1/jobs
@@ -2091,7 +2090,7 @@ struct DataExchangeClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.RevisionId.is_some():
             query["revisionId"] = input.RevisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # ListRevisionAssets  GET /v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets
@@ -2106,7 +2105,7 @@ struct DataExchangeClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -2114,7 +2113,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # RevokeRevision  POST /v1/data-sets/{DataSetId}/revisions/{RevisionId}/revoke
@@ -2124,7 +2123,7 @@ struct DataExchangeClient:
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
         labels["RevisionId"] = input.RevisionId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/revoke", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/revoke", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeRevisionDocument(RevocationComment=input.RevocationComment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
@@ -2135,7 +2134,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/data-sets/{DataSetId}/notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Scope.is_some():
             auto u0 = input.Scope.unwrap()
@@ -2159,7 +2158,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/jobs/{JobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -2167,7 +2166,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -2175,6 +2174,16 @@ struct DataExchangeClient:
         parts.append("\"tags\":" + dataexchange_json_obj(m0))
         auto bp = restjson.rest_json_document(b, dataexchange_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(dataexchange_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, dataexchange_service(), self.region, host)
 
     # UpdateAsset  PATCH /v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -2184,7 +2193,7 @@ struct DataExchangeClient:
         labels["AssetId"] = input.AssetId
         labels["DataSetId"] = input.DataSetId
         labels["RevisionId"] = input.RevisionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}/assets/{AssetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAssetDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
@@ -2195,7 +2204,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/data-sets/{DataSetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataSetDocument(Description=input.Description, Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
@@ -2206,7 +2215,7 @@ struct DataExchangeClient:
         auto host = endpoints.regional_host(dataexchange_service(), self.region)
         dict[str, str] labels = {}
         labels["EventActionId"] = input.EventActionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/event-actions/{EventActionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/event-actions/{EventActionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEventActionDocument(Action=input.Action)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)
@@ -2218,7 +2227,7 @@ struct DataExchangeClient:
         dict[str, str] labels = {}
         labels["DataSetId"] = input.DataSetId
         labels["RevisionId"] = input.RevisionId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v1/data-sets/{DataSetId}/revisions/{RevisionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRevisionDocument(Comment=input.Comment, Finalized=input.Finalized)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, dataexchange_service(), self.region, host)

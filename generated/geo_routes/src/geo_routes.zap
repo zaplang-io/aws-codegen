@@ -4291,7 +4291,7 @@ struct Geo_RoutesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/isolines", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/isolines", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Allow.is_some():
             auto u0 = input.Allow.unwrap()
@@ -4358,7 +4358,7 @@ struct Geo_RoutesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/route-matrix", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/route-matrix", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Allow.is_some():
             auto u0 = input.Allow.unwrap()
@@ -4408,7 +4408,7 @@ struct Geo_RoutesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/routes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/routes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Allow.is_some():
             auto u0 = input.Allow.unwrap()
@@ -4506,7 +4506,7 @@ struct Geo_RoutesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/optimize-waypoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/optimize-waypoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Avoid.is_some():
             auto u0 = input.Avoid.unwrap()
@@ -4567,7 +4567,7 @@ struct Geo_RoutesClient:
         dict[str, str] query = {}
         if input.Key.is_some():
             query["key"] = input.Key.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/snap-to-roads", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/snap-to-roads", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SnappedGeometryFormat.is_some():
             auto u0 = input.SnappedGeometryFormat.unwrap()

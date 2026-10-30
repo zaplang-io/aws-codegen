@@ -621,7 +621,7 @@ struct SageMakerTrainingSessionRuntimeClient:
         auto host = endpoints.regional_host(training_session_runtime_sagemaker_service(), self.region)
         dict[str, str] labels = {}
         labels["trainingSessionName"] = input.trainingSessionName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/training-sessions/{trainingSessionName}/sampling-operations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/training-sessions/{trainingSessionName}/sampling-operations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"operationConfig\":" + sample_operation_config_to_json(input.operationConfig))
         auto bp = restjson.rest_json_document(b, training_session_runtime_sagemaker_json_obj(parts))
@@ -633,7 +633,7 @@ struct SageMakerTrainingSessionRuntimeClient:
         auto host = endpoints.regional_host(training_session_runtime_sagemaker_service(), self.region)
         dict[str, str] labels = {}
         labels["trainingSessionName"] = input.trainingSessionName
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/training-sessions/{trainingSessionName}/operations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/training-sessions/{trainingSessionName}/operations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sequenceNumber\":" + str(input.sequenceNumber))
         if input.clientToken.is_some():
@@ -650,7 +650,7 @@ struct SageMakerTrainingSessionRuntimeClient:
         dict[str, str] labels = {}
         labels["trainingSessionName"] = input.trainingSessionName
         labels["operationId"] = input.operationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/training-sessions/{trainingSessionName}/sampling-operations/{operationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/training-sessions/{trainingSessionName}/sampling-operations/{operationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, training_session_runtime_sagemaker_service(), self.region, host)
 
     # GetTrainingOperationResult  GET /v1/training-sessions/{trainingSessionName}/operations/{operationId}
@@ -660,7 +660,7 @@ struct SageMakerTrainingSessionRuntimeClient:
         dict[str, str] labels = {}
         labels["trainingSessionName"] = input.trainingSessionName
         labels["operationId"] = input.operationId
-        auto b = binding.HttpBinding(method="GET", path_template="/v1/training-sessions/{trainingSessionName}/operations/{operationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v1/training-sessions/{trainingSessionName}/operations/{operationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, training_session_runtime_sagemaker_service(), self.region, host)
 
     # SampleTrainingSession  POST /training-sessions/{trainingSessionName}/sample
@@ -675,8 +675,9 @@ struct SageMakerTrainingSessionRuntimeClient:
         if input.accept.is_some():
             headers["Accept"] = input.accept.unwrap_or("")
         if input.modelPackageArn.is_some():
-            headers["X-Amzn-SageMaker-Model-Package"] = input.modelPackageArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/training-sessions/{trainingSessionName}/sample", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.modelPackageArn.unwrap_or("")
+            headers["X-Amzn-SageMaker-Model-Package"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/training-sessions/{trainingSessionName}/sample", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.body.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, training_session_runtime_sagemaker_service(), self.region, host)
 
@@ -692,8 +693,9 @@ struct SageMakerTrainingSessionRuntimeClient:
         if input.accept.is_some():
             headers["Accept"] = input.accept.unwrap_or("")
         if input.modelPackageArn.is_some():
-            headers["X-Amzn-SageMaker-Model-Package"] = input.modelPackageArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/training-sessions/{trainingSessionName}/sample-with-response-stream", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = input.modelPackageArn.unwrap_or("")
+            headers["X-Amzn-SageMaker-Model-Package"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/training-sessions/{trainingSessionName}/sample-with-response-stream", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.body.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, training_session_runtime_sagemaker_service(), self.region, host)
 

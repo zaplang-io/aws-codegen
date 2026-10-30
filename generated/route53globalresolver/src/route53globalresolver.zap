@@ -1518,7 +1518,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["hostedZoneId"] = input.hostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/hosted-zone-associations/{hostedZoneId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/hosted-zone-associations/{hostedZoneId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateHostedZoneDocument(resourceArn=input.resourceArn, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -1527,7 +1527,7 @@ struct Route53GlobalResolverClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_create_firewall_rule(self, BatchCreateFirewallRuleInput input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.firewallRules:
@@ -1540,7 +1540,7 @@ struct Route53GlobalResolverClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_delete_firewall_rule(self, BatchDeleteFirewallRuleInput input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.firewallRules:
@@ -1553,7 +1553,7 @@ struct Route53GlobalResolverClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_update_firewall_rule(self, BatchUpdateFirewallRuleInput input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules/batch-update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.firewallRules:
@@ -1566,7 +1566,7 @@ struct Route53GlobalResolverClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_access_source(self, CreateAccessSourceInput input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/access-sources", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/access-sources", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"cidr\":" + route53globalresolver_json_str(input.cidr))
         if input.clientToken.is_some():
@@ -1595,7 +1595,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["dnsViewId"] = input.dnsViewId
-        auto b = binding.HttpBinding(method="POST", path_template="/tokens/{dnsViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tokens/{dnsViewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1621,7 +1621,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["globalResolverId"] = input.globalResolverId
-        auto b = binding.HttpBinding(method="POST", path_template="/dns-views/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/dns-views/{globalResolverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1654,7 +1654,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["globalResolverId"] = input.globalResolverId
-        auto b = binding.HttpBinding(method="POST", path_template="/firewall-domain-lists/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-domain-lists/{globalResolverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1676,7 +1676,7 @@ struct Route53GlobalResolverClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_firewall_rule(self, CreateFirewallRuleInput input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/firewall-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFirewallRuleDocument(action=input.action, blockOverrideDnsType=input.blockOverrideDnsType, blockOverrideDomain=input.blockOverrideDomain, blockOverrideTtl=input.blockOverrideTtl, blockResponse=input.blockResponse, clientToken=input.clientToken, confidenceThreshold=input.confidenceThreshold, description=input.description, dnsAdvancedProtection=input.dnsAdvancedProtection, firewallDomainListId=input.firewallDomainListId, name=input.name, priority=input.priority, dnsViewId=input.dnsViewId, qType=input.qType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -1685,7 +1685,7 @@ struct Route53GlobalResolverClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_global_resolver(self, CreateGlobalResolverInput input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/global-resolver", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/global-resolver", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1719,7 +1719,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["accessSourceId"] = input.accessSourceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/access-sources/{accessSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/access-sources/{accessSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # DeleteAccessToken  DELETE /tokens/{accessTokenId}
@@ -1728,7 +1728,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["accessTokenId"] = input.accessTokenId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/tokens/{accessTokenId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tokens/{accessTokenId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # DeleteDNSView  DELETE /dns-views/{dnsViewId}
@@ -1737,7 +1737,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["dnsViewId"] = input.dnsViewId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/dns-views/{dnsViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/dns-views/{dnsViewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # DeleteFirewallDomainList  DELETE /firewall-domain-lists/{firewallDomainListId}
@@ -1746,7 +1746,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["firewallDomainListId"] = input.firewallDomainListId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/firewall-domain-lists/{firewallDomainListId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/firewall-domain-lists/{firewallDomainListId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # DeleteFirewallRule  DELETE /firewall-rules/{firewallRuleId}
@@ -1755,7 +1755,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["firewallRuleId"] = input.firewallRuleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/firewall-rules/{firewallRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/firewall-rules/{firewallRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # DeleteGlobalResolver  DELETE /global-resolver/{globalResolverId}
@@ -1764,7 +1764,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["globalResolverId"] = input.globalResolverId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/global-resolver/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/global-resolver/{globalResolverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # DisableDNSView  PATCH /dns-views/{dnsViewId}/disable
@@ -1773,7 +1773,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["dnsViewId"] = input.dnsViewId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dns-views/{dnsViewId}/disable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dns-views/{dnsViewId}/disable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # DisassociateHostedZone  DELETE /hosted-zone-associations/hosted-zone/{hostedZoneId}/resource-arn/{resourceArn+}
@@ -1784,7 +1784,7 @@ struct Route53GlobalResolverClient:
         labels["hostedZoneId"] = input.hostedZoneId
         dict[str, str] greedy_labels = {}
         greedy_labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/hosted-zone-associations/hosted-zone/{hostedZoneId}/resource-arn/{resourceArn+}", labels=labels, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/hosted-zone-associations/hosted-zone/{hostedZoneId}/resource-arn/{resourceArn+}", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # EnableDNSView  PATCH /dns-views/{dnsViewId}/enable
@@ -1793,7 +1793,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["dnsViewId"] = input.dnsViewId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dns-views/{dnsViewId}/enable", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dns-views/{dnsViewId}/enable", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetAccessSource  GET /access-sources/{accessSourceId}
@@ -1802,7 +1802,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["accessSourceId"] = input.accessSourceId
-        auto b = binding.HttpBinding(method="GET", path_template="/access-sources/{accessSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/access-sources/{accessSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetAccessToken  GET /tokens/{accessTokenId}
@@ -1811,7 +1811,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["accessTokenId"] = input.accessTokenId
-        auto b = binding.HttpBinding(method="GET", path_template="/tokens/{accessTokenId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tokens/{accessTokenId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetDNSView  GET /dns-views/{dnsViewId}
@@ -1820,7 +1820,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["dnsViewId"] = input.dnsViewId
-        auto b = binding.HttpBinding(method="GET", path_template="/dns-views/{dnsViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dns-views/{dnsViewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetFirewallDomainList  GET /firewall-domain-lists/{firewallDomainListId}
@@ -1829,7 +1829,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["firewallDomainListId"] = input.firewallDomainListId
-        auto b = binding.HttpBinding(method="GET", path_template="/firewall-domain-lists/{firewallDomainListId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/firewall-domain-lists/{firewallDomainListId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetFirewallRule  GET /firewall-rules/{firewallRuleId}
@@ -1838,7 +1838,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["firewallRuleId"] = input.firewallRuleId
-        auto b = binding.HttpBinding(method="GET", path_template="/firewall-rules/{firewallRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/firewall-rules/{firewallRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetGlobalResolver  GET /global-resolver/{globalResolverId}
@@ -1847,7 +1847,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["globalResolverId"] = input.globalResolverId
-        auto b = binding.HttpBinding(method="GET", path_template="/global-resolver/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-resolver/{globalResolverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetHostedZoneAssociation  GET /hosted-zone-associations/{hostedZoneAssociationId}
@@ -1856,7 +1856,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["hostedZoneAssociationId"] = input.hostedZoneAssociationId
-        auto b = binding.HttpBinding(method="GET", path_template="/hosted-zone-associations/{hostedZoneAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hosted-zone-associations/{hostedZoneAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # GetManagedFirewallDomainList  GET /managed-firewall-domain-lists/{managedFirewallDomainListId}
@@ -1865,7 +1865,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["managedFirewallDomainListId"] = input.managedFirewallDomainListId
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-firewall-domain-lists/{managedFirewallDomainListId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-firewall-domain-lists/{managedFirewallDomainListId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ImportFirewallDomains  PATCH /firewall-domain-lists/{firewallDomainListId}/domains/s3_file_url
@@ -1874,7 +1874,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["firewallDomainListId"] = input.firewallDomainListId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-domain-lists/{firewallDomainListId}/domains/s3_file_url", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-domain-lists/{firewallDomainListId}/domains/s3_file_url", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ImportFirewallDomainsDocument(domainFileUrl=input.domainFileUrl, operation=input.operation)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -1890,7 +1890,7 @@ struct Route53GlobalResolverClient:
             query["max_results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next_token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/dns-views/resolver/{globalResolverId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/dns-views/resolver/{globalResolverId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ListFirewallDomainLists  GET /firewall-domain-lists
@@ -1904,7 +1904,7 @@ struct Route53GlobalResolverClient:
             query["next_token"] = input.nextToken.unwrap_or("")
         if input.globalResolverId.is_some():
             query["global_resolver_id"] = input.globalResolverId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/firewall-domain-lists", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/firewall-domain-lists", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ListFirewallDomains  GET /firewall-domain-lists/{firewallDomainListId}/domains
@@ -1918,7 +1918,7 @@ struct Route53GlobalResolverClient:
             query["max_results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next_token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/firewall-domain-lists/{firewallDomainListId}/domains", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/firewall-domain-lists/{firewallDomainListId}/domains", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ListGlobalResolvers  GET /global-resolver
@@ -1930,7 +1930,7 @@ struct Route53GlobalResolverClient:
             query["max_results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next_token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/global-resolver", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/global-resolver", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ListHostedZoneAssociations  GET /hosted-zone-associations
@@ -1944,7 +1944,7 @@ struct Route53GlobalResolverClient:
             query["next_token"] = input.nextToken.unwrap_or("")
         if input.resourceArn.is_some():
             query["resourceArn"] = input.resourceArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/hosted-zone-associations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hosted-zone-associations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ListManagedFirewallDomainLists  GET /list-managed-firewall-domain-lists/{managedFirewallDomainListType}
@@ -1958,7 +1958,7 @@ struct Route53GlobalResolverClient:
             query["max_results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next_token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-managed-firewall-domain-lists/{managedFirewallDomainListType}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-managed-firewall-domain-lists/{managedFirewallDomainListType}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ListSharedDNSViews  GET /shared-dns-views
@@ -1970,14 +1970,14 @@ struct Route53GlobalResolverClient:
             query["max_results"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["next_token"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/shared-dns-views", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/shared-dns-views", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53globalresolver_service(), self.region, host)
 
     # ListTagsForResource  POST /get-all-tags
     # errors: ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-all-tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-all-tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(resourceArn=input.resourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -1986,7 +1986,7 @@ struct Route53GlobalResolverClient:
     # errors: ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + route53globalresolver_json_str(input.resourceArn))
         list[str] m0 = []
@@ -2000,7 +2000,7 @@ struct Route53GlobalResolverClient:
     # errors: ResourceNotFoundException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + route53globalresolver_json_str(input.resourceArn))
         list[str] e0 = []
@@ -2016,7 +2016,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["accessSourceId"] = input.accessSourceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/access-sources/{accessSourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/access-sources/{accessSourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccessSourceDocument(cidr=input.cidr, ipAddressType=input.ipAddressType, name=input.name, protocol=input.protocol)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -2027,7 +2027,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["accessTokenId"] = input.accessTokenId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/tokens/{accessTokenId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/tokens/{accessTokenId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccessTokenDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -2038,7 +2038,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["dnsViewId"] = input.dnsViewId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/dns-views/{dnsViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/dns-views/{dnsViewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDNSViewDocument(name=input.name, description=input.description, dnssecValidation=input.dnssecValidation, ednsClientSubnet=input.ednsClientSubnet, firewallRulesFailOpen=input.firewallRulesFailOpen)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -2049,7 +2049,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["firewallDomainListId"] = input.firewallDomainListId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-domain-lists/{firewallDomainListId}/domains", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-domain-lists/{firewallDomainListId}/domains", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.domains:
@@ -2065,7 +2065,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["firewallRuleId"] = input.firewallRuleId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-rules/{firewallRuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/firewall-rules/{firewallRuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFirewallRuleDocument(action=input.action, blockOverrideDnsType=input.blockOverrideDnsType, blockOverrideDomain=input.blockOverrideDomain, blockOverrideTtl=input.blockOverrideTtl, blockResponse=input.blockResponse, clientToken=input.clientToken, confidenceThreshold=input.confidenceThreshold, description=input.description, dnsAdvancedProtection=input.dnsAdvancedProtection, name=input.name, priority=input.priority)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)
@@ -2076,7 +2076,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["globalResolverId"] = input.globalResolverId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/global-resolver/{globalResolverId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/global-resolver/{globalResolverId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -2105,7 +2105,7 @@ struct Route53GlobalResolverClient:
         auto host = endpoints.regional_host(route53globalresolver_service(), self.region)
         dict[str, str] labels = {}
         labels["hostedZoneAssociationId"] = input.hostedZoneAssociationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/hosted-zone-associations/{hostedZoneAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/hosted-zone-associations/{hostedZoneAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateHostedZoneAssociationDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53globalresolver_service(), self.region, host)

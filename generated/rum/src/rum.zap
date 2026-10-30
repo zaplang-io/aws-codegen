@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 20 operations — 18 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 20 operations — 20 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (46 @derive(Json)), 6 enums, 11 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -589,12 +589,6 @@ def rum_error_from_code(str code) -> RUMError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchDeleteRumMetricDefinitions (httpQuery `MetricDefinitionIds` has unsupported type list[str])
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -734,7 +728,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["AppMonitorName"] = input.AppMonitorName
-        auto b = binding.HttpBinding(method="POST", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Destination\":" + input.Destination.to_json())
         if input.DestinationArn.is_some():
@@ -746,6 +740,21 @@ struct RUMClient:
         parts.append("\"MetricDefinitions\":" + rum_json_arr(e1))
         auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
+
+    # BatchDeleteRumMetricDefinitions  DELETE /rummetrics/{AppMonitorName}/metrics
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_delete_rum_metric_definitions(self, BatchDeleteRumMetricDefinitionsRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["AppMonitorName"] = input.AppMonitorName
+        dict[str, str] query = {}
+        query["destination"] = input.Destination
+        if input.DestinationArn.is_some():
+            query["destinationArn"] = input.DestinationArn.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        multi_query["metricDefinitionIds"] = input.MetricDefinitionIds
+        auto b = binding.HttpBinding(method="DELETE", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # BatchGetRumMetricDefinitions  GET /rummetrics/{AppMonitorName}/metrics
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
@@ -761,14 +770,14 @@ struct RUMClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # CreateAppMonitor  POST /appmonitor
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_app_monitor(self, CreateAppMonitorRequest input) -> str:
         auto host = endpoints.regional_host(rum_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/appmonitor", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appmonitor", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + rum_json_str(input.Name))
         if input.Domain.is_some():
@@ -810,7 +819,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /appmonitor/{Name}/policy
@@ -822,7 +831,7 @@ struct RUMClient:
         dict[str, str] query = {}
         if input.PolicyRevisionId.is_some():
             query["policyRevisionId"] = input.PolicyRevisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/appmonitor/{Name}/policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/appmonitor/{Name}/policy", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # DeleteRumMetricsDestination  DELETE /rummetrics/{AppMonitorName}/metricsdestination
@@ -835,7 +844,7 @@ struct RUMClient:
         query["destination"] = input.Destination
         if input.DestinationArn.is_some():
             query["destinationArn"] = input.DestinationArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/rummetrics/{AppMonitorName}/metricsdestination", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/rummetrics/{AppMonitorName}/metricsdestination", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # GetAppMonitor  GET /appmonitor/{Name}
@@ -844,7 +853,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # GetAppMonitorData  POST /appmonitor/{Name}/data
@@ -853,7 +862,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/appmonitor/{Name}/data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appmonitor/{Name}/data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TimeRange\":" + input.TimeRange.to_json())
         if input.Filters.is_some():
@@ -877,7 +886,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/appmonitor/{Name}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appmonitor/{Name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # ListAppMonitors  POST /appmonitors
@@ -889,7 +898,7 @@ struct RUMClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/appmonitors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appmonitors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # ListRumMetricsDestinations  GET /rummetrics/{AppMonitorName}/metricsdestination
@@ -903,7 +912,7 @@ struct RUMClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rummetrics/{AppMonitorName}/metricsdestination", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rummetrics/{AppMonitorName}/metricsdestination", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -912,7 +921,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
 
     # PutResourcePolicy  PUT /appmonitor/{Name}/policy
@@ -921,7 +930,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/appmonitor/{Name}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/appmonitor/{Name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(PolicyDocument=input.PolicyDocument, PolicyRevisionId=input.PolicyRevisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
@@ -932,7 +941,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/appmonitors/{Id}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appmonitors/{Id}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"BatchId\":" + rum_json_str(input.BatchId))
         parts.append("\"AppMonitorDetails\":" + input.AppMonitorDetails.to_json())
@@ -953,7 +962,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["AppMonitorName"] = input.AppMonitorName
-        auto b = binding.HttpBinding(method="POST", path_template="/rummetrics/{AppMonitorName}/metricsdestination", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rummetrics/{AppMonitorName}/metricsdestination", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutRumMetricsDestinationDocument(Destination=input.Destination, DestinationArn=input.DestinationArn, IamRoleArn=input.IamRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
@@ -964,7 +973,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -973,13 +982,24 @@ struct RUMClient:
         auto bp = restjson.rest_json_document(b, rum_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rum_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rum_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, rum_service(), self.region, host)
+
     # UpdateAppMonitor  PATCH /appmonitor/{Name}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_app_monitor(self, UpdateAppMonitorRequest input) -> str:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="PATCH", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/appmonitor/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Domain.is_some():
             auto u0 = input.Domain.unwrap()
@@ -1011,7 +1031,7 @@ struct RUMClient:
         auto host = endpoints.regional_host(rum_service(), self.region)
         dict[str, str] labels = {}
         labels["AppMonitorName"] = input.AppMonitorName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rummetrics/{AppMonitorName}/metrics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Destination\":" + input.Destination.to_json())
         if input.DestinationArn.is_some():

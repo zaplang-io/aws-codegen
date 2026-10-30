@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 23 operations — 14 with a generated method,
-#   9 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 23 operations — 22 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   71 structs (40 @derive(Json)), 6 enums, 6 error variants.
-#   0 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The CodeGuruProfiler rest-json protocol: SigV4 service "codeguru-profiler" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -612,19 +613,7 @@ def codeguru_profiler_error_from_code(str code) -> CodeGuruProfilerError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   BatchGetFrameMetricData (httpQuery `endTime` has unsupported type DateTime)
 #   ConfigureAgent (document member `metadata: dict[MetadataField, str]` is not serializable)
-#   GetFindingsReportAccountSummary (httpQuery `dailyReportsOnly` has unsupported type bool)
-#   GetProfile (httpQuery `endTime` has unsupported type DateTime)
-#   GetRecommendations (httpQuery `endTime` has unsupported type DateTime)
-#   ListFindingsReports (httpQuery `dailyReportsOnly` has unsupported type bool)
-#   ListProfileTimes (httpQuery `endTime` has unsupported type DateTime)
-#   ListProfilingGroups (httpQuery `includeDescription` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListProfileTimes (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -683,6 +672,23 @@ def channel__to_json(Channel v) -> str:
     parts.append("\"uri\":" + codeguru_profiler_json_str(v.uri))
     return codeguru_profiler_json_obj(parts)
 
+# Serialize FrameMetric to a compact JSON object (declaration order).
+def frame_metric_to_json(FrameMetric v) -> str:
+    list[str] parts = []
+    parts.append("\"frameName\":" + codeguru_profiler_json_str(v.frameName))
+    list[str] e0 = []
+    for x0 in v.threadStates:
+        e0.append(codeguru_profiler_json_str(x0))
+    parts.append("\"threadStates\":" + codeguru_profiler_json_arr(e0))
+    parts.append("\"type\":" + codeguru_profiler_json_str(v.type))
+    return codeguru_profiler_json_obj(parts)
+
+# Render a bool bound to a URI/query/header slot as its wire text.
+def codeguru_profiler_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound CodeGuruProfiler client: credentials + region, threaded into every operation.
 struct CodeGuruProfilerClient:
     core.Credentials creds
@@ -694,12 +700,40 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups/{profilingGroupName}/notificationConfiguration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups/{profilingGroupName}/notificationConfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.channels:
             e0.append(channel__to_json(x0))
         parts.append("\"channels\":" + codeguru_profiler_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, codeguru_profiler_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
+
+    # BatchGetFrameMetricData  POST /profilingGroups/{profilingGroupName}/frames/-/metrics
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def batch_get_frame_metric_data(self, BatchGetFrameMetricDataRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profilingGroupName"] = input.profilingGroupName
+        dict[str, str] query = {}
+        if input.endTime.is_some():
+            auto qt0 = datetime.strftime(input.endTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt0
+        if input.period.is_some():
+            query["period"] = input.period.unwrap_or("")
+        if input.startTime.is_some():
+            auto qt1 = datetime.strftime(input.startTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt1
+        if input.targetResolution.is_some():
+            query["targetResolution"] = input.targetResolution.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups/{profilingGroupName}/frames/-/metrics", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        if input.frameMetrics.is_some():
+            auto u0 = input.frameMetrics.unwrap()
+            list[str] e1 = []
+            for x1 in u0:
+                e1.append(frame_metric_to_json(x1))
+            parts.append("\"frameMetrics\":" + codeguru_profiler_json_arr(e1))
         auto bp = restjson.rest_json_document(b, codeguru_profiler_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
 
@@ -709,7 +743,7 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] query = {}
         query["clientToken"] = input.clientToken
-        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.agentOrchestrationConfig.is_some():
             auto u0 = input.agentOrchestrationConfig.unwrap()
@@ -733,7 +767,7 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profilingGroups/{profilingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profilingGroups/{profilingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
 
     # DescribeProfilingGroup  GET /profilingGroups/{profilingGroupName}
@@ -742,7 +776,22 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
+
+    # GetFindingsReportAccountSummary  GET /internal/findingsReports
+    # errors: InternalServerException, ThrottlingException, ValidationException
+    def get_findings_report_account_summary(self, GetFindingsReportAccountSummaryRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] query = {}
+        if input.dailyReportsOnly.is_some():
+            auto qt0 = codeguru_profiler_bind_bool(input.dailyReportsOnly.unwrap_or(False))
+            query["dailyReportsOnly"] = qt0
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/internal/findingsReports", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
 
     # GetNotificationConfiguration  GET /profilingGroups/{profilingGroupName}/notificationConfiguration
@@ -751,7 +800,7 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}/notificationConfiguration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}/notificationConfiguration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
 
     # GetPolicy  GET /profilingGroups/{profilingGroupName}/policy
@@ -760,7 +809,97 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
+
+    # GetProfile  GET /profilingGroups/{profilingGroupName}/profile
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_profile(self, GetProfileRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profilingGroupName"] = input.profilingGroupName
+        dict[str, str] query = {}
+        if input.endTime.is_some():
+            auto qt0 = datetime.strftime(input.endTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt0
+        if input.maxDepth.is_some():
+            query["maxDepth"] = str(input.maxDepth.unwrap_or(0))
+        if input.period.is_some():
+            query["period"] = input.period.unwrap_or("")
+        if input.startTime.is_some():
+            auto qt1 = datetime.strftime(input.startTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt1
+        dict[str, str] headers = {}
+        if input.accept.is_some():
+            headers["Accept"] = input.accept.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}/profile", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
+
+    # GetRecommendations  GET /internal/profilingGroups/{profilingGroupName}/recommendations
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_recommendations(self, GetRecommendationsRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profilingGroupName"] = input.profilingGroupName
+        dict[str, str] query = {}
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.locale.is_some():
+            query["locale"] = input.locale.unwrap_or("")
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/internal/profilingGroups/{profilingGroupName}/recommendations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
+
+    # ListFindingsReports  GET /internal/profilingGroups/{profilingGroupName}/findingsReports
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_findings_reports(self, ListFindingsReportsRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profilingGroupName"] = input.profilingGroupName
+        dict[str, str] query = {}
+        if input.dailyReportsOnly.is_some():
+            auto qt0 = codeguru_profiler_bind_bool(input.dailyReportsOnly.unwrap_or(False))
+            query["dailyReportsOnly"] = qt0
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/internal/profilingGroups/{profilingGroupName}/findingsReports", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
+
+    # ListProfileTimes  GET /profilingGroups/{profilingGroupName}/profileTimes
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_profile_times(self, ListProfileTimesRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["profilingGroupName"] = input.profilingGroupName
+        dict[str, str] query = {}
+        query["endTime"] = datetime.strftime(input.endTime, "%Y-%m-%dT%H:%M:%SZ")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.orderBy.is_some():
+            query["orderBy"] = input.orderBy.unwrap_or("")
+        query["period"] = input.period
+        query["startTime"] = datetime.strftime(input.startTime, "%Y-%m-%dT%H:%M:%SZ")
+        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups/{profilingGroupName}/profileTimes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
+
+    # ListProfilingGroups  GET /profilingGroups
+    # errors: InternalServerException, ThrottlingException
+    def list_profiling_groups(self, ListProfilingGroupsRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] query = {}
+        if input.includeDescription.is_some():
+            auto qt0 = codeguru_profiler_bind_bool(input.includeDescription.unwrap_or(False))
+            query["includeDescription"] = qt0
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/profilingGroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -769,7 +908,7 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
 
     # PostAgentProfile  POST /profilingGroups/{profilingGroupName}/agentProfile
@@ -783,7 +922,7 @@ struct CodeGuruProfilerClient:
             query["profileToken"] = input.profileToken.unwrap_or("")
         dict[str, str] headers = {}
         headers["Content-Type"] = input.contentType
-        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups/{profilingGroupName}/agentProfile", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profilingGroups/{profilingGroupName}/agentProfile", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.agentProfile), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
 
@@ -794,7 +933,7 @@ struct CodeGuruProfilerClient:
         dict[str, str] labels = {}
         labels["actionGroup"] = input.actionGroup
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="PUT", path_template="/profilingGroups/{profilingGroupName}/policy/{actionGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/profilingGroups/{profilingGroupName}/policy/{actionGroup}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.principals:
@@ -813,7 +952,7 @@ struct CodeGuruProfilerClient:
         dict[str, str] labels = {}
         labels["channelId"] = input.channelId
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profilingGroups/{profilingGroupName}/notificationConfiguration/{channelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profilingGroups/{profilingGroupName}/notificationConfiguration/{channelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
 
     # RemovePermission  DELETE /profilingGroups/{profilingGroupName}/policy/{actionGroup}
@@ -825,7 +964,7 @@ struct CodeGuruProfilerClient:
         labels["profilingGroupName"] = input.profilingGroupName
         dict[str, str] query = {}
         query["revisionId"] = input.revisionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profilingGroups/{profilingGroupName}/policy/{actionGroup}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profilingGroups/{profilingGroupName}/policy/{actionGroup}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
 
     # SubmitFeedback  POST /internal/profilingGroups/{profilingGroupName}/anomalies/{anomalyInstanceId}/feedback
@@ -835,7 +974,7 @@ struct CodeGuruProfilerClient:
         dict[str, str] labels = {}
         labels["anomalyInstanceId"] = input.anomalyInstanceId
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="POST", path_template="/internal/profilingGroups/{profilingGroupName}/anomalies/{anomalyInstanceId}/feedback", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/internal/profilingGroups/{profilingGroupName}/anomalies/{anomalyInstanceId}/feedback", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SubmitFeedbackDocument(comment=input.comment, type=input.type)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
@@ -846,7 +985,7 @@ struct CodeGuruProfilerClient:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -855,16 +994,40 @@ struct CodeGuruProfilerClient:
         auto bp = restjson.rest_json_document(b, codeguru_profiler_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, codeguru_profiler_service(), self.region, host)
+
     # UpdateProfilingGroup  PUT /profilingGroups/{profilingGroupName}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_profiling_group(self, UpdateProfilingGroupRequest input) -> str:
         auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
         dict[str, str] labels = {}
         labels["profilingGroupName"] = input.profilingGroupName
-        auto b = binding.HttpBinding(method="PUT", path_template="/profilingGroups/{profilingGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/profilingGroups/{profilingGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProfilingGroupDocument(agentOrchestrationConfig=input.agentOrchestrationConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, codeguru_profiler_service(), self.region, host)
+
+    # Paginator for ListProfileTimes — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: profileTimes).
+    def paginate_list_profile_times(self, ListProfileTimesRequest input):
+        auto host = endpoints.regional_host(codeguru_profiler_service(), self.region)
+        while True:
+            auto raw = self.list_profile_times(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a CodeGuruProfilerClient bound to credentials + region.
 def codeguru_profiler_client(core.Credentials creds, str region) -> CodeGuruProfilerClient:

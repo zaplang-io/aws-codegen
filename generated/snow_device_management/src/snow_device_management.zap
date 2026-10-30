@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 13 operations — 12 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 13 operations — 13 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   47 structs (31 @derive(Json)), 7 enums, 6 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -458,11 +458,6 @@ def snow_device_management_error_from_code(str code) -> Snow_Device_ManagementEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # A bound Snow_Device_Management client: credentials + region, threaded into every operation.
 struct Snow_Device_ManagementClient:
     core.Credentials creds
@@ -474,14 +469,14 @@ struct Snow_Device_ManagementClient:
         auto host = endpoints.regional_host(snow_device_management_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="POST", path_template="/task/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/task/{taskId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # CreateTask  POST /task
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_task(self, CreateTaskInput input) -> str:
         auto host = endpoints.regional_host(snow_device_management_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -509,7 +504,7 @@ struct Snow_Device_ManagementClient:
         auto host = endpoints.regional_host(snow_device_management_service(), self.region)
         dict[str, str] labels = {}
         labels["managedDeviceId"] = input.managedDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/managed-device/{managedDeviceId}/describe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/managed-device/{managedDeviceId}/describe", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # DescribeDeviceEc2Instances  POST /managed-device/{managedDeviceId}/resources/ec2/describe
@@ -518,7 +513,7 @@ struct Snow_Device_ManagementClient:
         auto host = endpoints.regional_host(snow_device_management_service(), self.region)
         dict[str, str] labels = {}
         labels["managedDeviceId"] = input.managedDeviceId
-        auto b = binding.HttpBinding(method="POST", path_template="/managed-device/{managedDeviceId}/resources/ec2/describe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/managed-device/{managedDeviceId}/resources/ec2/describe", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.instanceIds:
@@ -534,7 +529,7 @@ struct Snow_Device_ManagementClient:
         dict[str, str] labels = {}
         labels["managedDeviceId"] = input.managedDeviceId
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="POST", path_template="/task/{taskId}/execution/{managedDeviceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/task/{taskId}/execution/{managedDeviceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # DescribeTask  POST /task/{taskId}
@@ -543,7 +538,7 @@ struct Snow_Device_ManagementClient:
         auto host = endpoints.regional_host(snow_device_management_service(), self.region)
         dict[str, str] labels = {}
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="POST", path_template="/task/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/task/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # ListDeviceResources  GET /managed-device/{managedDeviceId}/resources
@@ -559,7 +554,7 @@ struct Snow_Device_ManagementClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-device/{managedDeviceId}/resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-device/{managedDeviceId}/resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # ListDevices  GET /managed-devices
@@ -573,7 +568,7 @@ struct Snow_Device_ManagementClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/managed-devices", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managed-devices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # ListExecutions  GET /executions
@@ -588,7 +583,7 @@ struct Snow_Device_ManagementClient:
         if input.state.is_some():
             query["state"] = input.state.unwrap_or("")
         query["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/executions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/executions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -597,7 +592,7 @@ struct Snow_Device_ManagementClient:
         auto host = endpoints.regional_host(snow_device_management_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # ListTasks  GET /tasks
@@ -611,7 +606,7 @@ struct Snow_Device_ManagementClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.state.is_some():
             query["state"] = input.state.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/tasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -620,7 +615,7 @@ struct Snow_Device_ManagementClient:
         auto host = endpoints.regional_host(snow_device_management_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -628,6 +623,17 @@ struct Snow_Device_ManagementClient:
         parts.append("\"tags\":" + snow_device_management_json_obj(m0))
         auto bp = restjson.rest_json_document(b, snow_device_management_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, snow_device_management_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(snow_device_management_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, snow_device_management_service(), self.region, host)
 
     # Paginator for ListDeviceResources — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: resources).

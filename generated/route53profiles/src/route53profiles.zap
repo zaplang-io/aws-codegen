@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 16 operations — 15 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 16 operations — 16 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   47 structs (39 @derive(Json)), 2 enums, 10 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -378,11 +378,6 @@ def route53profiles_error_from_code(str code) -> Route53ProfilesError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -409,7 +404,7 @@ struct Route53ProfilesClient:
     # errors: AccessDeniedException, ConflictException, InvalidParameterException, LimitExceededException, ResourceExistsException, ResourceNotFoundException, ThrottlingException, ValidationException
     def associate_profile(self, AssociateProfileRequest input) -> str:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/profileassociation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profileassociation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + route53profiles_json_str(input.Name))
         parts.append("\"ProfileId\":" + route53profiles_json_str(input.ProfileId))
@@ -427,7 +422,7 @@ struct Route53ProfilesClient:
     # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, InvalidParameterException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
     def associate_resource_to_profile(self, AssociateResourceToProfileRequest input) -> str:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/profileresourceassociation", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profileresourceassociation", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateResourceToProfileDocument(Name=input.Name, ProfileId=input.ProfileId, ResourceArn=input.ResourceArn, ResourceProperties=input.ResourceProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53profiles_service(), self.region, host)
@@ -436,7 +431,7 @@ struct Route53ProfilesClient:
     # errors: AccessDeniedException, InvalidParameterException, LimitExceededException, ThrottlingException, ValidationException
     def create_profile(self, CreateProfileRequest input) -> str:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/profile", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/profile", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ClientToken\":" + route53profiles_json_str(input.ClientToken))
         parts.append("\"Name\":" + route53profiles_json_str(input.Name))
@@ -455,7 +450,7 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] labels = {}
         labels["ProfileId"] = input.ProfileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profile/{ProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profile/{ProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # DisassociateProfile  DELETE /profileassociation/Profileid/{ProfileId}/resourceid/{ResourceId}
@@ -465,7 +460,7 @@ struct Route53ProfilesClient:
         dict[str, str] labels = {}
         labels["ProfileId"] = input.ProfileId
         labels["ResourceId"] = input.ResourceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profileassociation/Profileid/{ProfileId}/resourceid/{ResourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profileassociation/Profileid/{ProfileId}/resourceid/{ResourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # DisassociateResourceFromProfile  DELETE /profileresourceassociation/profileid/{ProfileId}/resourcearn/{ResourceArn}
@@ -475,7 +470,7 @@ struct Route53ProfilesClient:
         dict[str, str] labels = {}
         labels["ProfileId"] = input.ProfileId
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/profileresourceassociation/profileid/{ProfileId}/resourcearn/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/profileresourceassociation/profileid/{ProfileId}/resourcearn/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # GetProfile  GET /profile/{ProfileId}
@@ -484,7 +479,7 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] labels = {}
         labels["ProfileId"] = input.ProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/profile/{ProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profile/{ProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # GetProfileAssociation  GET /profileassociation/{ProfileAssociationId}
@@ -493,7 +488,7 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] labels = {}
         labels["ProfileAssociationId"] = input.ProfileAssociationId
-        auto b = binding.HttpBinding(method="GET", path_template="/profileassociation/{ProfileAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profileassociation/{ProfileAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # GetProfileResourceAssociation  GET /profileresourceassociation/{ProfileResourceAssociationId}
@@ -502,7 +497,7 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] labels = {}
         labels["ProfileResourceAssociationId"] = input.ProfileResourceAssociationId
-        auto b = binding.HttpBinding(method="GET", path_template="/profileresourceassociation/{ProfileResourceAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profileresourceassociation/{ProfileResourceAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # ListProfileAssociations  GET /profileassociations
@@ -518,7 +513,7 @@ struct Route53ProfilesClient:
             query["profileId"] = input.ProfileId.unwrap_or("")
         if input.ResourceId.is_some():
             query["resourceId"] = input.ResourceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/profileassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profileassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # ListProfileResourceAssociations  GET /profileresourceassociations/profileid/{ProfileId}
@@ -534,7 +529,7 @@ struct Route53ProfilesClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.ResourceType.is_some():
             query["resourceType"] = input.ResourceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/profileresourceassociations/profileid/{ProfileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profileresourceassociations/profileid/{ProfileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # ListProfiles  GET /profiles
@@ -546,7 +541,7 @@ struct Route53ProfilesClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -555,7 +550,7 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -564,7 +559,7 @@ struct Route53ProfilesClient:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -573,13 +568,24 @@ struct Route53ProfilesClient:
         auto bp = restjson.rest_json_document(b, route53profiles_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53profiles_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53profiles_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, route53profiles_service(), self.region, host)
+
     # UpdateProfileResourceAssociation  PATCH /profileresourceassociation/{ProfileResourceAssociationId}
     # errors: AccessDeniedException, ConflictException, InternalServiceErrorException, InvalidParameterException, LimitExceededException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_profile_resource_association(self, UpdateProfileResourceAssociationRequest input) -> str:
         auto host = endpoints.regional_host(route53profiles_service(), self.region)
         dict[str, str] labels = {}
         labels["ProfileResourceAssociationId"] = input.ProfileResourceAssociationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/profileresourceassociation/{ProfileResourceAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/profileresourceassociation/{ProfileResourceAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProfileResourceAssociationDocument(Name=input.Name, ResourceProperties=input.ResourceProperties)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53profiles_service(), self.region, host)

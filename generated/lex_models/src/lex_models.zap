@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 42 operations — 40 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 42 operations — 42 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   117 structs (66 @derive(Json)), 24 enums, 8 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1268,12 +1268,6 @@ def models_lex_error_from_code(str code) -> Lex_Model_Building_ServiceError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetUtterancesView (httpQuery `botVersions` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1442,7 +1436,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/bots/{name}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{name}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBotVersionDocument(checksum=input.checksum)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_lex_service(), self.region, host)
@@ -1453,7 +1447,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/intents/{name}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/intents/{name}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateIntentVersionDocument(checksum=input.checksum)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_lex_service(), self.region, host)
@@ -1464,7 +1458,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="POST", path_template="/slottypes/{name}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/slottypes/{name}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSlotTypeVersionDocument(checksum=input.checksum)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_lex_service(), self.region, host)
@@ -1475,7 +1469,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteBotAlias  DELETE /bots/{botName}/aliases/{name}
@@ -1485,7 +1479,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["botName"] = input.botName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botName}/aliases/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botName}/aliases/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteBotChannelAssociation  DELETE /bots/{botName}/aliases/{aliasName}/channels/{name}
@@ -1496,7 +1490,7 @@ struct Lex_Model_Building_ServiceClient:
         labels["name"] = input.name
         labels["botName"] = input.botName
         labels["aliasName"] = input.botAlias
-        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botName}/aliases/{aliasName}/channels/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botName}/aliases/{aliasName}/channels/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteBotVersion  DELETE /bots/{name}/versions/{version}
@@ -1506,7 +1500,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["version"] = input.version
-        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteIntent  DELETE /intents/{name}
@@ -1515,7 +1509,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/intents/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/intents/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteIntentVersion  DELETE /intents/{name}/versions/{version}
@@ -1525,7 +1519,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["version"] = input.version
-        auto b = binding.HttpBinding(method="DELETE", path_template="/intents/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/intents/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteSlotType  DELETE /slottypes/{name}
@@ -1534,7 +1528,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/slottypes/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/slottypes/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteSlotTypeVersion  DELETE /slottypes/{name}/version/{version}
@@ -1544,7 +1538,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["version"] = input.version
-        auto b = binding.HttpBinding(method="DELETE", path_template="/slottypes/{name}/version/{version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/slottypes/{name}/version/{version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # DeleteUtterances  DELETE /bots/{botName}/utterances/{userId}
@@ -1554,7 +1548,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["botName"] = input.botName
         labels["userId"] = input.userId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botName}/utterances/{userId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/bots/{botName}/utterances/{userId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBot  GET /bots/{name}/versions/{versionoralias}
@@ -1564,7 +1558,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["versionoralias"] = input.versionOrAlias
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/{name}/versions/{versionoralias}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{name}/versions/{versionoralias}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBotAlias  GET /bots/{botName}/aliases/{name}
@@ -1574,7 +1568,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["botName"] = input.botName
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBotAliases  GET /bots/{botName}/aliases/
@@ -1590,7 +1584,7 @@ struct Lex_Model_Building_ServiceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nameContains.is_some():
             query["nameContains"] = input.nameContains.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBotChannelAssociation  GET /bots/{botName}/aliases/{aliasName}/channels/{name}
@@ -1601,7 +1595,7 @@ struct Lex_Model_Building_ServiceClient:
         labels["name"] = input.name
         labels["botName"] = input.botName
         labels["aliasName"] = input.botAlias
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/{aliasName}/channels/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/{aliasName}/channels/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBotChannelAssociations  GET /bots/{botName}/aliases/{aliasName}/channels/
@@ -1618,7 +1612,7 @@ struct Lex_Model_Building_ServiceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nameContains.is_some():
             query["nameContains"] = input.nameContains.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/{aliasName}/channels/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botName}/aliases/{aliasName}/channels/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBotVersions  GET /bots/{name}/versions/
@@ -1632,7 +1626,7 @@ struct Lex_Model_Building_ServiceClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/{name}/versions/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{name}/versions/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBots  GET /bots/
@@ -1646,7 +1640,7 @@ struct Lex_Model_Building_ServiceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nameContains.is_some():
             query["nameContains"] = input.nameContains.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/bots/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBuiltinIntent  GET /builtins/intents/{signature}
@@ -1655,7 +1649,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["signature"] = input.signature
-        auto b = binding.HttpBinding(method="GET", path_template="/builtins/intents/{signature}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/builtins/intents/{signature}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBuiltinIntents  GET /builtins/intents/
@@ -1671,7 +1665,7 @@ struct Lex_Model_Building_ServiceClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/builtins/intents/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/builtins/intents/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetBuiltinSlotTypes  GET /builtins/slottypes/
@@ -1687,7 +1681,7 @@ struct Lex_Model_Building_ServiceClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/builtins/slottypes/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/builtins/slottypes/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetExport  GET /exports/
@@ -1699,7 +1693,7 @@ struct Lex_Model_Building_ServiceClient:
         query["version"] = input.version
         query["resourceType"] = input.resourceType
         query["exportType"] = input.exportType
-        auto b = binding.HttpBinding(method="GET", path_template="/exports/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/exports/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetImport  GET /imports/{importId}
@@ -1708,7 +1702,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["importId"] = input.importId
-        auto b = binding.HttpBinding(method="GET", path_template="/imports/{importId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/imports/{importId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetIntent  GET /intents/{name}/versions/{version}
@@ -1718,7 +1712,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["version"] = input.version
-        auto b = binding.HttpBinding(method="GET", path_template="/intents/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/intents/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetIntentVersions  GET /intents/{name}/versions/
@@ -1732,7 +1726,7 @@ struct Lex_Model_Building_ServiceClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/intents/{name}/versions/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/intents/{name}/versions/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetIntents  GET /intents/
@@ -1746,7 +1740,7 @@ struct Lex_Model_Building_ServiceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nameContains.is_some():
             query["nameContains"] = input.nameContains.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/intents/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/intents/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetMigration  GET /migrations/{migrationId}
@@ -1755,7 +1749,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["migrationId"] = input.migrationId
-        auto b = binding.HttpBinding(method="GET", path_template="/migrations/{migrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/migrations/{migrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetMigrations  GET /migrations
@@ -1775,7 +1769,7 @@ struct Lex_Model_Building_ServiceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/migrations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/migrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetSlotType  GET /slottypes/{name}/versions/{version}
@@ -1785,7 +1779,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["version"] = input.version
-        auto b = binding.HttpBinding(method="GET", path_template="/slottypes/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/slottypes/{name}/versions/{version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetSlotTypeVersions  GET /slottypes/{name}/versions/
@@ -1799,7 +1793,7 @@ struct Lex_Model_Building_ServiceClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/slottypes/{name}/versions/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/slottypes/{name}/versions/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # GetSlotTypes  GET /slottypes/
@@ -1813,7 +1807,20 @@ struct Lex_Model_Building_ServiceClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nameContains.is_some():
             query["nameContains"] = input.nameContains.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/slottypes/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/slottypes/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
+
+    # GetUtterancesView  GET /bots/{botname}/utterances?view=aggregation
+    # errors: BadRequestException, InternalFailureException, LimitExceededException
+    def get_utterances_view(self, GetUtterancesViewRequest input) -> str:
+        auto host = endpoints.regional_host(models_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botname"] = input.botName
+        dict[str, str] query = {}
+        query["status_type"] = input.statusType
+        dict[str, list[str]] multi_query = {}
+        multi_query["bot_versions"] = input.botVersions
+        auto b = binding.HttpBinding(method="GET", path_template="/bots/{botname}/utterances?view=aggregation", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1822,7 +1829,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # PutBot  PUT /bots/{name}/versions/$LATEST
@@ -1831,7 +1838,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{name}/versions/$LATEST", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{name}/versions/$LATEST", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1890,7 +1897,7 @@ struct Lex_Model_Building_ServiceClient:
         dict[str, str] labels = {}
         labels["name"] = input.name
         labels["botName"] = input.botName
-        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botName}/aliases/{name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/bots/{botName}/aliases/{name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1917,7 +1924,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/intents/{name}/versions/$LATEST", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/intents/{name}/versions/$LATEST", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1985,7 +1992,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/slottypes/{name}/versions/$LATEST", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/slottypes/{name}/versions/$LATEST", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -2021,7 +2028,7 @@ struct Lex_Model_Building_ServiceClient:
     # errors: BadRequestException, InternalFailureException, LimitExceededException
     def start_import(self, StartImportRequest input) -> str:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/imports/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/imports/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"payload\":" + models_lex_json_str(base64.encode(input.payload)))
         parts.append("\"resourceType\":" + input.resourceType.to_json())
@@ -2039,7 +2046,7 @@ struct Lex_Model_Building_ServiceClient:
     # errors: AccessDeniedException, BadRequestException, InternalFailureException, LimitExceededException, NotFoundException
     def start_migration(self, StartMigrationRequest input) -> str:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/migrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/migrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartMigrationDocument(v1BotName=input.v1BotName, v1BotVersion=input.v1BotVersion, v2BotName=input.v2BotName, v2BotRole=input.v2BotRole, migrationStrategy=input.migrationStrategy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, models_lex_service(), self.region, host)
@@ -2050,7 +2057,7 @@ struct Lex_Model_Building_ServiceClient:
         auto host = endpoints.regional_host(models_lex_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -2058,6 +2065,17 @@ struct Lex_Model_Building_ServiceClient:
         parts.append("\"tags\":" + models_lex_json_arr(e0))
         auto bp = restjson.rest_json_document(b, models_lex_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, models_lex_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: BadRequestException, ConflictException, InternalFailureException, LimitExceededException, NotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(models_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, models_lex_service(), self.region, host)
 
     # Paginator for GetBotAliases — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: BotAliases).

@@ -213,7 +213,7 @@ struct SSM_GuiConnectClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def delete_connection_recording_preferences(self, DeleteConnectionRecordingPreferencesRequest input) -> str:
         auto host = endpoints.regional_host(ssm_guiconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConnectionRecordingPreferencesDocument(ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ssm_guiconnect_service(), self.region, host)
@@ -222,14 +222,14 @@ struct SSM_GuiConnectClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def get_connection_recording_preferences(self) -> str:
         auto host = endpoints.regional_host(ssm_guiconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ssm_guiconnect_service(), self.region, host)
 
     # UpdateConnectionRecordingPreferences  POST /UpdateConnectionRecordingPreferences
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_connection_recording_preferences(self, UpdateConnectionRecordingPreferencesRequest input) -> str:
         auto host = endpoints.regional_host(ssm_guiconnect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateConnectionRecordingPreferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()

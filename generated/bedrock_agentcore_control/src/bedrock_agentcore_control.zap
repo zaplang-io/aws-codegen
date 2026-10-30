@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 172 operations — 170 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 172 operations — 172 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   786 structs (459 @derive(Json)), 102 enums, 16 error variants.
 #   39 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -7149,12 +7149,6 @@ def bedrock_agentcore_control_error_from_code(str code) -> Bedrock_AgentCore_Con
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteHarness (httpQuery `deleteManagedMemory` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -9458,6 +9452,12 @@ def weighted_route_to_json(WeightedRoute v) -> str:
     parts.append("\"trafficSplit\":" + bedrock_agentcore_control_json_arr(e0))
     return bedrock_agentcore_control_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def bedrock_agentcore_control_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Bedrock_AgentCore_Control client: credentials + region, threaded into every operation.
 struct Bedrock_AgentCore_ControlClient:
     core.Credentials creds
@@ -9469,7 +9469,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/add", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/add", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9484,7 +9484,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/rate-limits/batch", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/rate-limits/batch", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9500,7 +9500,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_agent_runtime(self, CreateAgentRuntimeRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentRuntimeName\":" + bedrock_agentcore_control_json_str(input.agentRuntimeName))
         parts.append("\"agentRuntimeArtifact\":" + agent_runtime_artifact_to_json(input.agentRuntimeArtifact))
@@ -9559,7 +9559,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["agentRuntimeId"] = input.agentRuntimeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.agentRuntimeVersion.is_some():
@@ -9584,7 +9584,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceLimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_api_key_credential_provider(self, CreateApiKeyCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.apiKey.is_some():
@@ -9609,7 +9609,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_browser(self, CreateBrowserRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/browsers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/browsers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -9659,7 +9659,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_browser_profile(self, CreateBrowserProfileRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/browser-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/browser-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -9681,7 +9681,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, RetryableConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_capacity_provider(self, CreateCapacityProviderInput input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/capacity-providers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/capacity-providers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -9705,7 +9705,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_code_interpreter(self, CreateCodeInterpreterRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/code-interpreters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/code-interpreters", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -9743,7 +9743,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_configuration_bundle(self, CreateConfigurationBundleRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration-bundles/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration-bundles/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9781,7 +9781,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_consent_portal(self, CreateConsentPortalRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateConsentPortal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateConsentPortal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"executionRoleArn\":" + bedrock_agentcore_control_json_str(input.executionRoleArn))
         parts.append("\"idpConfig\":" + consent_portal_idp_config_to_json(input.idpConfig))
@@ -9806,7 +9806,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_dataset(self, CreateDatasetRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9835,7 +9835,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDatasetVersionDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -9844,7 +9844,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_evaluator(self, CreateEvaluatorRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluators/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluators/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9871,7 +9871,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_gateway(self, CreateGatewayRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/gateways/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -9921,7 +9921,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/rate-limits", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/rate-limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9949,7 +9949,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/rules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -9977,7 +9977,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/targets/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateways/{gatewayIdentifier}/targets/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -10014,7 +10014,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_harness(self, CreateHarnessRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/harnesses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/harnesses", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"harnessName\":" + bedrock_agentcore_control_json_str(input.harnessName))
         if input.clientToken.is_some():
@@ -10099,7 +10099,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["harnessId"] = input.harnessId
-        auto b = binding.HttpBinding(method="POST", path_template="/harnesses/{harnessId}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/harnesses/{harnessId}/endpoints", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"endpointName\":" + bedrock_agentcore_control_json_str(input.endpointName))
         if input.targetVersion.is_some():
@@ -10124,7 +10124,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceException, ServiceQuotaExceededException, ThrottledException, ValidationException
     def create_memory(self, CreateMemoryInput input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/memories/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -10174,7 +10174,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceLimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_oauth2_credential_provider(self, CreateOauth2CredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         parts.append("\"credentialProviderVendor\":" + input.credentialProviderVendor.to_json())
@@ -10192,7 +10192,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_online_evaluation_config(self, CreateOnlineEvaluationConfigRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/online-evaluation-configs/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/online-evaluation-configs/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -10238,7 +10238,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["paymentManagerId"] = input.paymentManagerId
-        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -10262,7 +10262,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceLimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def create_payment_credential_provider(self, CreatePaymentCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreatePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreatePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         parts.append("\"credentialProviderVendor\":" + input.credentialProviderVendor.to_json())
@@ -10280,7 +10280,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_payment_manager(self, CreatePaymentManagerRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -10312,7 +10312,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="POST", path_template="/policy-engines/{policyEngineId}/policies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy-engines/{policyEngineId}/policies", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePolicyDocument(name=input.name, definition=input.definition, description=input.description, validationMode=input.validationMode, enforcementMode=input.enforcementMode, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10321,7 +10321,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_policy_engine(self, CreatePolicyEngineRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/policy-engines", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy-engines", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -10346,7 +10346,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_registry(self, CreateRegistryRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/registries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -10373,7 +10373,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -10402,7 +10402,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def create_workload_identity(self, CreateWorkloadIdentityRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateWorkloadIdentity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/CreateWorkloadIdentity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.allowedResourceOauth2ReturnUrls.is_some():
@@ -10431,7 +10431,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["version"] = input.agentRuntimeVersion.unwrap_or("")
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/runtimes/{agentRuntimeId}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/runtimes/{agentRuntimeId}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteAgentRuntimeEndpoint  DELETE /runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/
@@ -10444,14 +10444,14 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteApiKeyCredentialProvider  POST /identities/DeleteApiKeyCredentialProvider
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def delete_api_key_credential_provider(self, DeleteApiKeyCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteApiKeyCredentialProviderDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10465,7 +10465,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/browsers/{browserId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/browsers/{browserId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteBrowserProfile  DELETE /browser-profiles/{profileId}
@@ -10477,7 +10477,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/browser-profiles/{profileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/browser-profiles/{profileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteCapacityProvider  DELETE /capacity-providers/{capacityProviderId}
@@ -10489,7 +10489,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/capacity-providers/{capacityProviderId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/capacity-providers/{capacityProviderId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteCodeInterpreter  DELETE /code-interpreters/{codeInterpreterId}
@@ -10501,7 +10501,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/code-interpreters/{codeInterpreterId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/code-interpreters/{codeInterpreterId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteConfigurationBundle  DELETE /configuration-bundles/{bundleId}
@@ -10510,14 +10510,14 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["bundleId"] = input.bundleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/configuration-bundles/{bundleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/configuration-bundles/{bundleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteConsentPortal  POST /identities/DeleteConsentPortal
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def delete_consent_portal(self, DeleteConsentPortalRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteConsentPortal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteConsentPortal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConsentPortalDocument(consentPortalIdentifier=input.consentPortalIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10531,7 +10531,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.datasetVersion.is_some():
             query["datasetVersion"] = input.datasetVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteDatasetExamples  POST /datasets/{datasetId}/examples/delete
@@ -10540,7 +10540,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -10558,7 +10558,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["evaluatorId"] = input.evaluatorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/evaluators/{evaluatorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/evaluators/{evaluatorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteGateway  DELETE /gateways/{gatewayIdentifier}/
@@ -10567,7 +10567,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteGatewayRateLimit  DELETE /gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}
@@ -10577,7 +10577,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["rateLimitId"] = input.rateLimitId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteGatewayRule  DELETE /gateways/{gatewayIdentifier}/rules/{ruleId}
@@ -10587,7 +10587,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["ruleId"] = input.ruleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/rules/{ruleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/rules/{ruleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteGatewayTarget  DELETE /gateways/{gatewayIdentifier}/targets/{targetId}/
@@ -10597,7 +10597,22 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["targetId"] = input.targetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/targets/{targetId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/gateways/{gatewayIdentifier}/targets/{targetId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
+
+    # DeleteHarness  DELETE /harnesses/{harnessId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_harness(self, DeleteHarnessRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["harnessId"] = input.harnessId
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        if input.deleteManagedMemory.is_some():
+            auto qt0 = bedrock_agentcore_control_bind_bool(input.deleteManagedMemory.unwrap_or(False))
+            query["deleteManagedMemory"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/harnesses/{harnessId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteHarnessEndpoint  DELETE /harnesses/{harnessId}/endpoints/{endpointName}
@@ -10610,7 +10625,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/harnesses/{harnessId}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/harnesses/{harnessId}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteMemory  DELETE /memories/{memoryId}/delete
@@ -10622,14 +10637,14 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/memories/{memoryId}/delete", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/memories/{memoryId}/delete", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteOauth2CredentialProvider  POST /identities/DeleteOauth2CredentialProvider
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def delete_oauth2_credential_provider(self, DeleteOauth2CredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteOauth2CredentialProviderDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10640,7 +10655,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["onlineEvaluationConfigId"] = input.onlineEvaluationConfigId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/online-evaluation-configs/{onlineEvaluationConfigId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/online-evaluation-configs/{onlineEvaluationConfigId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeletePaymentConnector  DELETE /payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}
@@ -10653,14 +10668,14 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeletePaymentCredentialProvider  POST /identities/DeletePaymentCredentialProvider
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def delete_payment_credential_provider(self, DeletePaymentCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeletePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeletePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeletePaymentCredentialProviderDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10674,7 +10689,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.clientToken.is_some():
             query["clientToken"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/payments/managers/{paymentManagerId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/payments/managers/{paymentManagerId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeletePolicy  DELETE /policy-engines/{policyEngineId}/policies/{policyId}
@@ -10684,7 +10699,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
         labels["policyId"] = input.policyId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/policy-engines/{policyEngineId}/policies/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/policy-engines/{policyEngineId}/policies/{policyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeletePolicyEngine  DELETE /policy-engines/{policyEngineId}
@@ -10693,7 +10708,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/policy-engines/{policyEngineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/policy-engines/{policyEngineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteRegistry  DELETE /registries/{registryId}
@@ -10702,7 +10717,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteRegistryRecord  DELETE /registries/{registryId}/records/{recordId}
@@ -10712,7 +10727,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /resourcepolicy/{resourceArn}
@@ -10721,14 +10736,14 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # DeleteWorkloadIdentity  POST /identities/DeleteWorkloadIdentity
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def delete_workload_identity(self, DeleteWorkloadIdentityRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteWorkloadIdentity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/DeleteWorkloadIdentity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteWorkloadIdentityDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10742,7 +10757,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.agentRuntimeVersion.is_some():
             query["version"] = input.agentRuntimeVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/runtimes/{agentRuntimeId}/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runtimes/{agentRuntimeId}/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetAgentRuntimeEndpoint  GET /runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/
@@ -10752,14 +10767,14 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["agentRuntimeId"] = input.agentRuntimeId
         labels["endpointName"] = input.endpointName
-        auto b = binding.HttpBinding(method="GET", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetApiKeyCredentialProvider  POST /identities/GetApiKeyCredentialProvider
     # errors: AccessDeniedException, DecryptionFailure, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_api_key_credential_provider(self, GetApiKeyCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetApiKeyCredentialProviderDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10770,7 +10785,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["browserId"] = input.browserId
-        auto b = binding.HttpBinding(method="GET", path_template="/browsers/{browserId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/browsers/{browserId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetBrowserProfile  GET /browser-profiles/{profileId}
@@ -10779,7 +10794,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["profileId"] = input.profileId
-        auto b = binding.HttpBinding(method="GET", path_template="/browser-profiles/{profileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/browser-profiles/{profileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetCapacityProvider  GET /capacity-providers/{capacityProviderId}
@@ -10788,7 +10803,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["capacityProviderId"] = input.capacityProviderId
-        auto b = binding.HttpBinding(method="GET", path_template="/capacity-providers/{capacityProviderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/capacity-providers/{capacityProviderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetCodeInterpreter  GET /code-interpreters/{codeInterpreterId}
@@ -10797,7 +10812,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["codeInterpreterId"] = input.codeInterpreterId
-        auto b = binding.HttpBinding(method="GET", path_template="/code-interpreters/{codeInterpreterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/code-interpreters/{codeInterpreterId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetConfigurationBundle  GET /configuration-bundles/{bundleId}
@@ -10809,7 +10824,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.branchName.is_some():
             query["branchName"] = input.branchName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration-bundles/{bundleId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration-bundles/{bundleId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetConfigurationBundleVersion  GET /configuration-bundles/{bundleId}/versions/{versionId}
@@ -10819,14 +10834,14 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["bundleId"] = input.bundleId
         labels["versionId"] = input.versionId
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration-bundles/{bundleId}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration-bundles/{bundleId}/versions/{versionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetConsentPortal  POST /identities/GetConsentPortal
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_consent_portal(self, GetConsentPortalRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetConsentPortal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetConsentPortal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetConsentPortalDocument(consentPortalIdentifier=input.consentPortalIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10840,7 +10855,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.datasetVersion.is_some():
             query["datasetVersion"] = input.datasetVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetEvaluator  GET /evaluators/{evaluatorId}
@@ -10852,7 +10867,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.includedData.is_some():
             query["includedData"] = input.includedData.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/evaluators/{evaluatorId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/evaluators/{evaluatorId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetGateway  GET /gateways/{gatewayIdentifier}/
@@ -10861,7 +10876,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetGatewayRateLimit  GET /gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}
@@ -10871,7 +10886,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["rateLimitId"] = input.rateLimitId
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetGatewayRule  GET /gateways/{gatewayIdentifier}/rules/{ruleId}
@@ -10881,7 +10896,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["ruleId"] = input.ruleId
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rules/{ruleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rules/{ruleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetGatewayTarget  GET /gateways/{gatewayIdentifier}/targets/{targetId}/
@@ -10891,7 +10906,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["targetId"] = input.targetId
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/targets/{targetId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/targets/{targetId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetHarness  GET /harnesses/{harnessId}
@@ -10903,7 +10918,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.harnessVersion.is_some():
             query["harnessVersion"] = input.harnessVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetHarnessEndpoint  GET /harnesses/{harnessId}/endpoints/{endpointName}
@@ -10913,7 +10928,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["harnessId"] = input.harnessId
         labels["endpointName"] = input.endpointName
-        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetMemory  GET /memories/{memoryId}/details
@@ -10925,14 +10940,14 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] query = {}
         if input.view.is_some():
             query["view"] = input.view.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/memories/{memoryId}/details", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/memories/{memoryId}/details", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetOauth2CredentialProvider  POST /identities/GetOauth2CredentialProvider
     # errors: AccessDeniedException, DecryptionFailure, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_oauth2_credential_provider(self, GetOauth2CredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetOauth2CredentialProviderDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10943,7 +10958,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["onlineEvaluationConfigId"] = input.onlineEvaluationConfigId
-        auto b = binding.HttpBinding(method="GET", path_template="/online-evaluation-configs/{onlineEvaluationConfigId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/online-evaluation-configs/{onlineEvaluationConfigId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPaymentConnector  GET /payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}
@@ -10953,14 +10968,14 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["paymentManagerId"] = input.paymentManagerId
         labels["paymentConnectorId"] = input.paymentConnectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPaymentCredentialProvider  POST /identities/GetPaymentCredentialProvider
     # errors: AccessDeniedException, DecryptionFailure, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_payment_credential_provider(self, GetPaymentCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetPaymentCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetPaymentCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetPaymentCredentialProviderDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -10971,7 +10986,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["paymentManagerId"] = input.paymentManagerId
-        auto b = binding.HttpBinding(method="GET", path_template="/payments/managers/{paymentManagerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/payments/managers/{paymentManagerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPolicy  GET /policy-engines/{policyEngineId}/policies/{policyId}
@@ -10981,7 +10996,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
         labels["policyId"] = input.policyId
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policies/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policies/{policyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPolicyEngine  GET /policy-engines/{policyEngineId}
@@ -10990,7 +11005,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPolicyEngineSummary  GET /policy-engine-summaries/{policyEngineId}
@@ -10999,7 +11014,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engine-summaries/{policyEngineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engine-summaries/{policyEngineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPolicyGeneration  GET /policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}
@@ -11009,7 +11024,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["policyGenerationId"] = input.policyGenerationId
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPolicyGenerationSummary  GET /policy-engines/{policyEngineId}/policy-generation-summaries/{policyGenerationId}
@@ -11019,7 +11034,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["policyGenerationId"] = input.policyGenerationId
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generation-summaries/{policyGenerationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generation-summaries/{policyGenerationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetPolicySummary  GET /policy-engines/{policyEngineId}/policy-summaries/{policyId}
@@ -11029,7 +11044,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
         labels["policyId"] = input.policyId
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-summaries/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-summaries/{policyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetRegistry  GET /registries/{registryId}
@@ -11038,7 +11053,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetRegistryRecord  GET /registries/{registryId}/records/{recordId}
@@ -11048,7 +11063,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetResourcePolicy  GET /resourcepolicy/{resourceArn}
@@ -11057,14 +11072,14 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # GetTokenVault  POST /identities/get-token-vault
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_token_vault(self, GetTokenVaultRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/get-token-vault", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/get-token-vault", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetTokenVaultDocument(tokenVaultId=input.tokenVaultId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11073,7 +11088,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def get_workload_identity(self, GetWorkloadIdentityRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetWorkloadIdentity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/GetWorkloadIdentity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetWorkloadIdentityDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11089,7 +11104,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListAgentRuntimeVersions  POST /runtimes/{agentRuntimeId}/versions/
@@ -11103,7 +11118,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/runtimes/{agentRuntimeId}/versions/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtimes/{agentRuntimeId}/versions/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListAgentRuntimeVersionsByCapacityProvider  POST /capacity-providers/{capacityProviderId}/runtime-versions
@@ -11117,7 +11132,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/capacity-providers/{capacityProviderId}/runtime-versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/capacity-providers/{capacityProviderId}/runtime-versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListAgentRuntimes  POST /runtimes/
@@ -11129,14 +11144,14 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/runtimes/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/runtimes/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListApiKeyCredentialProviders  POST /identities/ListApiKeyCredentialProviders
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def list_api_key_credential_providers(self, ListApiKeyCredentialProvidersRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListApiKeyCredentialProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListApiKeyCredentialProviders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListApiKeyCredentialProvidersDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11150,7 +11165,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/browser-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/browser-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListBrowserProfilesDocument(name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11166,7 +11181,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/browsers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/browsers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListCapacityProviders  POST /capacity-providers
@@ -11178,7 +11193,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/capacity-providers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/capacity-providers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListCodeInterpreters  POST /code-interpreters
@@ -11192,7 +11207,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/code-interpreters", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/code-interpreters", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListConfigurationBundleVersions  POST /configuration-bundles/{bundleId}/versions
@@ -11206,7 +11221,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration-bundles/{bundleId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration-bundles/{bundleId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListConfigurationBundleVersionsDocument(filter=input.filter)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11220,14 +11235,14 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration-bundles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration-bundles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListConsentPortals  POST /identities/ListConsentPortals
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UnauthorizedException, ValidationException
     def list_consent_portals(self, ListConsentPortalsRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListConsentPortals", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListConsentPortals", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListConsentPortalsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11245,7 +11260,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/examples", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/examples", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListDatasetVersions  GET /datasets/{datasetId}/versions
@@ -11259,7 +11274,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets/{datasetId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListDatasets  GET /datasets
@@ -11271,7 +11286,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/datasets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/datasets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListEvaluators  POST /evaluators
@@ -11283,7 +11298,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluators", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluators", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListGatewayRateLimits  GET /gateways/{gatewayIdentifier}/rate-limits
@@ -11297,7 +11312,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rate-limits", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rate-limits", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListGatewayRules  GET /gateways/{gatewayIdentifier}/rules
@@ -11311,7 +11326,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rules", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/rules", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListGatewayTargets  GET /gateways/{gatewayIdentifier}/targets/
@@ -11325,7 +11340,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/targets/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/{gatewayIdentifier}/targets/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListGateways  GET /gateways/
@@ -11337,7 +11352,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/gateways/", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateways/", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListHarnessEndpoints  GET /harnesses/{harnessId}/endpoints
@@ -11351,7 +11366,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}/endpoints", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}/endpoints", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListHarnessVersions  GET /harnesses/{harnessId}/versions
@@ -11365,7 +11380,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/harnesses/{harnessId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListHarnesses  GET /harnesses
@@ -11377,14 +11392,14 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/harnesses", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/harnesses", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListMemories  POST /memories/
     # errors: AccessDeniedException, ResourceNotFoundException, ServiceException, ThrottledException, ValidationException
     def list_memories(self, ListMemoriesInput input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/memories/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/memories/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMemoriesDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11393,7 +11408,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def list_oauth2_credential_providers(self, ListOauth2CredentialProvidersRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListOauth2CredentialProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListOauth2CredentialProviders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListOauth2CredentialProvidersDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11407,7 +11422,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/online-evaluation-configs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/online-evaluation-configs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPaymentConnectors  POST /payments/managers/{paymentManagerId}/connectors-list
@@ -11421,14 +11436,14 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors-list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors-list", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPaymentCredentialProviders  POST /identities/ListPaymentCredentialProviders
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def list_payment_credential_providers(self, ListPaymentCredentialProvidersRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListPaymentCredentialProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListPaymentCredentialProviders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListPaymentCredentialProvidersDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11442,7 +11457,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers-list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers-list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPolicies  GET /policy-engines/{policyEngineId}/policies
@@ -11458,7 +11473,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.targetResourceScope.is_some():
             query["targetResourceScope"] = input.targetResourceScope.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policies", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policies", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPolicyEngineSummaries  GET /policy-engine-summaries
@@ -11470,7 +11485,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engine-summaries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engine-summaries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPolicyEngines  GET /policy-engines
@@ -11482,7 +11497,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPolicyGenerationAssets  GET /policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}/assets
@@ -11497,7 +11512,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}/assets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}/assets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPolicyGenerationSummaries  GET /policy-engines/{policyEngineId}/policy-generation-summaries
@@ -11511,7 +11526,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generation-summaries", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generation-summaries", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPolicyGenerations  GET /policy-engines/{policyEngineId}/policy-generations
@@ -11525,7 +11540,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-generations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListPolicySummaries  GET /policy-engines/{policyEngineId}/policy-summaries
@@ -11541,7 +11556,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.targetResourceScope.is_some():
             query["targetResourceScope"] = input.targetResourceScope.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-summaries", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policy-engines/{policyEngineId}/policy-summaries", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListRegistries  GET /registries
@@ -11557,7 +11572,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["status"] = input.status.unwrap_or("")
         if input.authorizerType.is_some():
             query["authorizerType"] = input.authorizerType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/registries", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/registries", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListRegistryRecords  GET /registries/{registryId}/records
@@ -11577,7 +11592,7 @@ struct Bedrock_AgentCore_ControlClient:
             query["status"] = input.status.unwrap_or("")
         if input.descriptorType.is_some():
             query["descriptorType"] = input.descriptorType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -11586,14 +11601,14 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # ListWorkloadIdentities  POST /identities/ListWorkloadIdentities
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def list_workload_identities(self, ListWorkloadIdentitiesRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListWorkloadIdentities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/ListWorkloadIdentities", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkloadIdentitiesDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11604,7 +11619,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11613,7 +11628,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def reset_token_vault_key_material(self, ResetTokenVaultKeyMaterialRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/reset-token-vault-key-material", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/reset-token-vault-key-material", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResetTokenVaultKeyMaterialDocument(tokenVaultId=input.tokenVaultId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11625,7 +11640,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["paymentManagerId"] = input.paymentManagerId
         labels["paymentConnectorId"] = input.paymentConnectorId
-        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}/rotate-credentials", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}/rotate-credentials", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"credentialsToRotate\":" + credential_rotation_config_to_json(input.credentialsToRotate))
         if input.clientToken.is_some():
@@ -11638,7 +11653,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConcurrentModificationException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def set_token_vault_cmk(self, SetTokenVaultCMKRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/set-token-vault-cmk", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/set-token-vault-cmk", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SetTokenVaultCMKDocument(tokenVaultId=input.tokenVaultId, kmsConfiguration=input.kmsConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11649,7 +11664,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="POST", path_template="/policy-engines/{policyEngineId}/policy-generations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policy-engines/{policyEngineId}/policy-generations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartPolicyGenerationDocument(resource=input.resource, content=input.content, name=input.name, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11661,7 +11676,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records/{recordId}/submit-for-approval", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records/{recordId}/submit-for-approval", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
 
     # SynchronizeGatewayTargets  PUT /gateways/{gatewayIdentifier}/synchronizeTargets
@@ -11670,7 +11685,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/synchronizeTargets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/synchronizeTargets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targetIdList:
@@ -11685,7 +11700,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -11694,13 +11709,24 @@ struct Bedrock_AgentCore_ControlClient:
         auto bp = restjson.rest_json_document(b, bedrock_agentcore_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_agentcore_control_service(), self.region, host)
+
     # UpdateAgentRuntime  PUT /runtimes/{agentRuntimeId}/
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_agent_runtime(self, UpdateAgentRuntimeRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["agentRuntimeId"] = input.agentRuntimeId
-        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"agentRuntimeArtifact\":" + agent_runtime_artifact_to_json(input.agentRuntimeArtifact))
         parts.append("\"roleArn\":" + bedrock_agentcore_control_json_str(input.roleArn))
@@ -11756,7 +11782,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["agentRuntimeId"] = input.agentRuntimeId
         labels["endpointName"] = input.endpointName
-        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAgentRuntimeEndpointDocument(agentRuntimeVersion=input.agentRuntimeVersion, description=input.description, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11765,7 +11791,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def update_api_key_credential_provider(self, UpdateApiKeyCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateApiKeyCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApiKeyCredentialProviderDocument(name=input.name, apiKey=input.apiKey, apiKeySecretConfig=input.apiKeySecretConfig, apiKeySecretSource=input.apiKeySecretSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11776,7 +11802,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["capacityProviderId"] = input.capacityProviderId
-        auto b = binding.HttpBinding(method="PUT", path_template="/capacity-providers/{capacityProviderId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/capacity-providers/{capacityProviderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCapacityProviderDocument(description=input.description, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11787,7 +11813,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["bundleId"] = input.bundleId
-        auto b = binding.HttpBinding(method="PUT", path_template="/configuration-bundles/{bundleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/configuration-bundles/{bundleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -11825,7 +11851,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_consent_portal(self, UpdateConsentPortalRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateConsentPortal", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateConsentPortal", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"consentPortalIdentifier\":" + bedrock_agentcore_control_json_str(input.consentPortalIdentifier))
         if input.executionRoleArn.is_some():
@@ -11846,7 +11872,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/datasets/{datasetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDatasetDocument(clientToken=input.clientToken, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -11857,7 +11883,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["datasetId"] = input.datasetId
-        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/datasets/{datasetId}/examples/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -11875,7 +11901,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["evaluatorId"] = input.evaluatorId
-        auto b = binding.HttpBinding(method="PUT", path_template="/evaluators/{evaluatorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/evaluators/{evaluatorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -11901,7 +11927,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.description.is_some():
@@ -11949,7 +11975,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["rateLimitId"] = input.rateLimitId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -11968,7 +11994,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["ruleId"] = input.ruleId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/gateways/{gatewayIdentifier}/rules/{ruleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/gateways/{gatewayIdentifier}/rules/{ruleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.priority.is_some():
             auto u0 = input.priority.unwrap()
@@ -11998,7 +12024,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["gatewayIdentifier"] = input.gatewayIdentifier
         labels["targetId"] = input.targetId
-        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/targets/{targetId}/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/gateways/{gatewayIdentifier}/targets/{targetId}/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12034,7 +12060,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["harnessId"] = input.harnessId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/harnesses/{harnessId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/harnesses/{harnessId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -12115,7 +12141,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["harnessId"] = input.harnessId
         labels["endpointName"] = input.endpointName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/harnesses/{harnessId}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/harnesses/{harnessId}/endpoints/{endpointName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateHarnessEndpointDocument(targetVersion=input.targetVersion, description=input.description, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -12126,7 +12152,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["memoryId"] = input.memoryId
-        auto b = binding.HttpBinding(method="PUT", path_template="/memories/{memoryId}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/memories/{memoryId}/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -12165,7 +12191,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def update_oauth2_credential_provider(self, UpdateOauth2CredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateOauth2CredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         parts.append("\"credentialProviderVendor\":" + input.credentialProviderVendor.to_json())
@@ -12179,7 +12205,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["onlineEvaluationConfigId"] = input.onlineEvaluationConfigId
-        auto b = binding.HttpBinding(method="PUT", path_template="/online-evaluation-configs/{onlineEvaluationConfigId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/online-evaluation-configs/{onlineEvaluationConfigId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -12227,7 +12253,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["paymentManagerId"] = input.paymentManagerId
         labels["paymentConnectorId"] = input.paymentConnectorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -12251,7 +12277,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, DecryptionFailure, EncryptionFailure, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UnauthorizedException, ValidationException
     def update_payment_credential_provider(self, UpdatePaymentCredentialProviderRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdatePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdatePaymentCredentialProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePaymentCredentialProviderDocument(name=input.name, credentialProviderVendor=input.credentialProviderVendor, providerConfigurationInput=input.providerConfigurationInput)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -12262,7 +12288,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["paymentManagerId"] = input.paymentManagerId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/payments/managers/{paymentManagerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/payments/managers/{paymentManagerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -12292,7 +12318,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
         labels["policyId"] = input.policyId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/policy-engines/{policyEngineId}/policies/{policyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/policy-engines/{policyEngineId}/policies/{policyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePolicyDocument(description=input.description, definition=input.definition, validationMode=input.validationMode, enforcementMode=input.enforcementMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -12303,7 +12329,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["policyEngineId"] = input.policyEngineId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/policy-engines/{policyEngineId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/policy-engines/{policyEngineId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePolicyEngineDocument(description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -12314,7 +12340,7 @@ struct Bedrock_AgentCore_ControlClient:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12338,7 +12364,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -12374,7 +12400,7 @@ struct Bedrock_AgentCore_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRegistryRecordStatusDocument(status=input.status, statusReason=input.statusReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_agentcore_control_service(), self.region, host)
@@ -12383,7 +12409,7 @@ struct Bedrock_AgentCore_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UnauthorizedException, ValidationException
     def update_workload_identity(self, UpdateWorkloadIdentityRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_agentcore_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateWorkloadIdentity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identities/UpdateWorkloadIdentity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_agentcore_control_json_str(input.name))
         if input.allowedResourceOauth2ReturnUrls.is_some():

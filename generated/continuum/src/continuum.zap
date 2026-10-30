@@ -1859,7 +1859,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/collectors", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/collectors", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateCollectorDocument(clientToken=input.clientToken, collectorArn=input.collectorArn, collectorDataAccessRoleArn=input.collectorDataAccessRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -1870,7 +1870,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/code-findings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/code-findings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCodeFindingDocument(ocsfDocument=input.ocsfDocument, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -1881,7 +1881,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/code-scans", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/code-scans", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCodeScanDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -1890,7 +1890,7 @@ struct ContinuumClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_collector(self, CreateCollectorInput input) -> str:
         auto host = endpoints.regional_host(continuum_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/collectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/collectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCollectorDocument(type=input.type, kubernetesClusterRole=input.kubernetesClusterRole, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -1899,7 +1899,7 @@ struct ContinuumClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_environment(self, CreateEnvironmentInput input) -> str:
         auto host = endpoints.regional_host(continuum_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + continuum_json_str(input.name))
         if input.configuration.is_some():
@@ -1912,7 +1912,7 @@ struct ContinuumClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_integration(self, CreateIntegrationInput input) -> str:
         auto host = endpoints.regional_host(continuum_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/integrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/integrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateIntegrationDocument(clientToken=input.clientToken, name=input.name, providerConfiguration=input.providerConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -1923,7 +1923,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["collectorId"] = input.collectorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/collectors/{collectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/collectors/{collectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # DeleteEnvironment  DELETE /environments/{environmentId}
@@ -1932,7 +1932,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # DeleteIntegration  DELETE /integrations/{integrationId}
@@ -1941,7 +1941,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["integrationId"] = input.integrationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # DisassociateCollector  POST /environments/{environmentId}/collectors/disassociate
@@ -1950,7 +1950,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/collectors/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{environmentId}/collectors/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateCollectorDocument(collectorArn=input.collectorArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -1962,7 +1962,7 @@ struct ContinuumClient:
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
         labels["findingId"] = input.findingId
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-findings/{findingId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-findings/{findingId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetCodeIssue  GET /environments/{environmentId}/code-issues/{issueId}
@@ -1972,7 +1972,7 @@ struct ContinuumClient:
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
         labels["issueId"] = input.issueId
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues/{issueId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues/{issueId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetCodeIssueArtifact  GET /environments/{environmentId}/code-issues/{issueId}/artifacts/{artifactId}
@@ -1983,7 +1983,7 @@ struct ContinuumClient:
         labels["environmentId"] = input.environmentId
         labels["issueId"] = input.issueId
         labels["artifactId"] = input.artifactId
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues/{issueId}/artifacts/{artifactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues/{issueId}/artifacts/{artifactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetCodeScan  GET /environments/{environmentId}/code-scans/{scanRunId}
@@ -1993,7 +1993,7 @@ struct ContinuumClient:
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
         labels["scanRunId"] = input.scanRunId
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-scans/{scanRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-scans/{scanRunId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetCollector  GET /collectors/{collectorId}
@@ -2002,7 +2002,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["collectorId"] = input.collectorId
-        auto b = binding.HttpBinding(method="GET", path_template="/collectors/{collectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collectors/{collectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetCollectorDataAccessAuthorization  GET /collectors/{collectorId}/data-access-authorization
@@ -2015,7 +2015,7 @@ struct ContinuumClient:
         query["accountId"] = input.accountId
         if input.environmentArn.is_some():
             query["environmentArn"] = input.environmentArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/collectors/{collectorId}/data-access-authorization", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collectors/{collectorId}/data-access-authorization", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetEnvironment  GET /environments/{environmentId}
@@ -2024,7 +2024,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetIntegration  GET /integrations/{integrationId}
@@ -2033,7 +2033,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["integrationId"] = input.integrationId
-        auto b = binding.HttpBinding(method="GET", path_template="/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # GetResourcePolicy  GET /resourcepolicy
@@ -2042,7 +2042,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] query = {}
         query["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListAssociatedCollectors  GET /environments/{environmentId}/collectors
@@ -2056,7 +2056,7 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/collectors", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/collectors", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListAssociatedEnvironments  GET /collectors/{collectorId}/environments
@@ -2070,7 +2070,7 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/collectors/{collectorId}/environments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collectors/{collectorId}/environments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListCodeFindings  GET /environments/{environmentId}/code-findings
@@ -2084,7 +2084,7 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-findings", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-findings", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListCodeIssueArtifacts  GET /environments/{environmentId}/code-issues/{issueId}/artifacts
@@ -2101,7 +2101,7 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues/{issueId}/artifacts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues/{issueId}/artifacts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListCodeIssues  GET /environments/{environmentId}/code-issues
@@ -2115,7 +2115,7 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-issues", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListCodeScans  GET /environments/{environmentId}/code-scans
@@ -2129,14 +2129,14 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-scans", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}/code-scans", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListCollectors  GET /collectors
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_collectors(self) -> str:
         auto host = endpoints.regional_host(continuum_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/collectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/collectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListEnvironments  GET /environments
@@ -2148,7 +2148,7 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # ListIntegrations  GET /integrations
@@ -2160,14 +2160,14 @@ struct ContinuumClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/integrations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/integrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, continuum_service(), self.region, host)
 
     # PutResourcePolicy  PUT /resourcepolicy
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyInput input) -> str:
         auto host = endpoints.regional_host(continuum_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(arn=input.arn, policy=input.policy, expectedRevisionId=input.expectedRevisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -2176,7 +2176,7 @@ struct ContinuumClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def start_integration_authorization(self, StartIntegrationAuthorizationInput input) -> str:
         auto host = endpoints.regional_host(continuum_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/integration-authorizations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/integration-authorizations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartIntegrationAuthorizationDocument(providerType=input.providerType, name=input.name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -2187,7 +2187,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["collectorId"] = input.collectorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/collectors/{collectorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/collectors/{collectorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCollectorDocument(name=input.name, kubernetesClusterRole=input.kubernetesClusterRole)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)
@@ -2198,7 +2198,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -2215,7 +2215,7 @@ struct ContinuumClient:
         auto host = endpoints.regional_host(continuum_service(), self.region)
         dict[str, str] labels = {}
         labels["integrationId"] = input.integrationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/integrations/{integrationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIntegrationDocument(providerConfiguration=input.providerConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, continuum_service(), self.region, host)

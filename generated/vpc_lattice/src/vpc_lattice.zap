@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 73 operations — 71 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 73 operations — 73 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   197 structs (123 @derive(Json)), 27 enums, 7 error variants.
-#   14 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -1967,16 +1967,6 @@ def vpc_lattice_error_from_code(str code) -> VPC_LatticeError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListServiceNetworkResourceAssociations (httpQuery `includeChildren` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListServiceNetworkResourceAssociations (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -2144,6 +2134,12 @@ def rule_update_to_json(RuleUpdate v) -> str:
         parts.append("\"action\":" + rule_action_to_json(u2))
     return vpc_lattice_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def vpc_lattice_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound VPC_Lattice client: credentials + region, threaded into every operation.
 struct VPC_LatticeClient:
     core.Credentials creds
@@ -2156,7 +2152,7 @@ struct VPC_LatticeClient:
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.rules:
@@ -2169,7 +2165,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_access_log_subscription(self, CreateAccessLogSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/accesslogsubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accesslogsubscriptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2194,7 +2190,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/services/{serviceIdentifier}/listeners", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/services/{serviceIdentifier}/listeners", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + vpc_lattice_json_str(input.name))
         parts.append("\"protocol\":" + input.protocol.to_json())
@@ -2218,7 +2214,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_resource_configuration(self, CreateResourceConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resourceconfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resourceconfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + vpc_lattice_json_str(input.name))
         parts.append("\"type\":" + input.type.to_json())
@@ -2268,7 +2264,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_resource_gateway(self, CreateResourceGatewayRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resourcegateways", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcegateways", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2314,7 +2310,7 @@ struct VPC_LatticeClient:
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + vpc_lattice_json_str(input.name))
         parts.append("\"match\":" + rule_match_to_json(input.match_))
@@ -2336,7 +2332,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service(self, CreateServiceRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/services", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/services", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2367,7 +2363,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service_network(self, CreateServiceNetworkRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2392,7 +2388,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service_network_resource_association(self, CreateServiceNetworkResourceAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkresourceassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkresourceassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2415,7 +2411,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service_network_service_association(self, CreateServiceNetworkServiceAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkserviceassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkserviceassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2435,7 +2431,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_service_network_vpc_association(self, CreateServiceNetworkVpcAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkvpcassociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/servicenetworkvpcassociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2467,7 +2463,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_target_group(self, CreateTargetGroupRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + vpc_lattice_json_str(input.name))
         parts.append("\"type\":" + input.type.to_json())
@@ -2491,8 +2487,9 @@ struct VPC_LatticeClient:
     def delete_access_log_subscription(self, DeleteAccessLogSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["accessLogSubscriptionIdentifier"] = input.accessLogSubscriptionIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/accesslogsubscriptions/{accessLogSubscriptionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.accessLogSubscriptionIdentifier
+        labels["accessLogSubscriptionIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/accesslogsubscriptions/{accessLogSubscriptionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteAuthPolicy  DELETE /authpolicy/{resourceIdentifier}
@@ -2501,7 +2498,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceIdentifier"] = input.resourceIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/authpolicy/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/authpolicy/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteDomainVerification  DELETE /domainverifications/{domainVerificationIdentifier}
@@ -2510,7 +2507,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["domainVerificationIdentifier"] = input.domainVerificationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domainverifications/{domainVerificationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domainverifications/{domainVerificationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteListener  DELETE /services/{serviceIdentifier}/listeners/{listenerIdentifier}
@@ -2520,7 +2517,7 @@ struct VPC_LatticeClient:
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteResourceConfiguration  DELETE /resourceconfigurations/{resourceConfigurationIdentifier}
@@ -2528,8 +2525,9 @@ struct VPC_LatticeClient:
     def delete_resource_configuration(self, DeleteResourceConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["resourceConfigurationIdentifier"] = input.resourceConfigurationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourceconfigurations/{resourceConfigurationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.resourceConfigurationIdentifier
+        labels["resourceConfigurationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourceconfigurations/{resourceConfigurationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteResourceEndpointAssociation  DELETE /resourceendpointassociations/{resourceEndpointAssociationIdentifier}
@@ -2537,8 +2535,9 @@ struct VPC_LatticeClient:
     def delete_resource_endpoint_association(self, DeleteResourceEndpointAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["resourceEndpointAssociationIdentifier"] = input.resourceEndpointAssociationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourceendpointassociations/{resourceEndpointAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.resourceEndpointAssociationIdentifier
+        labels["resourceEndpointAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourceendpointassociations/{resourceEndpointAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteResourceGateway  DELETE /resourcegateways/{resourceGatewayIdentifier}
@@ -2547,7 +2546,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceGatewayIdentifier"] = input.resourceGatewayIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcegateways/{resourceGatewayIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcegateways/{resourceGatewayIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /resourcepolicy/{resourceArn}
@@ -2556,7 +2555,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteRule  DELETE /services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}
@@ -2567,7 +2566,7 @@ struct VPC_LatticeClient:
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
         labels["ruleIdentifier"] = input.ruleIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteService  DELETE /services/{serviceIdentifier}
@@ -2576,7 +2575,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/services/{serviceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/services/{serviceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteServiceNetwork  DELETE /servicenetworks/{serviceNetworkIdentifier}
@@ -2585,7 +2584,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceNetworkIdentifier"] = input.serviceNetworkIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworks/{serviceNetworkIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworks/{serviceNetworkIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteServiceNetworkResourceAssociation  DELETE /servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}
@@ -2593,8 +2592,9 @@ struct VPC_LatticeClient:
     def delete_service_network_resource_association(self, DeleteServiceNetworkResourceAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["serviceNetworkResourceAssociationIdentifier"] = input.serviceNetworkResourceAssociationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.serviceNetworkResourceAssociationIdentifier
+        labels["serviceNetworkResourceAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteServiceNetworkServiceAssociation  DELETE /servicenetworkserviceassociations/{serviceNetworkServiceAssociationIdentifier}
@@ -2602,8 +2602,9 @@ struct VPC_LatticeClient:
     def delete_service_network_service_association(self, DeleteServiceNetworkServiceAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["serviceNetworkServiceAssociationIdentifier"] = input.serviceNetworkServiceAssociationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworkserviceassociations/{serviceNetworkServiceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.serviceNetworkServiceAssociationIdentifier
+        labels["serviceNetworkServiceAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworkserviceassociations/{serviceNetworkServiceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteServiceNetworkVpcAssociation  DELETE /servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}
@@ -2611,8 +2612,9 @@ struct VPC_LatticeClient:
     def delete_service_network_vpc_association(self, DeleteServiceNetworkVpcAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["serviceNetworkVpcAssociationIdentifier"] = input.serviceNetworkVpcAssociationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.serviceNetworkVpcAssociationIdentifier
+        labels["serviceNetworkVpcAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeleteTargetGroup  DELETE /targetgroups/{targetGroupIdentifier}
@@ -2621,7 +2623,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["targetGroupIdentifier"] = input.targetGroupIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/targetgroups/{targetGroupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/targetgroups/{targetGroupIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # DeregisterTargets  POST /targetgroups/{targetGroupIdentifier}/deregistertargets
@@ -2630,7 +2632,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["targetGroupIdentifier"] = input.targetGroupIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/deregistertargets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/deregistertargets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targets:
@@ -2644,8 +2646,9 @@ struct VPC_LatticeClient:
     def get_access_log_subscription(self, GetAccessLogSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["accessLogSubscriptionIdentifier"] = input.accessLogSubscriptionIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/accesslogsubscriptions/{accessLogSubscriptionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.accessLogSubscriptionIdentifier
+        labels["accessLogSubscriptionIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/accesslogsubscriptions/{accessLogSubscriptionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetAuthPolicy  GET /authpolicy/{resourceIdentifier}
@@ -2654,7 +2657,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceIdentifier"] = input.resourceIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/authpolicy/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/authpolicy/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetDomainVerification  GET /domainverifications/{domainVerificationIdentifier}
@@ -2663,7 +2666,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["domainVerificationIdentifier"] = input.domainVerificationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/domainverifications/{domainVerificationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainverifications/{domainVerificationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetListener  GET /services/{serviceIdentifier}/listeners/{listenerIdentifier}
@@ -2673,7 +2676,7 @@ struct VPC_LatticeClient:
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetResourceConfiguration  GET /resourceconfigurations/{resourceConfigurationIdentifier}
@@ -2681,8 +2684,9 @@ struct VPC_LatticeClient:
     def get_resource_configuration(self, GetResourceConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["resourceConfigurationIdentifier"] = input.resourceConfigurationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/resourceconfigurations/{resourceConfigurationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.resourceConfigurationIdentifier
+        labels["resourceConfigurationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/resourceconfigurations/{resourceConfigurationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetResourceGateway  GET /resourcegateways/{resourceGatewayIdentifier}
@@ -2691,7 +2695,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceGatewayIdentifier"] = input.resourceGatewayIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcegateways/{resourceGatewayIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcegateways/{resourceGatewayIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetResourcePolicy  GET /resourcepolicy/{resourceArn}
@@ -2700,7 +2704,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetRule  GET /services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}
@@ -2711,7 +2715,7 @@ struct VPC_LatticeClient:
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
         labels["ruleIdentifier"] = input.ruleIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetService  GET /services/{serviceIdentifier}
@@ -2720,7 +2724,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetServiceNetwork  GET /servicenetworks/{serviceNetworkIdentifier}
@@ -2729,7 +2733,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceNetworkIdentifier"] = input.serviceNetworkIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworks/{serviceNetworkIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworks/{serviceNetworkIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetServiceNetworkResourceAssociation  GET /servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}
@@ -2737,8 +2741,9 @@ struct VPC_LatticeClient:
     def get_service_network_resource_association(self, GetServiceNetworkResourceAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["serviceNetworkResourceAssociationIdentifier"] = input.serviceNetworkResourceAssociationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.serviceNetworkResourceAssociationIdentifier
+        labels["serviceNetworkResourceAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetServiceNetworkServiceAssociation  GET /servicenetworkserviceassociations/{serviceNetworkServiceAssociationIdentifier}
@@ -2746,8 +2751,9 @@ struct VPC_LatticeClient:
     def get_service_network_service_association(self, GetServiceNetworkServiceAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["serviceNetworkServiceAssociationIdentifier"] = input.serviceNetworkServiceAssociationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkserviceassociations/{serviceNetworkServiceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.serviceNetworkServiceAssociationIdentifier
+        labels["serviceNetworkServiceAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkserviceassociations/{serviceNetworkServiceAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetServiceNetworkVpcAssociation  GET /servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}
@@ -2755,8 +2761,9 @@ struct VPC_LatticeClient:
     def get_service_network_vpc_association(self, GetServiceNetworkVpcAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["serviceNetworkVpcAssociationIdentifier"] = input.serviceNetworkVpcAssociationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.serviceNetworkVpcAssociationIdentifier
+        labels["serviceNetworkVpcAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # GetTargetGroup  GET /targetgroups/{targetGroupIdentifier}
@@ -2765,7 +2772,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["targetGroupIdentifier"] = input.targetGroupIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/targetgroups/{targetGroupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/targetgroups/{targetGroupIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListAccessLogSubscriptions  GET /accesslogsubscriptions
@@ -2778,7 +2785,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/accesslogsubscriptions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/accesslogsubscriptions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListDomainVerifications  GET /domainverifications
@@ -2790,7 +2797,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domainverifications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domainverifications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListListeners  GET /services/{serviceIdentifier}/listeners
@@ -2804,7 +2811,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListResourceConfigurations  GET /resourceconfigurations
@@ -2813,16 +2820,19 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] query = {}
         if input.resourceGatewayIdentifier.is_some():
-            query["resourceGatewayIdentifier"] = input.resourceGatewayIdentifier.unwrap_or("")
+            auto qt0 = input.resourceGatewayIdentifier.unwrap_or("")
+            query["resourceGatewayIdentifier"] = qt0
         if input.resourceConfigurationGroupIdentifier.is_some():
-            query["resourceConfigurationGroupIdentifier"] = input.resourceConfigurationGroupIdentifier.unwrap_or("")
+            auto qt1 = input.resourceConfigurationGroupIdentifier.unwrap_or("")
+            query["resourceConfigurationGroupIdentifier"] = qt1
         if input.domainVerificationIdentifier.is_some():
-            query["domainVerificationIdentifier"] = input.domainVerificationIdentifier.unwrap_or("")
+            auto qt2 = input.domainVerificationIdentifier.unwrap_or("")
+            query["domainVerificationIdentifier"] = qt2
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resourceconfigurations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourceconfigurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListResourceEndpointAssociations  GET /resourceendpointassociations
@@ -2832,7 +2842,8 @@ struct VPC_LatticeClient:
         dict[str, str] query = {}
         query["resourceConfigurationIdentifier"] = input.resourceConfigurationIdentifier
         if input.resourceEndpointAssociationIdentifier.is_some():
-            query["resourceEndpointAssociationIdentifier"] = input.resourceEndpointAssociationIdentifier.unwrap_or("")
+            auto qt0 = input.resourceEndpointAssociationIdentifier.unwrap_or("")
+            query["resourceEndpointAssociationIdentifier"] = qt0
         if input.vpcEndpointId.is_some():
             query["vpcEndpointId"] = input.vpcEndpointId.unwrap_or("")
         if input.vpcEndpointOwner.is_some():
@@ -2841,7 +2852,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resourceendpointassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourceendpointassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListResourceGateways  GET /resourcegateways
@@ -2853,7 +2864,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcegateways", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcegateways", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListRules  GET /services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules
@@ -2868,7 +2879,28 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
+
+    # ListServiceNetworkResourceAssociations  GET /servicenetworkresourceassociations
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_service_network_resource_associations(self, ListServiceNetworkResourceAssociationsRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] query = {}
+        if input.serviceNetworkIdentifier.is_some():
+            auto qt0 = input.serviceNetworkIdentifier.unwrap_or("")
+            query["serviceNetworkIdentifier"] = qt0
+        if input.resourceConfigurationIdentifier.is_some():
+            auto qt1 = input.resourceConfigurationIdentifier.unwrap_or("")
+            query["resourceConfigurationIdentifier"] = qt1
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.includeChildren.is_some():
+            auto qt2 = vpc_lattice_bind_bool(input.includeChildren.unwrap_or(False))
+            query["includeChildren"] = qt2
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkresourceassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListServiceNetworkServiceAssociations  GET /servicenetworkserviceassociations
@@ -2877,14 +2909,15 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] query = {}
         if input.serviceNetworkIdentifier.is_some():
-            query["serviceNetworkIdentifier"] = input.serviceNetworkIdentifier.unwrap_or("")
+            auto qt0 = input.serviceNetworkIdentifier.unwrap_or("")
+            query["serviceNetworkIdentifier"] = qt0
         if input.serviceIdentifier.is_some():
             query["serviceIdentifier"] = input.serviceIdentifier.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkserviceassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkserviceassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListServiceNetworkVpcAssociations  GET /servicenetworkvpcassociations
@@ -2893,14 +2926,15 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] query = {}
         if input.serviceNetworkIdentifier.is_some():
-            query["serviceNetworkIdentifier"] = input.serviceNetworkIdentifier.unwrap_or("")
+            auto qt0 = input.serviceNetworkIdentifier.unwrap_or("")
+            query["serviceNetworkIdentifier"] = qt0
         if input.vpcIdentifier.is_some():
             query["vpcIdentifier"] = input.vpcIdentifier.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkvpcassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkvpcassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListServiceNetworkVpcEndpointAssociations  GET /servicenetworkvpcendpointassociations
@@ -2913,7 +2947,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkvpcendpointassociations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworkvpcendpointassociations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListServiceNetworks  GET /servicenetworks
@@ -2925,7 +2959,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/servicenetworks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListServices  GET /services
@@ -2937,7 +2971,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/services", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/services", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -2946,7 +2980,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListTargetGroups  GET /targetgroups
@@ -2962,7 +2996,7 @@ struct VPC_LatticeClient:
             query["vpcIdentifier"] = input.vpcIdentifier.unwrap_or("")
         if input.targetGroupType.is_some():
             query["targetGroupType"] = input.targetGroupType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/targetgroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/targetgroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
 
     # ListTargets  POST /targetgroups/{targetGroupIdentifier}/listtargets
@@ -2976,7 +3010,7 @@ struct VPC_LatticeClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/listtargets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/listtargets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.targets.is_some():
             auto u0 = input.targets.unwrap()
@@ -2993,7 +3027,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceIdentifier"] = input.resourceIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/authpolicy/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/authpolicy/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAuthPolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
@@ -3004,7 +3038,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
@@ -3015,7 +3049,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["targetGroupIdentifier"] = input.targetGroupIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/registertargets", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/targetgroups/{targetGroupIdentifier}/registertargets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targets:
@@ -3028,7 +3062,7 @@ struct VPC_LatticeClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_domain_verification(self, StartDomainVerificationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/domainverifications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domainverifications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3049,7 +3083,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -3058,13 +3092,25 @@ struct VPC_LatticeClient:
         auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, vpc_lattice_service(), self.region, host)
+
     # UpdateAccessLogSubscription  PATCH /accesslogsubscriptions/{accessLogSubscriptionIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_access_log_subscription(self, UpdateAccessLogSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["accessLogSubscriptionIdentifier"] = input.accessLogSubscriptionIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/accesslogsubscriptions/{accessLogSubscriptionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.accessLogSubscriptionIdentifier
+        labels["accessLogSubscriptionIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="PATCH", path_template="/accesslogsubscriptions/{accessLogSubscriptionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccessLogSubscriptionDocument(destinationArn=input.destinationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
@@ -3076,7 +3122,7 @@ struct VPC_LatticeClient:
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"defaultAction\":" + rule_action_to_json(input.defaultAction))
         auto bp = restjson.rest_json_document(b, vpc_lattice_json_obj(parts))
@@ -3087,8 +3133,9 @@ struct VPC_LatticeClient:
     def update_resource_configuration(self, UpdateResourceConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["resourceConfigurationIdentifier"] = input.resourceConfigurationIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/resourceconfigurations/{resourceConfigurationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.resourceConfigurationIdentifier
+        labels["resourceConfigurationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resourceconfigurations/{resourceConfigurationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourceConfigurationDefinition.is_some():
             auto u0 = input.resourceConfigurationDefinition.unwrap()
@@ -3111,7 +3158,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceGatewayIdentifier"] = input.resourceGatewayIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/resourcegateways/{resourceGatewayIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/resourcegateways/{resourceGatewayIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.securityGroupIds.is_some():
             auto u0 = input.securityGroupIds.unwrap()
@@ -3130,7 +3177,7 @@ struct VPC_LatticeClient:
         labels["serviceIdentifier"] = input.serviceIdentifier
         labels["listenerIdentifier"] = input.listenerIdentifier
         labels["ruleIdentifier"] = input.ruleIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}/listeners/{listenerIdentifier}/rules/{ruleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.match_.is_some():
             auto u0 = input.match_.unwrap()
@@ -3150,7 +3197,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceIdentifier"] = input.serviceIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/services/{serviceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServiceDocument(certificateArn=input.certificateArn, authType=input.authType, idleTimeoutSeconds=input.idleTimeoutSeconds)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
@@ -3161,7 +3208,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["serviceNetworkIdentifier"] = input.serviceNetworkIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/servicenetworks/{serviceNetworkIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/servicenetworks/{serviceNetworkIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateServiceNetworkDocument(authType=input.authType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
@@ -3171,8 +3218,9 @@ struct VPC_LatticeClient:
     def update_service_network_vpc_association(self, UpdateServiceNetworkVpcAssociationRequest input) -> str:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
-        labels["serviceNetworkVpcAssociationIdentifier"] = input.serviceNetworkVpcAssociationIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.serviceNetworkVpcAssociationIdentifier
+        labels["serviceNetworkVpcAssociationIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="PATCH", path_template="/servicenetworkvpcassociations/{serviceNetworkVpcAssociationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.securityGroupIds.is_some():
             auto u0 = input.securityGroupIds.unwrap()
@@ -3195,7 +3243,7 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         dict[str, str] labels = {}
         labels["targetGroupIdentifier"] = input.targetGroupIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/targetgroups/{targetGroupIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/targetgroups/{targetGroupIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTargetGroupDocument(healthCheck=input.healthCheck)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, vpc_lattice_service(), self.region, host)
@@ -3284,6 +3332,19 @@ struct VPC_LatticeClient:
         auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
         while True:
             auto raw = self.list_rules(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListServiceNetworkResourceAssociations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: items).
+    def paginate_list_service_network_resource_associations(self, ListServiceNetworkResourceAssociationsRequest input):
+        auto host = endpoints.regional_host(vpc_lattice_service(), self.region)
+        while True:
+            auto raw = self.list_service_network_resource_associations(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

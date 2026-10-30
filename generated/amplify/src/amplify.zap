@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 36 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 37 operations — 37 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   101 structs (64 @derive(Json)), 12 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -972,11 +972,6 @@ def amplify_error_from_code(str code) -> AmplifyError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1100,7 +1095,7 @@ struct AmplifyClient:
     # errors: BadRequestException, DependentServiceFailureException, InternalFailureException, LimitExceededException, UnauthorizedException
     def create_app(self, CreateAppRequest input) -> str:
         auto host = endpoints.regional_host(amplify_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/apps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + amplify_json_str(input.name))
         if input.description.is_some():
@@ -1187,7 +1182,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/backendenvironments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/backendenvironments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBackendEnvironmentDocument(environmentName=input.environmentName, stackName=input.stackName, deploymentArtifacts=input.deploymentArtifacts)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
@@ -1198,7 +1193,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"branchName\":" + amplify_json_str(input.branchName))
         if input.description.is_some():
@@ -1274,7 +1269,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}/deployments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.fileMap.is_some():
             auto u0 = input.fileMap.unwrap()
@@ -1291,7 +1286,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/domains", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/domains", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"domainName\":" + amplify_json_str(input.domainName))
         if input.enableAutoSubDomain.is_some():
@@ -1322,7 +1317,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/webhooks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/webhooks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWebhookDocument(branchName=input.branchName, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
@@ -1333,7 +1328,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # DeleteBackendEnvironment  DELETE /apps/{appId}/backendenvironments/{environmentName}
@@ -1343,7 +1338,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/backendenvironments/{environmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/backendenvironments/{environmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # DeleteBranch  DELETE /apps/{appId}/branches/{branchName}
@@ -1353,7 +1348,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/branches/{branchName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/branches/{branchName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # DeleteDomainAssociation  DELETE /apps/{appId}/domains/{domainName}
@@ -1363,7 +1358,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/domains/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/domains/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # DeleteJob  DELETE /apps/{appId}/branches/{branchName}/jobs/{jobId}
@@ -1374,7 +1369,7 @@ struct AmplifyClient:
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # DeleteWebhook  DELETE /webhooks/{webhookId}
@@ -1383,7 +1378,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["webhookId"] = input.webhookId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/webhooks/{webhookId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/webhooks/{webhookId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # GenerateAccessLogs  POST /apps/{appId}/accesslogs
@@ -1392,7 +1387,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/accesslogs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/accesslogs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GenerateAccessLogsDocument(startTime=input.startTime, endTime=input.endTime, domainName=input.domainName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
@@ -1403,7 +1398,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # GetArtifactUrl  GET /artifacts/{artifactId}
@@ -1412,7 +1407,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["artifactId"] = input.artifactId
-        auto b = binding.HttpBinding(method="GET", path_template="/artifacts/{artifactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/artifacts/{artifactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # GetBackendEnvironment  GET /apps/{appId}/backendenvironments/{environmentName}
@@ -1422,7 +1417,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["environmentName"] = input.environmentName
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/backendenvironments/{environmentName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/backendenvironments/{environmentName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # GetBranch  GET /apps/{appId}/branches/{branchName}
@@ -1432,7 +1427,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # GetDomainAssociation  GET /apps/{appId}/domains/{domainName}
@@ -1442,7 +1437,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/domains/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/domains/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # GetJob  GET /apps/{appId}/branches/{branchName}/jobs/{jobId}
@@ -1453,7 +1448,7 @@ struct AmplifyClient:
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # GetWebhook  GET /webhooks/{webhookId}
@@ -1462,7 +1457,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["webhookId"] = input.webhookId
-        auto b = binding.HttpBinding(method="GET", path_template="/webhooks/{webhookId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/webhooks/{webhookId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListApps  GET /apps
@@ -1474,7 +1469,7 @@ struct AmplifyClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/apps", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListArtifacts  GET /apps/{appId}/branches/{branchName}/jobs/{jobId}/artifacts
@@ -1490,7 +1485,7 @@ struct AmplifyClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}/artifacts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}/artifacts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListBackendEnvironments  GET /apps/{appId}/backendenvironments
@@ -1506,7 +1501,7 @@ struct AmplifyClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/backendenvironments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/backendenvironments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListBranches  GET /apps/{appId}/branches
@@ -1520,7 +1515,7 @@ struct AmplifyClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListDomainAssociations  GET /apps/{appId}/domains
@@ -1534,7 +1529,7 @@ struct AmplifyClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/domains", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/domains", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListJobs  GET /apps/{appId}/branches/{branchName}/jobs
@@ -1549,7 +1544,7 @@ struct AmplifyClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}/jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/branches/{branchName}/jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1558,7 +1553,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # ListWebhooks  GET /apps/{appId}/webhooks
@@ -1572,7 +1567,7 @@ struct AmplifyClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/webhooks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/apps/{appId}/webhooks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # StartDeployment  POST /apps/{appId}/branches/{branchName}/deployments/start
@@ -1582,7 +1577,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}/deployments/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}/deployments/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartDeploymentDocument(jobId=input.jobId, sourceUrl=input.sourceUrl, sourceUrlType=input.sourceUrlType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
@@ -1594,7 +1589,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartJobDocument(jobId=input.jobId, jobType=input.jobType, jobReason=input.jobReason, commitId=input.commitId, commitMessage=input.commitMessage, commitTime=input.commitTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
@@ -1607,7 +1602,7 @@ struct AmplifyClient:
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/apps/{appId}/branches/{branchName}/jobs/{jobId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1616,7 +1611,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1625,13 +1620,24 @@ struct AmplifyClient:
         auto bp = restjson.rest_json_document(b, amplify_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: BadRequestException, InternalFailureException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(amplify_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, amplify_service(), self.region, host)
+
     # UpdateApp  POST /apps/{appId}
     # errors: BadRequestException, InternalFailureException, NotFoundException, UnauthorizedException
     def update_app(self, UpdateAppRequest input) -> str:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["appId"] = input.appId
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1715,7 +1721,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["branchName"] = input.branchName
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/branches/{branchName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1784,7 +1790,7 @@ struct AmplifyClient:
         dict[str, str] labels = {}
         labels["appId"] = input.appId
         labels["domainName"] = input.domainName
-        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/domains/{domainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/apps/{appId}/domains/{domainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.enableAutoSubDomain.is_some():
             auto u0 = input.enableAutoSubDomain.unwrap()
@@ -1816,7 +1822,7 @@ struct AmplifyClient:
         auto host = endpoints.regional_host(amplify_service(), self.region)
         dict[str, str] labels = {}
         labels["webhookId"] = input.webhookId
-        auto b = binding.HttpBinding(method="POST", path_template="/webhooks/{webhookId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/webhooks/{webhookId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWebhookDocument(branchName=input.branchName, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, amplify_service(), self.region, host)

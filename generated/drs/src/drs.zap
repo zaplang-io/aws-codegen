@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 70 operations — 69 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 70 operations — 70 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   213 structs (107 @derive(Json)), 46 enums, 8 error variants.
 #   15 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2154,11 +2154,6 @@ def drs_error_from_code(str code) -> drsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -2551,7 +2546,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def associate_source_network_stack(self, AssociateSourceNetworkStackRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AssociateSourceNetworkStack", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AssociateSourceNetworkStack", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateSourceNetworkStackDocument(sourceNetworkID=input.sourceNetworkID, cfnStackName=input.cfnStackName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2560,7 +2555,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def cancel_recovery_plan_execution(self, CancelRecoveryPlanExecutionRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CancelRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CancelRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelRecoveryPlanExecutionDocument(recoveryPlanExecutionArn=input.recoveryPlanExecutionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2569,7 +2564,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def create_extended_source_server(self, CreateExtendedSourceServerRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateExtendedSourceServer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateExtendedSourceServer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceServerArn\":" + drs_json_str(input.sourceServerArn))
         if input.tags.is_some():
@@ -2585,7 +2580,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def create_launch_configuration_template(self, CreateLaunchConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.tags.is_some():
             auto u0 = input.tags.unwrap()
@@ -2627,7 +2622,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def create_recovery_plan(self, CreateRecoveryPlanRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecoveryPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecoveryPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + drs_json_str(input.name))
         if input.description.is_some():
@@ -2649,7 +2644,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def create_recovery_plan_step(self, CreateRecoveryPlanStepRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecoveryPlanStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRecoveryPlanStep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"recoveryPlanArn\":" + drs_json_str(input.recoveryPlanArn))
         parts.append("\"stepName\":" + drs_json_str(input.stepName))
@@ -2667,7 +2662,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def create_replication_configuration_template(self, CreateReplicationConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"stagingAreaSubnetId\":" + drs_json_str(input.stagingAreaSubnetId))
         if input.associateDefaultSecurityGroup.is_some():
@@ -2724,7 +2719,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def create_source_network(self, CreateSourceNetworkRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateSourceNetwork", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSourceNetwork", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"vpcID\":" + drs_json_str(input.vpcID))
         parts.append("\"originAccountID\":" + drs_json_str(input.originAccountID))
@@ -2742,7 +2737,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def delete_job(self, DeleteJobRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteJobDocument(jobID=input.jobID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2751,7 +2746,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def delete_launch_action(self, DeleteLaunchActionRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLaunchAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLaunchAction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLaunchActionDocument(resourceId=input.resourceId, actionId=input.actionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2760,7 +2755,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def delete_launch_configuration_template(self, DeleteLaunchConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLaunchConfigurationTemplateDocument(launchConfigurationTemplateID=input.launchConfigurationTemplateID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2769,7 +2764,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, UninitializedAccountException
     def delete_recovery_instance(self, DeleteRecoveryInstanceRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryInstance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryInstance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRecoveryInstanceDocument(recoveryInstanceID=input.recoveryInstanceID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2778,7 +2773,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def delete_recovery_plan(self, DeleteRecoveryPlanRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRecoveryPlanDocument(recoveryPlanArn=input.recoveryPlanArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2787,7 +2782,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def delete_recovery_plan_execution(self, DeleteRecoveryPlanExecutionRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRecoveryPlanExecutionDocument(recoveryPlanExecutionArn=input.recoveryPlanExecutionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2796,7 +2791,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def delete_recovery_plan_step(self, DeleteRecoveryPlanStepRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryPlanStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRecoveryPlanStep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRecoveryPlanStepDocument(recoveryPlanStepArn=input.recoveryPlanStepArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2805,7 +2800,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def delete_replication_configuration_template(self, DeleteReplicationConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteReplicationConfigurationTemplateDocument(replicationConfigurationTemplateID=input.replicationConfigurationTemplateID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2814,7 +2809,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def delete_source_network(self, DeleteSourceNetworkRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSourceNetwork", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSourceNetwork", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSourceNetworkDocument(sourceNetworkID=input.sourceNetworkID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2823,7 +2818,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def delete_source_server(self, DeleteSourceServerRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSourceServer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSourceServer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSourceServerDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2832,7 +2827,7 @@ struct drsClient:
     # errors: InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_job_log_items(self, DescribeJobLogItemsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobLogItems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobLogItems", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeJobLogItemsDocument(jobID=input.jobID, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2841,7 +2836,7 @@ struct drsClient:
     # errors: InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_jobs(self, DescribeJobsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -2859,7 +2854,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_launch_configuration_templates(self, DescribeLaunchConfigurationTemplatesRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLaunchConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLaunchConfigurationTemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.launchConfigurationTemplateIDs.is_some():
             auto u0 = input.launchConfigurationTemplateIDs.unwrap()
@@ -2880,7 +2875,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UninitializedAccountException
     def describe_recovery_instances(self, DescribeRecoveryInstancesRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeRecoveryInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeRecoveryInstances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -2898,7 +2893,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_recovery_snapshots(self, DescribeRecoverySnapshotsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeRecoverySnapshots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeRecoverySnapshots", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeRecoverySnapshotsDocument(sourceServerID=input.sourceServerID, filters=input.filters, order=input.order, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2907,7 +2902,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_replication_configuration_templates(self, DescribeReplicationConfigurationTemplatesRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeReplicationConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeReplicationConfigurationTemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.replicationConfigurationTemplateIDs.is_some():
             auto u0 = input.replicationConfigurationTemplateIDs.unwrap()
@@ -2928,7 +2923,7 @@ struct drsClient:
     # errors: InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_source_networks(self, DescribeSourceNetworksRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceNetworks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceNetworks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -2946,7 +2941,7 @@ struct drsClient:
     # errors: InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def describe_source_servers(self, DescribeSourceServersRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceServers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -2964,7 +2959,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def disconnect_recovery_instance(self, DisconnectRecoveryInstanceRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectRecoveryInstance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectRecoveryInstance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisconnectRecoveryInstanceDocument(recoveryInstanceID=input.recoveryInstanceID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2973,7 +2968,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def disconnect_source_server(self, DisconnectSourceServerRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectSourceServer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectSourceServer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisconnectSourceServerDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2982,7 +2977,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def export_source_network_cfn_template(self, ExportSourceNetworkCfnTemplateRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ExportSourceNetworkCfnTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ExportSourceNetworkCfnTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExportSourceNetworkCfnTemplateDocument(sourceNetworkID=input.sourceNetworkID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -2991,7 +2986,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def get_failback_replication_configuration(self, GetFailbackReplicationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetFailbackReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetFailbackReplicationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetFailbackReplicationConfigurationDocument(recoveryInstanceID=input.recoveryInstanceID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3000,7 +2995,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def get_launch_configuration(self, GetLaunchConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetLaunchConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetLaunchConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLaunchConfigurationDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3009,7 +3004,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def get_recovery_plan(self, GetRecoveryPlanRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRecoveryPlanDocument(recoveryPlanArn=input.recoveryPlanArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3018,7 +3013,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def get_recovery_plan_execution(self, GetRecoveryPlanExecutionRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRecoveryPlanExecutionDocument(recoveryPlanExecutionArn=input.recoveryPlanExecutionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3027,7 +3022,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def get_recovery_plan_execution_step(self, GetRecoveryPlanExecutionStepRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlanExecutionStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlanExecutionStep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRecoveryPlanExecutionStepDocument(recoveryPlanExecutionStepArn=input.recoveryPlanExecutionStepArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3036,7 +3031,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def get_recovery_plan_step(self, GetRecoveryPlanStepRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlanStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRecoveryPlanStep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRecoveryPlanStepDocument(recoveryPlanStepArn=input.recoveryPlanStepArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3045,7 +3040,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def get_replication_configuration(self, GetReplicationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetReplicationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetReplicationConfigurationDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3054,14 +3049,14 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def initialize_service(self) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/InitializeService", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/InitializeService", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, drs_service(), self.region, host)
 
     # ListExtensibleSourceServers  POST /ListExtensibleSourceServers
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def list_extensible_source_servers(self, ListExtensibleSourceServersRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListExtensibleSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListExtensibleSourceServers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListExtensibleSourceServersDocument(stagingAccountID=input.stagingAccountID, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3070,7 +3065,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException
     def list_launch_actions(self, ListLaunchActionsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLaunchActions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLaunchActions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceId\":" + drs_json_str(input.resourceId))
         if input.filters.is_some():
@@ -3089,7 +3084,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def list_recovery_plan_execution_steps(self, ListRecoveryPlanExecutionStepsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlanExecutionSteps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlanExecutionSteps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecoveryPlanExecutionStepsDocument(recoveryPlanExecutionArn=input.recoveryPlanExecutionArn, filter=input.filter, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3098,7 +3093,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def list_recovery_plan_executions(self, ListRecoveryPlanExecutionsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlanExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlanExecutions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecoveryPlanExecutionsDocument(recoveryPlanArn=input.recoveryPlanArn, status=input.status, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3107,7 +3102,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def list_recovery_plan_steps(self, ListRecoveryPlanStepsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlanSteps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlanSteps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecoveryPlanStepsDocument(recoveryPlanArn=input.recoveryPlanArn, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3116,7 +3111,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, UninitializedAccountException, ValidationException
     def list_recovery_plans(self, ListRecoveryPlansRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRecoveryPlans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRecoveryPlansDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3130,7 +3125,7 @@ struct drsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/ListStagingAccounts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/ListStagingAccounts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, drs_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -3139,14 +3134,14 @@ struct drsClient:
         auto host = endpoints.regional_host(drs_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, drs_service(), self.region, host)
 
     # PutLaunchAction  POST /PutLaunchAction
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def put_launch_action(self, PutLaunchActionRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutLaunchAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutLaunchAction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceId\":" + drs_json_str(input.resourceId))
         parts.append("\"actionCode\":" + drs_json_str(input.actionCode))
@@ -3171,7 +3166,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def reorder_recovery_plan_steps(self, ReorderRecoveryPlanStepsRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ReorderRecoveryPlanSteps", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ReorderRecoveryPlanSteps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"recoveryPlanArn\":" + drs_json_str(input.recoveryPlanArn))
         list[str] e0 = []
@@ -3185,7 +3180,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def retry_data_replication(self, RetryDataReplicationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RetryDataReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RetryDataReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RetryDataReplicationDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3194,7 +3189,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def retry_recovery_plan_execution_step(self, RetryRecoveryPlanExecutionStepRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RetryRecoveryPlanExecutionStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RetryRecoveryPlanExecutionStep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RetryRecoveryPlanExecutionStepDocument(recoveryPlanExecutionStepArn=input.recoveryPlanExecutionStepArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3203,7 +3198,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def reverse_replication(self, ReverseReplicationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ReverseReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ReverseReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ReverseReplicationDocument(recoveryInstanceID=input.recoveryInstanceID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3212,7 +3207,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def start_failback_launch(self, StartFailbackLaunchRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartFailbackLaunch", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartFailbackLaunch", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.recoveryInstanceIDs:
@@ -3231,7 +3226,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException
     def start_recovery(self, StartRecoveryRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartRecovery", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartRecovery", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sourceServers:
@@ -3253,7 +3248,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def start_recovery_plan_execution(self, StartRecoveryPlanExecutionRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartRecoveryPlanExecution", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"recoveryPlanArn\":" + drs_json_str(input.recoveryPlanArn))
         parts.append("\"mode\":" + input.mode.to_json())
@@ -3279,7 +3274,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def start_replication(self, StartReplicationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartReplicationDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3288,7 +3283,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException, ValidationException
     def start_source_network_recovery(self, StartSourceNetworkRecoveryRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartSourceNetworkRecovery", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartSourceNetworkRecovery", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sourceNetworks:
@@ -3310,7 +3305,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def start_source_network_replication(self, StartSourceNetworkReplicationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartSourceNetworkReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartSourceNetworkReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartSourceNetworkReplicationDocument(sourceNetworkID=input.sourceNetworkID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3319,7 +3314,7 @@ struct drsClient:
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def stop_failback(self, StopFailbackRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopFailback", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopFailback", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopFailbackDocument(recoveryInstanceID=input.recoveryInstanceID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3328,7 +3323,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def stop_replication(self, StopReplicationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopReplicationDocument(sourceServerID=input.sourceServerID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3337,7 +3332,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def stop_source_network_replication(self, StopSourceNetworkReplicationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopSourceNetworkReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopSourceNetworkReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopSourceNetworkReplicationDocument(sourceNetworkID=input.sourceNetworkID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3348,7 +3343,7 @@ struct drsClient:
         auto host = endpoints.regional_host(drs_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -3361,7 +3356,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, UninitializedAccountException
     def terminate_recovery_instances(self, TerminateRecoveryInstancesRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TerminateRecoveryInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TerminateRecoveryInstances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.recoveryInstanceIDs:
@@ -3370,11 +3365,22 @@ struct drsClient:
         auto bp = restjson.rest_json_document(b, drs_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(drs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, drs_service(), self.region, host)
+
     # UpdateFailbackReplicationConfiguration  POST /UpdateFailbackReplicationConfiguration
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException
     def update_failback_replication_configuration(self, UpdateFailbackReplicationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateFailbackReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateFailbackReplicationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFailbackReplicationConfigurationDocument(recoveryInstanceID=input.recoveryInstanceID, name=input.name, bandwidthThrottling=input.bandwidthThrottling, usePrivateIP=input.usePrivateIP, internetProtocol=input.internetProtocol)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3383,7 +3389,7 @@ struct drsClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def update_launch_configuration(self, UpdateLaunchConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLaunchConfigurationDocument(sourceServerID=input.sourceServerID, name=input.name, launchDisposition=input.launchDisposition, targetInstanceTypeRightSizingMethod=input.targetInstanceTypeRightSizingMethod, copyPrivateIp=input.copyPrivateIp, copyTags=input.copyTags, licensing=input.licensing, postLaunchEnabled=input.postLaunchEnabled, launchIntoInstanceProperties=input.launchIntoInstanceProperties, recoveryMode=input.recoveryMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3392,7 +3398,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def update_launch_configuration_template(self, UpdateLaunchConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLaunchConfigurationTemplateDocument(launchConfigurationTemplateID=input.launchConfigurationTemplateID, launchDisposition=input.launchDisposition, targetInstanceTypeRightSizingMethod=input.targetInstanceTypeRightSizingMethod, copyPrivateIp=input.copyPrivateIp, copyTags=input.copyTags, licensing=input.licensing, exportBucketArn=input.exportBucketArn, postLaunchEnabled=input.postLaunchEnabled, launchIntoSourceInstance=input.launchIntoSourceInstance, recoveryMode=input.recoveryMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3401,7 +3407,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def update_recovery_plan(self, UpdateRecoveryPlanRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRecoveryPlanDocument(recoveryPlanArn=input.recoveryPlanArn, name=input.name, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, drs_service(), self.region, host)
@@ -3410,7 +3416,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def update_recovery_plan_execution_step(self, UpdateRecoveryPlanExecutionStepRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlanExecutionStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlanExecutionStep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"recoveryPlanExecutionStepArn\":" + drs_json_str(input.recoveryPlanExecutionStepArn))
         if input.status.is_some():
@@ -3432,7 +3438,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def update_recovery_plan_step(self, UpdateRecoveryPlanStepRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlanStep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRecoveryPlanStep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"recoveryPlanStepArn\":" + drs_json_str(input.recoveryPlanStepArn))
         if input.stepName.is_some():
@@ -3448,7 +3454,7 @@ struct drsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def update_replication_configuration(self, UpdateReplicationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceServerID\":" + drs_json_str(input.sourceServerID))
         if input.name.is_some():
@@ -3521,7 +3527,7 @@ struct drsClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, UninitializedAccountException, ValidationException
     def update_replication_configuration_template(self, UpdateReplicationConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(drs_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"replicationConfigurationTemplateID\":" + drs_json_str(input.replicationConfigurationTemplateID))
         if input.arn.is_some():

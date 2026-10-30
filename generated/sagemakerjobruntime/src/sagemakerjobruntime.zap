@@ -183,7 +183,7 @@ struct SagemakerJobRuntimeClient:
         auto host = endpoints.regional_host(job_runtime_sagemaker_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amzn-SageMaker-Job-Arn"] = input.JobArn
-        auto b = binding.HttpBinding(method="POST", path_template="/complete-rollout", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/complete-rollout", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CompleteRolloutDocument(TrajectoryId=input.TrajectoryId, Status=input.Status, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, job_runtime_sagemaker_service(), self.region, host)
@@ -195,7 +195,7 @@ struct SagemakerJobRuntimeClient:
         dict[str, str] headers = {}
         headers["X-Amzn-SageMaker-Job-Arn"] = input.JobArn
         headers["X-Amzn-SageMaker-Trajectory-Id"] = input.TrajectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/sample", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sample", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Body), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, job_runtime_sagemaker_service(), self.region, host)
 
@@ -206,7 +206,7 @@ struct SagemakerJobRuntimeClient:
         dict[str, str] headers = {}
         headers["X-Amzn-SageMaker-Job-Arn"] = input.JobArn
         headers["X-Amzn-SageMaker-Trajectory-Id"] = input.TrajectoryId
-        auto b = binding.HttpBinding(method="POST", path_template="/sample-with-response-stream", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sample-with-response-stream", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Body), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, job_runtime_sagemaker_service(), self.region, host)
 
@@ -216,7 +216,7 @@ struct SagemakerJobRuntimeClient:
         auto host = endpoints.regional_host(job_runtime_sagemaker_service(), self.region)
         dict[str, str] headers = {}
         headers["X-Amzn-SageMaker-Job-Arn"] = input.JobArn
-        auto b = binding.HttpBinding(method="POST", path_template="/update-reward", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-reward", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"TrajectoryId\":" + job_runtime_sagemaker_json_str(input.TrajectoryId))
         list[str] e0 = []

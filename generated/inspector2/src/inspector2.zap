@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 84 operations — 83 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 84 operations — 84 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   400 structs (221 @derive(Json)), 114 enums, 8 error variants.
 #   19 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -4308,11 +4308,6 @@ def inspector2_error_from_code(str code) -> Inspector2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -6344,7 +6339,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def associate_member(self, AssociateMemberRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/associate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/associate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMemberDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6353,7 +6348,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_associate_code_security_scan_configuration(self, BatchAssociateCodeSecurityScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/batch/associate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/batch/associate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.associateConfigurationRequests:
@@ -6366,7 +6361,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_disassociate_code_security_scan_configuration(self, BatchDisassociateCodeSecurityScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/batch/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/batch/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.disassociateConfigurationRequests:
@@ -6379,7 +6374,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_get_account_status(self, BatchGetAccountStatusRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/status/batch/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/status/batch/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountIds.is_some():
             auto u0 = input.accountIds.unwrap()
@@ -6394,7 +6389,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_get_code_snippet(self, BatchGetCodeSnippetRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesnippet/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesnippet/batchget", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.findingArns:
@@ -6407,7 +6402,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_get_finding_details(self, BatchGetFindingDetailsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings/details/batch/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/details/batch/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.findingArns:
@@ -6420,7 +6415,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_get_free_trial_info(self, BatchGetFreeTrialInfoRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/freetrialinfo/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/freetrialinfo/batchget", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -6433,7 +6428,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_get_member_ec2_deep_inspection_status(self, BatchGetMemberEc2DeepInspectionStatusRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionstatus/member/batch/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionstatus/member/batch/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountIds.is_some():
             auto u0 = input.accountIds.unwrap()
@@ -6448,7 +6443,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_update_member_ec2_deep_inspection_status(self, BatchUpdateMemberEc2DeepInspectionStatusRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionstatus/member/batch/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionstatus/member/batch/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.accountIds:
@@ -6461,7 +6456,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def cancel_findings_report(self, CancelFindingsReportRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reporting/cancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reporting/cancel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelFindingsReportDocument(reportId=input.reportId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6470,7 +6465,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def cancel_sbom_export(self, CancelSbomExportRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/cancel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/cancel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelSbomExportDocument(reportId=input.reportId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6479,7 +6474,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def create_cis_scan_configuration(self, CreateCisScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanName\":" + inspector2_json_str(input.scanName))
         parts.append("\"securityLevel\":" + input.securityLevel.to_json())
@@ -6498,7 +6493,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_code_security_integration(self, CreateCodeSecurityIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + inspector2_json_str(input.name))
         parts.append("\"type\":" + input.type.to_json())
@@ -6518,7 +6513,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_code_security_scan_configuration(self, CreateCodeSecurityScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + inspector2_json_str(input.name))
         parts.append("\"level\":" + input.level.to_json())
@@ -6539,7 +6534,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_connector(self, CreateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connector/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connector/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -6563,7 +6558,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_filter(self, CreateFilterRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/filters/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/filters/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"action\":" + input.action.to_json())
         if input.description.is_some():
@@ -6587,7 +6582,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_findings_report(self, CreateFindingsReportRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reporting/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reporting/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterCriteria.is_some():
             auto u0 = input.filterCriteria.unwrap()
@@ -6601,7 +6596,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_sbom_export(self, CreateSbomExportRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/create", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/create", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourceFilterCriteria.is_some():
             auto u0 = input.resourceFilterCriteria.unwrap()
@@ -6615,7 +6610,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_cis_scan_configuration(self, DeleteCisScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteCisScanConfigurationDocument(scanConfigurationArn=input.scanConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6624,7 +6619,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_code_security_integration(self, DeleteCodeSecurityIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteCodeSecurityIntegrationDocument(integrationArn=input.integrationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6633,7 +6628,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_code_security_scan_configuration(self, DeleteCodeSecurityScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteCodeSecurityScanConfigurationDocument(scanConfigurationArn=input.scanConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6642,7 +6637,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_connector(self, DeleteConnectorRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connector/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connector/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConnectorDocument(connectorArn=input.connectorArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6651,7 +6646,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_filter(self, DeleteFilterRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/filters/delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/filters/delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteFilterDocument(arn=input.arn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6660,14 +6655,14 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def describe_organization_configuration(self) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organizationconfiguration/describe", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organizationconfiguration/describe", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
     # Disable  POST /disable
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def disable(self, DisableRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountIds.is_some():
             auto u0 = input.accountIds.unwrap()
@@ -6688,7 +6683,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def disable_delegated_admin_account(self, DisableDelegatedAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/disable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/disable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisableDelegatedAdminAccountDocument(delegatedAdminAccountId=input.delegatedAdminAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6697,7 +6692,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def disassociate_member(self, DisassociateMemberRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/disassociate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/disassociate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateMemberDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6706,7 +6701,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def enable(self, EnableRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/enable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/enable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountIds.is_some():
             auto u0 = input.accountIds.unwrap()
@@ -6728,7 +6723,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def enable_delegated_admin_account(self, EnableDelegatedAdminAccountRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/enable", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/enable", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = EnableDelegatedAdminAccountDocument(delegatedAdminAccountId=input.delegatedAdminAccountId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6737,7 +6732,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_cis_scan_report(self, GetCisScanReportRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan/report/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan/report/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
         if input.targetAccounts.is_some():
@@ -6756,7 +6751,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_cis_scan_result_details(self, GetCisScanResultDetailsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/details/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/details/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
         parts.append("\"targetResourceId\":" + inspector2_json_str(input.targetResourceId))
@@ -6783,7 +6778,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_clusters_for_image(self, GetClustersForImageRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cluster/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cluster/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetClustersForImageDocument(filter=input.filter, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6792,7 +6787,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_code_security_integration(self, GetCodeSecurityIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"integrationArn\":" + inspector2_json_str(input.integrationArn))
         if input.tags.is_some():
@@ -6808,7 +6803,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_code_security_scan(self, GetCodeSecurityScanRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCodeSecurityScanDocument(resource=input.resource, scanId=input.scanId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6817,7 +6812,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_code_security_scan_configuration(self, GetCodeSecurityScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCodeSecurityScanConfigurationDocument(scanConfigurationArn=input.scanConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6826,7 +6821,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_configuration(self, GetConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetConfigurationDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6835,14 +6830,14 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_delegated_admin_account(self) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
     # GetEc2DeepInspectionConfiguration  POST /ec2deepinspectionconfiguration/get
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def get_ec2_deep_inspection_configuration(self) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
     # GetEncryptionKey  GET /encryptionkey/get
@@ -6852,14 +6847,14 @@ struct Inspector2Client:
         dict[str, str] query = {}
         query["scanType"] = input.scanType
         query["resourceType"] = input.resourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/encryptionkey/get", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/encryptionkey/get", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
     # GetFindingsReportStatus  POST /reporting/status/get
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_findings_report_status(self, GetFindingsReportStatusRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/reporting/status/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/reporting/status/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetFindingsReportStatusDocument(reportId=input.reportId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6868,7 +6863,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_member(self, GetMemberRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetMemberDocument(accountId=input.accountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6877,7 +6872,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_on_demand_scan_status(self, GetOnDemandScanStatusRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ondemand/scan/status", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ondemand/scan/status", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetOnDemandScanStatusDocument(resourceId=input.resourceId, scanId=input.scanId, resourceType=input.resourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6886,7 +6881,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_sbom_export(self, GetSbomExportRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/get", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sbomexport/get", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSbomExportDocument(reportId=input.reportId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6895,7 +6890,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_account_permissions(self, ListAccountPermissionsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/accountpermissions/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/accountpermissions/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAccountPermissionsDocument(service=input.service, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -6904,7 +6899,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_cis_scan_configurations(self, ListCisScanConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterCriteria.is_some():
             auto u0 = input.filterCriteria.unwrap()
@@ -6928,7 +6923,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_cis_scan_results_aggregated_by_checks(self, ListCisScanResultsAggregatedByChecksRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/check/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/check/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
         if input.filterCriteria.is_some():
@@ -6953,7 +6948,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_cis_scan_results_aggregated_by_target_resource(self, ListCisScanResultsAggregatedByTargetResourceRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/resource/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-result/resource/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanArn\":" + inspector2_json_str(input.scanArn))
         if input.filterCriteria.is_some():
@@ -6978,7 +6973,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_cis_scans(self, ListCisScansRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterCriteria.is_some():
             auto u0 = input.filterCriteria.unwrap()
@@ -7010,7 +7005,7 @@ struct Inspector2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
     # ListCodeSecurityScanConfigurationAssociations  POST /codesecurity/scan-configuration/associations/list
@@ -7022,7 +7017,7 @@ struct Inspector2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/associations/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/associations/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCodeSecurityScanConfigurationAssociationsDocument(scanConfigurationArn=input.scanConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7036,14 +7031,14 @@ struct Inspector2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/list", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/list", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
     # ListConnectorScanConfigurations  POST /connectorscanconfigurations/list
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_connector_scan_configurations(self, ListConnectorScanConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connectorscanconfigurations/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connectorscanconfigurations/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.awsConfigConnectorArns.is_some():
             auto u0 = input.awsConfigConnectorArns.unwrap()
@@ -7064,7 +7059,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_connectors(self, ListConnectorsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connector/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connector/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -7082,7 +7077,7 @@ struct Inspector2Client:
     # errors: InternalServerException, ThrottlingException, ValidationException
     def list_coverage(self, ListCoverageRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/coverage/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/coverage/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -7100,7 +7095,7 @@ struct Inspector2Client:
     # errors: InternalServerException, ThrottlingException, ValidationException
     def list_coverage_statistics(self, ListCoverageStatisticsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/coverage/statistics/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/coverage/statistics/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterCriteria.is_some():
             auto u0 = input.filterCriteria.unwrap()
@@ -7118,7 +7113,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_delegated_admin_accounts(self, ListDelegatedAdminAccountsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delegatedadminaccounts/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDelegatedAdminAccountsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7127,7 +7122,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_filters(self, ListFiltersRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/filters/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/filters/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.arns.is_some():
             auto u0 = input.arns.unwrap()
@@ -7151,7 +7146,7 @@ struct Inspector2Client:
     # errors: InternalServerException, ThrottlingException, ValidationException
     def list_finding_aggregations(self, ListFindingAggregationsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings/aggregation/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/aggregation/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"aggregationType\":" + input.aggregationType.to_json())
         if input.nextToken.is_some():
@@ -7176,7 +7171,7 @@ struct Inspector2Client:
     # errors: InternalServerException, ThrottlingException, ValidationException
     def list_findings(self, ListFindingsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/findings/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/findings/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -7197,7 +7192,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_members(self, ListMembersRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/members/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/members/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMembersDocument(onlyAssociated=input.onlyAssociated, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7206,7 +7201,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_on_demand_scans(self, ListOnDemandScansRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ondemand/scans", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ondemand/scans", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListOnDemandScansDocument(resourceId=input.resourceId, resourceType=input.resourceType, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7217,14 +7212,14 @@ struct Inspector2Client:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
 
     # ListUsageTotals  POST /usage/list
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_usage_totals(self, ListUsageTotalsRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/usage/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/usage/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -7245,7 +7240,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def reset_encryption_key(self, ResetEncryptionKeyRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/encryptionkey/reset", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/encryptionkey/reset", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResetEncryptionKeyDocument(scanType=input.scanType, resourceType=input.resourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7254,7 +7249,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def search_vulnerabilities(self, SearchVulnerabilitiesRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/vulnerabilities/search", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vulnerabilities/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"filterCriteria\":" + search_vulnerabilities_filter_criteria_to_json(input.filterCriteria))
         if input.nextToken.is_some():
@@ -7267,7 +7262,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def send_cis_session_health(self, SendCisSessionHealthRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/health/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/health/send", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SendCisSessionHealthDocument(scanJobId=input.scanJobId, sessionToken=input.sessionToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7276,7 +7271,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def send_cis_session_telemetry(self, SendCisSessionTelemetryRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/telemetry/send", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/telemetry/send", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanJobId\":" + inspector2_json_str(input.scanJobId))
         parts.append("\"sessionToken\":" + inspector2_json_str(input.sessionToken))
@@ -7291,7 +7286,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def start_cis_session(self, StartCisSessionRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/start", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartCisSessionDocument(scanJobId=input.scanJobId, message=input.message)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7300,7 +7295,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_code_security_scan(self, StartCodeSecurityScanRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan/start", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartCodeSecurityScanDocument(clientToken=input.clientToken, resource=input.resource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7309,7 +7304,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def start_on_demand_scan(self, StartOnDemandScanRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ondemand/scan", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ondemand/scan", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartOnDemandScanDocument(resourceId=input.resourceId, resourceType=input.resourceType, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7318,7 +7313,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def stop_cis_session(self, StopCisSessionRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cissession/stop", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopCisSessionDocument(scanJobId=input.scanJobId, sessionToken=input.sessionToken, message=input.message)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7329,7 +7324,7 @@ struct Inspector2Client:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -7338,11 +7333,22 @@ struct Inspector2Client:
         auto bp = restjson.rest_json_document(b, inspector2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(inspector2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, inspector2_service(), self.region, host)
+
     # UpdateCisScanConfiguration  POST /cis/scan-configuration/update
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_cis_scan_configuration(self, UpdateCisScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cis/scan-configuration/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanConfigurationArn\":" + inspector2_json_str(input.scanConfigurationArn))
         if input.scanName.is_some():
@@ -7364,7 +7370,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_code_security_integration(self, UpdateCodeSecurityIntegrationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/integration/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCodeSecurityIntegrationDocument(integrationArn=input.integrationArn, details=input.details)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7373,7 +7379,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_code_security_scan_configuration(self, UpdateCodeSecurityScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/codesecurity/scan-configuration/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"scanConfigurationArn\":" + inspector2_json_str(input.scanConfigurationArn))
         parts.append("\"configuration\":" + code_security_scan_configuration_to_json(input.configuration))
@@ -7384,7 +7390,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def update_configuration(self, UpdateConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountId.is_some():
             auto u0 = input.accountId.unwrap()
@@ -7408,7 +7414,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_connector(self, UpdateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connector/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connector/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"connectorArn\":" + inspector2_json_str(input.connectorArn))
         if input.description.is_some():
@@ -7424,7 +7430,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_connector_scan_configuration(self, UpdateConnectorScanConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connectorscanconfiguration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connectorscanconfiguration/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConnectorScanConfigurationDocument(awsConfigConnectorArn=input.awsConfigConnectorArn, scanConfiguration=input.scanConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7433,7 +7439,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_ec2_deep_inspection_configuration(self, UpdateEc2DeepInspectionConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.activateDeepInspection.is_some():
             auto u0 = input.activateDeepInspection.unwrap()
@@ -7451,7 +7457,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_encryption_key(self, UpdateEncryptionKeyRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/encryptionkey/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/encryptionkey/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEncryptionKeyDocument(kmsKeyId=input.kmsKeyId, scanType=input.scanType, resourceType=input.resourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)
@@ -7460,7 +7466,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_filter(self, UpdateFilterRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/filters/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/filters/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.action.is_some():
             auto u0 = input.action.unwrap()
@@ -7485,7 +7491,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_org_ec2_deep_inspection_configuration(self, UpdateOrgEc2DeepInspectionConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/org/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ec2deepinspectionconfiguration/org/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.orgPackagePaths:
@@ -7498,7 +7504,7 @@ struct Inspector2Client:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_organization_configuration(self, UpdateOrganizationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(inspector2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/organizationconfiguration/update", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/organizationconfiguration/update", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOrganizationConfigurationDocument(autoEnable=input.autoEnable)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, inspector2_service(), self.region, host)

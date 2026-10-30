@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 24 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 25 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   69 structs (49 @derive(Json)), 9 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -661,11 +661,6 @@ def networkflowmonitor_error_from_code(str code) -> NetworkFlowMonitorError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -704,7 +699,7 @@ struct NetworkFlowMonitorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_monitor(self, CreateMonitorInput input) -> str:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/monitors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/monitors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"monitorName\":" + networkflowmonitor_json_str(input.monitorName))
         list[str] e0 = []
@@ -734,7 +729,7 @@ struct NetworkFlowMonitorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_scope(self, CreateScopeInput input) -> str:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/scopes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/scopes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.targets:
@@ -758,7 +753,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # DeleteScope  DELETE /scopes/{scopeId}
@@ -767,7 +762,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/scopes/{scopeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/scopes/{scopeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetMonitor  GET /monitors/{monitorName}
@@ -776,7 +771,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetQueryResultsMonitorTopContributors  GET /monitors/{monitorName}/topContributorsQueries/{queryId}/results
@@ -791,7 +786,7 @@ struct NetworkFlowMonitorClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}/topContributorsQueries/{queryId}/results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}/topContributorsQueries/{queryId}/results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetQueryResultsWorkloadInsightsTopContributors  GET /workloadInsights/{scopeId}/topContributorsQueries/{queryId}/results
@@ -806,7 +801,7 @@ struct NetworkFlowMonitorClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsQueries/{queryId}/results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsQueries/{queryId}/results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetQueryResultsWorkloadInsightsTopContributorsData  GET /workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}/results
@@ -821,7 +816,7 @@ struct NetworkFlowMonitorClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}/results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}/results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetQueryStatusMonitorTopContributors  GET /monitors/{monitorName}/topContributorsQueries/{queryId}/status
@@ -831,7 +826,7 @@ struct NetworkFlowMonitorClient:
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}/topContributorsQueries/{queryId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/monitors/{monitorName}/topContributorsQueries/{queryId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetQueryStatusWorkloadInsightsTopContributors  GET /workloadInsights/{scopeId}/topContributorsQueries/{queryId}/status
@@ -841,7 +836,7 @@ struct NetworkFlowMonitorClient:
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsQueries/{queryId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsQueries/{queryId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetQueryStatusWorkloadInsightsTopContributorsData  GET /workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}/status
@@ -851,7 +846,7 @@ struct NetworkFlowMonitorClient:
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # GetScope  GET /scopes/{scopeId}
@@ -860,7 +855,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
-        auto b = binding.HttpBinding(method="GET", path_template="/scopes/{scopeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scopes/{scopeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # ListMonitors  GET /monitors
@@ -874,7 +869,7 @@ struct NetworkFlowMonitorClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.monitorStatus.is_some():
             query["monitorStatus"] = input.monitorStatus.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/monitors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/monitors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # ListScopes  GET /scopes
@@ -886,7 +881,7 @@ struct NetworkFlowMonitorClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/scopes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/scopes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -895,7 +890,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # StartQueryMonitorTopContributors  POST /monitors/{monitorName}/topContributorsQueries
@@ -904,7 +899,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="POST", path_template="/monitors/{monitorName}/topContributorsQueries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/monitors/{monitorName}/topContributorsQueries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartQueryMonitorTopContributorsDocument(startTime=input.startTime, endTime=input.endTime, metricName=input.metricName, destinationCategory=input.destinationCategory, limit=input.limit)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
@@ -915,7 +910,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloadInsights/{scopeId}/topContributorsQueries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloadInsights/{scopeId}/topContributorsQueries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartQueryWorkloadInsightsTopContributorsDocument(startTime=input.startTime, endTime=input.endTime, metricName=input.metricName, destinationCategory=input.destinationCategory, limit=input.limit)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
@@ -926,7 +921,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
-        auto b = binding.HttpBinding(method="POST", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartQueryWorkloadInsightsTopContributorsDataDocument(startTime=input.startTime, endTime=input.endTime, metricName=input.metricName, destinationCategory=input.destinationCategory)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
@@ -938,7 +933,7 @@ struct NetworkFlowMonitorClient:
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}/topContributorsQueries/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/monitors/{monitorName}/topContributorsQueries/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # StopQueryWorkloadInsightsTopContributors  DELETE /workloadInsights/{scopeId}/topContributorsQueries/{queryId}
@@ -948,7 +943,7 @@ struct NetworkFlowMonitorClient:
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workloadInsights/{scopeId}/topContributorsQueries/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workloadInsights/{scopeId}/topContributorsQueries/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # StopQueryWorkloadInsightsTopContributorsData  DELETE /workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}
@@ -958,7 +953,7 @@ struct NetworkFlowMonitorClient:
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
         labels["queryId"] = input.queryId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workloadInsights/{scopeId}/topContributorsDataQueries/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -967,7 +962,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -976,13 +971,24 @@ struct NetworkFlowMonitorClient:
         auto bp = restjson.rest_json_document(b, networkflowmonitor_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, networkflowmonitor_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, networkflowmonitor_service(), self.region, host)
+
     # UpdateMonitor  PATCH /monitors/{monitorName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_monitor(self, UpdateMonitorInput input) -> str:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorName"] = input.monitorName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/monitors/{monitorName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.localResourcesToAdd.is_some():
             auto u0 = input.localResourcesToAdd.unwrap()
@@ -1020,7 +1026,7 @@ struct NetworkFlowMonitorClient:
         auto host = endpoints.regional_host(networkflowmonitor_service(), self.region)
         dict[str, str] labels = {}
         labels["scopeId"] = input.scopeId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/scopes/{scopeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/scopes/{scopeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.resourcesToAdd.is_some():
             auto u0 = input.resourcesToAdd.unwrap()

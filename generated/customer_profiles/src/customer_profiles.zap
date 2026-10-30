@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 115 operations — 110 with a generated method,
-#   5 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 115 operations — 113 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   380 structs (205 @derive(Json)), 65 enums, 5 error variants.
 #   14 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3828,10 +3828,7 @@ def profile_error_from_code(str code) -> Customer_ProfilesError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   CreateIntegrationWorkflow (document member `IntegrationConfig: IntegrationConfig` is not serializable)
-#   ListAccountIntegrations (httpQuery `IncludeHidden` has unsupported type bool)
-#   ListIntegrations (httpQuery `IncludeHidden` has unsupported type bool)
 #   PutIntegration (document member `FlowDefinition: FlowDefinition` is not serializable)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -3878,6 +3875,11 @@ struct GetSimilarProfilesDocument:
     MatchType MatchType
     str SearchKey
     str SearchValue
+
+@derive(Json)
+struct ListAccountIntegrationsDocument:
+    # document members of ListAccountIntegrations
+    str Uri
 
 @derive(Json)
 struct ListProfileHistoryRecordsDocument:
@@ -4658,6 +4660,12 @@ def segment_sort_to_json(SegmentSort v) -> str:
     parts.append("\"Attributes\":" + profile_json_arr(e0))
     return profile_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def profile_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Customer_Profiles client: credentials + region, threaded into every operation.
 struct Customer_ProfilesClient:
     core.Credentials creds
@@ -4669,7 +4677,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/keys", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/keys", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
         parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
@@ -4686,7 +4694,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-streams", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-streams", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateStreamForSegmentsDocument(DestinationArn=input.DestinationArn, DestinationRoleArn=input.DestinationRoleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -4698,7 +4706,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["CalculatedAttributeName"] = input.CalculatedAttributeName
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}/batch-get-for-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}/batch-get-for-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ProfileIds:
@@ -4716,7 +4724,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/batch-get-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/batch-get-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ProfileIds:
@@ -4731,7 +4739,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles/objects/batch-put-profile-object", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles/objects/batch-put-profile-object", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ObjectTypeName\":" + profile_json_str(input.ObjectTypeName))
         list[str] e0 = []
@@ -4748,7 +4756,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["CalculatedAttributeName"] = input.CalculatedAttributeName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DisplayName.is_some():
             auto u0 = input.DisplayName.unwrap()
@@ -4782,7 +4790,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DefaultExpirationDays\":" + str(input.DefaultExpirationDays))
         if input.DefaultEncryptionKey.is_some():
@@ -4816,7 +4824,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["LayoutDefinitionName"] = input.LayoutDefinitionName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Description\":" + profile_json_str(input.Description))
         parts.append("\"DisplayName\":" + profile_json_str(input.DisplayName))
@@ -4841,7 +4849,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EventStreamName"] = input.EventStreamName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/event-streams/{EventStreamName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/event-streams/{EventStreamName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Uri\":" + profile_json_str(input.Uri))
         if input.Tags.is_some():
@@ -4860,7 +4868,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EventTriggerName"] = input.EventTriggerName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ObjectTypeName\":" + profile_json_str(input.ObjectTypeName))
         if input.Description.is_some():
@@ -4891,7 +4899,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AccountNumber.is_some():
             auto u0 = input.AccountNumber.unwrap()
@@ -4981,7 +4989,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderName"] = input.RecommenderName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RecommenderRecipeName\":" + input.RecommenderRecipeName.to_json())
         if input.RecommenderConfig.is_some():
@@ -5009,7 +5017,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderFilterName"] = input.RecommenderFilterName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommender-filters/{RecommenderFilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommender-filters/{RecommenderFilterName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RecommenderFilterExpression\":" + profile_json_str(input.RecommenderFilterExpression))
         if input.RecommenderSchemaName.is_some():
@@ -5034,7 +5042,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderSchemaName"] = input.RecommenderSchemaName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Fields.keys()):
@@ -5059,7 +5067,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DisplayName\":" + profile_json_str(input.DisplayName))
         if input.Description.is_some():
@@ -5089,7 +5097,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-estimates", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segment-estimates", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.SegmentQuery.is_some():
             auto u0 = input.SegmentQuery.unwrap()
@@ -5107,7 +5115,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSegmentSnapshotDocument(DataFormat=input.DataFormat, EncryptionKey=input.EncryptionKey, RoleArn=input.RoleArn, DestinationUri=input.DestinationUri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -5118,7 +5126,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/upload-jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/upload-jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"DisplayName\":" + profile_json_str(input.DisplayName))
         list[str] m0 = []
@@ -5139,7 +5147,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["CalculatedAttributeName"] = input.CalculatedAttributeName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteDomain  DELETE /domains/{DomainName}
@@ -5148,7 +5156,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteDomainLayout  DELETE /domains/{DomainName}/layouts/{LayoutDefinitionName}
@@ -5158,7 +5166,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["LayoutDefinitionName"] = input.LayoutDefinitionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteDomainObjectType  DELETE /domains/{DomainName}/domain-object-types/{ObjectTypeName}
@@ -5168,7 +5176,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["ObjectTypeName"] = input.ObjectTypeName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/domain-object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/domain-object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteEventStream  DELETE /domains/{DomainName}/event-streams/{EventStreamName}
@@ -5178,7 +5186,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EventStreamName"] = input.EventStreamName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/event-streams/{EventStreamName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/event-streams/{EventStreamName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteEventTrigger  DELETE /domains/{DomainName}/event-triggers/{EventTriggerName}
@@ -5188,7 +5196,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EventTriggerName"] = input.EventTriggerName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteIntegration  POST /domains/{DomainName}/integrations/delete
@@ -5197,7 +5205,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/integrations/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/integrations/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteIntegrationDocument(Uri=input.Uri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -5208,7 +5216,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteProfileDocument(ProfileId=input.ProfileId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -5219,7 +5227,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/keys/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/keys/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
         parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
@@ -5236,7 +5244,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteProfileObjectDocument(ProfileId=input.ProfileId, ProfileObjectUniqueKey=input.ProfileObjectUniqueKey, ObjectTypeName=input.ObjectTypeName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -5248,7 +5256,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["ObjectTypeName"] = input.ObjectTypeName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteRecommender  DELETE /domains/{DomainName}/recommenders/{RecommenderName}
@@ -5258,7 +5266,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderName"] = input.RecommenderName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteRecommenderFilter  DELETE /domains/{DomainName}/recommender-filters/{RecommenderFilterName}
@@ -5268,7 +5276,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderFilterName"] = input.RecommenderFilterName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/recommender-filters/{RecommenderFilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/recommender-filters/{RecommenderFilterName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteRecommenderSchema  DELETE /domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}
@@ -5278,7 +5286,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderSchemaName"] = input.RecommenderSchemaName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteSegmentDefinition  DELETE /domains/{DomainName}/segment-definitions/{SegmentDefinitionName}
@@ -5288,7 +5296,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteSegmentSubscription  DELETE /domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions
@@ -5298,7 +5306,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DeleteWorkflow  DELETE /domains/{DomainName}/workflows/{WorkflowId}
@@ -5308,7 +5316,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["WorkflowId"] = input.WorkflowId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/workflows/{WorkflowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/workflows/{WorkflowId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # DetectProfileObjectType  POST /domains/{DomainName}/detect/object-types
@@ -5317,7 +5325,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/detect/object-types", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/detect/object-types", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Objects:
@@ -5332,7 +5340,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/segment-streams", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/domains/{DomainName}/segment-streams", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetAutoMergingPreview  POST /domains/{DomainName}/identity-resolution-jobs/auto-merging-preview
@@ -5341,7 +5349,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/identity-resolution-jobs/auto-merging-preview", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/identity-resolution-jobs/auto-merging-preview", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Consolidation\":" + consolidation_to_json(input.Consolidation))
         parts.append("\"ConflictResolution\":" + input.ConflictResolution.to_json())
@@ -5358,7 +5366,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["CalculatedAttributeName"] = input.CalculatedAttributeName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetCalculatedAttributeForProfile  GET /domains/{DomainName}/profile/{ProfileId}/calculated-attributes/{CalculatedAttributeName}
@@ -5369,7 +5377,7 @@ struct Customer_ProfilesClient:
         labels["DomainName"] = input.DomainName
         labels["ProfileId"] = input.ProfileId
         labels["CalculatedAttributeName"] = input.CalculatedAttributeName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profile/{ProfileId}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profile/{ProfileId}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetDomain  GET /domains/{DomainName}
@@ -5378,7 +5386,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetDomainLayout  GET /domains/{DomainName}/layouts/{LayoutDefinitionName}
@@ -5388,7 +5396,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["LayoutDefinitionName"] = input.LayoutDefinitionName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetDomainObjectType  GET /domains/{DomainName}/domain-object-types/{ObjectTypeName}
@@ -5398,7 +5406,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["ObjectTypeName"] = input.ObjectTypeName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/domain-object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/domain-object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetEventStream  GET /domains/{DomainName}/event-streams/{EventStreamName}
@@ -5408,7 +5416,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EventStreamName"] = input.EventStreamName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-streams/{EventStreamName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-streams/{EventStreamName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetEventTrigger  GET /domains/{DomainName}/event-triggers/{EventTriggerName}
@@ -5418,7 +5426,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EventTriggerName"] = input.EventTriggerName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetIdentityResolutionJob  GET /domains/{DomainName}/identity-resolution-jobs/{JobId}
@@ -5428,7 +5436,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/identity-resolution-jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/identity-resolution-jobs/{JobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetIntegration  POST /domains/{DomainName}/integrations
@@ -5437,7 +5445,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/integrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/integrations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetIntegrationDocument(Uri=input.Uri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -5453,7 +5461,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/matches", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/matches", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetObjectTypeAttributeStatistics  POST /domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/statistics
@@ -5464,7 +5472,7 @@ struct Customer_ProfilesClient:
         labels["DomainName"] = input.DomainName
         labels["ObjectTypeName"] = input.ObjectTypeName
         labels["AttributeName"] = input.AttributeName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/statistics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/statistics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetProfileHistoryRecord  GET /domains/{DomainName}/profiles/{ProfileId}/history-records/{Id}
@@ -5475,7 +5483,7 @@ struct Customer_ProfilesClient:
         labels["DomainName"] = input.DomainName
         labels["ProfileId"] = input.ProfileId
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profiles/{ProfileId}/history-records/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profiles/{ProfileId}/history-records/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetProfileObjectType  GET /domains/{DomainName}/object-types/{ObjectTypeName}
@@ -5485,7 +5493,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["ObjectTypeName"] = input.ObjectTypeName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetProfileObjectTypeTemplate  GET /templates/{TemplateId}
@@ -5494,7 +5502,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateId"] = input.TemplateId
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetProfileRecommendations  POST /domains/{DomainName}/profiles/{ProfileId}/recommendations
@@ -5504,7 +5512,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["ProfileId"] = input.ProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/{ProfileId}/recommendations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/{ProfileId}/recommendations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RecommenderName\":" + profile_json_str(input.RecommenderName))
         if input.Context.is_some():
@@ -5552,8 +5560,9 @@ struct Customer_ProfilesClient:
         labels["RecommenderName"] = input.RecommenderName
         dict[str, str] query = {}
         if input.TrainingMetricsCount.is_some():
-            query["training-metrics-count"] = str(input.TrainingMetricsCount.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+            auto qt0 = str(input.TrainingMetricsCount.unwrap_or(0))
+            query["training-metrics-count"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetRecommenderFilter  GET /domains/{DomainName}/recommender-filters/{RecommenderFilterName}
@@ -5563,7 +5572,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderFilterName"] = input.RecommenderFilterName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-filters/{RecommenderFilterName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-filters/{RecommenderFilterName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetRecommenderSchema  GET /domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}
@@ -5573,7 +5582,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderSchemaName"] = input.RecommenderSchemaName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-schemas/{RecommenderSchemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetSegmentDefinition  GET /domains/{DomainName}/segment-definitions/{SegmentDefinitionName}
@@ -5583,7 +5592,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetSegmentEstimate  GET /domains/{DomainName}/segment-estimates/{EstimateId}
@@ -5593,7 +5602,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EstimateId"] = input.EstimateId
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-estimates/{EstimateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-estimates/{EstimateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetSegmentMembership  POST /domains/{DomainName}/segments/{SegmentDefinitionName}/membership
@@ -5603,7 +5612,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/membership", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/membership", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ProfileIds:
@@ -5620,7 +5629,7 @@ struct Customer_ProfilesClient:
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
         labels["SnapshotId"] = input.SnapshotId
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots/{SnapshotId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots/{SnapshotId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetSegmentSubscription  GET /domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions
@@ -5630,7 +5639,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetSimilarProfiles  POST /domains/{DomainName}/matches
@@ -5644,7 +5653,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/matches", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/matches", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSimilarProfilesDocument(MatchType=input.MatchType, SearchKey=input.SearchKey, SearchValue=input.SearchValue)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -5655,7 +5664,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-streams", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-streams", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetUploadJob  GET /domains/{DomainName}/upload-jobs/{JobId}
@@ -5665,7 +5674,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/upload-jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/upload-jobs/{JobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetUploadJobPath  GET /domains/{DomainName}/upload-jobs/{JobId}/path
@@ -5675,7 +5684,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/upload-jobs/{JobId}/path", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/upload-jobs/{JobId}/path", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetWorkflow  GET /domains/{DomainName}/workflows/{WorkflowId}
@@ -5685,7 +5694,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["WorkflowId"] = input.WorkflowId
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/workflows/{WorkflowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/workflows/{WorkflowId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # GetWorkflowSteps  GET /domains/{DomainName}/workflows/{WorkflowId}/steps
@@ -5700,8 +5709,25 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/workflows/{WorkflowId}/steps", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/workflows/{WorkflowId}/steps", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
+
+    # ListAccountIntegrations  POST /integrations
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def list_account_integrations(self, ListAccountIntegrationsRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        if input.IncludeHidden.is_some():
+            auto qt0 = profile_bind_bool(input.IncludeHidden.unwrap_or(False))
+            query["include-hidden"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/integrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = ListAccountIntegrationsDocument(Uri=input.Uri)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
     # ListCalculatedAttributeDefinitions  GET /domains/{DomainName}/calculated-attributes
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
@@ -5714,7 +5740,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/calculated-attributes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/calculated-attributes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListCalculatedAttributesForProfile  GET /domains/{DomainName}/profile/{ProfileId}/calculated-attributes
@@ -5729,7 +5755,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profile/{ProfileId}/calculated-attributes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profile/{ProfileId}/calculated-attributes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListDomainLayouts  GET /domains/{DomainName}/layouts
@@ -5743,7 +5769,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/layouts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/layouts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListDomainObjectTypes  GET /domains/{DomainName}/domain-object-types
@@ -5757,7 +5783,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/domain-object-types", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/domain-object-types", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListDomains  GET /domains
@@ -5769,7 +5795,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListEventStreams  GET /domains/{DomainName}/event-streams
@@ -5783,7 +5809,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-streams", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-streams", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListEventTriggers  GET /domains/{DomainName}/event-triggers
@@ -5797,7 +5823,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-triggers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/event-triggers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListIdentityResolutionJobs  GET /domains/{DomainName}/identity-resolution-jobs
@@ -5811,7 +5837,24 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/identity-resolution-jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/identity-resolution-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
+
+    # ListIntegrations  GET /domains/{DomainName}/integrations
+    # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
+    def list_integrations(self, ListIntegrationsRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DomainName"] = input.DomainName
+        dict[str, str] query = {}
+        if input.NextToken.is_some():
+            query["next-token"] = input.NextToken.unwrap_or("")
+        if input.MaxResults.is_some():
+            query["max-results"] = str(input.MaxResults.unwrap_or(0))
+        if input.IncludeHidden.is_some():
+            auto qt0 = profile_bind_bool(input.IncludeHidden.unwrap_or(False))
+            query["include-hidden"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/integrations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListObjectTypeAttributeValues  GET /domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/values
@@ -5827,7 +5870,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/values", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/values", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListObjectTypeAttributes  GET /domains/{DomainName}/object-types/{ObjectTypeName}/attributes
@@ -5842,7 +5885,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}/attributes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}/attributes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListProfileAttributeValues  GET /domains/{DomainName}/profile-attributes/{AttributeName}/values
@@ -5852,7 +5895,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["AttributeName"] = input.AttributeName
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profile-attributes/{AttributeName}/values", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profile-attributes/{AttributeName}/values", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListProfileHistoryRecords  POST /domains/{DomainName}/profiles/history-records
@@ -5866,7 +5909,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/history-records", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/history-records", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListProfileHistoryRecordsDocument(ProfileId=input.ProfileId, ObjectTypeName=input.ObjectTypeName, ActionType=input.ActionType, PerformedBy=input.PerformedBy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -5880,7 +5923,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListProfileObjectTypes  GET /domains/{DomainName}/object-types
@@ -5894,7 +5937,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/object-types", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListProfileObjects  POST /domains/{DomainName}/profiles/objects
@@ -5908,7 +5951,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ObjectTypeName\":" + profile_json_str(input.ObjectTypeName))
         parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
@@ -5929,7 +5972,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-filters", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-filters", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListRecommenderRecipes  GET /recommender-recipes
@@ -5941,7 +5984,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/recommender-recipes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recommender-recipes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListRecommenderSchemas  GET /domains/{DomainName}/recommender-schemas
@@ -5955,7 +5998,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-schemas", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommender-schemas", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListRecommenders  GET /domains/{DomainName}/recommenders
@@ -5969,7 +6012,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommenders", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/recommenders", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListRuleBasedMatches  GET /domains/{DomainName}/profiles/ruleBasedMatches
@@ -5983,7 +6026,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profiles/ruleBasedMatches", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/profiles/ruleBasedMatches", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListSegmentDefinitions  GET /domains/{DomainName}/segment-definitions
@@ -5997,7 +6040,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListSegmentSubscriptionEvents  GET /domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscription-events
@@ -6012,7 +6055,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscription-events", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscription-events", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -6021,7 +6064,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListUploadJobs  GET /domains/{DomainName}/upload-jobs
@@ -6035,7 +6078,7 @@ struct Customer_ProfilesClient:
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["next-token"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/upload-jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/domains/{DomainName}/upload-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # ListWorkflows  POST /domains/{DomainName}/workflows
@@ -6049,7 +6092,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/workflows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/workflows", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListWorkflowsDocument(WorkflowType=input.WorkflowType, Status=input.Status, QueryStartDate=input.QueryStartDate, QueryEndDate=input.QueryEndDate)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -6060,7 +6103,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects/merge", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/objects/merge", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"MainProfileId\":" + profile_json_str(input.MainProfileId))
         list[str] e0 = []
@@ -6080,7 +6123,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["ObjectTypeName"] = input.ObjectTypeName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/domain-object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/domain-object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -6107,7 +6150,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles/objects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles/objects", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutProfileObjectDocument(ObjectTypeName=input.ObjectTypeName, Object=input.Object)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -6119,7 +6162,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["ObjectTypeName"] = input.ObjectTypeName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/object-types/{ObjectTypeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Description\":" + profile_json_str(input.Description))
         if input.TemplateId.is_some():
@@ -6174,7 +6217,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["SegmentDefinitionName"] = input.SegmentDefinitionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutSegmentSubscriptionDocument(ScheduleConfiguration=input.ScheduleConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -6190,7 +6233,7 @@ struct Customer_ProfilesClient:
             query["next-token"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["max-results"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/search", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/profiles/search", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
         list[str] e0 = []
@@ -6215,7 +6258,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommendations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/domains/{DomainName}/recommendations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"KeyName\":" + profile_json_str(input.KeyName))
         list[str] e0 = []
@@ -6254,7 +6297,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderName"] = input.RecommenderName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/recommenders/{RecommenderName}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/recommenders/{RecommenderName}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # StartUploadJob  PUT /domains/{DomainName}/upload-jobs/{JobId}
@@ -6264,7 +6307,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/upload-jobs/{JobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/upload-jobs/{JobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # StopRecommender  PUT /domains/{DomainName}/recommenders/{RecommenderName}/stop
@@ -6274,7 +6317,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderName"] = input.RecommenderName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/recommenders/{RecommenderName}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/recommenders/{RecommenderName}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # StopUploadJob  PUT /domains/{DomainName}/upload-jobs/{JobId}/stop
@@ -6284,7 +6327,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["JobId"] = input.JobId
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/upload-jobs/{JobId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/upload-jobs/{JobId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -6293,7 +6336,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -6302,6 +6345,17 @@ struct Customer_ProfilesClient:
         auto bp = restjson.rest_json_document(b, profile_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: BadRequestException, InternalServerException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(profile_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, profile_service(), self.region, host)
+
     # UpdateCalculatedAttributeDefinition  PUT /domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}
     # errors: AccessDeniedException, BadRequestException, InternalServerException, ResourceNotFoundException, ThrottlingException
     def update_calculated_attribute_definition(self, UpdateCalculatedAttributeDefinitionRequest input) -> str:
@@ -6309,7 +6363,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["CalculatedAttributeName"] = input.CalculatedAttributeName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCalculatedAttributeDefinitionDocument(DisplayName=input.DisplayName, Description=input.Description, Conditions=input.Conditions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -6320,7 +6374,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DefaultExpirationDays.is_some():
             auto u0 = input.DefaultExpirationDays.unwrap()
@@ -6356,7 +6410,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["LayoutDefinitionName"] = input.LayoutDefinitionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/layouts/{LayoutDefinitionName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDomainLayoutDocument(Description=input.Description, DisplayName=input.DisplayName, IsDefault=input.IsDefault, LayoutType=input.LayoutType, Layout=input.Layout)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, profile_service(), self.region, host)
@@ -6368,7 +6422,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["EventTriggerName"] = input.EventTriggerName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/event-triggers/{EventTriggerName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ObjectTypeName.is_some():
             auto u0 = input.ObjectTypeName.unwrap()
@@ -6397,7 +6451,7 @@ struct Customer_ProfilesClient:
         auto host = endpoints.regional_host(profile_service(), self.region)
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
-        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/domains/{DomainName}/profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ProfileId\":" + profile_json_str(input.ProfileId))
         if input.AdditionalInformation.is_some():
@@ -6488,7 +6542,7 @@ struct Customer_ProfilesClient:
         dict[str, str] labels = {}
         labels["DomainName"] = input.DomainName
         labels["RecommenderName"] = input.RecommenderName
-        auto b = binding.HttpBinding(method="PATCH", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/domains/{DomainName}/recommenders/{RecommenderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()

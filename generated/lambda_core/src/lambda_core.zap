@@ -410,7 +410,7 @@ struct Lambda_CoreClient:
     # errors: InvalidParameterValueException, NetworkConnectorLimitExceededException, ResourceConflictException, ServiceException, TooManyRequestsException
     def create_network_connector(self, CreateNetworkConnectorRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2026-04-04/network-connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2026-04-04/network-connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + lambda__json_str(input.Name))
         parts.append("\"Configuration\":" + network_connector_configuration_to_json(input.Configuration))
@@ -435,7 +435,7 @@ struct Lambda_CoreClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetNetworkConnector  GET /2026-04-04/network-connectors/{Identifier}
@@ -444,7 +444,7 @@ struct Lambda_CoreClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListNetworkConnectorVersions  GET /2026-04-04/network-connectors/{Identifier}/versions
@@ -460,7 +460,7 @@ struct Lambda_CoreClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors/{Identifier}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors/{Identifier}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListNetworkConnectors  GET /2026-04-04/network-connectors
@@ -474,7 +474,7 @@ struct Lambda_CoreClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-04-04/network-connectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # UpdateNetworkConnector  PUT /2026-04-04/network-connectors/{Identifier}
@@ -483,7 +483,7 @@ struct Lambda_CoreClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2026-04-04/network-connectors/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Configuration.is_some():
             auto u0 = input.Configuration.unwrap()

@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 37 operations — 33 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 37 operations — 37 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   133 structs (98 @derive(Json)), 11 enums, 9 error variants.
-#   7 paginators generated (3 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The m2 rest-json protocol: SigV4 service "m2" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1137,20 +1138,6 @@ def m2_error_from_code(str code) -> m2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   ListApplications (httpQuery `names` has unsupported type list[str])
-#   ListBatchJobExecutions (httpQuery `executionIds` has unsupported type list[str])
-#   ListEnvironments (httpQuery `names` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListApplications (operation not generated)
-#   ListBatchJobExecutions (operation not generated)
-#   ListEnvironments (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1330,7 +1317,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["executionId"] = input.executionId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/batch-job-executions/{executionId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/batch-job-executions/{executionId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelBatchJobExecutionDocument(authSecretsManagerArn=input.authSecretsManagerArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
@@ -1339,7 +1326,7 @@ struct m2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(m2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1371,7 +1358,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataset-export-task", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataset-export-task", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1389,7 +1376,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataset-import-task", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/dataset-import-task", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1404,7 +1391,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/deployments", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/deployments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateDeploymentDocument(applicationVersion=input.applicationVersion, clientToken=input.clientToken, environmentId=input.environmentId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
@@ -1413,7 +1400,7 @@ struct m2Client:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_environment(self, CreateEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(m2_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -1475,7 +1462,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # DeleteApplicationFromEnvironment  DELETE /applications/{applicationId}/environment/{environmentId}
@@ -1485,7 +1472,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/environment/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/environment/{environmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # DeleteEnvironment  DELETE /environments/{environmentId}
@@ -1494,7 +1481,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetApplication  GET /applications/{applicationId}
@@ -1503,7 +1490,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetApplicationVersion  GET /applications/{applicationId}/versions/{applicationVersion}
@@ -1513,7 +1500,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["applicationVersion"] = str(input.applicationVersion)
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/versions/{applicationVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/versions/{applicationVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetBatchJobExecution  GET /applications/{applicationId}/batch-job-executions/{executionId}
@@ -1523,7 +1510,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["executionId"] = input.executionId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/batch-job-executions/{executionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/batch-job-executions/{executionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetDataSetDetails  GET /applications/{applicationId}/datasets/{dataSetName}
@@ -1533,7 +1520,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["dataSetName"] = input.dataSetName
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/datasets/{dataSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/datasets/{dataSetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetDataSetExportTask  GET /applications/{applicationId}/dataset-export-tasks/{taskId}
@@ -1543,7 +1530,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-export-tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-export-tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetDataSetImportTask  GET /applications/{applicationId}/dataset-import-tasks/{taskId}
@@ -1553,7 +1540,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-import-tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-import-tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetDeployment  GET /applications/{applicationId}/deployments/{deploymentId}
@@ -1563,7 +1550,7 @@ struct m2Client:
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
         labels["deploymentId"] = input.deploymentId
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/deployments/{deploymentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetEnvironment  GET /environments/{environmentId}
@@ -1572,14 +1559,14 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # GetSignedBluinsightsUrl  GET /signed-bi-url
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def get_signed_bluinsights_url(self) -> str:
         auto host = endpoints.regional_host(m2_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/signed-bi-url", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/signed-bi-url", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListApplicationVersions  GET /applications/{applicationId}/versions
@@ -1593,7 +1580,24 @@ struct m2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
+
+    # ListApplications  GET /applications
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_applications(self, ListApplicationsRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] query = {}
+        if input.environmentId.is_some():
+            query["environmentId"] = input.environmentId.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.names.is_some():
+            multi_query["names"] = input.names.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListBatchJobDefinitions  GET /applications/{applicationId}/batch-job-definitions
@@ -1609,7 +1613,34 @@ struct m2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.prefix.is_some():
             query["prefix"] = input.prefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/batch-job-definitions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/batch-job-definitions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
+
+    # ListBatchJobExecutions  GET /applications/{applicationId}/batch-job-executions
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_batch_job_executions(self, ListBatchJobExecutionsRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        dict[str, str] query = {}
+        if input.jobName.is_some():
+            query["jobName"] = input.jobName.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.startedAfter.is_some():
+            auto qt0 = datetime.strftime(input.startedAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startedAfter"] = qt0
+        if input.startedBefore.is_some():
+            auto qt1 = datetime.strftime(input.startedBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startedBefore"] = qt1
+        if input.status.is_some():
+            query["status"] = input.status.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.executionIds.is_some():
+            multi_query["executionIds"] = input.executionIds.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/batch-job-executions", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListBatchJobRestartPoints  GET /applications/{applicationId}/batch-job-executions/{executionId}/steps
@@ -1622,7 +1653,7 @@ struct m2Client:
         dict[str, str] query = {}
         if input.authSecretsManagerArn.is_some():
             query["authSecretsManagerArn"] = input.authSecretsManagerArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/batch-job-executions/{executionId}/steps", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/batch-job-executions/{executionId}/steps", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListDataSetExportHistory  GET /applications/{applicationId}/dataset-export-tasks
@@ -1636,7 +1667,7 @@ struct m2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-export-tasks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-export-tasks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListDataSetImportHistory  GET /applications/{applicationId}/dataset-import-tasks
@@ -1650,7 +1681,7 @@ struct m2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-import-tasks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/dataset-import-tasks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListDataSets  GET /applications/{applicationId}/datasets
@@ -1668,7 +1699,7 @@ struct m2Client:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.prefix.is_some():
             query["prefix"] = input.prefix.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/datasets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/datasets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListDeployments  GET /applications/{applicationId}/deployments
@@ -1682,7 +1713,7 @@ struct m2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/deployments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{applicationId}/deployments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListEngineVersions  GET /engine-versions
@@ -1696,7 +1727,24 @@ struct m2Client:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/engine-versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/engine-versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
+
+    # ListEnvironments  GET /environments
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_environments(self, ListEnvironmentsRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] query = {}
+        if input.engineType.is_some():
+            query["engineType"] = input.engineType.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.names.is_some():
+            multi_query["names"] = input.names.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/environments", labels={}, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1705,7 +1753,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # StartApplication  POST /applications/{applicationId}/start
@@ -1714,7 +1762,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
 
     # StartBatchJob  POST /applications/{applicationId}/batch-job
@@ -1723,7 +1771,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/batch-job", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/batch-job", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.authSecretsManagerArn.is_some():
             auto u0 = input.authSecretsManagerArn.unwrap()
@@ -1744,7 +1792,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopApplicationDocument(forceStop=input.forceStop)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
@@ -1755,7 +1803,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1764,13 +1812,24 @@ struct m2Client:
         auto bp = restjson.rest_json_document(b, m2_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, m2_service(), self.region, host)
+
     # UpdateApplication  PATCH /applications/{applicationId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["applicationId"] = input.applicationId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{applicationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(currentApplicationVersion=input.currentApplicationVersion, definition=input.definition, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
@@ -1781,7 +1840,7 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         dict[str, str] labels = {}
         labels["environmentId"] = input.environmentId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{environmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEnvironmentDocument(applyDuringMaintenanceWindow=input.applyDuringMaintenanceWindow, desiredCapacity=input.desiredCapacity, engineVersion=input.engineVersion, forceUpdate=input.forceUpdate, instanceType=input.instanceType, preferredMaintenanceWindow=input.preferredMaintenanceWindow)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, m2_service(), self.region, host)
@@ -1799,12 +1858,38 @@ struct m2Client:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListApplications — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: applications).
+    def paginate_list_applications(self, ListApplicationsRequest input):
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        while True:
+            auto raw = self.list_applications(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListBatchJobDefinitions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: batchJobDefinitions).
     def paginate_list_batch_job_definitions(self, ListBatchJobDefinitionsRequest input):
         auto host = endpoints.regional_host(m2_service(), self.region)
         while True:
             auto raw = self.list_batch_job_definitions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListBatchJobExecutions — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: batchJobExecutions).
+    def paginate_list_batch_job_executions(self, ListBatchJobExecutionsRequest input):
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        while True:
+            auto raw = self.list_batch_job_executions(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -1870,6 +1955,19 @@ struct m2Client:
         auto host = endpoints.regional_host(m2_service(), self.region)
         while True:
             auto raw = self.list_engine_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListEnvironments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: environments).
+    def paginate_list_environments(self, ListEnvironmentsRequest input):
+        auto host = endpoints.regional_host(m2_service(), self.region)
+        while True:
+            auto raw = self.list_environments(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

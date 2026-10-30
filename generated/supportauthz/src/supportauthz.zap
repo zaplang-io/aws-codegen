@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 9 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 11 operations — 10 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   39 structs (22 @derive(Json)), 2 enums, 7 error variants.
 #   2 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -366,7 +366,6 @@ def supportauthz_error_from_code(str code) -> SupportAuthZError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   ListSupportPermits (httpQuery `supportPermitStatuses` has unsupported type list[SupportPermitStatus])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -452,7 +451,7 @@ struct SupportAuthZClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_support_permit(self, CreateSupportPermitInput input) -> str:
         auto host = endpoints.regional_host(supportauthz_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/support-permits", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/support-permits", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"permit\":" + permit_to_json(input.permit))
         parts.append("\"name\":" + supportauthz_json_str(input.name))
@@ -481,7 +480,7 @@ struct SupportAuthZClient:
         auto host = endpoints.regional_host(supportauthz_service(), self.region)
         dict[str, str] labels = {}
         labels["supportPermitIdentifier"] = input.supportPermitIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/support-permits/{supportPermitIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/support-permits/{supportPermitIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # GetAction  GET /actions/{action}
@@ -490,7 +489,7 @@ struct SupportAuthZClient:
         auto host = endpoints.regional_host(supportauthz_service(), self.region)
         dict[str, str] labels = {}
         labels["action"] = input.action
-        auto b = binding.HttpBinding(method="GET", path_template="/actions/{action}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/actions/{action}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # GetSupportPermit  GET /support-permits/{supportPermitIdentifier}
@@ -499,7 +498,7 @@ struct SupportAuthZClient:
         auto host = endpoints.regional_host(supportauthz_service(), self.region)
         dict[str, str] labels = {}
         labels["supportPermitIdentifier"] = input.supportPermitIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/support-permits/{supportPermitIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/support-permits/{supportPermitIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # ListActions  GET /actions
@@ -512,7 +511,7 @@ struct SupportAuthZClient:
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         query["service"] = input.service
-        auto b = binding.HttpBinding(method="GET", path_template="/actions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/actions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # ListSupportPermitRequests  GET /support-permit-requests
@@ -526,7 +525,7 @@ struct SupportAuthZClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.supportCaseDisplayId.is_some():
             query["supportCaseDisplayId"] = input.supportCaseDisplayId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/support-permit-requests", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/support-permit-requests", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -535,7 +534,7 @@ struct SupportAuthZClient:
         auto host = endpoints.regional_host(supportauthz_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # RejectSupportPermitRequest  PUT /support-permit-requests/{requestArn}/reject
@@ -544,7 +543,7 @@ struct SupportAuthZClient:
         auto host = endpoints.regional_host(supportauthz_service(), self.region)
         dict[str, str] labels = {}
         labels["requestArn"] = input.requestArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/support-permit-requests/{requestArn}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/support-permit-requests/{requestArn}/reject", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -553,7 +552,7 @@ struct SupportAuthZClient:
         auto host = endpoints.regional_host(supportauthz_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -561,6 +560,17 @@ struct SupportAuthZClient:
         parts.append("\"tags\":" + supportauthz_json_obj(m0))
         auto bp = restjson.rest_json_document(b, supportauthz_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, supportauthz_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(supportauthz_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, supportauthz_service(), self.region, host)
 
     # Paginator for ListActions — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: actionSummaries).

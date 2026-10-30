@@ -217,7 +217,7 @@ struct SimpleDBv2Client:
     # errors: InvalidParameterValueException, NoSuchExportException
     def get_export(self, GetExportRequest input) -> str:
         auto host = endpoints.regional_host(sdb_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/GetExport", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/GetExport", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetExportDocument(exportArn=input.exportArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sdb_service(), self.region, host)
@@ -226,7 +226,7 @@ struct SimpleDBv2Client:
     # errors: InvalidNextTokenException, InvalidParameterValueException, NoSuchDomainException
     def list_exports(self, ListExportsRequest input) -> str:
         auto host = endpoints.regional_host(sdb_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/ListExports", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/ListExports", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListExportsDocument(domainName=input.domainName, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sdb_service(), self.region, host)
@@ -235,7 +235,7 @@ struct SimpleDBv2Client:
     # errors: ConflictException, InvalidParameterCombinationException, InvalidParameterValueException, NoSuchDomainException, NumberExportsLimitExceeded
     def start_domain_export(self, StartDomainExportRequest input) -> str:
         auto host = endpoints.regional_host(sdb_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v2/StartDomainExport", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v2/StartDomainExport", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartDomainExportDocument(clientToken=input.clientToken, domainName=input.domainName, s3Bucket=input.s3Bucket, s3KeyPrefix=input.s3KeyPrefix, s3SseAlgorithm=input.s3SseAlgorithm, s3SseKmsKeyId=input.s3SseKmsKeyId, s3BucketOwner=input.s3BucketOwner)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, sdb_service(), self.region, host)

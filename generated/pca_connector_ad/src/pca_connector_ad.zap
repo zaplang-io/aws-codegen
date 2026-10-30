@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 24 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 25 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   89 structs (59 @derive(Json)), 18 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -961,11 +961,6 @@ def pca_connector_ad_error_from_code(str code) -> Pca_Connector_AdError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1197,7 +1192,7 @@ struct Pca_Connector_AdClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_connector(self, CreateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/connectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CertificateAuthorityArn\":" + pca_connector_ad_json_str(input.CertificateAuthorityArn))
         if input.ClientToken.is_some():
@@ -1218,7 +1213,7 @@ struct Pca_Connector_AdClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_directory_registration(self, CreateDirectoryRegistrationRequest input) -> str:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/directoryRegistrations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/directoryRegistrations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -1240,7 +1235,7 @@ struct Pca_Connector_AdClient:
         dict[str, str] labels = {}
         labels["ConnectorArn"] = input.ConnectorArn
         labels["DirectoryRegistrationArn"] = input.DirectoryRegistrationArn
-        auto b = binding.HttpBinding(method="POST", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateServicePrincipalNameDocument(ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
@@ -1249,7 +1244,7 @@ struct Pca_Connector_AdClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_template(self, CreateTemplateRequest input) -> str:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/templates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/templates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -1272,7 +1267,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="POST", path_template="/templates/{TemplateArn}/accessControlEntries", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/templates/{TemplateArn}/accessControlEntries", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateTemplateGroupAccessControlEntryDocument(AccessRights=input.AccessRights, ClientToken=input.ClientToken, GroupDisplayName=input.GroupDisplayName, GroupSecurityIdentifier=input.GroupSecurityIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
@@ -1283,7 +1278,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectorArn"] = input.ConnectorArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # DeleteDirectoryRegistration  DELETE /directoryRegistrations/{DirectoryRegistrationArn}
@@ -1292,7 +1287,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["DirectoryRegistrationArn"] = input.DirectoryRegistrationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/directoryRegistrations/{DirectoryRegistrationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/directoryRegistrations/{DirectoryRegistrationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # DeleteServicePrincipalName  DELETE /directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}
@@ -1302,7 +1297,7 @@ struct Pca_Connector_AdClient:
         dict[str, str] labels = {}
         labels["ConnectorArn"] = input.ConnectorArn
         labels["DirectoryRegistrationArn"] = input.DirectoryRegistrationArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # DeleteTemplate  DELETE /templates/{TemplateArn}
@@ -1311,7 +1306,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # DeleteTemplateGroupAccessControlEntry  DELETE /templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}
@@ -1321,7 +1316,7 @@ struct Pca_Connector_AdClient:
         dict[str, str] labels = {}
         labels["GroupSecurityIdentifier"] = input.GroupSecurityIdentifier
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # GetConnector  GET /connectors/{ConnectorArn}
@@ -1330,7 +1325,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["ConnectorArn"] = input.ConnectorArn
-        auto b = binding.HttpBinding(method="GET", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectors/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # GetDirectoryRegistration  GET /directoryRegistrations/{DirectoryRegistrationArn}
@@ -1339,7 +1334,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["DirectoryRegistrationArn"] = input.DirectoryRegistrationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations/{DirectoryRegistrationArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations/{DirectoryRegistrationArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # GetServicePrincipalName  GET /directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}
@@ -1349,7 +1344,7 @@ struct Pca_Connector_AdClient:
         dict[str, str] labels = {}
         labels["ConnectorArn"] = input.ConnectorArn
         labels["DirectoryRegistrationArn"] = input.DirectoryRegistrationArn
-        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames/{ConnectorArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # GetTemplate  GET /templates/{TemplateArn}
@@ -1358,7 +1353,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # GetTemplateGroupAccessControlEntry  GET /templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}
@@ -1368,7 +1363,7 @@ struct Pca_Connector_AdClient:
         dict[str, str] labels = {}
         labels["GroupSecurityIdentifier"] = input.GroupSecurityIdentifier
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # ListConnectors  GET /connectors
@@ -1380,7 +1375,7 @@ struct Pca_Connector_AdClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/connectors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connectors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # ListDirectoryRegistrations  GET /directoryRegistrations
@@ -1392,7 +1387,7 @@ struct Pca_Connector_AdClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # ListServicePrincipalNames  GET /directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames
@@ -1406,7 +1401,7 @@ struct Pca_Connector_AdClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/directoryRegistrations/{DirectoryRegistrationArn}/servicePrincipalNames", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -1415,7 +1410,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # ListTemplateGroupAccessControlEntries  GET /templates/{TemplateArn}/accessControlEntries
@@ -1429,7 +1424,7 @@ struct Pca_Connector_AdClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateArn}/accessControlEntries", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/{TemplateArn}/accessControlEntries", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # ListTemplates  GET /templates
@@ -1442,7 +1437,7 @@ struct Pca_Connector_AdClient:
             query["MaxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["NextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
 
     # TagResource  POST /tags/{ResourceArn}
@@ -1451,7 +1446,7 @@ struct Pca_Connector_AdClient:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1460,13 +1455,24 @@ struct Pca_Connector_AdClient:
         auto bp = restjson.rest_json_document(b, pca_connector_ad_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, pca_connector_ad_service(), self.region, host)
+
     # UpdateTemplate  PATCH /templates/{TemplateArn}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_template(self, UpdateTemplateRequest input) -> str:
         auto host = endpoints.regional_host(pca_connector_ad_service(), self.region)
         dict[str, str] labels = {}
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{TemplateArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Definition.is_some():
             auto u0 = input.Definition.unwrap()
@@ -1484,7 +1490,7 @@ struct Pca_Connector_AdClient:
         dict[str, str] labels = {}
         labels["GroupSecurityIdentifier"] = input.GroupSecurityIdentifier
         labels["TemplateArn"] = input.TemplateArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/templates/{TemplateArn}/accessControlEntries/{GroupSecurityIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTemplateGroupAccessControlEntryDocument(AccessRights=input.AccessRights, GroupDisplayName=input.GroupDisplayName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, pca_connector_ad_service(), self.region, host)

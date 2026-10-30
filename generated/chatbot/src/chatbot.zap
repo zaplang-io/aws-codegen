@@ -1057,7 +1057,7 @@ struct chatbotClient:
     # errors: InternalServiceError, InvalidRequestException, UnauthorizedException
     def associate_to_configuration(self, AssociateToConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/associate-to-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/associate-to-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateToConfigurationDocument(Resource=input.Resource, ChatConfiguration=input.ChatConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1066,7 +1066,7 @@ struct chatbotClient:
     # errors: ConflictException, CreateChimeWebhookConfigurationException, InvalidParameterException, InvalidRequestException, LimitExceededException
     def create_chime_webhook_configuration(self, CreateChimeWebhookConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"WebhookDescription\":" + chatbot_json_str(input.WebhookDescription))
         parts.append("\"WebhookUrl\":" + chatbot_json_str(input.WebhookUrl))
@@ -1092,7 +1092,7 @@ struct chatbotClient:
     # errors: ConflictException, InternalServiceError, InvalidRequestException, LimitExceededException, UnauthorizedException
     def create_custom_action(self, CreateCustomActionRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-custom-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-custom-action", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Definition\":" + input.Definition.to_json())
         if input.AliasName.is_some():
@@ -1121,7 +1121,7 @@ struct chatbotClient:
     # errors: ConflictException, CreateTeamsChannelConfigurationException, InvalidParameterException, InvalidRequestException, LimitExceededException
     def create_microsoft_teams_channel_configuration(self, CreateTeamsChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChannelId\":" + chatbot_json_str(input.ChannelId))
         if input.ChannelName.is_some():
@@ -1165,7 +1165,7 @@ struct chatbotClient:
     # errors: ConflictException, CreateSlackChannelConfigurationException, InvalidParameterException, InvalidRequestException, LimitExceededException
     def create_slack_channel_configuration(self, CreateSlackChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-slack-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SlackTeamId\":" + chatbot_json_str(input.SlackTeamId))
         parts.append("\"SlackChannelId\":" + chatbot_json_str(input.SlackChannelId))
@@ -1205,7 +1205,7 @@ struct chatbotClient:
     # errors: DeleteChimeWebhookConfigurationException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def delete_chime_webhook_configuration(self, DeleteChimeWebhookConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteChimeWebhookConfigurationDocument(ChatConfigurationArn=input.ChatConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1214,7 +1214,7 @@ struct chatbotClient:
     # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, UnauthorizedException
     def delete_custom_action(self, DeleteCustomActionRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-custom-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-custom-action", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteCustomActionDocument(CustomActionArn=input.CustomActionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1223,7 +1223,7 @@ struct chatbotClient:
     # errors: DeleteTeamsChannelConfigurationException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def delete_microsoft_teams_channel_configuration(self, DeleteTeamsChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteMicrosoftTeamsChannelConfigurationDocument(ChatConfigurationArn=input.ChatConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1232,7 +1232,7 @@ struct chatbotClient:
     # errors: DeleteTeamsConfiguredTeamException, InvalidParameterException
     def delete_microsoft_teams_configured_team(self, DeleteTeamsConfiguredTeamRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-ms-teams-configured-teams", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-ms-teams-configured-teams", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteMicrosoftTeamsConfiguredTeamDocument(TeamId=input.TeamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1241,7 +1241,7 @@ struct chatbotClient:
     # errors: DeleteMicrosoftTeamsUserIdentityException, InvalidParameterException, ResourceNotFoundException
     def delete_microsoft_teams_user_identity(self, DeleteMicrosoftTeamsUserIdentityRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-ms-teams-user-identity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-ms-teams-user-identity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteMicrosoftTeamsUserIdentityDocument(ChatConfigurationArn=input.ChatConfigurationArn, UserId=input.UserId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1250,7 +1250,7 @@ struct chatbotClient:
     # errors: DeleteSlackChannelConfigurationException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def delete_slack_channel_configuration(self, DeleteSlackChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-slack-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSlackChannelConfigurationDocument(ChatConfigurationArn=input.ChatConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1259,7 +1259,7 @@ struct chatbotClient:
     # errors: DeleteSlackUserIdentityException, InvalidParameterException, ResourceNotFoundException
     def delete_slack_user_identity(self, DeleteSlackUserIdentityRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-slack-user-identity", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-slack-user-identity", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSlackUserIdentityDocument(ChatConfigurationArn=input.ChatConfigurationArn, SlackTeamId=input.SlackTeamId, SlackUserId=input.SlackUserId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1268,7 +1268,7 @@ struct chatbotClient:
     # errors: DeleteSlackWorkspaceAuthorizationFault, InvalidParameterException
     def delete_slack_workspace_authorization(self, DeleteSlackWorkspaceAuthorizationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-slack-workspace-authorization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-slack-workspace-authorization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSlackWorkspaceAuthorizationDocument(SlackTeamId=input.SlackTeamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1277,7 +1277,7 @@ struct chatbotClient:
     # errors: DescribeChimeWebhookConfigurationsException, InvalidParameterException, InvalidRequestException
     def describe_chime_webhook_configurations(self, DescribeChimeWebhookConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-chime-webhook-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-chime-webhook-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeChimeWebhookConfigurationsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, ChatConfigurationArn=input.ChatConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1286,7 +1286,7 @@ struct chatbotClient:
     # errors: DescribeSlackChannelConfigurationsException, InvalidParameterException, InvalidRequestException
     def describe_slack_channel_configurations(self, DescribeSlackChannelConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-slack-channel-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-slack-channel-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeSlackChannelConfigurationsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, ChatConfigurationArn=input.ChatConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1295,7 +1295,7 @@ struct chatbotClient:
     # errors: DescribeSlackUserIdentitiesException, InvalidParameterException, InvalidRequestException
     def describe_slack_user_identities(self, DescribeSlackUserIdentitiesRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-slack-user-identities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-slack-user-identities", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeSlackUserIdentitiesDocument(ChatConfigurationArn=input.ChatConfigurationArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1304,7 +1304,7 @@ struct chatbotClient:
     # errors: DescribeSlackWorkspacesException, InvalidParameterException, InvalidRequestException
     def describe_slack_workspaces(self, DescribeSlackWorkspacesRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describe-slack-workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describe-slack-workspaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeSlackWorkspacesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1313,7 +1313,7 @@ struct chatbotClient:
     # errors: InternalServiceError, InvalidRequestException, UnauthorizedException
     def disassociate_from_configuration(self, DisassociateFromConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-from-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-from-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateFromConfigurationDocument(Resource=input.Resource, ChatConfiguration=input.ChatConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1322,14 +1322,14 @@ struct chatbotClient:
     # errors: GetAccountPreferencesException, InvalidRequestException
     def get_account_preferences(self) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-account-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-account-preferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, chatbot_service(), self.region, host)
 
     # GetCustomAction  POST /get-custom-action
     # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, UnauthorizedException
     def get_custom_action(self, GetCustomActionRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-custom-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-custom-action", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetCustomActionDocument(CustomActionArn=input.CustomActionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1338,7 +1338,7 @@ struct chatbotClient:
     # errors: GetTeamsChannelConfigurationException, InvalidParameterException, InvalidRequestException
     def get_microsoft_teams_channel_configuration(self, GetTeamsChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetMicrosoftTeamsChannelConfigurationDocument(ChatConfigurationArn=input.ChatConfigurationArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1346,7 +1346,7 @@ struct chatbotClient:
     # ListAssociations  POST /list-associations
     def list_associations(self, ListAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-associations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAssociationsDocument(ChatConfiguration=input.ChatConfiguration, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1355,7 +1355,7 @@ struct chatbotClient:
     # errors: InternalServiceError, InvalidRequestException, UnauthorizedException
     def list_custom_actions(self, ListCustomActionsRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-custom-actions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-custom-actions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListCustomActionsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1364,7 +1364,7 @@ struct chatbotClient:
     # errors: InvalidParameterException, InvalidRequestException, ListTeamsChannelConfigurationsException
     def list_microsoft_teams_channel_configurations(self, ListTeamsChannelConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-ms-teams-channel-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-ms-teams-channel-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMicrosoftTeamsChannelConfigurationsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, TeamId=input.TeamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1373,7 +1373,7 @@ struct chatbotClient:
     # errors: InvalidParameterException, InvalidRequestException, ListMicrosoftTeamsConfiguredTeamsException
     def list_microsoft_teams_configured_teams(self, ListMicrosoftTeamsConfiguredTeamsRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-ms-teams-configured-teams", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-ms-teams-configured-teams", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMicrosoftTeamsConfiguredTeamsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1382,7 +1382,7 @@ struct chatbotClient:
     # errors: InvalidParameterException, InvalidRequestException, ListMicrosoftTeamsUserIdentitiesException
     def list_microsoft_teams_user_identities(self, ListMicrosoftTeamsUserIdentitiesRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-ms-teams-user-identities", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-ms-teams-user-identities", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListMicrosoftTeamsUserIdentitiesDocument(ChatConfigurationArn=input.ChatConfigurationArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1391,7 +1391,7 @@ struct chatbotClient:
     # errors: InternalServiceError, ResourceNotFoundException, ServiceUnavailableException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-tags-for-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-tags-for-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(ResourceARN=input.ResourceARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1400,7 +1400,7 @@ struct chatbotClient:
     # errors: InternalServiceError, ResourceNotFoundException, ServiceUnavailableException, TooManyTagsException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + chatbot_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1414,7 +1414,7 @@ struct chatbotClient:
     # errors: InternalServiceError, ResourceNotFoundException, ServiceUnavailableException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untag-resource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + chatbot_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1428,7 +1428,7 @@ struct chatbotClient:
     # errors: InvalidParameterException, InvalidRequestException, UpdateAccountPreferencesException
     def update_account_preferences(self, UpdateAccountPreferencesRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-account-preferences", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-account-preferences", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAccountPreferencesDocument(UserAuthorizationRequired=input.UserAuthorizationRequired, TrainingDataCollectionEnabled=input.TrainingDataCollectionEnabled)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, chatbot_service(), self.region, host)
@@ -1437,7 +1437,7 @@ struct chatbotClient:
     # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, UpdateChimeWebhookConfigurationException
     def update_chime_webhook_configuration(self, UpdateChimeWebhookConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-chime-webhook-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChatConfigurationArn\":" + chatbot_json_str(input.ChatConfigurationArn))
         if input.WebhookDescription.is_some():
@@ -1465,7 +1465,7 @@ struct chatbotClient:
     # errors: InternalServiceError, InvalidRequestException, ResourceNotFoundException, UnauthorizedException
     def update_custom_action(self, UpdateCustomActionRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-custom-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-custom-action", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CustomActionArn\":" + chatbot_json_str(input.CustomActionArn))
         parts.append("\"Definition\":" + input.Definition.to_json())
@@ -1485,7 +1485,7 @@ struct chatbotClient:
     # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, UpdateTeamsChannelConfigurationException
     def update_microsoft_teams_channel_configuration(self, UpdateTeamsChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-ms-teams-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChatConfigurationArn\":" + chatbot_json_str(input.ChatConfigurationArn))
         parts.append("\"ChannelId\":" + chatbot_json_str(input.ChannelId))
@@ -1520,7 +1520,7 @@ struct chatbotClient:
     # errors: InvalidParameterException, InvalidRequestException, ResourceNotFoundException, UpdateSlackChannelConfigurationException
     def update_slack_channel_configuration(self, UpdateSlackChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(chatbot_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/update-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/update-slack-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChatConfigurationArn\":" + chatbot_json_str(input.ChatConfigurationArn))
         parts.append("\"SlackChannelId\":" + chatbot_json_str(input.SlackChannelId))

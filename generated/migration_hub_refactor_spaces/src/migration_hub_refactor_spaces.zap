@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 23 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 24 operations — 24 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   73 structs (46 @derive(Json)), 12 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -855,11 +855,6 @@ def refactor_spaces_error_from_code(str code) -> Migration_Hub_Refactor_SpacesEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -934,7 +929,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
         dict[str, str] labels = {}
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ApiGatewayProxy.is_some():
             auto u0 = input.ApiGatewayProxy.unwrap()
@@ -958,7 +953,7 @@ struct Migration_Hub_Refactor_SpacesClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_environment(self, CreateEnvironmentRequest input) -> str:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -984,7 +979,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -1013,7 +1008,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -1048,7 +1043,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # DeleteEnvironment  DELETE /environments/{EnvironmentIdentifier}
@@ -1057,7 +1052,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
         dict[str, str] labels = {}
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /resourcepolicy/{Identifier}
@@ -1066,7 +1061,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcepolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # DeleteRoute  DELETE /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}
@@ -1077,7 +1072,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
         labels["RouteIdentifier"] = input.RouteIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # DeleteService  DELETE /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services/{ServiceIdentifier}
@@ -1088,7 +1083,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
         labels["ServiceIdentifier"] = input.ServiceIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services/{ServiceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services/{ServiceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # GetApplication  GET /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}
@@ -1098,7 +1093,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         dict[str, str] labels = {}
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # GetEnvironment  GET /environments/{EnvironmentIdentifier}
@@ -1107,7 +1102,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
         dict[str, str] labels = {}
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # GetResourcePolicy  GET /resourcepolicy/{Identifier}
@@ -1116,7 +1111,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
         dict[str, str] labels = {}
         labels["Identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcepolicy/{Identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # GetRoute  GET /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}
@@ -1127,7 +1122,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
         labels["RouteIdentifier"] = input.RouteIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # GetService  GET /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services/{ServiceIdentifier}
@@ -1138,7 +1133,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
         labels["ServiceIdentifier"] = input.ServiceIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services/{ServiceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services/{ServiceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # ListApplications  GET /environments/{EnvironmentIdentifier}/applications
@@ -1152,7 +1147,7 @@ struct Migration_Hub_Refactor_SpacesClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # ListEnvironmentVpcs  GET /environments/{EnvironmentIdentifier}/vpcs
@@ -1166,7 +1161,7 @@ struct Migration_Hub_Refactor_SpacesClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/vpcs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/vpcs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # ListEnvironments  GET /environments
@@ -1178,7 +1173,7 @@ struct Migration_Hub_Refactor_SpacesClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # ListRoutes  GET /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes
@@ -1193,7 +1188,7 @@ struct Migration_Hub_Refactor_SpacesClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # ListServices  GET /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services
@@ -1208,7 +1203,7 @@ struct Migration_Hub_Refactor_SpacesClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/services", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{ResourceArn}
@@ -1217,14 +1212,14 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # PutResourcePolicy  PUT /resourcepolicy
     # errors: AccessDeniedException, InternalServerException, InvalidResourcePolicyException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resourcepolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(Policy=input.Policy, ResourceArn=input.ResourceArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
@@ -1235,7 +1230,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1243,6 +1238,17 @@ struct Migration_Hub_Refactor_SpacesClient:
         parts.append("\"Tags\":" + refactor_spaces_json_obj(m0))
         auto bp = restjson.rest_json_document(b, refactor_spaces_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(refactor_spaces_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, refactor_spaces_service(), self.region, host)
 
     # UpdateRoute  PATCH /environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -1252,7 +1258,7 @@ struct Migration_Hub_Refactor_SpacesClient:
         labels["ApplicationIdentifier"] = input.ApplicationIdentifier
         labels["EnvironmentIdentifier"] = input.EnvironmentIdentifier
         labels["RouteIdentifier"] = input.RouteIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/environments/{EnvironmentIdentifier}/applications/{ApplicationIdentifier}/routes/{RouteIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRouteDocument(ActivationState=input.ActivationState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, refactor_spaces_service(), self.region, host)

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 404 operations — 388 with a generated method,
-#   16 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 404 operations — 393 with a generated method,
+#   11 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   1362 structs (780 @derive(Json)), 174 enums, 29 error variants.
 #   83 paginators generated (6 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -12134,7 +12134,6 @@ def connect_error_from_code(str code) -> ConnectError:
 # document member, or an unsupported httpPayload):
 #   CreateNotification (document member `Content: dict[LocaleCode, str]` is not serializable)
 #   CreateRule (document member `Actions: list[RuleAction]` is not serializable)
-#   CreateTestCase (httpHeader `LastModifiedTime` has unsupported type DateTime)
 #   ListAgentStatuses (httpQuery `AgentStatusTypes` has unsupported type list[AgentStatusType])
 #   ListContactFlows (httpQuery `ContactFlowTypes` has unsupported type list[ContactFlowType])
 #   ListContactReferences (httpQuery `ReferenceTypes` has unsupported type list[ReferenceType])
@@ -12142,12 +12141,8 @@ def connect_error_from_code(str code) -> ConnectError:
 #   ListQueues (httpQuery `QueueTypes` has unsupported type list[QueueType])
 #   ListQuickConnects (httpQuery `QuickConnectTypes` has unsupported type list[QuickConnectType])
 #   StartEmailContact (document member `EmailMessage: InboundEmailContent` is not serializable)
-#   UntagContact (httpQuery `TagKeys` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 #   UpdateNotificationContent (document member `Content: dict[LocaleCode, str]` is not serializable)
 #   UpdateRule (document member `Actions: list[RuleAction]` is not serializable)
-#   UpdateTestCase (httpHeader `LastModifiedTime` has unsupported type DateTime)
-#   UpdateUserNotificationStatus (httpHeader `LastModifiedTime` has unsupported type DateTime)
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -12715,6 +12710,16 @@ struct UpdateRoutingProfileNameDocument:
     Optional[str] Description
 
 @derive(Json)
+struct UpdateTestCaseDocument:
+    # document members of UpdateTestCase
+    Optional[str] Content
+    Optional[TestCaseEntryPoint] EntryPoint
+    Optional[str] InitializationData
+    Optional[str] Name
+    Optional[str] Description
+    Optional[TestCaseStatus] Status
+
+@derive(Json)
 struct UpdateUserHierarchyDocument:
     # document members of UpdateUserHierarchy
     Optional[str] HierarchyGroupId
@@ -12733,6 +12738,11 @@ struct UpdateUserHierarchyStructureDocument:
 struct UpdateUserIdentityInfoDocument:
     # document members of UpdateUserIdentityInfo
     UserIdentityInfo IdentityInfo
+
+@derive(Json)
+struct UpdateUserNotificationStatusDocument:
+    # document members of UpdateUserNotificationStatus
+    NotificationStatus Status
 
 @derive(Json)
 struct UpdateUserPhoneConfigDocument:
@@ -15197,7 +15207,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationFormId"] = input.EvaluationFormId
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/activate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/activate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ActivateEvaluationFormDocument(EvaluationFormVersion=input.EvaluationFormVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15208,7 +15218,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/analytics-data/instance/{InstanceId}/association", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/analytics-data/instance/{InstanceId}/association", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateAnalyticsDataSetDocument(DataSetId=input.DataSetId, TargetAccountId=input.TargetAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15219,7 +15229,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/approved-origin", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/approved-origin", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateApprovedOriginDocument(Origin=input.Origin, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15230,7 +15240,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/bot", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/bot", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateBotDocument(LexBot=input.LexBot, LexV2Bot=input.LexV2Bot, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15242,7 +15252,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}/associate-user", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}/associate-user", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateContactWithUserDocument(UserId=input.UserId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15254,7 +15264,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["LanguageCode"] = input.LanguageCode
-        auto b = binding.HttpBinding(method="PUT", path_template="/default-vocabulary/{InstanceId}/{LanguageCode}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/default-vocabulary/{InstanceId}/{LanguageCode}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateDefaultVocabularyDocument(VocabularyId=input.VocabularyId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15266,7 +15276,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["EmailAddressId"] = input.EmailAddressId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/email-addresses/{InstanceId}/{EmailAddressId}/associate-alias", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/email-addresses/{InstanceId}/{EmailAddressId}/associate-alias", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateEmailAddressAliasDocument(AliasConfiguration=input.AliasConfiguration, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15277,7 +15287,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/flow-associations/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/flow-associations/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateFlowDocument(ResourceId=input.ResourceId, FlowId=input.FlowId, ResourceType=input.ResourceType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15289,7 +15299,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
-        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/associate-hours", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/associate-hours", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ParentHoursOfOperationConfigs:
@@ -15304,7 +15314,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/storage-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/storage-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateInstanceStorageConfigDocument(ResourceType=input.ResourceType, StorageConfig=input.StorageConfig, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15315,7 +15325,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/lambda-function", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/lambda-function", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateLambdaFunctionDocument(FunctionArn=input.FunctionArn, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15326,7 +15336,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/lex-bot", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/lex-bot", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateLexBotDocument(LexBot=input.LexBot, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15337,7 +15347,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["PhoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="PUT", path_template="/phone-number/{PhoneNumberId}/contact-flow", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/phone-number/{PhoneNumberId}/contact-flow", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociatePhoneNumberContactFlowDocument(InstanceId=input.InstanceId, ContactFlowId=input.ContactFlowId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15349,7 +15359,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/associate-email-addresses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/associate-email-addresses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.EmailAddressesConfig:
@@ -15368,7 +15378,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/associate-quick-connects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/associate-quick-connects", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.QuickConnectIds:
@@ -15384,7 +15394,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/associate-queues", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/associate-queues", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueueConfigs.is_some():
             auto u0 = input.QueueConfigs.unwrap()
@@ -15407,7 +15417,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/security-key", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/security-key", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateSecurityKeyDocument(Key=input.Key, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15418,7 +15428,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/associate-security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/associate-security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SecurityProfiles:
@@ -15435,7 +15445,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["TrafficDistributionGroupId"] = input.TrafficDistributionGroupId
-        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateTrafficDistributionGroupUserDocument(UserId=input.UserId, InstanceId=input.InstanceId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15447,7 +15457,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["UserId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/associate-proficiencies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/associate-proficiencies", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UserProficiencies:
@@ -15463,7 +15473,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/associate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/associate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ResourceArns:
@@ -15478,7 +15488,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/analytics-data/instance/{InstanceId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/analytics-data/instance/{InstanceId}/associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DataSetIds:
@@ -15497,7 +15507,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/create", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/create", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Values:
@@ -15513,7 +15523,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Values:
@@ -15529,7 +15539,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/describe", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/describe", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Values:
@@ -15544,7 +15554,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/analytics-data/instance/{InstanceId}/associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/analytics-data/instance/{InstanceId}/associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.DataSetIds:
@@ -15564,7 +15574,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         dict[str, str] query = {}
         query["associatedResourceArn"] = input.AssociatedResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/attached-files/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/attached-files/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.FileIds:
@@ -15579,7 +15589,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/flow-associations-batch/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/flow-associations-batch/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ResourceIds:
@@ -15597,7 +15607,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/batch/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/batch/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -15616,7 +15626,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Values:
@@ -15629,7 +15639,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
     def claim_phone_number(self, ClaimPhoneNumberRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/claim", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/claim", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TargetArn.is_some():
             auto u0 = input.TargetArn.unwrap()
@@ -15662,7 +15672,7 @@ struct ConnectClient:
         labels["FileId"] = input.FileId
         dict[str, str] query = {}
         query["associatedResourceArn"] = input.AssociatedResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # CreateAgentStatus  PUT /agent-status/{InstanceId}
@@ -15671,7 +15681,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/agent-status/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/agent-status/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -15698,7 +15708,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         dict[str, str] query = {}
         query["associatedResourceArn"] = input.AssociatedResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/attached-files/{InstanceId}/files", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/attached-files/{InstanceId}/files", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -15720,7 +15730,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/auth/code/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/auth/code/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Scope\":" + auth_scope_to_json(input.Scope))
         if input.MaxSessionDurationMinutes.is_some():
@@ -15734,7 +15744,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, ConflictException, IdempotencyException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def create_contact(self, CreateContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/create-contact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/create-contact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.ClientToken.is_some():
@@ -15790,7 +15800,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         parts.append("\"Type\":" + input.Type.to_json())
@@ -15817,7 +15827,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateContactFlowAliasDocument(Description=input.Description, ContactFlowVersion=input.ContactFlowVersion, AliasName=input.AliasName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15828,7 +15838,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flow-modules/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flow-modules/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -15860,7 +15870,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateContactFlowModuleAliasDocument(Description=input.Description, ContactFlowModuleVersion=input.ContactFlowModuleVersion, AliasName=input.AliasName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15872,7 +15882,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/version", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateContactFlowModuleVersionDocument(Description=input.Description, FlowModuleContentSha256=input.FlowModuleContentSha256)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15884,7 +15894,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/version", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/version", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateContactFlowVersionDocument(Description=input.Description, FlowContentSha256=input.FlowContentSha256, ContactFlowVersion=input.ContactFlowVersion, LastModifiedTime=input.LastModifiedTime, LastModifiedRegion=input.LastModifiedRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -15895,7 +15905,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-tables/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-tables/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -15920,7 +15930,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         parts.append("\"ValueType\":" + input.ValueType.to_json())
@@ -15942,7 +15952,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/email-addresses/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/email-addresses/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -15969,7 +15979,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/evaluation-forms/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/evaluation-forms/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Title\":" + connect_json_str(input.Title))
         if input.Description.is_some():
@@ -16018,7 +16028,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/extraction-definitions/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/extraction-definitions/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -16043,7 +16053,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/hours-of-operations/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/hours-of-operations/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16076,7 +16086,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16101,7 +16111,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def create_instance(self, CreateInstanceRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -16130,7 +16140,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/integration-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/integration-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"IntegrationType\":" + input.IntegrationType.to_json())
         parts.append("\"IntegrationArn\":" + connect_json_str(input.IntegrationArn))
@@ -16158,7 +16168,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/metrics/definitions/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/metrics/definitions/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         parts.append("\"MetricCalculation\":" + metric_calculation_to_json(input.MetricCalculation))
@@ -16188,7 +16198,7 @@ struct ConnectClient:
     # errors: ConflictException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def create_participant(self, CreateParticipantRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/create-participant", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/create-participant", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateParticipantDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, ClientToken=input.ClientToken, ParticipantDetails=input.ParticipantDetails)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -16200,7 +16210,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["InitialContactId"] = input.InitialContactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/persistent-contact-association/{InstanceId}/{InitialContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/persistent-contact-association/{InstanceId}/{InitialContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePersistentContactAssociationDocument(RehydrationType=input.RehydrationType, SourceContactId=input.SourceContactId, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -16211,7 +16221,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/predefined-attributes/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/predefined-attributes/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Values.is_some():
@@ -16235,7 +16245,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/prompts/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/prompts/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16257,7 +16267,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/push-notification/{InstanceId}/registrations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/push-notification/{InstanceId}/registrations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreatePushNotificationRegistrationDocument(ClientToken=input.ClientToken, PinpointAppArn=input.PinpointAppArn, DeviceToken=input.DeviceToken, DeviceType=input.DeviceType, ContactConfiguration=input.ContactConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -16268,7 +16278,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/queues/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/queues/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16311,7 +16321,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/quick-connects/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/quick-connects/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16333,7 +16343,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/routing-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/routing-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         parts.append("\"Description\":" + connect_json_str(input.Description))
@@ -16372,7 +16382,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SecurityProfileName\":" + connect_json_str(input.SecurityProfileName))
         if input.Description.is_some():
@@ -16441,7 +16451,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/task/template", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/task/template", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16475,11 +16485,51 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # CreateTestCase  PUT /test-cases/{InstanceId}
+    # errors: AccessDeniedException, DuplicateResourceException, IdempotencyException, InternalServiceException, InvalidParameterException, InvalidRequestException, InvalidTestCaseException, LimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
+    def create_test_case(self, CreateTestCaseRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        dict[str, str] headers = {}
+        if input.TestCaseId.is_some():
+            headers["x-amz-resource-id"] = input.TestCaseId.unwrap_or("")
+        if input.LastModifiedTime.is_some():
+            auto qt0 = datetime.strftime(input.LastModifiedTime.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-last-modified-time"] = qt0
+        if input.LastModifiedRegion.is_some():
+            auto qt1 = input.LastModifiedRegion.unwrap_or("")
+            headers["x-amz-last-modified-region"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/test-cases/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        parts.append("\"Name\":" + connect_json_str(input.Name))
+        if input.Description.is_some():
+            auto u0 = input.Description.unwrap()
+            parts.append("\"Description\":" + connect_json_str(u0))
+        parts.append("\"Content\":" + connect_json_str(input.Content))
+        if input.EntryPoint.is_some():
+            auto u1 = input.EntryPoint.unwrap()
+            parts.append("\"EntryPoint\":" + u1.to_json())
+        if input.InitializationData.is_some():
+            auto u2 = input.InitializationData.unwrap()
+            parts.append("\"InitializationData\":" + connect_json_str(u2))
+        if input.Status.is_some():
+            auto u3 = input.Status.unwrap()
+            parts.append("\"Status\":" + u3.to_json())
+        if input.Tags.is_some():
+            auto u4 = input.Tags.unwrap()
+            list[str] m5 = []
+            for k5 in sorted(u4.keys()):
+                m5.append(connect_json_str(k5) + ":" + connect_json_str(u4[k5]))
+            parts.append("\"Tags\":" + connect_json_obj(m5))
+        auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # CreateTrafficDistributionGroup  PUT /traffic-distribution-group
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ResourceNotReadyException, ServiceQuotaExceededException, ThrottlingException
     def create_traffic_distribution_group(self, CreateTrafficDistributionGroupRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution-group", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution-group", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16505,7 +16555,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["IntegrationAssociationId"] = input.IntegrationAssociationId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"UseCaseType\":" + input.UseCaseType.to_json())
         if input.Tags.is_some():
@@ -16523,7 +16573,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/users/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/users/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Username\":" + connect_json_str(input.Username))
         if input.Password.is_some():
@@ -16591,7 +16641,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/user-hierarchy-groups/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/user-hierarchy-groups/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.ParentGroupId.is_some():
@@ -16612,7 +16662,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/views/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/views/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -16639,7 +16689,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ViewId"] = input.ViewId
-        auto b = binding.HttpBinding(method="PUT", path_template="/views/{InstanceId}/{ViewId}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/views/{InstanceId}/{ViewId}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateViewVersionDocument(VersionDescription=input.VersionDescription, ViewContentSha256=input.ViewContentSha256)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -16650,7 +16700,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/vocabulary/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vocabulary/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -16673,7 +16723,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         if input.Description.is_some():
@@ -16701,7 +16751,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWorkspacePageDocument(ResourceArn=input.ResourceArn, Page=input.Page, Slug=input.Slug, InputData=input.InputData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -16713,7 +16763,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationFormId"] = input.EvaluationFormId
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/deactivate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/deactivate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeactivateEvaluationFormDocument(EvaluationFormVersion=input.EvaluationFormVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -16727,7 +16777,7 @@ struct ConnectClient:
         labels["FileId"] = input.FileId
         dict[str, str] query = {}
         query["associatedResourceArn"] = input.AssociatedResourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteContactData  POST /contact/delete/{InstanceId}/{ContactId}
@@ -16737,7 +16787,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/delete/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/delete/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ContactFields:
@@ -16753,7 +16803,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationId"] = input.EvaluationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteContactFlow  DELETE /contact-flows/{InstanceId}/{ContactFlowId}
@@ -16763,7 +16813,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flows/{InstanceId}/{ContactFlowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flows/{InstanceId}/{ContactFlowId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteContactFlowAlias  DELETE /contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}
@@ -16774,7 +16824,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
         labels["AliasId"] = input.AliasId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteContactFlowModule  DELETE /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}
@@ -16784,7 +16834,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteContactFlowModuleAlias  DELETE /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}
@@ -16795,7 +16845,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
         labels["AliasId"] = input.AliasId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteContactFlowModuleVersion  DELETE /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/version/{ContactFlowModuleVersion}
@@ -16806,7 +16856,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
         labels["ContactFlowModuleVersion"] = str(input.ContactFlowModuleVersion)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/version/{ContactFlowModuleVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/version/{ContactFlowModuleVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteContactFlowVersion  DELETE /contact-flows/{InstanceId}/{ContactFlowId}/version/{ContactFlowVersion}
@@ -16817,7 +16867,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
         labels["ContactFlowVersion"] = str(input.ContactFlowVersion)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/version/{ContactFlowVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/version/{ContactFlowVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteDataTable  DELETE /data-tables/{InstanceId}/{DataTableId}
@@ -16827,7 +16877,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/data-tables/{InstanceId}/{DataTableId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/data-tables/{InstanceId}/{DataTableId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteDataTableAttribute  DELETE /data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}
@@ -16838,7 +16888,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
         labels["AttributeName"] = input.AttributeName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteEmailAddress  DELETE /email-addresses/{InstanceId}/{EmailAddressId}
@@ -16848,7 +16898,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EmailAddressId"] = input.EmailAddressId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/email-addresses/{InstanceId}/{EmailAddressId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/email-addresses/{InstanceId}/{EmailAddressId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteEvaluationForm  DELETE /evaluation-forms/{InstanceId}/{EvaluationFormId}
@@ -16861,7 +16911,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.EvaluationFormVersion.is_some():
             query["version"] = str(input.EvaluationFormVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="DELETE", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteExtractionDefinition  DELETE /extraction-definitions/{InstanceId}/{ExtractionDefinitionId}
@@ -16871,7 +16921,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ExtractionDefinitionId"] = input.ExtractionDefinitionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteHoursOfOperation  DELETE /hours-of-operations/{InstanceId}/{HoursOfOperationId}
@@ -16881,7 +16931,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteHoursOfOperationOverride  DELETE /hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}
@@ -16892,7 +16942,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
         labels["HoursOfOperationOverrideId"] = input.HoursOfOperationOverrideId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteInstance  DELETE /instance/{InstanceId}
@@ -16904,7 +16954,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteIntegrationAssociation  DELETE /instance/{InstanceId}/integration-associations/{IntegrationAssociationId}
@@ -16914,7 +16964,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["IntegrationAssociationId"] = input.IntegrationAssociationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteMetric  DELETE /metrics/definitions/{InstanceId}/{MetricId}
@@ -16924,7 +16974,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["MetricId"] = input.MetricId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/metrics/definitions/{InstanceId}/{MetricId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/metrics/definitions/{InstanceId}/{MetricId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteNotification  DELETE /notifications/{InstanceId}/{NotificationId}
@@ -16934,7 +16984,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["NotificationId"] = input.NotificationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/notifications/{InstanceId}/{NotificationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/notifications/{InstanceId}/{NotificationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeletePredefinedAttribute  DELETE /predefined-attributes/{InstanceId}/{Name}
@@ -16944,7 +16994,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/predefined-attributes/{InstanceId}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/predefined-attributes/{InstanceId}/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeletePrompt  DELETE /prompts/{InstanceId}/{PromptId}
@@ -16954,7 +17004,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["PromptId"] = input.PromptId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prompts/{InstanceId}/{PromptId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prompts/{InstanceId}/{PromptId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeletePushNotificationRegistration  DELETE /push-notification/{InstanceId}/registrations/{RegistrationId}
@@ -16966,7 +17016,7 @@ struct ConnectClient:
         labels["RegistrationId"] = input.RegistrationId
         dict[str, str] query = {}
         query["contactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/push-notification/{InstanceId}/registrations/{RegistrationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/push-notification/{InstanceId}/registrations/{RegistrationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteQueue  DELETE /queues/{InstanceId}/{QueueId}
@@ -16976,7 +17026,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/queues/{InstanceId}/{QueueId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/queues/{InstanceId}/{QueueId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteQuickConnect  DELETE /quick-connects/{InstanceId}/{QuickConnectId}
@@ -16986,7 +17036,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QuickConnectId"] = input.QuickConnectId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/quick-connects/{InstanceId}/{QuickConnectId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/quick-connects/{InstanceId}/{QuickConnectId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteRoutingProfile  DELETE /routing-profiles/{InstanceId}/{RoutingProfileId}
@@ -16996,7 +17046,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteRule  DELETE /rules/{InstanceId}/{RuleId}
@@ -17006,7 +17056,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RuleId"] = input.RuleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{InstanceId}/{RuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{InstanceId}/{RuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteSecurityProfile  DELETE /security-profiles/{InstanceId}/{SecurityProfileId}
@@ -17016,7 +17066,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["SecurityProfileId"] = input.SecurityProfileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/security-profiles/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/security-profiles/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteSession  DELETE /auth/sessions/{InstanceId}/{SessionId}
@@ -17026,7 +17076,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["SessionId"] = input.SessionId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/auth/sessions/{InstanceId}/{SessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/auth/sessions/{InstanceId}/{SessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteTaskTemplate  DELETE /instance/{InstanceId}/task/template/{TaskTemplateId}
@@ -17036,7 +17086,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["TaskTemplateId"] = input.TaskTemplateId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/task/template/{TaskTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/task/template/{TaskTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteTestCase  DELETE /test-cases/{InstanceId}/{TestCaseId}
@@ -17046,7 +17096,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["TestCaseId"] = input.TestCaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/test-cases/{InstanceId}/{TestCaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/test-cases/{InstanceId}/{TestCaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteTrafficDistributionGroup  DELETE /traffic-distribution-group/{TrafficDistributionGroupId}
@@ -17055,7 +17105,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["TrafficDistributionGroupId"] = input.TrafficDistributionGroupId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteUseCase  DELETE /instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases/{UseCaseId}
@@ -17066,7 +17116,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["IntegrationAssociationId"] = input.IntegrationAssociationId
         labels["UseCaseId"] = input.UseCaseId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases/{UseCaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases/{UseCaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteUser  DELETE /users/{InstanceId}/{UserId}
@@ -17076,7 +17126,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["UserId"] = input.UserId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/users/{InstanceId}/{UserId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/users/{InstanceId}/{UserId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteUserHierarchyGroup  DELETE /user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}
@@ -17086,7 +17136,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["HierarchyGroupId"] = input.HierarchyGroupId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteView  DELETE /views/{InstanceId}/{ViewId}
@@ -17096,7 +17146,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ViewId"] = input.ViewId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/views/{InstanceId}/{ViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/views/{InstanceId}/{ViewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteViewVersion  DELETE /views/{InstanceId}/{ViewId}/versions/{ViewVersion}
@@ -17107,7 +17157,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ViewId"] = input.ViewId
         labels["ViewVersion"] = str(input.ViewVersion)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/views/{InstanceId}/{ViewId}/versions/{ViewVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/views/{InstanceId}/{ViewId}/versions/{ViewVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteVocabulary  POST /vocabulary-remove/{InstanceId}/{VocabularyId}
@@ -17117,7 +17167,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["VocabularyId"] = input.VocabularyId
-        auto b = binding.HttpBinding(method="POST", path_template="/vocabulary-remove/{InstanceId}/{VocabularyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vocabulary-remove/{InstanceId}/{VocabularyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteWorkspace  DELETE /workspaces/{InstanceId}/{WorkspaceId}
@@ -17127,7 +17177,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{InstanceId}/{WorkspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{InstanceId}/{WorkspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteWorkspaceMedia  DELETE /workspaces/{InstanceId}/{WorkspaceId}/media
@@ -17139,7 +17189,7 @@ struct ConnectClient:
         labels["WorkspaceId"] = input.WorkspaceId
         dict[str, str] query = {}
         query["mediaType"] = input.MediaType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{InstanceId}/{WorkspaceId}/media", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{InstanceId}/{WorkspaceId}/media", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DeleteWorkspacePage  DELETE /workspaces/{InstanceId}/{WorkspaceId}/pages/{Page}
@@ -17150,7 +17200,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
         labels["Page"] = input.Page
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages/{Page}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages/{Page}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeAgentStatus  GET /agent-status/{InstanceId}/{AgentStatusId}
@@ -17160,7 +17210,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["AgentStatusId"] = input.AgentStatusId
-        auto b = binding.HttpBinding(method="GET", path_template="/agent-status/{InstanceId}/{AgentStatusId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/agent-status/{InstanceId}/{AgentStatusId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeAttachedFilesConfiguration  GET /attached-files-configurations/{InstanceId}/{AttachmentScope}
@@ -17170,7 +17220,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["AttachmentScope"] = input.AttachmentScope
-        auto b = binding.HttpBinding(method="GET", path_template="/attached-files-configurations/{InstanceId}/{AttachmentScope}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/attached-files-configurations/{InstanceId}/{AttachmentScope}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeAuthenticationProfile  GET /authentication-profiles/{InstanceId}/{AuthenticationProfileId}
@@ -17180,7 +17230,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["AuthenticationProfileId"] = input.AuthenticationProfileId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/authentication-profiles/{InstanceId}/{AuthenticationProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/authentication-profiles/{InstanceId}/{AuthenticationProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeContact  GET /contacts/{InstanceId}/{ContactId}
@@ -17190,7 +17240,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="GET", path_template="/contacts/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contacts/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeContactEvaluation  GET /contact-evaluations/{InstanceId}/{EvaluationId}
@@ -17200,7 +17250,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationId"] = input.EvaluationId
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeContactFlow  GET /contact-flows/{InstanceId}/{ContactFlowId}
@@ -17210,7 +17260,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeContactFlowAlias  GET /contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}
@@ -17221,7 +17271,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
         labels["AliasId"] = input.AliasId
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeContactFlowModule  GET /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}
@@ -17231,7 +17281,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeContactFlowModuleAlias  GET /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}
@@ -17242,7 +17292,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
         labels["AliasId"] = input.AliasId
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeDataTable  GET /data-tables/{InstanceId}/{DataTableId}
@@ -17252,7 +17302,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="GET", path_template="/data-tables/{InstanceId}/{DataTableId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/data-tables/{InstanceId}/{DataTableId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeDataTableAttribute  GET /data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}
@@ -17263,7 +17313,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
         labels["AttributeName"] = input.AttributeName
-        auto b = binding.HttpBinding(method="GET", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeEmailAddress  GET /email-addresses/{InstanceId}/{EmailAddressId}
@@ -17273,7 +17323,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EmailAddressId"] = input.EmailAddressId
-        auto b = binding.HttpBinding(method="GET", path_template="/email-addresses/{InstanceId}/{EmailAddressId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/email-addresses/{InstanceId}/{EmailAddressId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeEvaluationForm  GET /evaluation-forms/{InstanceId}/{EvaluationFormId}
@@ -17286,7 +17336,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.EvaluationFormVersion.is_some():
             query["version"] = str(input.EvaluationFormVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeExtractionDefinition  GET /extraction-definitions/{InstanceId}/{ExtractionDefinitionId}
@@ -17296,7 +17346,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ExtractionDefinitionId"] = input.ExtractionDefinitionId
-        auto b = binding.HttpBinding(method="GET", path_template="/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeHoursOfOperation  GET /hours-of-operations/{InstanceId}/{HoursOfOperationId}
@@ -17306,7 +17356,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
-        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeHoursOfOperationOverride  GET /hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}
@@ -17317,7 +17367,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
         labels["HoursOfOperationOverrideId"] = input.HoursOfOperationOverrideId
-        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeInstance  GET /instance/{InstanceId}
@@ -17326,7 +17376,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeInstanceAttribute  GET /instance/{InstanceId}/attribute/{AttributeType}
@@ -17336,7 +17386,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["AttributeType"] = input.AttributeType
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/attribute/{AttributeType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/attribute/{AttributeType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeInstanceStorageConfig  GET /instance/{InstanceId}/storage-config/{AssociationId}
@@ -17348,7 +17398,7 @@ struct ConnectClient:
         labels["AssociationId"] = input.AssociationId
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/storage-config/{AssociationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/storage-config/{AssociationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeMetric  GET /metrics/definitions/{InstanceId}/{MetricId}
@@ -17358,7 +17408,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["MetricId"] = input.MetricId
-        auto b = binding.HttpBinding(method="GET", path_template="/metrics/definitions/{InstanceId}/{MetricId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/metrics/definitions/{InstanceId}/{MetricId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeNotification  GET /notifications/{InstanceId}/{NotificationId}
@@ -17368,7 +17418,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["NotificationId"] = input.NotificationId
-        auto b = binding.HttpBinding(method="GET", path_template="/notifications/{InstanceId}/{NotificationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/notifications/{InstanceId}/{NotificationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribePhoneNumber  GET /phone-number/{PhoneNumberId}
@@ -17377,7 +17427,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["PhoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="GET", path_template="/phone-number/{PhoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/phone-number/{PhoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribePredefinedAttribute  GET /predefined-attributes/{InstanceId}/{Name}
@@ -17387,7 +17437,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/predefined-attributes/{InstanceId}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/predefined-attributes/{InstanceId}/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribePrompt  GET /prompts/{InstanceId}/{PromptId}
@@ -17397,7 +17447,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["PromptId"] = input.PromptId
-        auto b = binding.HttpBinding(method="GET", path_template="/prompts/{InstanceId}/{PromptId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prompts/{InstanceId}/{PromptId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeQueue  GET /queues/{InstanceId}/{QueueId}
@@ -17407,7 +17457,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="GET", path_template="/queues/{InstanceId}/{QueueId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/queues/{InstanceId}/{QueueId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeQuickConnect  GET /quick-connects/{InstanceId}/{QuickConnectId}
@@ -17417,7 +17467,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QuickConnectId"] = input.QuickConnectId
-        auto b = binding.HttpBinding(method="GET", path_template="/quick-connects/{InstanceId}/{QuickConnectId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/quick-connects/{InstanceId}/{QuickConnectId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeRoutingProfile  GET /routing-profiles/{InstanceId}/{RoutingProfileId}
@@ -17427,7 +17477,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeRule  GET /rules/{InstanceId}/{RuleId}
@@ -17437,7 +17487,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RuleId"] = input.RuleId
-        auto b = binding.HttpBinding(method="GET", path_template="/rules/{InstanceId}/{RuleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules/{InstanceId}/{RuleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeSecurityProfile  GET /security-profiles/{InstanceId}/{SecurityProfileId}
@@ -17447,7 +17497,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["SecurityProfileId"] = input.SecurityProfileId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeTestCase  GET /test-cases/{InstanceId}/{TestCaseId}
@@ -17460,7 +17510,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.Status.is_some():
             query["status"] = input.Status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/test-cases/{InstanceId}/{TestCaseId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/test-cases/{InstanceId}/{TestCaseId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeTrafficDistributionGroup  GET /traffic-distribution-group/{TrafficDistributionGroupId}
@@ -17469,7 +17519,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["TrafficDistributionGroupId"] = input.TrafficDistributionGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeUser  GET /users/{InstanceId}/{UserId}
@@ -17479,7 +17529,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/users/{InstanceId}/{UserId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/users/{InstanceId}/{UserId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeUserHierarchyGroup  GET /user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}
@@ -17489,7 +17539,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["HierarchyGroupId"] = input.HierarchyGroupId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeUserHierarchyStructure  GET /user-hierarchy-structure/{InstanceId}
@@ -17498,7 +17548,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/user-hierarchy-structure/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/user-hierarchy-structure/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeView  GET /views/{InstanceId}/{ViewId}
@@ -17508,7 +17558,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ViewId"] = input.ViewId
-        auto b = binding.HttpBinding(method="GET", path_template="/views/{InstanceId}/{ViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/views/{InstanceId}/{ViewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeVocabulary  GET /vocabulary/{InstanceId}/{VocabularyId}
@@ -17518,7 +17568,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["VocabularyId"] = input.VocabularyId
-        auto b = binding.HttpBinding(method="GET", path_template="/vocabulary/{InstanceId}/{VocabularyId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/vocabulary/{InstanceId}/{VocabularyId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DescribeWorkspace  GET /workspaces/{InstanceId}/{WorkspaceId}
@@ -17528,7 +17578,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}/{WorkspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}/{WorkspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateAnalyticsDataSet  POST /analytics-data/instance/{InstanceId}/association
@@ -17537,7 +17587,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/analytics-data/instance/{InstanceId}/association", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/analytics-data/instance/{InstanceId}/association", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateAnalyticsDataSetDocument(DataSetId=input.DataSetId, TargetAccountId=input.TargetAccountId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -17552,7 +17602,7 @@ struct ConnectClient:
         query["origin"] = input.Origin
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/approved-origin", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/approved-origin", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateBot  POST /instance/{InstanceId}/bot
@@ -17561,7 +17611,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/bot", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/bot", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateBotDocument(LexBot=input.LexBot, LexV2Bot=input.LexV2Bot, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -17573,7 +17623,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["EmailAddressId"] = input.EmailAddressId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/email-addresses/{InstanceId}/{EmailAddressId}/disassociate-alias", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/email-addresses/{InstanceId}/{EmailAddressId}/disassociate-alias", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisassociateEmailAddressAliasDocument(AliasConfiguration=input.AliasConfiguration, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -17586,7 +17636,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ResourceId"] = input.ResourceId
         labels["ResourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/flow-associations/{InstanceId}/{ResourceId}/{ResourceType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/flow-associations/{InstanceId}/{ResourceId}/{ResourceType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateHoursOfOperations  POST /hours-of-operations/{InstanceId}/{HoursOfOperationId}/disassociate-hours
@@ -17596,7 +17646,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
-        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/disassociate-hours", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/disassociate-hours", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ParentHoursOfOperationIds:
@@ -17616,7 +17666,7 @@ struct ConnectClient:
         query["resourceType"] = input.ResourceType
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/storage-config/{AssociationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/storage-config/{AssociationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateLambdaFunction  DELETE /instance/{InstanceId}/lambda-function
@@ -17629,7 +17679,7 @@ struct ConnectClient:
         query["functionArn"] = input.FunctionArn
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/lambda-function", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/lambda-function", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateLexBot  DELETE /instance/{InstanceId}/lex-bot
@@ -17643,7 +17693,7 @@ struct ConnectClient:
         query["lexRegion"] = input.LexRegion
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/lex-bot", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/lex-bot", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociatePhoneNumberContactFlow  DELETE /phone-number/{PhoneNumberId}/contact-flow
@@ -17654,7 +17704,7 @@ struct ConnectClient:
         labels["PhoneNumberId"] = input.PhoneNumberId
         dict[str, str] query = {}
         query["instanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-number/{PhoneNumberId}/contact-flow", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-number/{PhoneNumberId}/contact-flow", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateQueueEmailAddresses  POST /queues/{InstanceId}/{QueueId}/disassociate-email-addresses
@@ -17664,7 +17714,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/disassociate-email-addresses", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/disassociate-email-addresses", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.EmailAddressesId:
@@ -17683,7 +17733,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/disassociate-quick-connects", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/disassociate-quick-connects", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.QuickConnectIds:
@@ -17699,7 +17749,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/disassociate-queues", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/disassociate-queues", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueueReferences.is_some():
             auto u0 = input.QueueReferences.unwrap()
@@ -17726,7 +17776,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/security-key/{AssociationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/instance/{InstanceId}/security-key/{AssociationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateSecurityProfiles  POST /disassociate-security-profiles/{InstanceId}
@@ -17735,7 +17785,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/disassociate-security-profiles/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SecurityProfiles:
@@ -17755,7 +17805,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         query["UserId"] = input.UserId
         query["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # DisassociateUserProficiencies  POST /users/{InstanceId}/{UserId}/disassociate-proficiencies
@@ -17765,7 +17815,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["UserId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/disassociate-proficiencies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/disassociate-proficiencies", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UserProficiencies:
@@ -17781,7 +17831,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/disassociate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/disassociate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.ResourceArns:
@@ -17797,7 +17847,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/contact", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/contact", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DismissUserContactDocument(ContactId=input.ContactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -17814,7 +17864,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/evaluate", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/evaluate", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Values:
@@ -17839,7 +17889,7 @@ struct ConnectClient:
         query["associatedResourceArn"] = input.AssociatedResourceArn
         if input.UrlContentDisposition.is_some():
             query["urlContentDisposition"] = input.UrlContentDisposition.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/attached-files/{InstanceId}/{FileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetContactAttributes  GET /contact/attributes/{InstanceId}/{InitialContactId}
@@ -17849,14 +17899,14 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["InitialContactId"] = input.InitialContactId
-        auto b = binding.HttpBinding(method="GET", path_template="/contact/attributes/{InstanceId}/{InitialContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact/attributes/{InstanceId}/{InitialContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetContactMetrics  POST /metrics/contact
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def get_contact_metrics(self, GetContactMetricsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics/contact", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/contact", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
@@ -17873,7 +17923,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/cross-region-routing/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cross-region-routing/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetCurrentMetricData  POST /metrics/current/{InstanceId}
@@ -17882,7 +17932,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics/current/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/current/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Filters\":" + filters_to_json(input.Filters))
         if input.Groupings.is_some():
@@ -17916,7 +17966,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics/userdata/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/userdata/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Filters\":" + user_data_filters_to_json(input.Filters))
         if input.NextToken.is_some():
@@ -17938,7 +17988,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         query["fromDate"] = input.FromDate
         query["toDate"] = input.ToDate
-        auto b = binding.HttpBinding(method="GET", path_template="/effective-hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/effective-hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetEvaluationFormValidation  GET /evaluation-forms/{InstanceId}/{EvaluationFormId}/validation-results
@@ -17951,7 +18001,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.EvaluationFormVersion.is_some():
             query["version"] = str(input.EvaluationFormVersion.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/validation-results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/validation-results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetFederationToken  GET /user/federate/{InstanceId}
@@ -17960,7 +18010,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="GET", path_template="/user/federate/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/user/federate/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetFlowAssociation  GET /flow-associations/{InstanceId}/{ResourceId}/{ResourceType}
@@ -17971,7 +18021,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ResourceId"] = input.ResourceId
         labels["ResourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="GET", path_template="/flow-associations/{InstanceId}/{ResourceId}/{ResourceType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flow-associations/{InstanceId}/{ResourceId}/{ResourceType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetMetricData  POST /metrics/historical/{InstanceId}
@@ -17980,7 +18030,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics/historical/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/historical/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
         parts.append("\"EndTime\":" + str(datetime.to_timestamp(input.EndTime)))
@@ -18008,7 +18058,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def get_metric_data_v2(self, GetMetricDataV2Request input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics/data", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/data", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceArn\":" + connect_json_str(input.ResourceArn))
         parts.append("\"StartTime\":" + str(datetime.to_timestamp(input.StartTime)))
@@ -18046,7 +18096,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["PromptId"] = input.PromptId
-        auto b = binding.HttpBinding(method="GET", path_template="/prompts/{InstanceId}/{PromptId}/file", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prompts/{InstanceId}/{PromptId}/file", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetTaskTemplate  GET /instance/{InstanceId}/task/template/{TaskTemplateId}
@@ -18059,7 +18109,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.SnapshotVersion.is_some():
             query["snapshotVersion"] = input.SnapshotVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/task/template/{TaskTemplateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/task/template/{TaskTemplateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetTestCaseExecutionSummary  GET /test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/summary
@@ -18070,7 +18120,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["TestCaseId"] = input.TestCaseId
         labels["TestCaseExecutionId"] = input.TestCaseExecutionId
-        auto b = binding.HttpBinding(method="GET", path_template="/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/summary", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/summary", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # GetTrafficDistribution  GET /traffic-distribution/{Id}
@@ -18079,14 +18129,14 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ImportPhoneNumber  POST /phone-number/import
     # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
     def import_phone_number(self, ImportPhoneNumberRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/import", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/import", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         parts.append("\"SourcePhoneNumberArn\":" + connect_json_str(input.SourcePhoneNumberArn))
@@ -18112,7 +18162,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/media", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/media", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ImportWorkspaceMediaDocument(MediaType=input.MediaType, MediaSource=input.MediaSource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -18130,7 +18180,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/analytics-data/instance/{InstanceId}/association", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/analytics-data/instance/{InstanceId}/association", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListAnalyticsDataLakeDataSets  GET /analytics-data/instance/{InstanceId}/datasets
@@ -18144,7 +18194,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/analytics-data/instance/{InstanceId}/datasets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/analytics-data/instance/{InstanceId}/datasets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListApprovedOrigins  GET /instance/{InstanceId}/approved-origins
@@ -18158,7 +18208,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/approved-origins", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/approved-origins", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListAssociatedContacts  GET /contact/associated/{InstanceId}
@@ -18173,7 +18223,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/contact/associated/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact/associated/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListAttachedFilesConfigurations  GET /attached-files-configurations/{InstanceId}
@@ -18187,7 +18237,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/attached-files-configurations/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/attached-files-configurations/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListAuthenticationProfiles  GET /authentication-profiles-summary/{InstanceId}
@@ -18201,7 +18251,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/authentication-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/authentication-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListBots  GET /instance/{InstanceId}/bots
@@ -18216,7 +18266,7 @@ struct ConnectClient:
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         query["lexVersion"] = input.LexVersion
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/bots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/bots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListChildHoursOfOperations  GET /hours-of-operations/{InstanceId}/{HoursOfOperationId}/hours
@@ -18231,7 +18281,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/hours", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/hours", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListContactEvaluations  GET /contact-evaluations/{InstanceId}
@@ -18244,7 +18294,7 @@ struct ConnectClient:
         query["contactId"] = input.ContactId
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-evaluations/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-evaluations/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListContactFlowAliases  GET /contact-flows/{InstanceId}/{ContactFlowId}/aliases
@@ -18259,7 +18309,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/aliases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/aliases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListContactFlowModuleAliases  GET /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/aliases
@@ -18274,7 +18324,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/aliases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/aliases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListContactFlowModuleVersions  GET /contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/versions
@@ -18289,7 +18339,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListContactFlowModules  GET /contact-flow-modules-summary/{InstanceId}
@@ -18305,7 +18355,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.ContactFlowModuleState.is_some():
             query["state"] = input.ContactFlowModuleState.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flow-modules-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListContactFlowVersions  GET /contact-flows/{InstanceId}/{ContactFlowId}/versions
@@ -18320,7 +18370,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListDataTableAttributes  POST /data-tables/{InstanceId}/{DataTableId}/attributes
@@ -18335,7 +18385,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AttributeIds.is_some():
             auto u0 = input.AttributeIds.unwrap()
@@ -18358,7 +18408,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/list-primary", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/list-primary", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RecordIds.is_some():
             auto u0 = input.RecordIds.unwrap()
@@ -18387,7 +18437,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/list", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RecordIds.is_some():
             auto u0 = input.RecordIds.unwrap()
@@ -18415,7 +18465,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/data-tables/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/data-tables/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListDefaultVocabularies  POST /default-vocabulary-summary/{InstanceId}
@@ -18424,7 +18474,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/default-vocabulary-summary/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/default-vocabulary-summary/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListDefaultVocabulariesDocument(LanguageCode=input.LanguageCode, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -18435,7 +18485,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/entity-security-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/entity-security-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListEntitySecurityProfilesDocument(EntityType=input.EntityType, EntityArn=input.EntityArn, NextToken=input.NextToken, MaxResults=input.MaxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -18452,7 +18502,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/instances/{InstanceId}/evaluation-form-ai-versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instances/{InstanceId}/evaluation-form-ai-versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListEvaluationFormVersions  GET /evaluation-forms/{InstanceId}/{EvaluationFormId}/versions
@@ -18467,7 +18517,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListEvaluationForms  GET /evaluation-forms/{InstanceId}
@@ -18481,7 +18531,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-forms/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListExtractionDefinitions  GET /extraction-definitions/{InstanceId}
@@ -18495,7 +18545,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/extraction-definitions/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/extraction-definitions/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListFlowAssociations  GET /flow-associations-summary/{InstanceId}
@@ -18511,7 +18561,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/flow-associations-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/flow-associations-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListHoursOfOperationOverrides  GET /hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides
@@ -18526,7 +18576,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListHoursOfOperations  GET /hours-of-operations-summary/{InstanceId}
@@ -18540,7 +18590,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/hours-of-operations-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListInstanceAttributes  GET /instance/{InstanceId}/attributes
@@ -18554,7 +18604,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/attributes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/attributes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListInstanceStorageConfigs  GET /instance/{InstanceId}/storage-configs
@@ -18569,7 +18619,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/storage-configs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/storage-configs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListInstances  GET /instance
@@ -18581,7 +18631,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListIntegrationAssociations  GET /instance/{InstanceId}/integration-associations
@@ -18599,7 +18649,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.IntegrationArn.is_some():
             query["integrationArn"] = input.IntegrationArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/integration-associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/integration-associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListLambdaFunctions  GET /instance/{InstanceId}/lambda-functions
@@ -18613,7 +18663,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/lambda-functions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/lambda-functions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListLexBots  GET /instance/{InstanceId}/lex-bots
@@ -18627,7 +18677,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/lex-bots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/lex-bots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListMetrics  GET /metrics/definitions/{InstanceId}
@@ -18643,7 +18693,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/metrics/definitions/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/metrics/definitions/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListNotifications  GET /notifications/{InstanceId}
@@ -18657,14 +18707,14 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/notifications/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/notifications/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListPhoneNumbersV2  POST /phone-number/list
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, ResourceNotFoundException, ThrottlingException
     def list_phone_numbers_v2(self, ListPhoneNumbersV2Request input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TargetArn.is_some():
             auto u0 = input.TargetArn.unwrap()
@@ -18707,7 +18757,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/predefined-attributes/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/predefined-attributes/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListPrompts  GET /prompts-summary/{InstanceId}
@@ -18721,7 +18771,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/prompts-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prompts-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListQueueEmailAddresses  GET /queues/{InstanceId}/{QueueId}/email-addresses
@@ -18736,7 +18786,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/queues/{InstanceId}/{QueueId}/email-addresses", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/queues/{InstanceId}/{QueueId}/email-addresses", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListQueueQuickConnects  GET /queues/{InstanceId}/{QueueId}/quick-connects
@@ -18751,7 +18801,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/queues/{InstanceId}/{QueueId}/quick-connects", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/queues/{InstanceId}/{QueueId}/quick-connects", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListRealtimeContactAnalysisSegmentsV2  POST /contact/list-real-time-analysis-segments-v2/{InstanceId}/{ContactId}
@@ -18761,7 +18811,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/list-real-time-analysis-segments-v2/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/list-real-time-analysis-segments-v2/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -18789,7 +18839,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/replication-findings/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/replication-findings/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListRoutingProfileManualAssignmentQueues  GET /routing-profiles/{InstanceId}/{RoutingProfileId}/manual-assignment-queues
@@ -18804,7 +18854,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/manual-assignment-queues", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/manual-assignment-queues", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListRoutingProfileQueues  GET /routing-profiles/{InstanceId}/{RoutingProfileId}/queues
@@ -18819,7 +18869,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/queues", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/queues", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListRoutingProfiles  GET /routing-profiles-summary/{InstanceId}
@@ -18833,7 +18883,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/routing-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListRules  GET /rules/{InstanceId}
@@ -18851,7 +18901,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rules/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListSecurityKeys  GET /instance/{InstanceId}/security-keys
@@ -18865,7 +18915,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/security-keys", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/security-keys", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListSecurityProfileAIAgents  GET /security-profiles-ai-agents/{InstanceId}/{SecurityProfileId}
@@ -18880,7 +18930,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-ai-agents/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-ai-agents/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListSecurityProfileApplications  GET /security-profiles-applications/{InstanceId}/{SecurityProfileId}
@@ -18895,7 +18945,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-applications/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-applications/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListSecurityProfileFlowModules  GET /security-profiles-flow-modules/{InstanceId}/{SecurityProfileId}
@@ -18910,7 +18960,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-flow-modules/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-flow-modules/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListSecurityProfilePermissions  GET /security-profiles-permissions/{InstanceId}/{SecurityProfileId}
@@ -18925,7 +18975,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-permissions/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-permissions/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListSecurityProfiles  GET /security-profiles-summary/{InstanceId}
@@ -18939,7 +18989,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/security-profiles-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -18948,7 +18998,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListTaskTemplates  GET /instance/{InstanceId}/task/template
@@ -18966,7 +19016,7 @@ struct ConnectClient:
             query["status"] = input.Status.unwrap_or("")
         if input.Name.is_some():
             query["name"] = input.Name.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/task/template", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/task/template", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListTestCaseExecutionRecords  GET /test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/records
@@ -18984,7 +19034,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/records", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/records", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListTestCaseExecutions  GET /test-case-executions/{InstanceId}
@@ -19008,7 +19058,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/test-case-executions/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/test-case-executions/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListTestCases  GET /test-cases-summary/{InstanceId}
@@ -19022,7 +19072,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/test-cases-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/test-cases-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListTrafficDistributionGroupUsers  GET /traffic-distribution-group/{TrafficDistributionGroupId}/user
@@ -19036,7 +19086,7 @@ struct ConnectClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution-group/{TrafficDistributionGroupId}/user", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListTrafficDistributionGroups  GET /traffic-distribution-groups
@@ -19050,7 +19100,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.InstanceId.is_some():
             query["instanceId"] = input.InstanceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/traffic-distribution-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListUseCases  GET /instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases
@@ -19065,7 +19115,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/instance/{InstanceId}/integration-associations/{IntegrationAssociationId}/use-cases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListUserHierarchyGroups  GET /user-hierarchy-groups-summary/{InstanceId}
@@ -19079,7 +19129,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/user-hierarchy-groups-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/user-hierarchy-groups-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListUserNotifications  GET /users/{InstanceId}/{UserId}/notifications
@@ -19094,7 +19144,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/users/{InstanceId}/{UserId}/notifications", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/users/{InstanceId}/{UserId}/notifications", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListUserProficiencies  GET /users/{InstanceId}/{UserId}/proficiencies
@@ -19109,7 +19159,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/users/{InstanceId}/{UserId}/proficiencies", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/users/{InstanceId}/{UserId}/proficiencies", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListUsers  GET /users-summary/{InstanceId}
@@ -19123,7 +19173,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/users-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/users-summary/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListViewVersions  GET /views/{InstanceId}/{ViewId}/versions
@@ -19138,7 +19188,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/views/{InstanceId}/{ViewId}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/views/{InstanceId}/{ViewId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListViews  GET /views/{InstanceId}
@@ -19154,7 +19204,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/views/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/views/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListWorkspaceMedia  GET /workspaces/{InstanceId}/{WorkspaceId}/media
@@ -19164,7 +19214,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}/{WorkspaceId}/media", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}/{WorkspaceId}/media", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListWorkspacePages  GET /workspaces/{InstanceId}/{WorkspaceId}/pages
@@ -19179,7 +19229,7 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ListWorkspaces  GET /workspaces/{InstanceId}
@@ -19193,14 +19243,14 @@ struct ConnectClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # MonitorContact  POST /contact/monitor
     # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def monitor_contact(self, MonitorContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/monitor", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/monitor", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
@@ -19221,7 +19271,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def pause_contact(self, PauseContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/pause", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/pause", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PauseContactDocument(ContactId=input.ContactId, InstanceId=input.InstanceId, ContactFlowId=input.ContactFlowId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -19233,7 +19283,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/users/{InstanceId}/{UserId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/users/{InstanceId}/{UserId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutUserStatusDocument(AgentStatusId=input.AgentStatusId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -19247,7 +19297,7 @@ struct ConnectClient:
         dict[str, str] query = {}
         if input.ClientToken.is_some():
             query["clientToken"] = input.ClientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-number/{PhoneNumberId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/phone-number/{PhoneNumberId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # ReplicateInstance  POST /instance/{InstanceId}/replicate
@@ -19256,7 +19306,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/replicate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/replicate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ReplicateInstanceDocument(ReplicaRegion=input.ReplicaRegion, ClientToken=input.ClientToken, ReplicaAlias=input.ReplicaAlias)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -19265,7 +19315,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def resume_contact(self, ResumeContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/resume", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/resume", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResumeContactDocument(ContactId=input.ContactId, InstanceId=input.InstanceId, ContactFlowId=input.ContactFlowId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -19274,7 +19324,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidActiveRegionException, InvalidRequestException, ResourceNotFoundException
     def resume_contact_recording(self, ResumeContactRecordingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/resume-recording", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/resume-recording", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResumeContactRecordingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, InitialContactId=input.InitialContactId, ContactRecordingType=input.ContactRecordingType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -19283,7 +19333,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_agent_statuses(self, SearchAgentStatusesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-agent-statuses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-agent-statuses", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19305,7 +19355,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, ThrottlingException
     def search_available_phone_numbers(self, SearchAvailablePhoneNumbersRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/search-available", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/phone-number/search-available", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchAvailablePhoneNumbersDocument(TargetArn=input.TargetArn, InstanceId=input.InstanceId, PhoneNumberCountryCode=input.PhoneNumberCountryCode, PhoneNumberType=input.PhoneNumberType, PhoneNumberPrefix=input.PhoneNumberPrefix, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -19314,7 +19364,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_contact_evaluations(self, SearchContactEvaluationsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-evaluations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-evaluations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19336,7 +19386,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_contact_flow_modules(self, SearchContactFlowModulesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-flow-modules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-flow-modules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19358,7 +19408,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_contact_flows(self, SearchContactFlowsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-flows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contact-flows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19380,7 +19430,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_contacts(self, SearchContactsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-contacts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-contacts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         parts.append("\"TimeRange\":" + input.TimeRange.to_json())
@@ -19403,7 +19453,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_data_tables(self, SearchDataTablesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-data-tables", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-data-tables", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19425,7 +19475,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_email_addresses(self, SearchEmailAddressesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-email-addresses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-email-addresses", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.MaxResults.is_some():
@@ -19447,7 +19497,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_evaluation_forms(self, SearchEvaluationFormsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-evaluation-forms", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-evaluation-forms", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19469,7 +19519,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_hours_of_operation_overrides(self, SearchHoursOfOperationOverridesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-hours-of-operation-overrides", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-hours-of-operation-overrides", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19491,7 +19541,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_hours_of_operations(self, SearchHoursOfOperationsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-hours-of-operations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-hours-of-operations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19513,7 +19563,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_metrics(self, SearchMetricsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-metrics", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-metrics", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19535,7 +19585,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_notifications(self, SearchNotificationsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-notifications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-notifications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19557,7 +19607,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_predefined_attributes(self, SearchPredefinedAttributesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-predefined-attributes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-predefined-attributes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19576,7 +19626,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_prompts(self, SearchPromptsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-prompts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-prompts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19598,7 +19648,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_queues(self, SearchQueuesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-queues", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-queues", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19620,7 +19670,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_quick_connects(self, SearchQuickConnectsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-quick-connects", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-quick-connects", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19642,7 +19692,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, MaximumResultReturnedException, ResourceNotFoundException, ThrottlingException
     def search_resource_tags(self, SearchResourceTagsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-resource-tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-resource-tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.ResourceTypes.is_some():
@@ -19667,7 +19717,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_routing_profiles(self, SearchRoutingProfilesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-routing-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-routing-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19689,7 +19739,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_rules(self, SearchRulesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.MaxResults.is_some():
@@ -19711,7 +19761,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_security_profiles(self, SearchSecurityProfilesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-security-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-security-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19733,7 +19783,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_test_cases(self, SearchTestCasesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-test-cases", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-test-cases", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19755,7 +19805,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_user_hierarchy_groups(self, SearchUserHierarchyGroupsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-user-hierarchy-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-user-hierarchy-groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19777,7 +19827,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_users(self, SearchUsersRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-users", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-users", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19799,7 +19849,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_views(self, SearchViewsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-views", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-views", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19823,7 +19873,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/vocabulary-summary/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/vocabulary-summary/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SearchVocabulariesDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, State=input.State, NameStartsWith=input.NameStartsWith, LanguageCode=input.LanguageCode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -19832,7 +19882,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_workspace_associations(self, SearchWorkspaceAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-workspace-associations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-workspace-associations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19854,7 +19904,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def search_workspaces(self, SearchWorkspacesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/search-workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/search-workspaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.NextToken.is_some():
@@ -19876,7 +19926,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def send_chat_integration_event(self, SendChatIntegrationEventRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/chat-integration-event", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/chat-integration-event", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SourceId\":" + connect_json_str(input.SourceId))
         parts.append("\"DestinationId\":" + connect_json_str(input.DestinationId))
@@ -19896,7 +19946,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/outbound-email", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instance/{InstanceId}/outbound-email", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FromEmailAddress\":" + input.FromEmailAddress.to_json())
         parts.append("\"DestinationEmailAddress\":" + input.DestinationEmailAddress.to_json())
@@ -19920,7 +19970,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/outbound-web-notification", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/outbound-web-notification", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -19938,7 +19988,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def start_assistant_contact(self, StartAssistantContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/assistant", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/assistant", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         parts.append("\"AiAgent\":" + input.AiAgent.to_json())
@@ -19972,7 +20022,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         dict[str, str] query = {}
         query["associatedResourceArn"] = input.AssociatedResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/attached-files/{InstanceId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/attached-files/{InstanceId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ClientToken.is_some():
             auto u0 = input.ClientToken.unwrap()
@@ -19999,7 +20049,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
     def start_chat_contact(self, StartChatContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/chat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/chat", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         parts.append("\"ContactFlowId\":" + connect_json_str(input.ContactFlowId))
@@ -20068,7 +20118,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-conversational-analytics-job/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-conversational-analytics-job/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.AnalyticsModes:
@@ -20087,7 +20137,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact-evaluations/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact-evaluations/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
         parts.append("\"EvaluationFormId\":" + connect_json_str(input.EvaluationFormId))
@@ -20110,7 +20160,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ServiceQuotaExceededException
     def start_contact_media_processing(self, StartContactMediaProcessingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-contact-media-processing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-contact-media-processing", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartContactMediaProcessingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, ProcessorArn=input.ProcessorArn, FailureMode=input.FailureMode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20119,7 +20169,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def start_contact_recording(self, StartContactRecordingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-recording", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-recording", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartContactRecordingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, InitialContactId=input.InitialContactId, VoiceRecordingConfiguration=input.VoiceRecordingConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20128,7 +20178,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
     def start_contact_streaming(self, StartContactStreamingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-streaming", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/start-streaming", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartContactStreamingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, ChatStreamingConfiguration=input.ChatStreamingConfiguration, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20140,7 +20190,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationFormId"] = input.EvaluationFormId
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/validate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}/validate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartEvaluationFormValidationDocument(EvaluationFormVersion=input.EvaluationFormVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20149,7 +20199,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def start_outbound_chat_contact(self, StartOutboundChatContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-chat", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-chat", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"SourceEndpoint\":" + input.SourceEndpoint.to_json())
         parts.append("\"DestinationEndpoint\":" + input.DestinationEndpoint.to_json())
@@ -20196,7 +20246,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def start_outbound_email_contact(self, StartOutboundEmailContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-email", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-email", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
@@ -20218,7 +20268,7 @@ struct ConnectClient:
     # errors: DestinationNotAllowedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, OutboundContactNotPermittedException, ResourceNotFoundException
     def start_outbound_voice_contact(self, StartOutboundVoiceContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-voice", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/outbound-voice", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -20275,7 +20325,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def start_screen_sharing(self, StartScreenSharingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/screen-sharing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/screen-sharing", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartScreenSharingDocument(ClientToken=input.ClientToken, InstanceId=input.InstanceId, ContactId=input.ContactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20284,7 +20334,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def start_task_contact(self, StartTaskContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
         if input.PreviousContactId.is_some():
@@ -20346,7 +20396,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["TestCaseId"] = input.TestCaseId
-        auto b = binding.HttpBinding(method="PUT", path_template="/test-cases/{InstanceId}/{TestCaseId}/start-execution", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/test-cases/{InstanceId}/{TestCaseId}/start-execution", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartTestCaseExecutionDocument(ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20355,7 +20405,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
     def start_web_rtc_contact(self, StartWebRTCContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/webrtc", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/webrtc", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Attributes.is_some():
             auto u0 = input.Attributes.unwrap()
@@ -20397,7 +20447,7 @@ struct ConnectClient:
     # errors: ContactNotFoundException, InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def stop_contact(self, StopContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopContactDocument(ContactId=input.ContactId, InstanceId=input.InstanceId, DisconnectReason=input.DisconnectReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20406,7 +20456,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException
     def stop_contact_media_processing(self, StopContactMediaProcessingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop-contact-media-processing", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop-contact-media-processing", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopContactMediaProcessingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20415,7 +20465,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidActiveRegionException, InvalidRequestException, ResourceNotFoundException
     def stop_contact_recording(self, StopContactRecordingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop-recording", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop-recording", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopContactRecordingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, InitialContactId=input.InitialContactId, ContactRecordingType=input.ContactRecordingType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20424,7 +20474,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def stop_contact_streaming(self, StopContactStreamingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop-streaming", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/stop-streaming", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopContactStreamingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, StreamingId=input.StreamingId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20437,7 +20487,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["TestCaseExecutionId"] = input.TestCaseExecutionId
         labels["TestCaseId"] = input.TestCaseId
-        auto b = binding.HttpBinding(method="POST", path_template="/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/stop-execution", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/stop-execution", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopTestCaseExecutionDocument(ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20449,7 +20499,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationId"] = input.EvaluationId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}/submit", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}/submit", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Answers.is_some():
             auto u0 = input.Answers.unwrap()
@@ -20473,7 +20523,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidActiveRegionException, InvalidRequestException, ResourceNotFoundException
     def suspend_contact_recording(self, SuspendContactRecordingRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/suspend-recording", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/suspend-recording", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = SuspendContactRecordingDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, InitialContactId=input.InitialContactId, ContactRecordingType=input.ContactRecordingType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20482,7 +20532,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
     def tag_contact(self, TagContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/tags", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/tags", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ContactId\":" + connect_json_str(input.ContactId))
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
@@ -20499,7 +20549,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -20512,10 +20562,33 @@ struct ConnectClient:
     # errors: AccessDeniedException, IdempotencyException, InternalServiceException, InvalidRequestException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException
     def transfer_contact(self, TransferContactRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/transfer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/transfer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = TransferContactDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, QueueId=input.QueueId, UserId=input.UserId, ContactFlowId=input.ContactFlowId, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UntagContact  DELETE /contact/tags/{InstanceId}/{ContactId}
+    # errors: InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def untag_contact(self, UntagContactRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ContactId"] = input.ContactId
+        labels["InstanceId"] = input.InstanceId
+        dict[str, list[str]] multi_query = {}
+        multi_query["TagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/contact/tags/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, connect_service(), self.region, host)
 
     # UpdateAgentStatus  POST /agent-status/{InstanceId}/{AgentStatusId}
     # errors: DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
@@ -20524,7 +20597,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["AgentStatusId"] = input.AgentStatusId
-        auto b = binding.HttpBinding(method="POST", path_template="/agent-status/{InstanceId}/{AgentStatusId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/agent-status/{InstanceId}/{AgentStatusId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAgentStatusDocument(Name=input.Name, Description=input.Description, State=input.State, DisplayOrder=input.DisplayOrder, ResetOrderNumber=input.ResetOrderNumber)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20536,7 +20609,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["AttachmentScope"] = input.AttachmentScope
-        auto b = binding.HttpBinding(method="POST", path_template="/attached-files-configurations/{InstanceId}/{AttachmentScope}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/attached-files-configurations/{InstanceId}/{AttachmentScope}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaximumSizeLimitInBytes.is_some():
             auto u0 = input.MaximumSizeLimitInBytes.unwrap()
@@ -20554,7 +20627,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["AuthenticationProfileId"] = input.AuthenticationProfileId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/authentication-profiles/{InstanceId}/{AuthenticationProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/authentication-profiles/{InstanceId}/{AuthenticationProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -20593,7 +20666,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -20635,7 +20708,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidActiveRegionException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException
     def update_contact_attributes(self, UpdateContactAttributesRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/attributes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/attributes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InitialContactId\":" + connect_json_str(input.InitialContactId))
         parts.append("\"InstanceId\":" + connect_json_str(input.InstanceId))
@@ -20653,7 +20726,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationId"] = input.EvaluationId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-evaluations/{InstanceId}/{EvaluationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Answers.is_some():
             auto u0 = input.Answers.unwrap()
@@ -20681,7 +20754,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
         labels["AliasId"] = input.AliasId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactFlowAliasDocument(Name=input.Name, Description=input.Description, ContactFlowVersion=input.ContactFlowVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20693,7 +20766,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/content", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/content", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactFlowContentDocument(Content=input.Content)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20705,7 +20778,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactFlowMetadataDocument(Name=input.Name, Description=input.Description, ContactFlowState=input.ContactFlowState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20718,7 +20791,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
         labels["AliasId"] = input.AliasId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactFlowModuleAliasDocument(Name=input.Name, Description=input.Description, ContactFlowModuleVersion=input.ContactFlowModuleVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20730,7 +20803,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/content", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/content", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactFlowModuleContentDocument(Content=input.Content, Settings=input.Settings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20742,7 +20815,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowModuleId"] = input.ContactFlowModuleId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactFlowModuleMetadataDocument(Name=input.Name, Description=input.Description, State=input.State)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20754,7 +20827,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactFlowId"] = input.ContactFlowId
-        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact-flows/{InstanceId}/{ContactFlowId}/name", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactFlowNameDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20766,7 +20839,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}/routing-data", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contacts/{InstanceId}/{ContactId}/routing-data", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueueTimeAdjustmentSeconds.is_some():
             auto u0 = input.QueueTimeAdjustmentSeconds.unwrap()
@@ -20784,7 +20857,7 @@ struct ConnectClient:
     # errors: InternalServiceException, InvalidParameterException, InvalidRequestException, LimitExceededException, ResourceNotFoundException, ThrottlingException
     def update_contact_schedule(self, UpdateContactScheduleRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/schedule", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/schedule", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactScheduleDocument(InstanceId=input.InstanceId, ContactId=input.ContactId, ScheduledTime=input.ScheduledTime)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20793,7 +20866,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, LimitExceededException, PropertyValidationException, ResourceNotFoundException, ServiceQuotaExceededException
     def update_contact_task_template(self, UpdateContactTaskTemplateRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/task-template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/task-template", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateContactTaskTemplateDocument(InstanceId=input.InstanceId, TaskTemplateId=input.TaskTemplateId, ContactId=input.ContactId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20804,7 +20877,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/cross-region-routing/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cross-region-routing/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCrossRegionRoutingDocument(IsolatedAll=input.IsolatedAll)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20817,7 +20890,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
         labels["AttributeName"] = input.AttributeName
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/attributes/{AttributeName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + connect_json_str(input.Name))
         parts.append("\"ValueType\":" + input.ValueType.to_json())
@@ -20840,7 +20913,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataTableMetadataDocument(Name=input.Name, Description=input.Description, ValueLockLevel=input.ValueLockLevel, TimeZone=input.TimeZone)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20852,7 +20925,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["DataTableId"] = input.DataTableId
-        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/update-primary", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/data-tables/{InstanceId}/{DataTableId}/values/update-primary", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.PrimaryValues:
@@ -20873,7 +20946,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EmailAddressId"] = input.EmailAddressId
-        auto b = binding.HttpBinding(method="POST", path_template="/email-addresses/{InstanceId}/{EmailAddressId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/email-addresses/{InstanceId}/{EmailAddressId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateEmailAddressMetadataDocument(Description=input.Description, DisplayName=input.DisplayName, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20885,7 +20958,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["EvaluationFormId"] = input.EvaluationFormId
-        auto b = binding.HttpBinding(method="PUT", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/evaluation-forms/{InstanceId}/{EvaluationFormId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"EvaluationFormVersion\":" + str(input.EvaluationFormVersion))
         if input.CreateNewVersion.is_some():
@@ -20933,7 +21006,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["ExtractionDefinitionId"] = input.ExtractionDefinitionId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateExtractionDefinitionDocument(ClientToken=input.ClientToken, Name=input.Name, ExtractionConfiguration=input.ExtractionConfiguration, Display=input.Display)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -20945,7 +21018,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
-        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -20973,7 +21046,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["HoursOfOperationId"] = input.HoursOfOperationId
         labels["HoursOfOperationOverrideId"] = input.HoursOfOperationOverrideId
-        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -21009,7 +21082,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["AttributeType"] = input.AttributeType
-        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/attribute/{AttributeType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/attribute/{AttributeType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateInstanceAttributeDocument(Value=input.Value, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21023,7 +21096,7 @@ struct ConnectClient:
         labels["AssociationId"] = input.AssociationId
         dict[str, str] query = {}
         query["resourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/storage-config/{AssociationId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/storage-config/{AssociationId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateInstanceStorageConfigDocument(StorageConfig=input.StorageConfig, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21035,7 +21108,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["MetricId"] = input.MetricId
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics/definitions/{InstanceId}/{MetricId}/content", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/definitions/{InstanceId}/{MetricId}/content", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MetricCalculation.is_some():
             auto u0 = input.MetricCalculation.unwrap()
@@ -21056,7 +21129,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["MetricId"] = input.MetricId
-        auto b = binding.HttpBinding(method="POST", path_template="/metrics/definitions/{InstanceId}/{MetricId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/metrics/definitions/{InstanceId}/{MetricId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMetricMetadataDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21068,7 +21141,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="PUT", path_template="/instances/{InstanceId}/contacts/{ContactId}/outbound-email-message", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/instances/{InstanceId}/contacts/{ContactId}/outbound-email-message", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateOutboundEmailContactMessageDocument(EmailMessage=input.EmailMessage)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21077,7 +21150,7 @@ struct ConnectClient:
     # errors: AccessDeniedException, ConflictException, InternalServiceException, InvalidParameterException, InvalidRequestException, ThrottlingException
     def update_participant_authentication(self, UpdateParticipantAuthenticationRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/contact/update-participant-authentication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/contact/update-participant-authentication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateParticipantAuthenticationDocument(State=input.State, InstanceId=input.InstanceId, Code=input.Code, Error=input.Error, ErrorDescription=input.ErrorDescription)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21089,7 +21162,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ContactId"] = input.ContactId
-        auto b = binding.HttpBinding(method="PUT", path_template="/contact/participant-role-config/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/contact/participant-role-config/{InstanceId}/{ContactId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChannelConfiguration\":" + update_participant_role_config_channel_info_to_json(input.ChannelConfiguration))
         auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
@@ -21101,7 +21174,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["PhoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="PUT", path_template="/phone-number/{PhoneNumberId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/phone-number/{PhoneNumberId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePhoneNumberDocument(TargetArn=input.TargetArn, InstanceId=input.InstanceId, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21112,7 +21185,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["PhoneNumberId"] = input.PhoneNumberId
-        auto b = binding.HttpBinding(method="PUT", path_template="/phone-number/{PhoneNumberId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/phone-number/{PhoneNumberId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePhoneNumberMetadataDocument(PhoneNumberDescription=input.PhoneNumberDescription, ClientToken=input.ClientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21124,7 +21197,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/predefined-attributes/{InstanceId}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/predefined-attributes/{InstanceId}/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Values.is_some():
             auto u0 = input.Values.unwrap()
@@ -21148,7 +21221,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["PromptId"] = input.PromptId
-        auto b = binding.HttpBinding(method="POST", path_template="/prompts/{InstanceId}/{PromptId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prompts/{InstanceId}/{PromptId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdatePromptDocument(Name=input.Name, Description=input.Description, S3Uri=input.S3Uri)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21160,7 +21233,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/hours-of-operation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/hours-of-operation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueHoursOfOperationDocument(HoursOfOperationId=input.HoursOfOperationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21172,7 +21245,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/max-contacts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/max-contacts", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueMaxContactsDocument(MaxContacts=input.MaxContacts)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21184,7 +21257,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/name", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueNameDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21196,7 +21269,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/outbound-caller-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/outbound-caller-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueOutboundCallerConfigDocument(OutboundCallerConfig=input.OutboundCallerConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21208,7 +21281,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/outbound-email-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/outbound-email-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueOutboundEmailConfigDocument(OutboundEmailConfig=input.OutboundEmailConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21220,7 +21293,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QueueId"] = input.QueueId
-        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queues/{InstanceId}/{QueueId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueStatusDocument(Status=input.Status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21232,7 +21305,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QuickConnectId"] = input.QuickConnectId
-        auto b = binding.HttpBinding(method="POST", path_template="/quick-connects/{InstanceId}/{QuickConnectId}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/quick-connects/{InstanceId}/{QuickConnectId}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQuickConnectConfigDocument(QuickConnectConfig=input.QuickConnectConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21244,7 +21317,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["QuickConnectId"] = input.QuickConnectId
-        auto b = binding.HttpBinding(method="POST", path_template="/quick-connects/{InstanceId}/{QuickConnectId}/name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/quick-connects/{InstanceId}/{QuickConnectId}/name", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQuickConnectNameDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21256,7 +21329,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/agent-availability-timer", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/agent-availability-timer", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoutingProfileAgentAvailabilityTimerDocument(AgentAvailabilityTimer=input.AgentAvailabilityTimer)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21268,7 +21341,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/concurrency", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/concurrency", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.MediaConcurrencies:
@@ -21284,7 +21357,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/default-outbound-queue", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/default-outbound-queue", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoutingProfileDefaultOutboundQueueDocument(DefaultOutboundQueueId=input.DefaultOutboundQueueId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21296,7 +21369,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/name", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRoutingProfileNameDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21308,7 +21381,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["RoutingProfileId"] = input.RoutingProfileId
-        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/queues", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/routing-profiles/{InstanceId}/{RoutingProfileId}/queues", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.QueueConfigs:
@@ -21324,7 +21397,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["SecurityProfileId"] = input.SecurityProfileId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/security-profiles/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/security-profiles/{InstanceId}/{SecurityProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -21387,7 +21460,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["TaskTemplateId"] = input.TaskTemplateId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/task/template/{TaskTemplateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/{InstanceId}/task/template/{TaskTemplateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Name.is_some():
             auto u0 = input.Name.unwrap()
@@ -21422,13 +21495,32 @@ struct ConnectClient:
         auto bp = restjson.rest_json_document(b, connect_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
+    # UpdateTestCase  POST /test-cases/{InstanceId}/{TestCaseId}
+    # errors: AccessDeniedException, DuplicateResourceException, InternalServiceException, InvalidParameterException, InvalidRequestException, InvalidTestCaseException, ResourceNotFoundException, ThrottlingException
+    def update_test_case(self, UpdateTestCaseRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["TestCaseId"] = input.TestCaseId
+        dict[str, str] headers = {}
+        if input.LastModifiedTime.is_some():
+            auto qt0 = datetime.strftime(input.LastModifiedTime.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-last-modified-time"] = qt0
+        if input.LastModifiedRegion.is_some():
+            auto qt1 = input.LastModifiedRegion.unwrap_or("")
+            headers["x-amz-last-modified-region"] = qt1
+        auto b = binding.HttpBinding(method="POST", path_template="/test-cases/{InstanceId}/{TestCaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateTestCaseDocument(Content=input.Content, EntryPoint=input.EntryPoint, InitializationData=input.InitializationData, Name=input.Name, Description=input.Description, Status=input.Status)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
     # UpdateTrafficDistribution  PUT /traffic-distribution/{Id}
     # errors: AccessDeniedException, InternalServiceException, InvalidRequestException, ResourceConflictException, ResourceNotFoundException, ThrottlingException
     def update_traffic_distribution(self, UpdateTrafficDistributionRequest input) -> str:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/traffic-distribution/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TelephonyConfig.is_some():
             auto u0 = input.TelephonyConfig.unwrap()
@@ -21449,7 +21541,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AutoAcceptConfigs.is_some():
             auto u0 = input.AutoAcceptConfigs.unwrap()
@@ -21491,7 +21583,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/hierarchy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/hierarchy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserHierarchyDocument(HierarchyGroupId=input.HierarchyGroupId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21503,7 +21595,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["HierarchyGroupId"] = input.HierarchyGroupId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}/name", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user-hierarchy-groups/{InstanceId}/{HierarchyGroupId}/name", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserHierarchyGroupNameDocument(Name=input.Name)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21514,7 +21606,7 @@ struct ConnectClient:
         auto host = endpoints.regional_host(connect_service(), self.region)
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/user-hierarchy-structure/{InstanceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user-hierarchy-structure/{InstanceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserHierarchyStructureDocument(HierarchyStructure=input.HierarchyStructure)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21526,8 +21618,28 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/identity-info", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/identity-info", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserIdentityInfoDocument(IdentityInfo=input.IdentityInfo)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
+
+    # UpdateUserNotificationStatus  POST /users/{InstanceId}/{UserId}/notifications/{NotificationId}
+    # errors: AccessDeniedException, InternalServiceException, InvalidParameterException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def update_user_notification_status(self, UpdateUserNotificationStatusRequest input) -> str:
+        auto host = endpoints.regional_host(connect_service(), self.region)
+        dict[str, str] labels = {}
+        labels["InstanceId"] = input.InstanceId
+        labels["NotificationId"] = input.NotificationId
+        labels["UserId"] = input.UserId
+        dict[str, str] headers = {}
+        if input.LastModifiedTime.is_some():
+            auto qt0 = datetime.strftime(input.LastModifiedTime.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
+            headers["x-amz-last-modified-time"] = qt0
+        if input.LastModifiedRegion.is_some():
+            auto qt1 = input.LastModifiedRegion.unwrap_or("")
+            headers["x-amz-last-modified-region"] = qt1
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/notifications/{NotificationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = UpdateUserNotificationStatusDocument(Status=input.Status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
 
@@ -21538,7 +21650,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/phone-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/phone-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserPhoneConfigDocument(PhoneConfig=input.PhoneConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21550,7 +21662,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["UserId"] = input.UserId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/proficiencies", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/proficiencies", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.UserProficiencies:
@@ -21566,7 +21678,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/routing-profile", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/routing-profile", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserRoutingProfileDocument(RoutingProfileId=input.RoutingProfileId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21578,7 +21690,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["UserId"] = input.UserId
         labels["InstanceId"] = input.InstanceId
-        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/security-profiles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/users/{InstanceId}/{UserId}/security-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.SecurityProfileIds:
@@ -21594,7 +21706,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ViewId"] = input.ViewId
-        auto b = binding.HttpBinding(method="POST", path_template="/views/{InstanceId}/{ViewId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/views/{InstanceId}/{ViewId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Status\":" + input.Status.to_json())
         parts.append("\"Content\":" + view_input_content_to_json(input.Content))
@@ -21608,7 +21720,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["ViewId"] = input.ViewId
-        auto b = binding.HttpBinding(method="POST", path_template="/views/{InstanceId}/{ViewId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/views/{InstanceId}/{ViewId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateViewMetadataDocument(Name=input.Name, Description=input.Description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21620,7 +21732,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/metadata", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/metadata", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceMetadataDocument(Name=input.Name, Description=input.Description, Title=input.Title)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21633,7 +21745,7 @@ struct ConnectClient:
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
         labels["Page"] = input.Page
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages/{Page}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/pages/{Page}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspacePageDocument(NewPage=input.NewPage, ResourceArn=input.ResourceArn, Slug=input.Slug, InputData=input.InputData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21645,7 +21757,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/theme", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/theme", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceThemeDocument(Theme=input.Theme)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)
@@ -21657,7 +21769,7 @@ struct ConnectClient:
         dict[str, str] labels = {}
         labels["InstanceId"] = input.InstanceId
         labels["WorkspaceId"] = input.WorkspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/visibility", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{InstanceId}/{WorkspaceId}/visibility", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceVisibilityDocument(Visibility=input.Visibility)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, connect_service(), self.region, host)

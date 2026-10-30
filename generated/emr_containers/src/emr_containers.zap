@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 19 with a generated method,
-#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 22 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   95 structs (62 @derive(Json)), 7 enums, 5 error variants.
-#   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
+#   2 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The EMR_containers rest-json protocol: SigV4 service "emr-containers" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -786,19 +787,14 @@ def emr_containers_error_from_code(str code) -> EMR_containersError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   ListJobRuns (httpQuery `createdBefore` has unsupported type DateTime)
-#   ListJobTemplates (httpQuery `createdAfter` has unsupported type DateTime)
-#   ListManagedEndpoints (httpQuery `createdBefore` has unsupported type DateTime)
-#   ListSecurityConfigurations (httpQuery `createdAfter` has unsupported type DateTime)
-#   ListVirtualClusters (httpQuery `createdAfter` has unsupported type DateTime)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
+#   ListJobRuns (httpQuery `states` has unsupported type list[JobRunState])
+#   ListManagedEndpoints (httpQuery `states` has unsupported type list[EndpointState])
+#   ListVirtualClusters (httpQuery `states` has unsupported type list[VirtualClusterState])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
 #   ListJobRuns (operation not generated)
-#   ListJobTemplates (operation not generated)
 #   ListManagedEndpoints (operation not generated)
-#   ListSecurityConfigurations (operation not generated)
 #   ListVirtualClusters (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -956,14 +952,14 @@ struct EMR_containersClient:
         dict[str, str] labels = {}
         labels["jobRunId"] = input.id
         labels["virtualClusterId"] = input.virtualClusterId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/virtualclusters/{virtualClusterId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/virtualclusters/{virtualClusterId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # CreateJobTemplate  POST /jobtemplates
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def create_job_template(self, CreateJobTemplateRequest input) -> str:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/jobtemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobtemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + emr_containers_json_str(input.name))
         parts.append("\"clientToken\":" + emr_containers_json_str(input.clientToken))
@@ -986,7 +982,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["virtualClusterId"] = input.virtualClusterId
-        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/endpoints", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/endpoints", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + emr_containers_json_str(input.name))
         parts.append("\"type\":" + emr_containers_json_str(input.type))
@@ -1015,7 +1011,7 @@ struct EMR_containersClient:
     # errors: InternalServerException, ValidationException
     def create_security_configuration(self, CreateSecurityConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/securityconfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/securityconfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + emr_containers_json_str(input.clientToken))
         parts.append("\"name\":" + emr_containers_json_str(input.name))
@@ -1036,7 +1032,7 @@ struct EMR_containersClient:
     # errors: EKSRequestThrottledException, InternalServerException, ResourceNotFoundException, ValidationException
     def create_virtual_cluster(self, CreateVirtualClusterRequest input) -> str:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + emr_containers_json_str(input.name))
         parts.append("\"containerProvider\":" + input.containerProvider.to_json())
@@ -1065,7 +1061,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["templateId"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/jobtemplates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/jobtemplates/{templateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DeleteManagedEndpoint  DELETE /virtualclusters/{virtualClusterId}/endpoints/{endpointId}
@@ -1075,7 +1071,7 @@ struct EMR_containersClient:
         dict[str, str] labels = {}
         labels["endpointId"] = input.id
         labels["virtualClusterId"] = input.virtualClusterId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/virtualclusters/{virtualClusterId}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/virtualclusters/{virtualClusterId}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DeleteSecurityConfiguration  DELETE /securityconfigurations/{securityConfigurationId}
@@ -1084,7 +1080,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["securityConfigurationId"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/securityconfigurations/{securityConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/securityconfigurations/{securityConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DeleteVirtualCluster  DELETE /virtualclusters/{virtualClusterId}
@@ -1093,7 +1089,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["virtualClusterId"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/virtualclusters/{virtualClusterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/virtualclusters/{virtualClusterId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DescribeJobRun  GET /virtualclusters/{virtualClusterId}/jobruns/{jobRunId}
@@ -1103,7 +1099,7 @@ struct EMR_containersClient:
         dict[str, str] labels = {}
         labels["jobRunId"] = input.id
         labels["virtualClusterId"] = input.virtualClusterId
-        auto b = binding.HttpBinding(method="GET", path_template="/virtualclusters/{virtualClusterId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/virtualclusters/{virtualClusterId}/jobruns/{jobRunId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DescribeJobTemplate  GET /jobtemplates/{templateId}
@@ -1112,7 +1108,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["templateId"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/jobtemplates/{templateId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobtemplates/{templateId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DescribeManagedEndpoint  GET /virtualclusters/{virtualClusterId}/endpoints/{endpointId}
@@ -1122,7 +1118,7 @@ struct EMR_containersClient:
         dict[str, str] labels = {}
         labels["endpointId"] = input.id
         labels["virtualClusterId"] = input.virtualClusterId
-        auto b = binding.HttpBinding(method="GET", path_template="/virtualclusters/{virtualClusterId}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/virtualclusters/{virtualClusterId}/endpoints/{endpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DescribeSecurityConfiguration  GET /securityconfigurations/{securityConfigurationId}
@@ -1131,7 +1127,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["securityConfigurationId"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/securityconfigurations/{securityConfigurationId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/securityconfigurations/{securityConfigurationId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # DescribeVirtualCluster  GET /virtualclusters/{virtualClusterId}
@@ -1140,7 +1136,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["virtualClusterId"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/virtualclusters/{virtualClusterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/virtualclusters/{virtualClusterId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # GetManagedEndpointSessionCredentials  POST /virtualclusters/{virtualClusterId}/endpoints/{endpointId}/credentials
@@ -1150,10 +1146,46 @@ struct EMR_containersClient:
         dict[str, str] labels = {}
         labels["endpointId"] = input.endpointIdentifier
         labels["virtualClusterId"] = input.virtualClusterIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/endpoints/{endpointId}/credentials", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/endpoints/{endpointId}/credentials", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetManagedEndpointSessionCredentialsDocument(executionRoleArn=input.executionRoleArn, credentialType=input.credentialType, durationInSeconds=input.durationInSeconds, logContext=input.logContext, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
+
+    # ListJobTemplates  GET /jobtemplates
+    # errors: InternalServerException, ValidationException
+    def list_job_templates(self, ListJobTemplatesRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        dict[str, str] query = {}
+        if input.createdAfter.is_some():
+            auto qt0 = datetime.strftime(input.createdAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt0
+        if input.createdBefore.is_some():
+            auto qt1 = datetime.strftime(input.createdBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt1
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/jobtemplates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
+
+    # ListSecurityConfigurations  GET /securityconfigurations
+    # errors: InternalServerException, ValidationException
+    def list_security_configurations(self, ListSecurityConfigurationsRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        dict[str, str] query = {}
+        if input.createdAfter.is_some():
+            auto qt0 = datetime.strftime(input.createdAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt0
+        if input.createdBefore.is_some():
+            auto qt1 = datetime.strftime(input.createdBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt1
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/securityconfigurations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
@@ -1161,7 +1193,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
 
     # StartJobRun  POST /virtualclusters/{virtualClusterId}/jobruns
@@ -1170,7 +1202,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["virtualClusterId"] = input.virtualClusterId
-        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/jobruns", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/virtualclusters/{virtualClusterId}/jobruns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1215,7 +1247,7 @@ struct EMR_containersClient:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1224,16 +1256,53 @@ struct EMR_containersClient:
         auto bp = restjson.rest_json_document(b, emr_containers_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, emr_containers_service(), self.region, host)
+
     # UpdateVirtualCluster  PATCH /virtualclusters/{virtualClusterId}
     # errors: InternalServerException, ResourceNotFoundException, ValidationException
     def update_virtual_cluster(self, UpdateVirtualClusterRequest input) -> str:
         auto host = endpoints.regional_host(emr_containers_service(), self.region)
         dict[str, str] labels = {}
         labels["virtualClusterId"] = input.id
-        auto b = binding.HttpBinding(method="PATCH", path_template="/virtualclusters/{virtualClusterId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/virtualclusters/{virtualClusterId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVirtualClusterDocument(schedulerConfiguration=input.schedulerConfiguration, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, emr_containers_service(), self.region, host)
+
+    # Paginator for ListJobTemplates — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: templates).
+    def paginate_list_job_templates(self, ListJobTemplatesRequest input):
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        while True:
+            auto raw = self.list_job_templates(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListSecurityConfigurations — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: securityConfigurations).
+    def paginate_list_security_configurations(self, ListSecurityConfigurationsRequest input):
+        auto host = endpoints.regional_host(emr_containers_service(), self.region)
+        while True:
+            auto raw = self.list_security_configurations(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
 
 # Construct a EMR_containersClient bound to credentials + region.
 def emr_containers_client(core.Credentials creds, str region) -> EMR_containersClient:

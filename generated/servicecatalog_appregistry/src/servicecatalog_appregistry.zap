@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 22 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 24 operations — 23 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   67 structs (43 @derive(Json)), 6 enums, 6 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -575,7 +575,6 @@ def servicecatalog_appregistry_error_from_code(str code) -> Service_Catalog_AppR
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   GetAssociatedResource (httpQuery `resourceTagStatus` has unsupported type list[ResourceItemStatus])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -610,7 +609,7 @@ struct Service_Catalog_AppRegistryClient:
         dict[str, str] labels = {}
         labels["application"] = input.application
         labels["attributeGroup"] = input.attributeGroup
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{application}/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{application}/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # AssociateResource  PUT /applications/{application}/resources/{resourceType}/{resource}
@@ -621,7 +620,7 @@ struct Service_Catalog_AppRegistryClient:
         labels["application"] = input.application
         labels["resourceType"] = input.resourceType
         labels["resource"] = input.resource
-        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{application}/resources/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/applications/{application}/resources/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.options.is_some():
             auto u0 = input.options.unwrap()
@@ -636,7 +635,7 @@ struct Service_Catalog_AppRegistryClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/applications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + servicecatalog_appregistry_json_str(input.name))
         if input.description.is_some():
@@ -656,7 +655,7 @@ struct Service_Catalog_AppRegistryClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def create_attribute_group(self, CreateAttributeGroupRequest input) -> str:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/attribute-groups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/attribute-groups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + servicecatalog_appregistry_json_str(input.name))
         if input.description.is_some():
@@ -679,7 +678,7 @@ struct Service_Catalog_AppRegistryClient:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["application"] = input.application
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{application}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{application}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # DeleteAttributeGroup  DELETE /attribute-groups/{attributeGroup}
@@ -688,7 +687,7 @@ struct Service_Catalog_AppRegistryClient:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["attributeGroup"] = input.attributeGroup
-        auto b = binding.HttpBinding(method="DELETE", path_template="/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # DisassociateAttributeGroup  DELETE /applications/{application}/attribute-groups/{attributeGroup}
@@ -698,7 +697,7 @@ struct Service_Catalog_AppRegistryClient:
         dict[str, str] labels = {}
         labels["application"] = input.application
         labels["attributeGroup"] = input.attributeGroup
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{application}/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{application}/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # DisassociateResource  DELETE /applications/{application}/resources/{resourceType}/{resource}
@@ -709,7 +708,7 @@ struct Service_Catalog_AppRegistryClient:
         labels["application"] = input.application
         labels["resourceType"] = input.resourceType
         labels["resource"] = input.resource
-        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{application}/resources/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{application}/resources/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # GetApplication  GET /applications/{application}
@@ -718,7 +717,7 @@ struct Service_Catalog_AppRegistryClient:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["application"] = input.application
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # GetAttributeGroup  GET /attribute-groups/{attributeGroup}
@@ -727,14 +726,14 @@ struct Service_Catalog_AppRegistryClient:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["attributeGroup"] = input.attributeGroup
-        auto b = binding.HttpBinding(method="GET", path_template="/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # GetConfiguration  GET /configuration
     # errors: InternalServerException
     def get_configuration(self) -> str:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # ListApplications  GET /applications
@@ -746,7 +745,7 @@ struct Service_Catalog_AppRegistryClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # ListAssociatedAttributeGroups  GET /applications/{application}/attribute-groups
@@ -760,7 +759,7 @@ struct Service_Catalog_AppRegistryClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}/attribute-groups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}/attribute-groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # ListAssociatedResources  GET /applications/{application}/resources
@@ -774,7 +773,7 @@ struct Service_Catalog_AppRegistryClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}/resources", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}/resources", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # ListAttributeGroups  GET /attribute-groups
@@ -786,7 +785,7 @@ struct Service_Catalog_AppRegistryClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/attribute-groups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/attribute-groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # ListAttributeGroupsForApplication  GET /applications/{application}/attribute-group-details
@@ -800,7 +799,7 @@ struct Service_Catalog_AppRegistryClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}/attribute-group-details", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/applications/{application}/attribute-group-details", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -809,14 +808,14 @@ struct Service_Catalog_AppRegistryClient:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # PutConfiguration  PUT /configuration
     # errors: ConflictException, InternalServerException, ValidationException
     def put_configuration(self, PutConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutConfigurationDocument(configuration=input.configuration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)
@@ -828,7 +827,7 @@ struct Service_Catalog_AppRegistryClient:
         dict[str, str] labels = {}
         labels["resourceType"] = input.resourceType
         labels["resource"] = input.resource
-        auto b = binding.HttpBinding(method="POST", path_template="/sync/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/sync/{resourceType}/{resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -837,7 +836,7 @@ struct Service_Catalog_AppRegistryClient:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -846,13 +845,24 @@ struct Service_Catalog_AppRegistryClient:
         auto bp = restjson.rest_json_document(b, servicecatalog_appregistry_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, servicecatalog_appregistry_service(), self.region, host)
+
     # UpdateApplication  PATCH /applications/{application}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["application"] = input.application
-        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{application}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/applications/{application}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(name=input.name, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)
@@ -863,7 +873,7 @@ struct Service_Catalog_AppRegistryClient:
         auto host = endpoints.regional_host(servicecatalog_appregistry_service(), self.region)
         dict[str, str] labels = {}
         labels["attributeGroup"] = input.attributeGroup
-        auto b = binding.HttpBinding(method="PATCH", path_template="/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/attribute-groups/{attributeGroup}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAttributeGroupDocument(name=input.name, description=input.description, attributes=input.attributes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, servicecatalog_appregistry_service(), self.region, host)

@@ -324,7 +324,7 @@ struct Support_AppClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ValidationException
     def create_slack_channel_configuration(self, CreateSlackChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/create-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/create-slack-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateSlackChannelConfigurationDocument(channelId=input.channelId, channelName=input.channelName, channelRoleArn=input.channelRoleArn, notifyOnAddCorrespondenceToCase=input.notifyOnAddCorrespondenceToCase, notifyOnCaseSeverity=input.notifyOnCaseSeverity, notifyOnCreateOrReopenCase=input.notifyOnCreateOrReopenCase, notifyOnResolveCase=input.notifyOnResolveCase, teamId=input.teamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)
@@ -333,14 +333,14 @@ struct Support_AppClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException
     def delete_account_alias(self) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/delete-account-alias", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/delete-account-alias", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportapp_service(), self.region, host)
 
     # DeleteSlackChannelConfiguration  POST /control/delete-slack-channel-configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_slack_channel_configuration(self, DeleteSlackChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/delete-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/delete-slack-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSlackChannelConfigurationDocument(channelId=input.channelId, teamId=input.teamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)
@@ -349,7 +349,7 @@ struct Support_AppClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def delete_slack_workspace_configuration(self, DeleteSlackWorkspaceConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/delete-slack-workspace-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/delete-slack-workspace-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSlackWorkspaceConfigurationDocument(teamId=input.teamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)
@@ -358,14 +358,14 @@ struct Support_AppClient:
     # errors: InternalServerException
     def get_account_alias(self) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/get-account-alias", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/get-account-alias", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, supportapp_service(), self.region, host)
 
     # ListSlackChannelConfigurations  POST /control/list-slack-channel-configurations
     # errors: AccessDeniedException, InternalServerException
     def list_slack_channel_configurations(self, ListSlackChannelConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/list-slack-channel-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/list-slack-channel-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSlackChannelConfigurationsDocument(nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)
@@ -374,7 +374,7 @@ struct Support_AppClient:
     # errors: AccessDeniedException, InternalServerException
     def list_slack_workspace_configurations(self, ListSlackWorkspaceConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/list-slack-workspace-configurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/list-slack-workspace-configurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSlackWorkspaceConfigurationsDocument(nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)
@@ -383,7 +383,7 @@ struct Support_AppClient:
     # errors: AccessDeniedException, InternalServerException, ValidationException
     def put_account_alias(self, PutAccountAliasRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/put-account-alias", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/put-account-alias", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountAliasDocument(accountAlias=input.accountAlias)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)
@@ -392,7 +392,7 @@ struct Support_AppClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def register_slack_workspace_for_organization(self, RegisterSlackWorkspaceForOrganizationRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/register-slack-workspace-for-organization", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/register-slack-workspace-for-organization", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterSlackWorkspaceForOrganizationDocument(teamId=input.teamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)
@@ -401,7 +401,7 @@ struct Support_AppClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ValidationException
     def update_slack_channel_configuration(self, UpdateSlackChannelConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(supportapp_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/control/update-slack-channel-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/control/update-slack-channel-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSlackChannelConfigurationDocument(channelId=input.channelId, channelName=input.channelName, channelRoleArn=input.channelRoleArn, notifyOnAddCorrespondenceToCase=input.notifyOnAddCorrespondenceToCase, notifyOnCaseSeverity=input.notifyOnCaseSeverity, notifyOnCreateOrReopenCase=input.notifyOnCreateOrReopenCase, notifyOnResolveCase=input.notifyOnResolveCase, teamId=input.teamId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, supportapp_service(), self.region, host)

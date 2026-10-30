@@ -440,7 +440,7 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsError, ValidationException
     def create_o_auth2_token(self, CreateOAuth2TokenRequest input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/token", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/token", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.tokenInput.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
 
@@ -448,7 +448,7 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsError, ValidationException
     def create_o_auth2_token_with_iam(self, CreateOAuth2TokenWithIAMRequest input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/token?x-amz-client-auth-method=iam", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/token?x-amz-client-auth-method=iam", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateOAuth2TokenWithIAMDocument(grantType=input.grantType, resource=input.resource)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -457,7 +457,7 @@ struct SigninClient:
     # errors: InternalServerException, InvalidGrantException, InvalidScopeException, ServiceUnavailableException, TooManyRequestsError, ValidationException
     def create_o_auth2_token_with_token_exchange(self, CreateOAuth2TokenWithTokenExchangeRequest input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/token?x-amz-oauth-token-method=token-exchange", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/token?x-amz-oauth-token-method=token-exchange", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateOAuth2TokenWithTokenExchangeDocument(grantType=input.grantType, subjectToken=input.subjectToken, subjectTokenType=input.subjectTokenType, resource=input.resource, scope_=input.scope_)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -466,7 +466,7 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsError, ValidationException
     def delete_console_authorization_configuration(self, DeleteConsoleAuthorizationConfigurationInput input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-console-authorization-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-console-authorization-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConsoleAuthorizationConfigurationDocument(targetId=input.targetId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -475,7 +475,7 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsError, ValidationException
     def delete_resource_permission_statement(self, DeleteResourcePermissionStatementInput input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-resource-permission-statement", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-resource-permission-statement", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteResourcePermissionStatementDocument(statementId=input.statementId, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -484,7 +484,7 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsError, ValidationException
     def get_console_authorization_configuration(self, GetConsoleAuthorizationConfigurationInput input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-console-authorization-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-console-authorization-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetConsoleAuthorizationConfigurationDocument(targetId=input.targetId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -493,14 +493,14 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsError
     def get_resource_policy(self) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/get-resource-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/get-resource-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, signin_service(), self.region, host)
 
     # IntrospectOAuth2TokenWithIAM  POST /v1/introspect?x-amz-client-auth-method=iam
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsError, ValidationException
     def introspect_o_auth2_token_with_iam(self, IntrospectOAuth2TokenWithIAMRequest input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/introspect?x-amz-client-auth-method=iam", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/introspect?x-amz-client-auth-method=iam", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = IntrospectOAuth2TokenWithIAMDocument(token=input.token, tokenTypeHint=input.tokenTypeHint)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -509,7 +509,7 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyRequestsError, ValidationException
     def list_resource_permission_statements(self, ListResourcePermissionStatementsInput input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-resource-permission-statements", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-resource-permission-statements", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListResourcePermissionStatementsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -518,7 +518,7 @@ struct SigninClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, TooManyRequestsError, ValidationException
     def put_console_authorization_configuration(self, PutConsoleAuthorizationConfigurationInput input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/put-console-authorization-configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/put-console-authorization-configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutConsoleAuthorizationConfigurationDocument(targetId=input.targetId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -527,7 +527,7 @@ struct SigninClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, TooManyRequestsError, ValidationException
     def put_resource_permission_statement(self, PutResourcePermissionStatementInput input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/put-resource-permission-statement", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/put-resource-permission-statement", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePermissionStatementDocument(sourceVpc=input.sourceVpc, signinSourceVpce=input.signinSourceVpce, consoleSourceVpce=input.consoleSourceVpce, vpcSourceIp=input.vpcSourceIp, sourceIp=input.sourceIp, requestedRegion=input.requestedRegion, excludedPrincipal=input.excludedPrincipal, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)
@@ -536,7 +536,7 @@ struct SigninClient:
     # errors: AccessDeniedException, InternalServerException, TooManyRequestsError, ValidationException
     def revoke_o_auth2_token_with_iam(self, RevokeOAuth2TokenWithIAMRequest input) -> str:
         auto host = endpoints.regional_host(signin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/v1/revoke?x-amz-client-auth-method=iam", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/revoke?x-amz-client-auth-method=iam", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RevokeOAuth2TokenWithIAMDocument(token=input.token)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, signin_service(), self.region, host)

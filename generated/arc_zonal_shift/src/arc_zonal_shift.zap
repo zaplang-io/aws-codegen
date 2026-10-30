@@ -512,7 +512,7 @@ struct ARC_Zonal_ShiftClient:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
         dict[str, str] labels = {}
         labels["zonalShiftId"] = input.zonalShiftId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/practiceruns/{zonalShiftId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/practiceruns/{zonalShiftId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # CancelZonalShift  DELETE /zonalshifts/{zonalShiftId}
@@ -521,14 +521,14 @@ struct ARC_Zonal_ShiftClient:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
         dict[str, str] labels = {}
         labels["zonalShiftId"] = input.zonalShiftId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/zonalshifts/{zonalShiftId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/zonalshifts/{zonalShiftId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # CreatePracticeRunConfiguration  POST /configuration
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_practice_run_configuration(self, CreatePracticeRunConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/configuration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/configuration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceIdentifier\":" + arc_zonal_shift_json_str(input.resourceIdentifier))
         if input.blockedWindows.is_some():
@@ -568,14 +568,14 @@ struct ARC_Zonal_ShiftClient:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceIdentifier"] = input.resourceIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/configuration/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/configuration/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # GetAutoshiftObserverNotificationStatus  GET /autoshift-observer-notification
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def get_autoshift_observer_notification_status(self) -> str:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/autoshift-observer-notification", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/autoshift-observer-notification", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # GetManagedResource  GET /managedresources/{resourceIdentifier}
@@ -584,7 +584,7 @@ struct ARC_Zonal_ShiftClient:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceIdentifier"] = input.resourceIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/managedresources/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managedresources/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # ListAutoshifts  GET /autoshifts
@@ -598,7 +598,7 @@ struct ARC_Zonal_ShiftClient:
             query["status"] = input.status.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/autoshifts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/autoshifts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # ListManagedResources  GET /managedresources
@@ -610,7 +610,7 @@ struct ARC_Zonal_ShiftClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/managedresources", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/managedresources", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # ListZonalShifts  GET /zonalshifts
@@ -626,14 +626,14 @@ struct ARC_Zonal_ShiftClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.resourceIdentifier.is_some():
             query["resourceIdentifier"] = input.resourceIdentifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/zonalshifts", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/zonalshifts", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, arc_zonal_shift_service(), self.region, host)
 
     # StartPracticeRun  POST /practiceruns
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_practice_run(self, StartPracticeRunRequest input) -> str:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/practiceruns", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/practiceruns", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartPracticeRunDocument(resourceIdentifier=input.resourceIdentifier, awayFrom=input.awayFrom, comment=input.comment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)
@@ -642,7 +642,7 @@ struct ARC_Zonal_ShiftClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_zonal_shift(self, StartZonalShiftRequest input) -> str:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/zonalshifts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/zonalshifts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartZonalShiftDocument(resourceIdentifier=input.resourceIdentifier, awayFrom=input.awayFrom, expiresIn=input.expiresIn, comment=input.comment)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)
@@ -651,7 +651,7 @@ struct ARC_Zonal_ShiftClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_autoshift_observer_notification_status(self, UpdateAutoshiftObserverNotificationStatusRequest input) -> str:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/autoshift-observer-notification", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/autoshift-observer-notification", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAutoshiftObserverNotificationStatusDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)
@@ -662,7 +662,7 @@ struct ARC_Zonal_ShiftClient:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceIdentifier"] = input.resourceIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/configuration/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/configuration/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.blockedWindows.is_some():
             auto u0 = input.blockedWindows.unwrap()
@@ -703,7 +703,7 @@ struct ARC_Zonal_ShiftClient:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceIdentifier"] = input.resourceIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/managedresources/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/managedresources/{resourceIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateZonalAutoshiftConfigurationDocument(zonalAutoshiftStatus=input.zonalAutoshiftStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)
@@ -714,7 +714,7 @@ struct ARC_Zonal_ShiftClient:
         auto host = endpoints.regional_host(arc_zonal_shift_service(), self.region)
         dict[str, str] labels = {}
         labels["zonalShiftId"] = input.zonalShiftId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/zonalshifts/{zonalShiftId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/zonalshifts/{zonalShiftId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateZonalShiftDocument(comment=input.comment, expiresIn=input.expiresIn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, arc_zonal_shift_service(), self.region, host)

@@ -2451,7 +2451,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2471,7 +2471,7 @@ struct App_MeshClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, LimitExceededException, NotFoundException, ServiceUnavailableException, TooManyRequestsException
     def create_mesh(self, CreateMeshInput input) -> str:
         auto host = endpoints.regional_host(appmesh_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2499,7 +2499,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2524,7 +2524,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateways", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateways", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2549,7 +2549,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualNodes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualNodes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2574,7 +2574,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouters", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouters", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2599,7 +2599,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualServices", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualServices", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2626,7 +2626,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DeleteMesh  DELETE /v20190125/meshes/{meshName}
@@ -2635,7 +2635,7 @@ struct App_MeshClient:
         auto host = endpoints.regional_host(appmesh_service(), self.region)
         dict[str, str] labels = {}
         labels["meshName"] = input.meshName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DeleteRoute  DELETE /v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}
@@ -2649,7 +2649,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DeleteVirtualGateway  DELETE /v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}
@@ -2662,7 +2662,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DeleteVirtualNode  DELETE /v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}
@@ -2675,7 +2675,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DeleteVirtualRouter  DELETE /v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}
@@ -2688,7 +2688,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DeleteVirtualService  DELETE /v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}
@@ -2701,7 +2701,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DescribeGatewayRoute  GET /v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}
@@ -2715,7 +2715,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DescribeMesh  GET /v20190125/meshes/{meshName}
@@ -2727,7 +2727,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DescribeRoute  GET /v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}
@@ -2741,7 +2741,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DescribeVirtualGateway  GET /v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}
@@ -2754,7 +2754,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DescribeVirtualNode  GET /v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}
@@ -2767,7 +2767,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DescribeVirtualRouter  GET /v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}
@@ -2780,7 +2780,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # DescribeVirtualService  GET /v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}
@@ -2793,7 +2793,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListGatewayRoutes  GET /v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes
@@ -2810,7 +2810,7 @@ struct App_MeshClient:
             query["meshOwner"] = input.meshOwner.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListMeshes  GET /v20190125/meshes
@@ -2822,7 +2822,7 @@ struct App_MeshClient:
             query["limit"] = str(input.limit.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListRoutes  GET /v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes
@@ -2839,7 +2839,7 @@ struct App_MeshClient:
             query["meshOwner"] = input.meshOwner.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListTagsForResource  GET /v20190125/tags
@@ -2852,7 +2852,7 @@ struct App_MeshClient:
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/tags", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/tags", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListVirtualGateways  GET /v20190125/meshes/{meshName}/virtualGateways
@@ -2868,7 +2868,7 @@ struct App_MeshClient:
             query["meshOwner"] = input.meshOwner.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateways", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualGateways", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListVirtualNodes  GET /v20190125/meshes/{meshName}/virtualNodes
@@ -2884,7 +2884,7 @@ struct App_MeshClient:
             query["meshOwner"] = input.meshOwner.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualNodes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualNodes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListVirtualRouters  GET /v20190125/meshes/{meshName}/virtualRouters
@@ -2900,7 +2900,7 @@ struct App_MeshClient:
             query["meshOwner"] = input.meshOwner.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouters", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualRouters", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # ListVirtualServices  GET /v20190125/meshes/{meshName}/virtualServices
@@ -2916,7 +2916,7 @@ struct App_MeshClient:
             query["meshOwner"] = input.meshOwner.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualServices", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/v20190125/meshes/{meshName}/virtualServices", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appmesh_service(), self.region, host)
 
     # TagResource  PUT /v20190125/tag
@@ -2925,7 +2925,7 @@ struct App_MeshClient:
         auto host = endpoints.regional_host(appmesh_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/tag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/tag", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -2940,7 +2940,7 @@ struct App_MeshClient:
         auto host = endpoints.regional_host(appmesh_service(), self.region)
         dict[str, str] query = {}
         query["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/untag", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/untag", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tagKeys:
@@ -2960,7 +2960,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateway/{virtualGatewayName}/gatewayRoutes/{gatewayRouteName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -2975,7 +2975,7 @@ struct App_MeshClient:
         auto host = endpoints.regional_host(appmesh_service(), self.region)
         dict[str, str] labels = {}
         labels["meshName"] = input.meshName
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMeshDocument(clientToken=input.clientToken, spec=input.spec)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)
@@ -2991,7 +2991,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouter/{virtualRouterName}/routes/{routeName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3010,7 +3010,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualGateways/{virtualGatewayName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3029,7 +3029,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualNodes/{virtualNodeName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3048,7 +3048,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualRouters/{virtualRouterName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -3067,7 +3067,7 @@ struct App_MeshClient:
         dict[str, str] query = {}
         if input.meshOwner.is_some():
             query["meshOwner"] = input.meshOwner.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20190125/meshes/{meshName}/virtualServices/{virtualServiceName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateVirtualServiceDocument(clientToken=input.clientToken, spec=input.spec)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appmesh_service(), self.region, host)

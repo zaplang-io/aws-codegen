@@ -795,7 +795,7 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
         labels["uploadId"] = input.uploadId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # AbortVaultLock  DELETE /{accountId}/vaults/{vaultName}/lock-policy
@@ -805,7 +805,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # AddTagsToVault  POST /{accountId}/vaults/{vaultName}/tags?operation=add
@@ -815,7 +815,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/tags?operation=add", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/tags?operation=add", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Tags.is_some():
             auto u0 = input.Tags.unwrap()
@@ -839,7 +839,7 @@ struct GlacierClient:
             headers["x-amz-archive-size"] = input.archiveSize.unwrap_or("")
         if input.checksum.is_some():
             headers["x-amz-sha256-tree-hash"] = input.checksum.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # CompleteVaultLock  POST /{accountId}/vaults/{vaultName}/lock-policy/{lockId}
@@ -850,7 +850,7 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
         labels["lockId"] = input.lockId
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/lock-policy/{lockId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/lock-policy/{lockId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # CreateVault  PUT /{accountId}/vaults/{vaultName}
@@ -860,7 +860,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # DeleteArchive  DELETE /{accountId}/vaults/{vaultName}/archives/{archiveId}
@@ -871,7 +871,7 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
         labels["archiveId"] = input.archiveId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/archives/{archiveId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/archives/{archiveId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # DeleteVault  DELETE /{accountId}/vaults/{vaultName}
@@ -881,7 +881,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # DeleteVaultAccessPolicy  DELETE /{accountId}/vaults/{vaultName}/access-policy
@@ -891,7 +891,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/access-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/access-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # DeleteVaultNotifications  DELETE /{accountId}/vaults/{vaultName}/notification-configuration
@@ -901,7 +901,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/{accountId}/vaults/{vaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # DescribeJob  GET /{accountId}/vaults/{vaultName}/jobs/{jobId}
@@ -912,7 +912,7 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # DescribeVault  GET /{accountId}/vaults/{vaultName}
@@ -922,7 +922,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # GetDataRetrievalPolicy  GET /{accountId}/policies/data-retrieval
@@ -931,7 +931,7 @@ struct GlacierClient:
         auto host = endpoints.regional_host(glacier_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/policies/data-retrieval", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/policies/data-retrieval", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # GetJobOutput  GET /{accountId}/vaults/{vaultName}/jobs/{jobId}/output
@@ -945,7 +945,7 @@ struct GlacierClient:
         dict[str, str] headers = {}
         if input.range_.is_some():
             headers["Range"] = input.range_.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/jobs/{jobId}/output", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/jobs/{jobId}/output", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # GetVaultAccessPolicy  GET /{accountId}/vaults/{vaultName}/access-policy
@@ -955,7 +955,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/access-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/access-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # GetVaultLock  GET /{accountId}/vaults/{vaultName}/lock-policy
@@ -965,7 +965,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # GetVaultNotifications  GET /{accountId}/vaults/{vaultName}/notification-configuration
@@ -975,7 +975,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/notification-configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # InitiateMultipartUpload  POST /{accountId}/vaults/{vaultName}/multipart-uploads
@@ -987,10 +987,11 @@ struct GlacierClient:
         labels["vaultName"] = input.vaultName
         dict[str, str] headers = {}
         if input.archiveDescription.is_some():
-            headers["x-amz-archive-description"] = input.archiveDescription.unwrap_or("")
+            auto qt0 = input.archiveDescription.unwrap_or("")
+            headers["x-amz-archive-description"] = qt0
         if input.partSize.is_some():
             headers["x-amz-part-size"] = input.partSize.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # InitiateVaultLock  POST /{accountId}/vaults/{vaultName}/lock-policy
@@ -1000,7 +1001,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/lock-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.policy.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
 
@@ -1020,7 +1021,7 @@ struct GlacierClient:
             query["statuscode"] = input.statuscode.unwrap_or("")
         if input.completed.is_some():
             query["completed"] = input.completed.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # ListMultipartUploads  GET /{accountId}/vaults/{vaultName}/multipart-uploads
@@ -1035,7 +1036,7 @@ struct GlacierClient:
             query["marker"] = input.marker.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = input.limit.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # ListParts  GET /{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}
@@ -1051,7 +1052,7 @@ struct GlacierClient:
             query["marker"] = input.marker.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = input.limit.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # ListProvisionedCapacity  GET /{accountId}/provisioned-capacity
@@ -1060,7 +1061,7 @@ struct GlacierClient:
         auto host = endpoints.regional_host(glacier_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/provisioned-capacity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/provisioned-capacity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # ListTagsForVault  GET /{accountId}/vaults/{vaultName}/tags
@@ -1070,7 +1071,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/tags", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults/{vaultName}/tags", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # ListVaults  GET /{accountId}/vaults
@@ -1084,7 +1085,7 @@ struct GlacierClient:
             query["marker"] = input.marker.unwrap_or("")
         if input.limit.is_some():
             query["limit"] = input.limit.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/{accountId}/vaults", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # PurchaseProvisionedCapacity  POST /{accountId}/provisioned-capacity
@@ -1093,7 +1094,7 @@ struct GlacierClient:
         auto host = endpoints.regional_host(glacier_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/provisioned-capacity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/provisioned-capacity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, glacier_service(), self.region, host)
 
     # RemoveTagsFromVault  POST /{accountId}/vaults/{vaultName}/tags?operation=remove
@@ -1103,7 +1104,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/tags?operation=remove", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/tags?operation=remove", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.TagKeys.is_some():
             auto u0 = input.TagKeys.unwrap()
@@ -1120,7 +1121,7 @@ struct GlacierClient:
         auto host = endpoints.regional_host(glacier_service(), self.region)
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
-        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/policies/data-retrieval", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/policies/data-retrieval", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Policy.is_some():
             auto u0 = input.Policy.unwrap()
@@ -1135,7 +1136,7 @@ struct GlacierClient:
         dict[str, str] labels = {}
         labels["accountId"] = input.accountId
         labels["vaultName"] = input.vaultName
-        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}/access-policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}/access-policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.policy.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
 
@@ -1148,10 +1149,11 @@ struct GlacierClient:
         labels["accountId"] = input.accountId
         dict[str, str] headers = {}
         if input.archiveDescription.is_some():
-            headers["x-amz-archive-description"] = input.archiveDescription.unwrap_or("")
+            auto qt0 = input.archiveDescription.unwrap_or("")
+            headers["x-amz-archive-description"] = qt0
         if input.checksum.is_some():
             headers["x-amz-sha256-tree-hash"] = input.checksum.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/archives", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/{accountId}/vaults/{vaultName}/archives", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.body.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
 
@@ -1168,7 +1170,7 @@ struct GlacierClient:
             headers["x-amz-sha256-tree-hash"] = input.checksum.unwrap_or("")
         if input.range_.is_some():
             headers["Content-Range"] = input.range_.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{accountId}/vaults/{vaultName}/multipart-uploads/{uploadId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.body.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, glacier_service(), self.region, host)
 

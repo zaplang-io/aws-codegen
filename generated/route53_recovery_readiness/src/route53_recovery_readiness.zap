@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 32 operations — 31 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 32 operations — 32 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   80 structs (41 @derive(Json)), 1 enums, 6 error variants.
 #   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -623,11 +623,6 @@ def route53_recovery_readiness_error_from_code(str code) -> Route53_Recovery_Rea
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -700,7 +695,7 @@ struct Route53_Recovery_ReadinessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_cell(self, CreateCellRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/cells", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/cells", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"cellName\":" + route53_recovery_readiness_json_str(input.CellName))
         if input.Cells.is_some():
@@ -722,7 +717,7 @@ struct Route53_Recovery_ReadinessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_cross_account_authorization(self, CreateCrossAccountAuthorizationRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/crossaccountauthorizations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/crossaccountauthorizations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCrossAccountAuthorizationDocument(CrossAccountAuthorization=input.CrossAccountAuthorization)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
@@ -731,7 +726,7 @@ struct Route53_Recovery_ReadinessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_readiness_check(self, CreateReadinessCheckRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/readinesschecks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/readinesschecks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"readinessCheckName\":" + route53_recovery_readiness_json_str(input.ReadinessCheckName))
         parts.append("\"resourceSetName\":" + route53_recovery_readiness_json_str(input.ResourceSetName))
@@ -748,7 +743,7 @@ struct Route53_Recovery_ReadinessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_recovery_group(self, CreateRecoveryGroupRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/recoverygroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/recoverygroups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Cells.is_some():
             auto u0 = input.Cells.unwrap()
@@ -770,7 +765,7 @@ struct Route53_Recovery_ReadinessClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_resource_set(self, CreateResourceSetRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resourcesets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resourcesets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceSetName\":" + route53_recovery_readiness_json_str(input.ResourceSetName))
         parts.append("\"resourceSetType\":" + route53_recovery_readiness_json_str(input.ResourceSetType))
@@ -793,7 +788,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["cellName"] = input.CellName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/cells/{cellName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/cells/{cellName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # DeleteCrossAccountAuthorization  DELETE /crossaccountauthorizations/{crossAccountAuthorization}
@@ -802,7 +797,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["crossAccountAuthorization"] = input.CrossAccountAuthorization
-        auto b = binding.HttpBinding(method="DELETE", path_template="/crossaccountauthorizations/{crossAccountAuthorization}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/crossaccountauthorizations/{crossAccountAuthorization}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # DeleteReadinessCheck  DELETE /readinesschecks/{readinessCheckName}
@@ -811,7 +806,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["readinessCheckName"] = input.ReadinessCheckName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/readinesschecks/{readinessCheckName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/readinesschecks/{readinessCheckName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # DeleteRecoveryGroup  DELETE /recoverygroups/{recoveryGroupName}
@@ -820,7 +815,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["recoveryGroupName"] = input.RecoveryGroupName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/recoverygroups/{recoveryGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/recoverygroups/{recoveryGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # DeleteResourceSet  DELETE /resourcesets/{resourceSetName}
@@ -829,7 +824,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceSetName"] = input.ResourceSetName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcesets/{resourceSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resourcesets/{resourceSetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetArchitectureRecommendations  GET /recoverygroups/{recoveryGroupName}/architectureRecommendations
@@ -843,7 +838,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroups/{recoveryGroupName}/architectureRecommendations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroups/{recoveryGroupName}/architectureRecommendations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetCell  GET /cells/{cellName}
@@ -852,7 +847,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["cellName"] = input.CellName
-        auto b = binding.HttpBinding(method="GET", path_template="/cells/{cellName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cells/{cellName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetCellReadinessSummary  GET /cellreadiness/{cellName}
@@ -866,7 +861,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/cellreadiness/{cellName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cellreadiness/{cellName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetReadinessCheck  GET /readinesschecks/{readinessCheckName}
@@ -875,7 +870,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["readinessCheckName"] = input.ReadinessCheckName
-        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks/{readinessCheckName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks/{readinessCheckName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetReadinessCheckResourceStatus  GET /readinesschecks/{readinessCheckName}/resource/{resourceIdentifier}/status
@@ -890,7 +885,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks/{readinessCheckName}/resource/{resourceIdentifier}/status", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks/{readinessCheckName}/resource/{resourceIdentifier}/status", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetReadinessCheckStatus  GET /readinesschecks/{readinessCheckName}/status
@@ -904,7 +899,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks/{readinessCheckName}/status", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks/{readinessCheckName}/status", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetRecoveryGroup  GET /recoverygroups/{recoveryGroupName}
@@ -913,7 +908,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["recoveryGroupName"] = input.RecoveryGroupName
-        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroups/{recoveryGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroups/{recoveryGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetRecoveryGroupReadinessSummary  GET /recoverygroupreadiness/{recoveryGroupName}
@@ -927,7 +922,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroupreadiness/{recoveryGroupName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroupreadiness/{recoveryGroupName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # GetResourceSet  GET /resourcesets/{resourceSetName}
@@ -936,7 +931,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceSetName"] = input.ResourceSetName
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcesets/{resourceSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcesets/{resourceSetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # ListCells  GET /cells
@@ -948,7 +943,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/cells", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/cells", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # ListCrossAccountAuthorizations  GET /crossaccountauthorizations
@@ -960,7 +955,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/crossaccountauthorizations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/crossaccountauthorizations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # ListReadinessChecks  GET /readinesschecks
@@ -972,7 +967,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/readinesschecks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # ListRecoveryGroups  GET /recoverygroups
@@ -984,7 +979,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/recoverygroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # ListResourceSets  GET /resourcesets
@@ -996,7 +991,7 @@ struct Route53_Recovery_ReadinessClient:
             query["maxResults"] = str(input.MaxResults.unwrap_or(0))
         if input.NextToken.is_some():
             query["nextToken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/resourcesets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resourcesets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # ListRules  GET /rules
@@ -1010,7 +1005,7 @@ struct Route53_Recovery_ReadinessClient:
             query["nextToken"] = input.NextToken.unwrap_or("")
         if input.ResourceType.is_some():
             query["resourceType"] = input.ResourceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/rules", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # ListTagsForResources  GET /tags/{resource-arn}
@@ -1019,7 +1014,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
 
     # TagResource  POST /tags/{resource-arn}
@@ -1028,7 +1023,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["resource-arn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1037,13 +1032,24 @@ struct Route53_Recovery_ReadinessClient:
         auto bp = restjson.rest_json_document(b, route53_recovery_readiness_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resource-arn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, route53_recovery_readiness_service(), self.region, host)
+
     # UpdateCell  PUT /cells/{cellName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_cell(self, UpdateCellRequest input) -> str:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["cellName"] = input.CellName
-        auto b = binding.HttpBinding(method="PUT", path_template="/cells/{cellName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/cells/{cellName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Cells:
@@ -1058,7 +1064,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["readinessCheckName"] = input.ReadinessCheckName
-        auto b = binding.HttpBinding(method="PUT", path_template="/readinesschecks/{readinessCheckName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/readinesschecks/{readinessCheckName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateReadinessCheckDocument(ResourceSetName=input.ResourceSetName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, route53_recovery_readiness_service(), self.region, host)
@@ -1069,7 +1075,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["recoveryGroupName"] = input.RecoveryGroupName
-        auto b = binding.HttpBinding(method="PUT", path_template="/recoverygroups/{recoveryGroupName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/recoverygroups/{recoveryGroupName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Cells:
@@ -1084,7 +1090,7 @@ struct Route53_Recovery_ReadinessClient:
         auto host = endpoints.regional_host(route53_recovery_readiness_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceSetName"] = input.ResourceSetName
-        auto b = binding.HttpBinding(method="PUT", path_template="/resourcesets/{resourceSetName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/resourcesets/{resourceSetName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceSetType\":" + route53_recovery_readiness_json_str(input.ResourceSetType))
         list[str] e0 = []

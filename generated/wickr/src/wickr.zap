@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 41 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 44 operations — 44 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   125 structs (86 @derive(Json)), 4 enums, 7 error variants.
 #   8 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Wickr rest-json protocol: SigV4 service "wickr" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1100,13 +1101,6 @@ def admin_wickr_error_from_code(str code) -> WickrError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   BatchToggleUserSuspendStatus (httpQuery `suspend` has unsupported type bool)
-#   GetUser (httpQuery `startTime` has unsupported type DateTime)
-#   RegisterOpentdfConfig (httpQuery `dryRun` has unsupported type bool)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1145,6 +1139,14 @@ struct RegisterOidcConfigTestDocument:
     str issuer
     str scopes
     Optional[str] certificate
+
+@derive(Json)
+struct RegisterOpentdfConfigDocument:
+    # document members of RegisterOpentdfConfig
+    str clientId
+    str clientSecret
+    str domain
+    str provider
 
 @derive(Json)
 struct UpdateBotDocument:
@@ -1425,6 +1427,12 @@ def update_user_details_to_json(UpdateUserDetails v) -> str:
         parts.append("\"codeValidation\":" + json.dumps(JsonValue.Bool(u7)))
     return admin_wickr_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def admin_wickr_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Wickr client: credentials + region, threaded into every operation.
 struct WickrClient:
     core.Credentials creds
@@ -1439,7 +1447,7 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.users:
@@ -1457,7 +1465,7 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users/batch-delete", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users/batch-delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.userIds:
@@ -1475,7 +1483,7 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users/uname-lookup", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/users/uname-lookup", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.unames:
@@ -1493,7 +1501,7 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users/re-invite", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users/re-invite", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.userIds:
@@ -1512,12 +1520,32 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users/{userId}/devices", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users/{userId}/devices", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.appIds:
             e0.append(admin_wickr_json_str(x0))
         parts.append("\"appIds\":" + admin_wickr_json_arr(e0))
+        auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # BatchToggleUserSuspendStatus  PATCH /networks/{networkId}/users/toggleSuspend
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def batch_toggle_user_suspend_status(self, BatchToggleUserSuspendStatusRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        dict[str, str] query = {}
+        query["suspend"] = admin_wickr_bind_bool(input.suspend)
+        dict[str, str] headers = {}
+        if input.clientToken.is_some():
+            headers["X-Client-Token"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users/toggleSuspend", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        list[str] parts = []
+        list[str] e0 = []
+        for x0 in input.userIds:
+            e0.append(admin_wickr_json_str(x0))
+        parts.append("\"userIds\":" + admin_wickr_json_arr(e0))
         auto bp = restjson.rest_json_document(b, admin_wickr_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
 
@@ -1527,7 +1555,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/bots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/bots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateBotDocument(username=input.username, displayName=input.displayName, groupId=input.groupId, challenge=input.challenge)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1538,7 +1566,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # CreateDataRetentionBotChallenge  POST /networks/{networkId}/data-retention-bots/challenge
@@ -1547,14 +1575,14 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/data-retention-bots/challenge", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/data-retention-bots/challenge", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # CreateNetwork  POST /networks
     # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
     def create_network(self, CreateNetworkRequest input) -> str:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/networks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateNetworkDocument(networkName=input.networkName, accessLevel=input.accessLevel, enablePremiumFreeTrial=input.enablePremiumFreeTrial, encryptionKeyArn=input.encryptionKeyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1568,7 +1596,7 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/security-groups", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/security-groups", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + admin_wickr_json_str(input.name))
         parts.append("\"securityGroupSettings\":" + security_group_settings_request_to_json(input.securityGroupSettings))
@@ -1582,7 +1610,7 @@ struct WickrClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
         labels["botId"] = input.botId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # DeleteDataRetentionBot  DELETE /networks/{networkId}/data-retention-bots
@@ -1591,7 +1619,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # DeleteNetwork  DELETE /networks/{networkId}
@@ -1603,7 +1631,7 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # DeleteSecurityGroup  DELETE /networks/{networkId}/security-groups/{groupId}
@@ -1613,7 +1641,7 @@ struct WickrClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
         labels["groupId"] = input.groupId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/security-groups/{groupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/networks/{networkId}/security-groups/{groupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetBot  GET /networks/{networkId}/bots/{botId}
@@ -1623,7 +1651,7 @@ struct WickrClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
         labels["botId"] = input.botId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetBotsCount  GET /networks/{networkId}/bots/count
@@ -1632,7 +1660,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/bots/count", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/bots/count", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetDataRetentionBot  GET /networks/{networkId}/data-retention-bots
@@ -1641,7 +1669,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetGuestUserHistoryCount  GET /networks/{networkId}/guest-users/count
@@ -1650,7 +1678,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/guest-users/count", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/guest-users/count", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetNetwork  GET /networks/{networkId}
@@ -1659,7 +1687,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetNetworkSettings  GET /networks/{networkId}/settings
@@ -1668,7 +1696,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetOidcInfo  GET /networks/{networkId}/oidc
@@ -1694,7 +1722,7 @@ struct WickrClient:
             query["codeVerifier"] = input.codeVerifier.unwrap_or("")
         if input.certificate.is_some():
             query["certificate"] = input.certificate.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/oidc", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/oidc", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetOpentdfConfig  GET /networks/{networkId}/tdf
@@ -1703,7 +1731,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/tdf", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/tdf", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetSecurityGroup  GET /networks/{networkId}/security-groups/{groupId}
@@ -1713,7 +1741,22 @@ struct WickrClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
         labels["groupId"] = input.groupId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/security-groups/{groupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/security-groups/{groupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
+
+    # GetUser  GET /networks/{networkId}/users/{userId}
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def get_user(self, GetUserRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        labels["userId"] = input.userId
+        dict[str, str] query = {}
+        if input.startTime.is_some():
+            query["startTime"] = str(datetime.to_timestamp(input.startTime.unwrap()))
+        if input.endTime.is_some():
+            query["endTime"] = str(datetime.to_timestamp(input.endTime.unwrap()))
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/users/{userId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # GetUsersCount  GET /networks/{networkId}/users/count
@@ -1722,7 +1765,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/users/count", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/users/count", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListBlockedGuestUsers  GET /networks/{networkId}/guest-users/blocklist
@@ -1744,7 +1787,7 @@ struct WickrClient:
             query["admin"] = input.admin.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/guest-users/blocklist", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/guest-users/blocklist", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListBots  GET /networks/{networkId}/bots
@@ -1770,7 +1813,7 @@ struct WickrClient:
             query["status"] = str(input.status.unwrap_or(0))
         if input.groupId.is_some():
             query["groupId"] = input.groupId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/bots", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/bots", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListDevicesForUser  GET /networks/{networkId}/users/{userId}/devices
@@ -1789,7 +1832,7 @@ struct WickrClient:
             query["sortFields"] = input.sortFields.unwrap_or("")
         if input.sortDirection.is_some():
             query["sortDirection"] = input.sortDirection.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/users/{userId}/devices", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/users/{userId}/devices", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListGuestUsers  GET /networks/{networkId}/guest-users
@@ -1811,7 +1854,7 @@ struct WickrClient:
             query["billingPeriod"] = input.billingPeriod.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/guest-users", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/guest-users", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListNetworks  GET /networks
@@ -1827,7 +1870,7 @@ struct WickrClient:
             query["sortDirection"] = input.sortDirection.unwrap_or("")
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListSecurityGroupUsers  GET /networks/{networkId}/security-groups/{groupId}/users
@@ -1846,7 +1889,7 @@ struct WickrClient:
             query["sortFields"] = input.sortFields.unwrap_or("")
         if input.sortDirection.is_some():
             query["sortDirection"] = input.sortDirection.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/security-groups/{groupId}/users", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/security-groups/{groupId}/users", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListSecurityGroups  GET /networks/{networkId}/security-groups
@@ -1864,7 +1907,7 @@ struct WickrClient:
             query["sortFields"] = input.sortFields.unwrap_or("")
         if input.sortDirection.is_some():
             query["sortDirection"] = input.sortDirection.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/security-groups", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/security-groups", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # ListUsers  GET /networks/{networkId}/users
@@ -1892,7 +1935,7 @@ struct WickrClient:
             query["status"] = str(input.status.unwrap_or(0))
         if input.groupId.is_some():
             query["groupId"] = input.groupId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, admin_wickr_service(), self.region, host)
 
     # RegisterOidcConfig  POST /networks/{networkId}/oidc/save
@@ -1901,7 +1944,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/oidc/save", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/oidc/save", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterOidcConfigDocument(companyId=input.companyId, customUsername=input.customUsername, extraAuthParams=input.extraAuthParams, issuer=input.issuer, scopes=input.scopes, secret=input.secret, ssoTokenBufferMinutes=input.ssoTokenBufferMinutes, userId=input.userId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1912,8 +1955,22 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/oidc/test", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/oidc/test", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterOidcConfigTestDocument(extraAuthParams=input.extraAuthParams, issuer=input.issuer, scopes=input.scopes, certificate=input.certificate)
+        auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
+
+    # RegisterOpentdfConfig  POST /networks/{networkId}/tdf
+    # errors: BadRequestError, ForbiddenError, InternalServerError, RateLimitError, ResourceNotFoundError, UnauthorizedError, ValidationError
+    def register_opentdf_config(self, RegisterOpentdfConfigRequest input) -> str:
+        auto host = endpoints.regional_host(admin_wickr_service(), self.region)
+        dict[str, str] labels = {}
+        labels["networkId"] = input.networkId
+        dict[str, str] query = {}
+        if input.dryRun.is_some():
+            query["dryRun"] = admin_wickr_bind_bool(input.dryRun.unwrap_or(False))
+        auto b = binding.HttpBinding(method="POST", path_template="/networks/{networkId}/tdf", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto doc = RegisterOpentdfConfigDocument(clientId=input.clientId, clientSecret=input.clientSecret, domain=input.domain, provider=input.provider)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
 
@@ -1924,7 +1981,7 @@ struct WickrClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
         labels["botId"] = input.botId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/bots/{botId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateBotDocument(displayName=input.displayName, groupId=input.groupId, challenge=input.challenge, suspend=input.suspend)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1935,7 +1992,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/data-retention-bots", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataRetentionDocument(actionType=input.actionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1947,7 +2004,7 @@ struct WickrClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
         labels["usernameHash"] = input.usernameHash
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/guest-users/{usernameHash}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/guest-users/{usernameHash}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGuestUserDocument(block=input.block)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1961,7 +2018,7 @@ struct WickrClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNetworkDocument(networkName=input.networkName, encryptionKeyArn=input.encryptionKeyArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1972,7 +2029,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNetworkSettingsDocument(settings=input.settings)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, admin_wickr_service(), self.region, host)
@@ -1984,7 +2041,7 @@ struct WickrClient:
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
         labels["groupId"] = input.groupId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/security-groups/{groupId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/security-groups/{groupId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -2001,7 +2058,7 @@ struct WickrClient:
         auto host = endpoints.regional_host(admin_wickr_service(), self.region)
         dict[str, str] labels = {}
         labels["networkId"] = input.networkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/networks/{networkId}/users", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"userId\":" + admin_wickr_json_str(input.userId))
         if input.userDetails.is_some():

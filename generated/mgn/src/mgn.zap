@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 95 operations — 94 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 95 operations — 95 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   287 structs (140 @derive(Json)), 58 enums, 8 error variants.
 #   29 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2870,11 +2870,6 @@ def mgn_error_from_code(str code) -> mgnError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3601,7 +3596,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
     def archive_application(self, ArchiveApplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ArchiveApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ArchiveApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ArchiveApplicationDocument(applicationID=input.applicationID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3610,7 +3605,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
     def archive_wave(self, ArchiveWaveRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ArchiveWave", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ArchiveWave", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ArchiveWaveDocument(waveID=input.waveID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3619,7 +3614,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
     def associate_applications(self, AssociateApplicationsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AssociateApplications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AssociateApplications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"waveID\":" + mgn_json_str(input.waveID))
         list[str] e0 = []
@@ -3636,7 +3631,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
     def associate_source_servers(self, AssociateSourceServersRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/AssociateSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/AssociateSourceServers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"applicationID\":" + mgn_json_str(input.applicationID))
         list[str] e0 = []
@@ -3653,7 +3648,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def change_server_life_cycle_state(self, ChangeServerLifeCycleStateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ChangeServerLifeCycleState", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ChangeServerLifeCycleState", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ChangeServerLifeCycleStateDocument(sourceServerID=input.sourceServerID, lifeCycle=input.lifeCycle, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3662,7 +3657,7 @@ struct mgnClient:
     # errors: ConflictException, ServiceQuotaExceededException, UninitializedAccountException
     def create_application(self, CreateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + mgn_json_str(input.name))
         if input.description.is_some():
@@ -3684,7 +3679,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def create_connector(self, CreateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateConnector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateConnector", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + mgn_json_str(input.name))
         parts.append("\"ssmInstanceID\":" + mgn_json_str(input.ssmInstanceID))
@@ -3704,7 +3699,7 @@ struct mgnClient:
     # errors: AccessDeniedException, UninitializedAccountException, ValidationException
     def create_launch_configuration_template(self, CreateLaunchConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.postLaunchActions.is_some():
             auto u0 = input.postLaunchActions.unwrap()
@@ -3764,7 +3759,7 @@ struct mgnClient:
     # errors: ServiceQuotaExceededException, ValidationException
     def create_network_migration_definition(self, CreateNetworkMigrationDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/CreateNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/CreateNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + mgn_json_str(input.name))
         if input.description.is_some():
@@ -3809,7 +3804,7 @@ struct mgnClient:
     # errors: AccessDeniedException, UninitializedAccountException, ValidationException
     def create_replication_configuration_template(self, CreateReplicationConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"stagingAreaSubnetId\":" + mgn_json_str(input.stagingAreaSubnetId))
         parts.append("\"associateDefaultSecurityGroup\":" + json.dumps(JsonValue.Bool(input.associateDefaultSecurityGroup)))
@@ -3856,7 +3851,7 @@ struct mgnClient:
     # errors: ConflictException, ServiceQuotaExceededException, UninitializedAccountException
     def create_wave(self, CreateWaveRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateWave", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateWave", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + mgn_json_str(input.name))
         if input.description.is_some():
@@ -3878,7 +3873,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def delete_application(self, DeleteApplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteApplicationDocument(applicationID=input.applicationID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3887,7 +3882,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def delete_connector(self, DeleteConnectorRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteConnector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteConnector", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteConnectorDocument(connectorID=input.connectorID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3896,7 +3891,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def delete_job(self, DeleteJobRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteJob", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteJob", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteJobDocument(jobID=input.jobID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3905,7 +3900,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def delete_launch_configuration_template(self, DeleteLaunchConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLaunchConfigurationTemplateDocument(launchConfigurationTemplateID=input.launchConfigurationTemplateID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3914,7 +3909,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException
     def delete_network_migration_definition(self, DeleteNetworkMigrationDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/DeleteNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/DeleteNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteNetworkMigrationDefinitionDocument(networkMigrationDefinitionID=input.networkMigrationDefinitionID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3923,7 +3918,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def delete_replication_configuration_template(self, DeleteReplicationConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteReplicationConfigurationTemplateDocument(replicationConfigurationTemplateID=input.replicationConfigurationTemplateID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3932,7 +3927,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def delete_source_server(self, DeleteSourceServerRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSourceServer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSourceServer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSourceServerDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3941,7 +3936,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def delete_vcenter_client(self, DeleteVcenterClientRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVcenterClient", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteVcenterClient", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteVcenterClientDocument(vcenterClientID=input.vcenterClientID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3950,7 +3945,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def delete_wave(self, DeleteWaveRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteWave", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteWave", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteWaveDocument(waveID=input.waveID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3959,7 +3954,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def describe_job_log_items(self, DescribeJobLogItemsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobLogItems", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobLogItems", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeJobLogItemsDocument(jobID=input.jobID, maxResults=input.maxResults, nextToken=input.nextToken, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -3968,7 +3963,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def describe_jobs(self, DescribeJobsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeJobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -3989,7 +3984,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def describe_launch_configuration_templates(self, DescribeLaunchConfigurationTemplatesRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLaunchConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeLaunchConfigurationTemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.launchConfigurationTemplateIDs.is_some():
             auto u0 = input.launchConfigurationTemplateIDs.unwrap()
@@ -4010,7 +4005,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def describe_replication_configuration_templates(self, DescribeReplicationConfigurationTemplatesRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeReplicationConfigurationTemplates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeReplicationConfigurationTemplates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.replicationConfigurationTemplateIDs.is_some():
             auto u0 = input.replicationConfigurationTemplateIDs.unwrap()
@@ -4031,7 +4026,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def describe_source_servers(self, DescribeSourceServersRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DescribeSourceServers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4057,14 +4052,14 @@ struct mgnClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/DescribeVcenterClients", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/DescribeVcenterClients", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mgn_service(), self.region, host)
 
     # DisassociateApplications  POST /DisassociateApplications
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def disassociate_applications(self, DisassociateApplicationsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateApplications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateApplications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"waveID\":" + mgn_json_str(input.waveID))
         list[str] e0 = []
@@ -4081,7 +4076,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def disassociate_source_servers(self, DisassociateSourceServersRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateSourceServers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisassociateSourceServers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"applicationID\":" + mgn_json_str(input.applicationID))
         list[str] e0 = []
@@ -4098,7 +4093,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def disconnect_from_service(self, DisconnectFromServiceRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectFromService", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectFromService", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisconnectFromServiceDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4107,7 +4102,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def finalize_cutover(self, FinalizeCutoverRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/FinalizeCutover", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/FinalizeCutover", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = FinalizeCutoverDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4116,7 +4111,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException
     def get_launch_configuration(self, GetLaunchConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetLaunchConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetLaunchConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLaunchConfigurationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4125,7 +4120,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException
     def get_network_migration_definition(self, GetNetworkMigrationDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/GetNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/GetNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetNetworkMigrationDefinitionDocument(networkMigrationDefinitionID=input.networkMigrationDefinitionID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4134,7 +4129,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_network_migration_mapper_segment_construct(self, GetNetworkMigrationMapperSegmentConstructRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/GetNetworkMigrationMapperSegmentConstruct", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/GetNetworkMigrationMapperSegmentConstruct", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetNetworkMigrationMapperSegmentConstructDocument(networkMigrationDefinitionID=input.networkMigrationDefinitionID, networkMigrationExecutionID=input.networkMigrationExecutionID, segmentID=input.segmentID, constructID=input.constructID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4143,7 +4138,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException
     def get_replication_configuration(self, GetReplicationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetReplicationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetReplicationConfigurationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4152,14 +4147,14 @@ struct mgnClient:
     # errors: AccessDeniedException, ValidationException
     def initialize_service(self) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/InitializeService", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/InitializeService", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mgn_service(), self.region, host)
 
     # ListApplications  POST /ListApplications
     # errors: UninitializedAccountException
     def list_applications(self, ListApplicationsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListApplications", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListApplications", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4180,7 +4175,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def list_connectors(self, ListConnectorsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListConnectors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListConnectors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4198,7 +4193,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def list_export_errors(self, ListExportErrorsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListExportErrors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListExportErrors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListExportErrorsDocument(exportID=input.exportID, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4207,7 +4202,7 @@ struct mgnClient:
     # errors: UninitializedAccountException
     def list_exports(self, ListExportsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListExports", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListExports", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4225,7 +4220,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def list_import_errors(self, ListImportErrorsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImportErrors", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImportErrors", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListImportErrorsDocument(importID=input.importID, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4234,7 +4229,7 @@ struct mgnClient:
     # errors: ValidationException
     def list_import_file_enrichments(self, ListImportFileEnrichmentsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListImportFileEnrichments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListImportFileEnrichments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4252,7 +4247,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def list_imports(self, ListImportsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListImports", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListImports", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4270,7 +4265,7 @@ struct mgnClient:
     # errors: UninitializedAccountException, ValidationException
     def list_managed_accounts(self, ListManagedAccountsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListManagedAccounts", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListManagedAccounts", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListManagedAccountsDocument(maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4279,7 +4274,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_analyses(self, ListNetworkMigrationAnalysesRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationAnalyses", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationAnalyses", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4299,7 +4294,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_analysis_results(self, ListNetworkMigrationAnalysisResultsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationAnalysisResults", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationAnalysisResults", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4319,7 +4314,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_code_generation_segments(self, ListNetworkMigrationCodeGenerationSegmentsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationCodeGenerationSegments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationCodeGenerationSegments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4339,7 +4334,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_code_generations(self, ListNetworkMigrationCodeGenerationsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationCodeGenerations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationCodeGenerations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4359,7 +4354,7 @@ struct mgnClient:
     # errors: AccessDeniedException
     def list_network_migration_definitions(self, ListNetworkMigrationDefinitionsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDefinitions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDefinitions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4377,7 +4372,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_deployed_stacks(self, ListNetworkMigrationDeployedStacksRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDeployedStacks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDeployedStacks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListNetworkMigrationDeployedStacksDocument(networkMigrationExecutionID=input.networkMigrationExecutionID, networkMigrationDefinitionID=input.networkMigrationDefinitionID, maxResults=input.maxResults, nextToken=input.nextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4386,7 +4381,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_deployments(self, ListNetworkMigrationDeploymentsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDeployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationDeployments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4406,7 +4401,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException
     def list_network_migration_executions(self, ListNetworkMigrationExecutionsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationExecutions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationExecutions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
         if input.filters.is_some():
@@ -4425,7 +4420,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_mapper_segment_constructs(self, ListNetworkMigrationMapperSegmentConstructsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMapperSegmentConstructs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMapperSegmentConstructs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4446,7 +4441,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_mapper_segments(self, ListNetworkMigrationMapperSegmentsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMapperSegments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMapperSegments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4466,7 +4461,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_mapping_updates(self, ListNetworkMigrationMappingUpdatesRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMappingUpdates", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMappingUpdates", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4486,7 +4481,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_network_migration_mappings(self, ListNetworkMigrationMappingsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/ListNetworkMigrationMappings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4506,7 +4501,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException
     def list_source_server_actions(self, ListSourceServerActionsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListSourceServerActions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListSourceServerActions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
         if input.filters.is_some():
@@ -4530,14 +4525,14 @@ struct mgnClient:
         auto host = endpoints.regional_host(mgn_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, mgn_service(), self.region, host)
 
     # ListTemplateActions  POST /ListTemplateActions
     # errors: ResourceNotFoundException, UninitializedAccountException
     def list_template_actions(self, ListTemplateActionsRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTemplateActions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTemplateActions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"launchConfigurationTemplateID\":" + mgn_json_str(input.launchConfigurationTemplateID))
         if input.filters.is_some():
@@ -4556,7 +4551,7 @@ struct mgnClient:
     # errors: UninitializedAccountException
     def list_waves(self, ListWavesRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListWaves", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListWaves", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filters.is_some():
             auto u0 = input.filters.unwrap()
@@ -4577,7 +4572,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def mark_as_archived(self, MarkAsArchivedRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/MarkAsArchived", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/MarkAsArchived", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = MarkAsArchivedDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4586,7 +4581,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def pause_replication(self, PauseReplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PauseReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PauseReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PauseReplicationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4595,7 +4590,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def put_source_server_action(self, PutSourceServerActionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutSourceServerAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutSourceServerAction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
         parts.append("\"actionName\":" + mgn_json_str(input.actionName))
@@ -4645,7 +4640,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def put_template_action(self, PutTemplateActionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutTemplateAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutTemplateAction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"launchConfigurationTemplateID\":" + mgn_json_str(input.launchConfigurationTemplateID))
         parts.append("\"actionName\":" + mgn_json_str(input.actionName))
@@ -4695,7 +4690,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def remove_source_server_action(self, RemoveSourceServerActionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RemoveSourceServerAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RemoveSourceServerAction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveSourceServerActionDocument(sourceServerID=input.sourceServerID, actionID=input.actionID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4704,7 +4699,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def remove_template_action(self, RemoveTemplateActionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RemoveTemplateAction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RemoveTemplateAction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RemoveTemplateActionDocument(launchConfigurationTemplateID=input.launchConfigurationTemplateID, actionID=input.actionID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4713,7 +4708,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def resume_replication(self, ResumeReplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ResumeReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ResumeReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResumeReplicationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4722,7 +4717,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def retry_data_replication(self, RetryDataReplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RetryDataReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RetryDataReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RetryDataReplicationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4731,7 +4726,7 @@ struct mgnClient:
     # errors: ConflictException, UninitializedAccountException, ValidationException
     def start_cutover(self, StartCutoverRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartCutover", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartCutover", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sourceServerIDs:
@@ -4753,7 +4748,7 @@ struct mgnClient:
     # errors: ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def start_export(self, StartExportRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartExport", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartExport", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"s3Bucket\":" + mgn_json_str(input.s3Bucket))
         parts.append("\"s3Key\":" + mgn_json_str(input.s3Key))
@@ -4773,7 +4768,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def start_import(self, StartImportRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartImport", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartImport", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -4792,7 +4787,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_import_file_enrichment(self, StartImportFileEnrichmentRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartImportFileEnrichment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartImportFileEnrichment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartImportFileEnrichmentDocument(clientToken=input.clientToken, s3BucketSource=input.s3BucketSource, s3BucketTarget=input.s3BucketTarget, ipAssignmentStrategy=input.ipAssignmentStrategy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4801,7 +4796,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_network_migration_analysis(self, StartNetworkMigrationAnalysisRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationAnalysis", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationAnalysis", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartNetworkMigrationAnalysisDocument(networkMigrationExecutionID=input.networkMigrationExecutionID, networkMigrationDefinitionID=input.networkMigrationDefinitionID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4810,7 +4805,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_network_migration_code_generation(self, StartNetworkMigrationCodeGenerationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationCodeGeneration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationCodeGeneration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4827,7 +4822,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_network_migration_deployment(self, StartNetworkMigrationDeploymentRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationDeployment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationDeployment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartNetworkMigrationDeploymentDocument(networkMigrationExecutionID=input.networkMigrationExecutionID, networkMigrationDefinitionID=input.networkMigrationDefinitionID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4836,7 +4831,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_network_migration_mapping(self, StartNetworkMigrationMappingRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationMapping", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationMapping", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartNetworkMigrationMappingDocument(networkMigrationExecutionID=input.networkMigrationExecutionID, networkMigrationDefinitionID=input.networkMigrationDefinitionID, securityGroupMappingStrategy=input.securityGroupMappingStrategy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4845,7 +4840,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_network_migration_mapping_update(self, StartNetworkMigrationMappingUpdateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationMappingUpdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/StartNetworkMigrationMappingUpdate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
@@ -4868,7 +4863,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def start_replication(self, StartReplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartReplicationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4877,7 +4872,7 @@ struct mgnClient:
     # errors: ConflictException, UninitializedAccountException, ValidationException
     def start_test(self, StartTestRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StartTest", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StartTest", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sourceServerIDs:
@@ -4899,7 +4894,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException, ValidationException
     def stop_replication(self, StopReplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/StopReplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/StopReplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StopReplicationDocument(sourceServerID=input.sourceServerID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4910,7 +4905,7 @@ struct mgnClient:
         auto host = endpoints.regional_host(mgn_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -4923,7 +4918,7 @@ struct mgnClient:
     # errors: ConflictException, UninitializedAccountException, ValidationException
     def terminate_target_instances(self, TerminateTargetInstancesRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TerminateTargetInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TerminateTargetInstances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.sourceServerIDs:
@@ -4945,7 +4940,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
     def unarchive_application(self, UnarchiveApplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UnarchiveApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UnarchiveApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UnarchiveApplicationDocument(applicationID=input.applicationID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4954,16 +4949,27 @@ struct mgnClient:
     # errors: ResourceNotFoundException, ServiceQuotaExceededException, UninitializedAccountException
     def unarchive_wave(self, UnarchiveWaveRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UnarchiveWave", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UnarchiveWave", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UnarchiveWaveDocument(waveID=input.waveID, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(mgn_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, mgn_service(), self.region, host)
 
     # UpdateApplication  POST /UpdateApplication
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def update_application(self, UpdateApplicationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateApplication", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateApplication", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateApplicationDocument(applicationID=input.applicationID, name=input.name, description=input.description, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4972,7 +4978,7 @@ struct mgnClient:
     # errors: ResourceNotFoundException, UninitializedAccountException, ValidationException
     def update_connector(self, UpdateConnectorRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateConnector", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateConnector", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateConnectorDocument(connectorID=input.connectorID, name=input.name, ssmCommandConfig=input.ssmCommandConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -4981,7 +4987,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def update_launch_configuration(self, UpdateLaunchConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
         if input.name.is_some():
@@ -5024,7 +5030,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def update_launch_configuration_template(self, UpdateLaunchConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLaunchConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"launchConfigurationTemplateID\":" + mgn_json_str(input.launchConfigurationTemplateID))
         if input.postLaunchActions.is_some():
@@ -5079,7 +5085,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def update_network_migration_definition(self, UpdateNetworkMigrationDefinitionRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/UpdateNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/UpdateNetworkMigrationDefinition", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
         if input.name.is_some():
@@ -5125,7 +5131,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def update_network_migration_mapper_segment(self, UpdateNetworkMigrationMapperSegmentRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/UpdateNetworkMigrationMapperSegment", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/network-migration/UpdateNetworkMigrationMapperSegment", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"networkMigrationDefinitionID\":" + mgn_json_str(input.networkMigrationDefinitionID))
         parts.append("\"networkMigrationExecutionID\":" + mgn_json_str(input.networkMigrationExecutionID))
@@ -5143,7 +5149,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def update_replication_configuration(self, UpdateReplicationConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceServerID\":" + mgn_json_str(input.sourceServerID))
         if input.name.is_some():
@@ -5219,7 +5225,7 @@ struct mgnClient:
     # errors: AccessDeniedException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def update_replication_configuration_template(self, UpdateReplicationConfigurationTemplateRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateReplicationConfigurationTemplate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"replicationConfigurationTemplateID\":" + mgn_json_str(input.replicationConfigurationTemplateID))
         if input.arn.is_some():
@@ -5286,7 +5292,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def update_source_server(self, UpdateSourceServerRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSourceServer", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSourceServer", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSourceServerDocument(accountID=input.accountID, sourceServerID=input.sourceServerID, connectorAction=input.connectorAction, userProvidedID=input.userProvidedID, fqdnForActionFramework=input.fqdnForActionFramework, platform=input.platform)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -5295,7 +5301,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException, ValidationException
     def update_source_server_replication_type(self, UpdateSourceServerReplicationTypeRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSourceServerReplicationType", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateSourceServerReplicationType", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSourceServerReplicationTypeDocument(sourceServerID=input.sourceServerID, replicationType=input.replicationType, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)
@@ -5304,7 +5310,7 @@ struct mgnClient:
     # errors: ConflictException, ResourceNotFoundException, UninitializedAccountException
     def update_wave(self, UpdateWaveRequest input) -> str:
         auto host = endpoints.regional_host(mgn_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateWave", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateWave", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWaveDocument(waveID=input.waveID, name=input.name, description=input.description, accountID=input.accountID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, mgn_service(), self.region, host)

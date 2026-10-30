@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 31 operations — 30 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 31 operations — 31 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   86 structs (50 @derive(Json)), 10 enums, 6 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -899,11 +899,6 @@ def migrationhub_orchestrator_error_from_code(str code) -> MigrationHubOrchestra
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1010,7 +1005,7 @@ struct MigrationHubOrchestratorClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def create_template(self, CreateTemplateRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/template", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/template", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"templateName\":" + migrationhub_orchestrator_json_str(input.templateName))
         if input.templateDescription.is_some():
@@ -1033,7 +1028,7 @@ struct MigrationHubOrchestratorClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def create_workflow(self, CreateMigrationWorkflowRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + migrationhub_orchestrator_json_str(input.name))
         if input.description.is_some():
@@ -1066,7 +1061,7 @@ struct MigrationHubOrchestratorClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def create_workflow_step(self, CreateWorkflowStepRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workflowstep", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstep", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + migrationhub_orchestrator_json_str(input.name))
         parts.append("\"stepGroupId\":" + migrationhub_orchestrator_json_str(input.stepGroupId))
@@ -1109,7 +1104,7 @@ struct MigrationHubOrchestratorClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def create_workflow_step_group(self, CreateWorkflowStepGroupRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workflowstepgroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstepgroups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workflowId\":" + migrationhub_orchestrator_json_str(input.workflowId))
         parts.append("\"name\":" + migrationhub_orchestrator_json_str(input.name))
@@ -1137,7 +1132,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/template/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/template/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # DeleteWorkflow  DELETE /migrationworkflow/{id}
@@ -1146,7 +1141,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/migrationworkflow/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/migrationworkflow/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # DeleteWorkflowStep  DELETE /workflowstep/{id}
@@ -1158,7 +1153,7 @@ struct MigrationHubOrchestratorClient:
         dict[str, str] query = {}
         query["stepGroupId"] = input.stepGroupId
         query["workflowId"] = input.workflowId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workflowstep/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workflowstep/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # DeleteWorkflowStepGroup  DELETE /workflowstepgroup/{id}
@@ -1169,7 +1164,7 @@ struct MigrationHubOrchestratorClient:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["workflowId"] = input.workflowId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workflowstepgroup/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workflowstepgroup/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # GetTemplate  GET /migrationworkflowtemplate/{id}
@@ -1178,7 +1173,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflowtemplate/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflowtemplate/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # GetTemplateStep  GET /templatestep/{id}
@@ -1190,7 +1185,7 @@ struct MigrationHubOrchestratorClient:
         dict[str, str] query = {}
         query["templateId"] = input.templateId
         query["stepGroupId"] = input.stepGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/templatestep/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templatestep/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # GetTemplateStepGroup  GET /templates/{templateId}/stepgroups/{id}
@@ -1200,7 +1195,7 @@ struct MigrationHubOrchestratorClient:
         dict[str, str] labels = {}
         labels["templateId"] = input.templateId
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/templates/{templateId}/stepgroups/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templates/{templateId}/stepgroups/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # GetWorkflow  GET /migrationworkflow/{id}
@@ -1209,7 +1204,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflow/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflow/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # GetWorkflowStep  GET /workflowstep/{id}
@@ -1221,7 +1216,7 @@ struct MigrationHubOrchestratorClient:
         dict[str, str] query = {}
         query["workflowId"] = input.workflowId
         query["stepGroupId"] = input.stepGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/workflowstep/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflowstep/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # GetWorkflowStepGroup  GET /workflowstepgroup/{id}
@@ -1232,7 +1227,7 @@ struct MigrationHubOrchestratorClient:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["workflowId"] = input.workflowId
-        auto b = binding.HttpBinding(method="GET", path_template="/workflowstepgroup/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflowstepgroup/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListPlugins  GET /plugins
@@ -1244,7 +1239,7 @@ struct MigrationHubOrchestratorClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/plugins", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/plugins", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1253,7 +1248,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListTemplateStepGroups  GET /templatestepgroups/{templateId}
@@ -1267,7 +1262,7 @@ struct MigrationHubOrchestratorClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/templatestepgroups/{templateId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templatestepgroups/{templateId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListTemplateSteps  GET /templatesteps
@@ -1281,7 +1276,7 @@ struct MigrationHubOrchestratorClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         query["templateId"] = input.templateId
         query["stepGroupId"] = input.stepGroupId
-        auto b = binding.HttpBinding(method="GET", path_template="/templatesteps", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/templatesteps", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListTemplates  GET /migrationworkflowtemplates
@@ -1295,7 +1290,7 @@ struct MigrationHubOrchestratorClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.name.is_some():
             query["name"] = input.name.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflowtemplates", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflowtemplates", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListWorkflowStepGroups  GET /workflowstepgroups
@@ -1308,7 +1303,7 @@ struct MigrationHubOrchestratorClient:
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         query["workflowId"] = input.workflowId
-        auto b = binding.HttpBinding(method="GET", path_template="/workflowstepgroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflowstepgroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListWorkflowSteps  GET /workflow/{workflowId}/workflowstepgroups/{stepGroupId}/workflowsteps
@@ -1323,7 +1318,7 @@ struct MigrationHubOrchestratorClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/workflow/{workflowId}/workflowstepgroups/{stepGroupId}/workflowsteps", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workflow/{workflowId}/workflowstepgroups/{stepGroupId}/workflowsteps", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # ListWorkflows  GET /migrationworkflows
@@ -1338,12 +1333,13 @@ struct MigrationHubOrchestratorClient:
         if input.templateId.is_some():
             query["templateId"] = input.templateId.unwrap_or("")
         if input.adsApplicationConfigurationName.is_some():
-            query["adsApplicationConfigurationName"] = input.adsApplicationConfigurationName.unwrap_or("")
+            auto qt0 = input.adsApplicationConfigurationName.unwrap_or("")
+            query["adsApplicationConfigurationName"] = qt0
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
         if input.name.is_some():
             query["name"] = input.name.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflows", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/migrationworkflows", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # RetryWorkflowStep  POST /retryworkflowstep/{id}
@@ -1355,7 +1351,7 @@ struct MigrationHubOrchestratorClient:
         dict[str, str] query = {}
         query["workflowId"] = input.workflowId
         query["stepGroupId"] = input.stepGroupId
-        auto b = binding.HttpBinding(method="POST", path_template="/retryworkflowstep/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/retryworkflowstep/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # StartWorkflow  POST /migrationworkflow/{id}/start
@@ -1364,7 +1360,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # StopWorkflow  POST /migrationworkflow/{id}/stop
@@ -1373,7 +1369,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1382,7 +1378,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1391,13 +1387,24 @@ struct MigrationHubOrchestratorClient:
         auto bp = restjson.rest_json_document(b, migrationhub_orchestrator_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, migrationhub_orchestrator_service(), self.region, host)
+
     # UpdateTemplate  POST /template/{id}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_template(self, UpdateTemplateRequest input) -> str:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/template/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/template/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTemplateDocument(templateName=input.templateName, templateDescription=input.templateDescription, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, migrationhub_orchestrator_service(), self.region, host)
@@ -1408,7 +1415,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/migrationworkflow/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1437,7 +1444,7 @@ struct MigrationHubOrchestratorClient:
         auto host = endpoints.regional_host(migrationhub_orchestrator_service(), self.region)
         dict[str, str] labels = {}
         labels["id"] = input.id
-        auto b = binding.HttpBinding(method="POST", path_template="/workflowstep/{id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstep/{id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"stepGroupId\":" + migrationhub_orchestrator_json_str(input.stepGroupId))
         parts.append("\"workflowId\":" + migrationhub_orchestrator_json_str(input.workflowId))
@@ -1491,7 +1498,7 @@ struct MigrationHubOrchestratorClient:
         labels["id"] = input.id
         dict[str, str] query = {}
         query["workflowId"] = input.workflowId
-        auto b = binding.HttpBinding(method="POST", path_template="/workflowstepgroup/{id}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workflowstepgroup/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()

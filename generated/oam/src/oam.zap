@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 14 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 15 operations — 15 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   44 structs (28 @derive(Json)), 1 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -375,11 +375,6 @@ def oam_error_from_code(str code) -> OAMError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -444,7 +439,7 @@ struct OAMClient:
     # errors: ConflictException, InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ServiceQuotaExceededException
     def create_link(self, CreateLinkInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLink", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"LabelTemplate\":" + oam_json_str(input.LabelTemplate))
         if input.LinkConfiguration.is_some():
@@ -468,7 +463,7 @@ struct OAMClient:
     # errors: ConflictException, InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ServiceQuotaExceededException
     def create_sink(self, CreateSinkInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateSink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateSink", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + oam_json_str(input.Name))
         if input.Tags.is_some():
@@ -484,7 +479,7 @@ struct OAMClient:
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def delete_link(self, DeleteLinkInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLink", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLinkDocument(Identifier=input.Identifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -493,7 +488,7 @@ struct OAMClient:
     # errors: ConflictException, InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def delete_sink(self, DeleteSinkInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteSink", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSinkDocument(Identifier=input.Identifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -502,7 +497,7 @@ struct OAMClient:
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def get_link(self, GetLinkInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetLink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetLink", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLinkDocument(Identifier=input.Identifier, IncludeTags=input.IncludeTags)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -511,7 +506,7 @@ struct OAMClient:
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def get_sink(self, GetSinkInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetSink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetSink", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSinkDocument(Identifier=input.Identifier, IncludeTags=input.IncludeTags)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -520,7 +515,7 @@ struct OAMClient:
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def get_sink_policy(self, GetSinkPolicyInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetSinkPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetSinkPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetSinkPolicyDocument(SinkIdentifier=input.SinkIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -529,7 +524,7 @@ struct OAMClient:
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def list_attached_links(self, ListAttachedLinksInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListAttachedLinks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListAttachedLinks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListAttachedLinksDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, SinkIdentifier=input.SinkIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -538,7 +533,7 @@ struct OAMClient:
     # errors: InternalServiceFault, InvalidParameterException, ResourceNotFoundException
     def list_links(self, ListLinksInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLinks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLinks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLinksDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -547,7 +542,7 @@ struct OAMClient:
     # errors: InternalServiceFault, InvalidParameterException, ResourceNotFoundException
     def list_sinks(self, ListSinksInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListSinks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListSinks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSinksDocument(MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -558,14 +553,14 @@ struct OAMClient:
         auto host = endpoints.regional_host(oam_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, oam_service(), self.region, host)
 
     # PutSinkPolicy  POST /PutSinkPolicy
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def put_sink_policy(self, PutSinkPolicyInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/PutSinkPolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/PutSinkPolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutSinkPolicyDocument(Policy=input.Policy, SinkIdentifier=input.SinkIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
@@ -576,7 +571,7 @@ struct OAMClient:
         auto host = endpoints.regional_host(oam_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -585,11 +580,22 @@ struct OAMClient:
         auto bp = restjson.rest_json_document(b, oam_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, oam_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(oam_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, oam_service(), self.region, host)
+
     # UpdateLink  POST /UpdateLink
     # errors: InternalServiceFault, InvalidParameterException, MissingRequiredParameterException, ResourceNotFoundException
     def update_link(self, UpdateLinkInput input) -> str:
         auto host = endpoints.regional_host(oam_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLink", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLink", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Identifier\":" + oam_json_str(input.Identifier))
         if input.IncludeTags.is_some():

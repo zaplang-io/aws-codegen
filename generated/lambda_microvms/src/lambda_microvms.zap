@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 24 operations — 23 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 24 operations — 24 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   78 structs (55 @derive(Json)), 7 enums, 12 error variants.
 #   6 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -803,11 +803,6 @@ def lambda__error_from_code(str code) -> Lambda_MicrovmsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -832,7 +827,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["microvmIdentifier"] = input.microvmIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/auth-token", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/auth-token", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"expirationInMinutes\":" + str(input.expirationInMinutes))
         list[str] e0 = []
@@ -846,7 +841,7 @@ struct Lambda_MicrovmsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_microvm_image(self, CreateMicrovmImageRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvm-images", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvm-images", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"baseImageArn\":" + lambda__json_str(input.baseImageArn))
         if input.baseImageVersion.is_some():
@@ -912,7 +907,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["microvmIdentifier"] = input.microvmIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/shell-auth-token", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/shell-auth-token", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateMicrovmShellAuthTokenDocument(expirationInMinutes=input.expirationInMinutes)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -923,7 +918,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["imageIdentifier"] = input.imageIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-09-09/microvm-images/{imageIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-09-09/microvm-images/{imageIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteMicrovmImageVersion  DELETE /2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}
@@ -933,7 +928,7 @@ struct Lambda_MicrovmsClient:
         dict[str, str] labels = {}
         labels["imageIdentifier"] = input.imageIdentifier
         labels["imageVersion"] = input.imageVersion
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetMicrovm  GET /2025-09-09/microvms/{microvmIdentifier}
@@ -942,7 +937,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["microvmIdentifier"] = input.microvmIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvms/{microvmIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvms/{microvmIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetMicrovmImage  GET /2025-09-09/microvm-images/{imageIdentifier}
@@ -951,7 +946,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["imageIdentifier"] = input.imageIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetMicrovmImageBuild  GET /2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}/builds/{buildId}
@@ -962,7 +957,7 @@ struct Lambda_MicrovmsClient:
         labels["imageIdentifier"] = input.imageIdentifier
         labels["imageVersion"] = input.imageVersion
         labels["buildId"] = input.buildId
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}/builds/{buildId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}/builds/{buildId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetMicrovmImageVersion  GET /2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}
@@ -972,7 +967,7 @@ struct Lambda_MicrovmsClient:
         dict[str, str] labels = {}
         labels["imageIdentifier"] = input.imageIdentifier
         labels["imageVersion"] = input.imageVersion
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListManagedMicrovmImageVersions  GET /2025-09-09/managed-microvm-images/{imageIdentifier}/versions
@@ -986,7 +981,7 @@ struct Lambda_MicrovmsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/managed-microvm-images/{imageIdentifier}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/managed-microvm-images/{imageIdentifier}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListManagedMicrovmImages  GET /2025-09-09/managed-microvm-images
@@ -998,7 +993,7 @@ struct Lambda_MicrovmsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/managed-microvm-images", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/managed-microvm-images", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListMicrovmImageBuilds  GET /2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}/builds
@@ -1019,7 +1014,7 @@ struct Lambda_MicrovmsClient:
             query["chipset"] = input.chipset.unwrap_or("")
         if input.chipsetGeneration.is_some():
             query["chipsetGeneration"] = input.chipsetGeneration.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}/builds", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}/builds", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListMicrovmImageVersions  GET /2025-09-09/microvm-images/{imageIdentifier}/versions
@@ -1033,7 +1028,7 @@ struct Lambda_MicrovmsClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListMicrovmImages  GET /2025-09-09/microvm-images
@@ -1047,7 +1042,7 @@ struct Lambda_MicrovmsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.nameFilter.is_some():
             query["nameFilter"] = input.nameFilter.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvm-images", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListMicrovms  GET /2025-09-09/microvms
@@ -1063,7 +1058,7 @@ struct Lambda_MicrovmsClient:
             query["imageIdentifier"] = input.imageIdentifier.unwrap_or("")
         if input.imageVersion.is_some():
             query["imageVersion"] = input.imageVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvms", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-09-09/microvms", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListTags  GET /2017-03-31/tags/{Resource}
@@ -1072,7 +1067,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["Resource"] = input.Resource
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ResumeMicrovm  POST /2025-09-09/microvms/{microvmIdentifier}/resume
@@ -1081,14 +1076,14 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["microvmIdentifier"] = input.microvmIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/resume", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/resume", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # RunMicrovm  POST /2025-09-09/microvms
     # errors: AccessDeniedException, ConflictException, InsufficientCapacityException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def run_microvm(self, RunMicrovmRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ingressNetworkConnectors.is_some():
             auto u0 = input.ingressNetworkConnectors.unwrap()
@@ -1133,7 +1128,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["microvmIdentifier"] = input.microvmIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/suspend", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-09-09/microvms/{microvmIdentifier}/suspend", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # TagResource  POST /2017-03-31/tags/{Resource}
@@ -1142,7 +1137,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["Resource"] = input.Resource
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -1157,7 +1152,18 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["microvmIdentifier"] = input.microvmIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-09-09/microvms/{microvmIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-09-09/microvms/{microvmIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # UntagResource  DELETE /2017-03-31/tags/{Resource}
+    # errors: AccessDeniedException, InternalServerException, InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, ThrottlingException, TooManyRequestsException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["Resource"] = input.Resource
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # UpdateMicrovmImage  PUT /2025-09-09/microvm-images/{imageIdentifier}
@@ -1166,7 +1172,7 @@ struct Lambda_MicrovmsClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["imageIdentifier"] = input.imageIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/2025-09-09/microvm-images/{imageIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-09-09/microvm-images/{imageIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"baseImageArn\":" + lambda__json_str(input.baseImageArn))
         if input.baseImageVersion.is_some():
@@ -1226,7 +1232,7 @@ struct Lambda_MicrovmsClient:
         dict[str, str] labels = {}
         labels["imageIdentifier"] = input.imageIdentifier
         labels["imageVersion"] = input.imageVersion
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2025-09-09/microvm-images/{imageIdentifier}/versions/{imageVersion}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMicrovmImageVersionDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)

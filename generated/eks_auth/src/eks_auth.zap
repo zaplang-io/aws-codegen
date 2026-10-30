@@ -178,7 +178,7 @@ struct EKS_AuthClient:
         auto host = endpoints.regional_host(eks_auth_service(), self.region)
         dict[str, str] labels = {}
         labels["clusterName"] = input.clusterName
-        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{clusterName}/assume-role-for-pod-identity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/clusters/{clusterName}/assume-role-for-pod-identity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssumeRoleForPodIdentityDocument(token=input.token, eksNodeName=input.eksNodeName, instanceId=input.instanceId, zone=input.zone)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, eks_auth_service(), self.region, host)

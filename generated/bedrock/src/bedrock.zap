@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 108 operations — 95 with a generated method,
-#   13 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 108 operations — 107 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   486 structs (299 @derive(Json)), 65 enums, 10 error variants.
-#   10 paginators generated (9 paginated ops skipped) from paginators-1.json.
+#   19 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The Bedrock rest-json protocol: SigV4 service "bedrock" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -4221,31 +4222,7 @@ def bedrock_error_from_code(str code) -> BedrockError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   DeleteAutomatedReasoningPolicy (httpQuery `force` has unsupported type bool)
-#   DeleteAutomatedReasoningPolicyBuildWorkflow (httpQuery `lastUpdatedAt` has unsupported type DateTime)
-#   DeleteAutomatedReasoningPolicyTestCase (httpQuery `lastUpdatedAt` has unsupported type DateTime)
-#   ListCustomModelDeployments (httpQuery `createdBefore` has unsupported type DateTime)
-#   ListCustomModels (httpQuery `creationTimeBefore` has unsupported type DateTime)
-#   ListEvaluationJobs (httpQuery `creationTimeAfter` has unsupported type DateTime)
-#   ListImportedModels (httpQuery `creationTimeBefore` has unsupported type DateTime)
-#   ListModelCopyJobs (httpQuery `creationTimeAfter` has unsupported type DateTime)
-#   ListModelCustomizationJobs (httpQuery `creationTimeAfter` has unsupported type DateTime)
-#   ListModelImportJobs (httpQuery `creationTimeAfter` has unsupported type DateTime)
-#   ListModelInvocationJobs (httpQuery `submitTimeAfter` has unsupported type DateTime)
-#   ListProvisionedModelThroughputs (httpQuery `creationTimeAfter` has unsupported type DateTime)
 #   StartAutomatedReasoningPolicyBuildWorkflow (httpPayload member `sourceContent` is a non-derivable structure)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   ListCustomModelDeployments (operation not generated)
-#   ListCustomModels (operation not generated)
-#   ListEvaluationJobs (operation not generated)
-#   ListImportedModels (operation not generated)
-#   ListModelCopyJobs (operation not generated)
-#   ListModelCustomizationJobs (operation not generated)
-#   ListModelImportJobs (operation not generated)
-#   ListModelInvocationJobs (operation not generated)
-#   ListProvisionedModelThroughputs (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -5215,6 +5192,12 @@ def vpc_config_to_json(VpcConfig v) -> str:
     parts.append("\"securityGroupIds\":" + bedrock_json_arr(e1))
     return bedrock_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def bedrock_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Bedrock client: credentials + region, threaded into every operation.
 struct BedrockClient:
     core.Credentials creds
@@ -5224,7 +5207,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def batch_delete_advanced_prompt_optimization_job(self, BatchDeleteAdvancedPromptOptimizationJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-job/batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-job/batch-delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.jobIdentifiers:
@@ -5237,7 +5220,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_delete_evaluation_job(self, BatchDeleteEvaluationJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-jobs/batch-delete", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-jobs/batch-delete", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.jobIdentifiers:
@@ -5253,14 +5236,14 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["buildWorkflowId"] = input.buildWorkflowId
-        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # CreateAdvancedPromptOptimizationJob  POST /advanced-prompt-optimization-jobs
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_advanced_prompt_optimization_job(self, CreateAdvancedPromptOptimizationJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
         if input.jobDescription.is_some():
@@ -5291,7 +5274,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_automated_reasoning_policy(self, CreateAutomatedReasoningPolicyRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_json_str(input.name))
         if input.description.is_some():
@@ -5321,7 +5304,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
-        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/test-cases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/test-cases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateAutomatedReasoningPolicyTestCaseDocument(guardContent=input.guardContent, queryContent=input.queryContent, expectedAggregatedFindingsResult=input.expectedAggregatedFindingsResult, clientRequestToken=input.clientRequestToken, confidenceThreshold=input.confidenceThreshold)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -5332,7 +5315,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
-        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientRequestToken.is_some():
             auto u0 = input.clientRequestToken.unwrap()
@@ -5351,7 +5334,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_custom_model(self, CreateCustomModelRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/custom-models/create-custom-model", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/custom-models/create-custom-model", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"modelName\":" + bedrock_json_str(input.modelName))
         if input.modelSourceConfig.is_some():
@@ -5382,7 +5365,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_custom_model_deployment(self, CreateCustomModelDeploymentRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/model-customization/custom-model-deployments", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model-customization/custom-model-deployments", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"modelDeploymentName\":" + bedrock_json_str(input.modelDeploymentName))
         parts.append("\"modelArn\":" + bedrock_json_str(input.modelArn))
@@ -5405,7 +5388,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_evaluation_job(self, CreateEvaluationJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
         if input.jobDescription.is_some():
@@ -5437,7 +5420,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def create_foundation_model_agreement(self, CreateFoundationModelAgreementRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/create-foundation-model-agreement", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/create-foundation-model-agreement", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFoundationModelAgreementDocument(offerToken=input.offerToken, modelId=input.modelId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -5446,7 +5429,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_guardrail(self, CreateGuardrailRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/guardrails", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/guardrails", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_json_str(input.name))
         if input.description.is_some():
@@ -5496,7 +5479,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["guardrailIdentifier"] = input.guardrailIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateGuardrailVersionDocument(description=input.description, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -5505,7 +5488,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_inference_profile(self, CreateInferenceProfileRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/inference-profiles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/inference-profiles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"inferenceProfileName\":" + bedrock_json_str(input.inferenceProfileName))
         if input.description.is_some():
@@ -5528,7 +5511,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_marketplace_model_endpoint(self, CreateMarketplaceModelEndpointRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/marketplace-model/endpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/marketplace-model/endpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"modelSourceIdentifier\":" + bedrock_json_str(input.modelSourceIdentifier))
         parts.append("\"endpointConfig\":" + endpoint_config_to_json(input.endpointConfig))
@@ -5552,7 +5535,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, TooManyTagsException
     def create_model_copy_job(self, CreateModelCopyJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/model-copy-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model-copy-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"sourceModelArn\":" + bedrock_json_str(input.sourceModelArn))
         parts.append("\"targetModelName\":" + bedrock_json_str(input.targetModelName))
@@ -5575,7 +5558,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_model_customization_job(self, CreateModelCustomizationJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/model-customization-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model-customization-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
         parts.append("\"customModelName\":" + bedrock_json_str(input.customModelName))
@@ -5626,7 +5609,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_model_import_job(self, CreateModelImportJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/model-import-jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model-import-jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
         parts.append("\"importedModelName\":" + bedrock_json_str(input.importedModelName))
@@ -5660,7 +5643,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_model_invocation_job(self, CreateModelInvocationJobRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/model-invocation-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model-invocation-job", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"jobName\":" + bedrock_json_str(input.jobName))
         parts.append("\"roleArn\":" + bedrock_json_str(input.roleArn))
@@ -5692,7 +5675,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_prompt_router(self, CreatePromptRouterRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/prompt-routers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/prompt-routers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientRequestToken.is_some():
             auto u0 = input.clientRequestToken.unwrap()
@@ -5720,7 +5703,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, TooManyTagsException, ValidationException
     def create_provisioned_model_throughput(self, CreateProvisionedModelThroughputRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/provisioned-model-throughput", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/provisioned-model-throughput", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientRequestToken.is_some():
             auto u0 = input.clientRequestToken.unwrap()
@@ -5740,13 +5723,51 @@ struct BedrockClient:
         auto bp = restjson.rest_json_document(b, bedrock_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
+    # DeleteAutomatedReasoningPolicy  DELETE /automated-reasoning-policies/{policyArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceInUseException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_automated_reasoning_policy(self, DeleteAutomatedReasoningPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        dict[str, str] query = {}
+        if input.force.is_some():
+            query["force"] = bedrock_bind_bool(input.force.unwrap_or(False))
+        auto b = binding.HttpBinding(method="DELETE", path_template="/automated-reasoning-policies/{policyArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # DeleteAutomatedReasoningPolicyBuildWorkflow  DELETE /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceInUseException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_automated_reasoning_policy_build_workflow(self, DeleteAutomatedReasoningPolicyBuildWorkflowRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        labels["buildWorkflowId"] = input.buildWorkflowId
+        dict[str, str] query = {}
+        auto qt0 = datetime.strftime(input.lastUpdatedAt, "%Y-%m-%dT%H:%M:%SZ")
+        query["updatedAt"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # DeleteAutomatedReasoningPolicyTestCase  DELETE /automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceInUseException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_automated_reasoning_policy_test_case(self, DeleteAutomatedReasoningPolicyTestCaseRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        labels["testCaseId"] = input.testCaseId
+        dict[str, str] query = {}
+        auto qt0 = datetime.strftime(input.lastUpdatedAt, "%Y-%m-%dT%H:%M:%SZ")
+        query["updatedAt"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
     # DeleteCustomModel  DELETE /custom-models/{modelIdentifier}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_custom_model(self, DeleteCustomModelRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["modelIdentifier"] = input.modelIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/custom-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteCustomModelDeployment  DELETE /model-customization/custom-model-deployments/{customModelDeploymentIdentifier}
@@ -5754,8 +5775,9 @@ struct BedrockClient:
     def delete_custom_model_deployment(self, DeleteCustomModelDeploymentRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
-        labels["customModelDeploymentIdentifier"] = input.customModelDeploymentIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/model-customization/custom-model-deployments/{customModelDeploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.customModelDeploymentIdentifier
+        labels["customModelDeploymentIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="DELETE", path_template="/model-customization/custom-model-deployments/{customModelDeploymentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteEnforcedGuardrailConfiguration  DELETE /enforcedGuardrailsConfiguration/{configId}
@@ -5764,14 +5786,14 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["configId"] = input.configId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/enforcedGuardrailsConfiguration/{configId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/enforcedGuardrailsConfiguration/{configId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteFoundationModelAgreement  POST /delete-foundation-model-agreement
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_foundation_model_agreement(self, DeleteFoundationModelAgreementRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/delete-foundation-model-agreement", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/delete-foundation-model-agreement", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteFoundationModelAgreementDocument(modelId=input.modelId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -5785,7 +5807,7 @@ struct BedrockClient:
         dict[str, str] query = {}
         if input.guardrailVersion.is_some():
             query["guardrailVersion"] = input.guardrailVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteImportedModel  DELETE /imported-models/{modelIdentifier}
@@ -5794,7 +5816,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["modelIdentifier"] = input.modelIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/imported-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/imported-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteInferenceProfile  DELETE /inference-profiles/{inferenceProfileIdentifier}
@@ -5803,7 +5825,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["inferenceProfileIdentifier"] = input.inferenceProfileIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/inference-profiles/{inferenceProfileIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/inference-profiles/{inferenceProfileIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteMarketplaceModelEndpoint  DELETE /marketplace-model/endpoints/{endpointArn}
@@ -5812,14 +5834,14 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["endpointArn"] = input.endpointArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/marketplace-model/endpoints/{endpointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/marketplace-model/endpoints/{endpointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteModelInvocationLoggingConfiguration  DELETE /logging/modelinvocations
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def delete_model_invocation_logging_configuration(self) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/logging/modelinvocations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/logging/modelinvocations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeletePromptRouter  DELETE /prompt-routers/{promptRouterArn}
@@ -5828,7 +5850,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["promptRouterArn"] = input.promptRouterArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/prompt-routers/{promptRouterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/prompt-routers/{promptRouterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteProvisionedModelThroughput  DELETE /provisioned-model-throughput/{provisionedModelId}
@@ -5837,7 +5859,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["provisionedModelId"] = input.provisionedModelId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/provisioned-model-throughput/{provisionedModelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/provisioned-model-throughput/{provisionedModelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /resource-policy/{resourceArn}
@@ -5846,7 +5868,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # DeregisterMarketplaceModelEndpoint  DELETE /marketplace-model/endpoints/{endpointArn}/registration
@@ -5855,7 +5877,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["endpointArn"] = input.endpointArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/marketplace-model/endpoints/{endpointArn}/registration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/marketplace-model/endpoints/{endpointArn}/registration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ExportAutomatedReasoningPolicyVersion  GET /automated-reasoning-policies/{policyArn}/export
@@ -5864,14 +5886,14 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/export", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/export", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAccountDataRetention  GET /data-retention
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def get_account_data_retention(self) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/data-retention", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/data-retention", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAdvancedPromptOptimizationJob  GET /advanced-prompt-optimization-jobs/{jobIdentifier}
@@ -5880,7 +5902,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/advanced-prompt-optimization-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/advanced-prompt-optimization-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAutomatedReasoningPolicy  GET /automated-reasoning-policies/{policyArn}
@@ -5889,7 +5911,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAutomatedReasoningPolicyAnnotations  GET /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/annotations
@@ -5899,7 +5921,7 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["buildWorkflowId"] = input.buildWorkflowId
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/annotations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/annotations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAutomatedReasoningPolicyBuildWorkflow  GET /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}
@@ -5909,7 +5931,7 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["buildWorkflowId"] = input.buildWorkflowId
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAutomatedReasoningPolicyBuildWorkflowResultAssets  GET /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/result-assets
@@ -5923,7 +5945,7 @@ struct BedrockClient:
         query["assetType"] = input.assetType
         if input.assetId.is_some():
             query["assetId"] = input.assetId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/result-assets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/result-assets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAutomatedReasoningPolicyNextScenario  GET /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/scenarios
@@ -5933,7 +5955,7 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["buildWorkflowId"] = input.buildWorkflowId
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/scenarios", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/scenarios", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAutomatedReasoningPolicyTestCase  GET /automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}
@@ -5943,7 +5965,7 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["testCaseId"] = input.testCaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetAutomatedReasoningPolicyTestResult  GET /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-cases/{testCaseId}/test-results
@@ -5954,7 +5976,7 @@ struct BedrockClient:
         labels["policyArn"] = input.policyArn
         labels["buildWorkflowId"] = input.buildWorkflowId
         labels["testCaseId"] = input.testCaseId
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-cases/{testCaseId}/test-results", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-cases/{testCaseId}/test-results", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetCustomModel  GET /custom-models/{modelIdentifier}
@@ -5963,7 +5985,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["modelIdentifier"] = input.modelIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/custom-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetCustomModelDeployment  GET /model-customization/custom-model-deployments/{customModelDeploymentIdentifier}
@@ -5971,8 +5993,9 @@ struct BedrockClient:
     def get_custom_model_deployment(self, GetCustomModelDeploymentRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
-        labels["customModelDeploymentIdentifier"] = input.customModelDeploymentIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/model-customization/custom-model-deployments/{customModelDeploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.customModelDeploymentIdentifier
+        labels["customModelDeploymentIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/model-customization/custom-model-deployments/{customModelDeploymentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetEvaluationJob  GET /evaluation-jobs/{jobIdentifier}
@@ -5981,7 +6004,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetFoundationModel  GET /foundation-models/{modelIdentifier}
@@ -5990,7 +6013,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["modelIdentifier"] = input.modelIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/foundation-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/foundation-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetFoundationModelAvailability  GET /foundation-model-availability/{modelId}
@@ -5999,7 +6022,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["modelId"] = input.modelId
-        auto b = binding.HttpBinding(method="GET", path_template="/foundation-model-availability/{modelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/foundation-model-availability/{modelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetGuardrail  GET /guardrails/{guardrailIdentifier}
@@ -6011,7 +6034,7 @@ struct BedrockClient:
         dict[str, str] query = {}
         if input.guardrailVersion.is_some():
             query["guardrailVersion"] = input.guardrailVersion.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetImportedModel  GET /imported-models/{modelIdentifier}
@@ -6020,7 +6043,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["modelIdentifier"] = input.modelIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/imported-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/imported-models/{modelIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetInferenceProfile  GET /inference-profiles/{inferenceProfileIdentifier}
@@ -6029,7 +6052,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["inferenceProfileIdentifier"] = input.inferenceProfileIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/inference-profiles/{inferenceProfileIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/inference-profiles/{inferenceProfileIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetMarketplaceModelEndpoint  GET /marketplace-model/endpoints/{endpointArn}
@@ -6038,7 +6061,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["endpointArn"] = input.endpointArn
-        auto b = binding.HttpBinding(method="GET", path_template="/marketplace-model/endpoints/{endpointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/marketplace-model/endpoints/{endpointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetModelCopyJob  GET /model-copy-jobs/{jobArn}
@@ -6047,7 +6070,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobArn"] = input.jobArn
-        auto b = binding.HttpBinding(method="GET", path_template="/model-copy-jobs/{jobArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-copy-jobs/{jobArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetModelCustomizationJob  GET /model-customization-jobs/{jobIdentifier}
@@ -6056,7 +6079,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/model-customization-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-customization-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetModelImportJob  GET /model-import-jobs/{jobIdentifier}
@@ -6065,7 +6088,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/model-import-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-import-jobs/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetModelInvocationJob  GET /model-invocation-job/{jobIdentifier}
@@ -6074,14 +6097,14 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/model-invocation-job/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-invocation-job/{jobIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetModelInvocationLoggingConfiguration  GET /logging/modelinvocations
     # errors: AccessDeniedException, InternalServerException, ThrottlingException
     def get_model_invocation_logging_configuration(self) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/logging/modelinvocations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/logging/modelinvocations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetPromptRouter  GET /prompt-routers/{promptRouterArn}
@@ -6090,7 +6113,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["promptRouterArn"] = input.promptRouterArn
-        auto b = binding.HttpBinding(method="GET", path_template="/prompt-routers/{promptRouterArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prompt-routers/{promptRouterArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetProvisionedModelThroughput  GET /provisioned-model-throughput/{provisionedModelId}
@@ -6099,7 +6122,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["provisionedModelId"] = input.provisionedModelId
-        auto b = binding.HttpBinding(method="GET", path_template="/provisioned-model-throughput/{provisionedModelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/provisioned-model-throughput/{provisionedModelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetResourcePolicy  GET /resource-policy/{resourceArn}
@@ -6108,14 +6131,14 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/resource-policy/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # GetUseCaseForModelAccess  GET /use-case-for-model-access
     # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def get_use_case_for_model_access(self) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/use-case-for-model-access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/use-case-for-model-access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListAdvancedPromptOptimizationJobs  GET /advanced-prompt-optimization-jobs
@@ -6131,7 +6154,7 @@ struct BedrockClient:
             query["sortBy"] = input.sortBy.unwrap_or("")
         if input.sortOrder.is_some():
             query["sortOrder"] = input.sortOrder.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/advanced-prompt-optimization-jobs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/advanced-prompt-optimization-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListAutomatedReasoningPolicies  GET /automated-reasoning-policies
@@ -6145,7 +6168,7 @@ struct BedrockClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListAutomatedReasoningPolicyBuildWorkflows  GET /automated-reasoning-policies/{policyArn}/build-workflows
@@ -6159,7 +6182,7 @@ struct BedrockClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListAutomatedReasoningPolicyTestCases  GET /automated-reasoning-policies/{policyArn}/test-cases
@@ -6173,7 +6196,7 @@ struct BedrockClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/test-cases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/test-cases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListAutomatedReasoningPolicyTestResults  GET /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-results
@@ -6188,7 +6211,68 @@ struct BedrockClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-results", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-results", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListCustomModelDeployments  GET /model-customization/custom-model-deployments
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_custom_model_deployments(self, ListCustomModelDeploymentsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.createdBefore.is_some():
+            auto qt0 = datetime.strftime(input.createdBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdBefore"] = qt0
+        if input.createdAfter.is_some():
+            auto qt1 = datetime.strftime(input.createdAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["createdAfter"] = qt1
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.modelArnEquals.is_some():
+            query["modelArnEquals"] = input.modelArnEquals.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-customization/custom-model-deployments", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListCustomModels  GET /custom-models
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_custom_models(self, ListCustomModelsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.creationTimeBefore.is_some():
+            auto qt0 = datetime.strftime(input.creationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeBefore"] = qt0
+        if input.creationTimeAfter.is_some():
+            auto qt1 = datetime.strftime(input.creationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeAfter"] = qt1
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.baseModelArnEquals.is_some():
+            query["baseModelArnEquals"] = input.baseModelArnEquals.unwrap_or("")
+        if input.foundationModelArnEquals.is_some():
+            auto qt2 = input.foundationModelArnEquals.unwrap_or("")
+            query["foundationModelArnEquals"] = qt2
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        if input.isOwned.is_some():
+            query["isOwned"] = bedrock_bind_bool(input.isOwned.unwrap_or(False))
+        if input.modelStatus.is_some():
+            query["modelStatus"] = input.modelStatus.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/custom-models", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListEnforcedGuardrailsConfiguration  GET /enforcedGuardrailsConfiguration
@@ -6198,7 +6282,35 @@ struct BedrockClient:
         dict[str, str] query = {}
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/enforcedGuardrailsConfiguration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/enforcedGuardrailsConfiguration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListEvaluationJobs  GET /evaluation-jobs
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_evaluation_jobs(self, ListEvaluationJobsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.creationTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.creationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeAfter"] = qt0
+        if input.creationTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.creationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeBefore"] = qt1
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.applicationTypeEquals.is_some():
+            query["applicationTypeEquals"] = input.applicationTypeEquals.unwrap_or("")
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/evaluation-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListFoundationModelAgreementOffers  GET /list-foundation-model-agreement-offers/{modelId}
@@ -6210,7 +6322,7 @@ struct BedrockClient:
         dict[str, str] query = {}
         if input.offerType.is_some():
             query["offerType"] = input.offerType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/list-foundation-model-agreement-offers/{modelId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/list-foundation-model-agreement-offers/{modelId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListFoundationModels  GET /foundation-models
@@ -6226,7 +6338,7 @@ struct BedrockClient:
             query["byOutputModality"] = input.byOutputModality.unwrap_or("")
         if input.byInferenceType.is_some():
             query["byInferenceType"] = input.byInferenceType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/foundation-models", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/foundation-models", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListGuardrails  GET /guardrails
@@ -6240,7 +6352,31 @@ struct BedrockClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/guardrails", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/guardrails", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListImportedModels  GET /imported-models
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_imported_models(self, ListImportedModelsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.creationTimeBefore.is_some():
+            auto qt0 = datetime.strftime(input.creationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeBefore"] = qt0
+        if input.creationTimeAfter.is_some():
+            auto qt1 = datetime.strftime(input.creationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeAfter"] = qt1
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/imported-models", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListInferenceProfiles  GET /inference-profiles
@@ -6254,7 +6390,7 @@ struct BedrockClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.typeEquals.is_some():
             query["type"] = input.typeEquals.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/inference-profiles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/inference-profiles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListMarketplaceModelEndpoints  GET /marketplace-model/endpoints
@@ -6268,7 +6404,116 @@ struct BedrockClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.modelSourceEquals.is_some():
             query["modelSourceIdentifier"] = input.modelSourceEquals.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/marketplace-model/endpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/marketplace-model/endpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListModelCopyJobs  GET /model-copy-jobs
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def list_model_copy_jobs(self, ListModelCopyJobsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.creationTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.creationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeAfter"] = qt0
+        if input.creationTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.creationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeBefore"] = qt1
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.sourceAccountEquals.is_some():
+            query["sourceAccountEquals"] = input.sourceAccountEquals.unwrap_or("")
+        if input.sourceModelArnEquals.is_some():
+            query["sourceModelArnEquals"] = input.sourceModelArnEquals.unwrap_or("")
+        if input.targetModelNameContains.is_some():
+            auto qt2 = input.targetModelNameContains.unwrap_or("")
+            query["outputModelNameContains"] = qt2
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-copy-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListModelCustomizationJobs  GET /model-customization-jobs
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_model_customization_jobs(self, ListModelCustomizationJobsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.creationTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.creationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeAfter"] = qt0
+        if input.creationTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.creationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeBefore"] = qt1
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-customization-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListModelImportJobs  GET /model-import-jobs
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_model_import_jobs(self, ListModelImportJobsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.creationTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.creationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeAfter"] = qt0
+        if input.creationTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.creationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeBefore"] = qt1
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-import-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListModelInvocationJobs  GET /model-invocation-jobs
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_model_invocation_jobs(self, ListModelInvocationJobsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.submitTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.submitTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["submitTimeAfter"] = qt0
+        if input.submitTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.submitTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["submitTimeBefore"] = qt1
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/model-invocation-jobs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListPromptRouters  GET /prompt-routers
@@ -6282,14 +6527,42 @@ struct BedrockClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/prompt-routers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/prompt-routers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
+
+    # ListProvisionedModelThroughputs  GET /provisioned-model-throughputs
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def list_provisioned_model_throughputs(self, ListProvisionedModelThroughputsRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] query = {}
+        if input.creationTimeAfter.is_some():
+            auto qt0 = datetime.strftime(input.creationTimeAfter.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeAfter"] = qt0
+        if input.creationTimeBefore.is_some():
+            auto qt1 = datetime.strftime(input.creationTimeBefore.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["creationTimeBefore"] = qt1
+        if input.statusEquals.is_some():
+            query["statusEquals"] = input.statusEquals.unwrap_or("")
+        if input.modelArnEquals.is_some():
+            query["modelArnEquals"] = input.modelArnEquals.unwrap_or("")
+        if input.nameContains.is_some():
+            query["nameContains"] = input.nameContains.unwrap_or("")
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        if input.sortBy.is_some():
+            query["sortBy"] = input.sortBy.unwrap_or("")
+        if input.sortOrder.is_some():
+            query["sortOrder"] = input.sortOrder.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/provisioned-model-throughputs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # ListTagsForResource  POST /listTagsForResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def list_tags_for_resource(self, ListTagsForResourceRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(resourceARN=input.resourceARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6298,7 +6571,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def put_account_data_retention(self, PutAccountDataRetentionRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/data-retention", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/data-retention", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutAccountDataRetentionDocument(mode=input.mode)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6307,7 +6580,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def put_enforced_guardrail_configuration(self, PutEnforcedGuardrailConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/enforcedGuardrailsConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/enforcedGuardrailsConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.configId.is_some():
             auto u0 = input.configId.unwrap()
@@ -6320,7 +6593,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def put_model_invocation_logging_configuration(self, PutModelInvocationLoggingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/logging/modelinvocations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/logging/modelinvocations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutModelInvocationLoggingConfigurationDocument(loggingConfig=input.loggingConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6329,7 +6602,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ThrottlingException, ValidationException
     def put_resource_policy(self, PutResourcePolicyRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/resource-policy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/resource-policy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(resourceArn=input.resourceArn, resourcePolicy=input.resourcePolicy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6338,7 +6611,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def put_use_case_for_model_access(self, PutUseCaseForModelAccessRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/use-case-for-model-access", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/use-case-for-model-access", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutUseCaseForModelAccessDocument(formData=input.formData)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6349,7 +6622,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["endpointIdentifier"] = input.endpointIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/marketplace-model/endpoints/{endpointIdentifier}/registration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/marketplace-model/endpoints/{endpointIdentifier}/registration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterMarketplaceModelEndpointDocument(modelSourceIdentifier=input.modelSourceIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6361,7 +6634,7 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["buildWorkflowId"] = input.buildWorkflowId
-        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-workflows", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-workflows", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.testCaseIds.is_some():
             auto u0 = input.testCaseIds.unwrap()
@@ -6381,7 +6654,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-jobs/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/advanced-prompt-optimization-jobs/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # StopEvaluationJob  POST /evaluation-job/{jobIdentifier}/stop
@@ -6390,7 +6663,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-job/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/evaluation-job/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # StopModelCustomizationJob  POST /model-customization-jobs/{jobIdentifier}/stop
@@ -6399,7 +6672,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/model-customization-jobs/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model-customization-jobs/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # StopModelInvocationJob  POST /model-invocation-job/{jobIdentifier}/stop
@@ -6408,14 +6681,14 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["jobIdentifier"] = input.jobIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/model-invocation-job/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/model-invocation-job/{jobIdentifier}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, bedrock_service(), self.region, host)
 
     # TagResource  POST /tagResource
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, TooManyTagsException, ValidationException
     def tag_resource(self, TagResourceRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceARN\":" + bedrock_json_str(input.resourceARN))
         list[str] e0 = []
@@ -6429,7 +6702,7 @@ struct BedrockClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def untag_resource(self, UntagResourceRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceARN\":" + bedrock_json_str(input.resourceARN))
         list[str] e0 = []
@@ -6445,7 +6718,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"policyDefinition\":" + automated_reasoning_policy_definition_to_json(input.policyDefinition))
         if input.name.is_some():
@@ -6464,7 +6737,7 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["buildWorkflowId"] = input.buildWorkflowId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/annotations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/annotations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.annotations:
@@ -6481,7 +6754,7 @@ struct BedrockClient:
         dict[str, str] labels = {}
         labels["policyArn"] = input.policyArn
         labels["testCaseId"] = input.testCaseId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/automated-reasoning-policies/{policyArn}/test-cases/{testCaseId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAutomatedReasoningPolicyTestCaseDocument(guardContent=input.guardContent, queryContent=input.queryContent, lastUpdatedAt=input.lastUpdatedAt, expectedAggregatedFindingsResult=input.expectedAggregatedFindingsResult, confidenceThreshold=input.confidenceThreshold, clientRequestToken=input.clientRequestToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6491,8 +6764,9 @@ struct BedrockClient:
     def update_custom_model_deployment(self, UpdateCustomModelDeploymentRequest input) -> str:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
-        labels["customModelDeploymentIdentifier"] = input.customModelDeploymentIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/model-customization/custom-model-deployments/{customModelDeploymentIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto qt0 = input.customModelDeploymentIdentifier
+        labels["customModelDeploymentIdentifier"] = qt0
+        auto b = binding.HttpBinding(method="PATCH", path_template="/model-customization/custom-model-deployments/{customModelDeploymentIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateCustomModelDeploymentDocument(modelArn=input.modelArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6503,7 +6777,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["guardrailIdentifier"] = input.guardrailIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/guardrails/{guardrailIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + bedrock_json_str(input.name))
         if input.description.is_some():
@@ -6544,7 +6818,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["endpointArn"] = input.endpointArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/marketplace-model/endpoints/{endpointArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/marketplace-model/endpoints/{endpointArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"endpointConfig\":" + endpoint_config_to_json(input.endpointConfig))
         if input.clientRequestToken.is_some():
@@ -6559,7 +6833,7 @@ struct BedrockClient:
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         dict[str, str] labels = {}
         labels["provisionedModelId"] = input.provisionedModelId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/provisioned-model-throughput/{provisionedModelId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/provisioned-model-throughput/{provisionedModelId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateProvisionedModelThroughputDocument(desiredProvisionedModelName=input.desiredProvisionedModelName, desiredModelId=input.desiredModelId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
@@ -6629,6 +6903,32 @@ struct BedrockClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListCustomModelDeployments — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: modelDeploymentSummaries).
+    def paginate_list_custom_model_deployments(self, ListCustomModelDeploymentsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_custom_model_deployments(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListCustomModels — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: modelSummaries).
+    def paginate_list_custom_models(self, ListCustomModelsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_custom_models(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListEnforcedGuardrailsConfiguration — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: guardrailsConfig).
     def paginate_list_enforced_guardrails_configuration(self, ListEnforcedGuardrailsConfigurationRequest input):
@@ -6642,12 +6942,38 @@ struct BedrockClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListEvaluationJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: jobSummaries).
+    def paginate_list_evaluation_jobs(self, ListEvaluationJobsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_evaluation_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListGuardrails — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: guardrails).
     def paginate_list_guardrails(self, ListGuardrailsRequest input):
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         while True:
             auto raw = self.list_guardrails(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListImportedModels — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: modelSummaries).
+    def paginate_list_imported_models(self, ListImportedModelsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_imported_models(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")
@@ -6681,12 +7007,77 @@ struct BedrockClient:
                 break
             input.nextToken = Optional.Some(np.token)
 
+    # Paginator for ListModelCopyJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: modelCopyJobSummaries).
+    def paginate_list_model_copy_jobs(self, ListModelCopyJobsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_model_copy_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListModelCustomizationJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: modelCustomizationJobSummaries).
+    def paginate_list_model_customization_jobs(self, ListModelCustomizationJobsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_model_customization_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListModelImportJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: modelImportJobSummaries).
+    def paginate_list_model_import_jobs(self, ListModelImportJobsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_model_import_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListModelInvocationJobs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: invocationJobSummaries).
+    def paginate_list_model_invocation_jobs(self, ListModelInvocationJobsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_model_invocation_jobs(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
     # Paginator for ListPromptRouters — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: promptRouterSummaries).
     def paginate_list_prompt_routers(self, ListPromptRoutersRequest input):
         auto host = endpoints.regional_host(bedrock_service(), self.region)
         while True:
             auto raw = self.list_prompt_routers(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for ListProvisionedModelThroughputs — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: provisionedModelSummaries).
+    def paginate_list_provisioned_model_throughputs(self, ListProvisionedModelThroughputsRequest input):
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        while True:
+            auto raw = self.list_provisioned_model_throughputs(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

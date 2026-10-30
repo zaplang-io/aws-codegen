@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 10 operations — 9 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 10 operations — 10 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   31 structs (19 @derive(Json)), 4 enums, 5 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -332,11 +332,6 @@ def rbin_error_from_code(str code) -> rbinError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -354,7 +349,7 @@ struct rbinClient:
     # errors: InternalServerException, ServiceQuotaExceededException, ValidationException
     def create_rule(self, CreateRuleRequest input) -> str:
         auto host = endpoints.regional_host(rbin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"RetentionPeriod\":" + input.RetentionPeriod.to_json())
         if input.Description.is_some():
@@ -391,7 +386,7 @@ struct rbinClient:
         auto host = endpoints.regional_host(rbin_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rbin_service(), self.region, host)
 
     # GetRule  GET /rules/{identifier}
@@ -400,14 +395,14 @@ struct rbinClient:
         auto host = endpoints.regional_host(rbin_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rbin_service(), self.region, host)
 
     # ListRules  POST /list-rules
     # errors: InternalServerException, ValidationException
     def list_rules(self, ListRulesRequest input) -> str:
         auto host = endpoints.regional_host(rbin_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/list-rules", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/list-rules", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -440,7 +435,7 @@ struct rbinClient:
         auto host = endpoints.regional_host(rbin_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rbin_service(), self.region, host)
 
     # LockRule  PATCH /rules/{identifier}/lock
@@ -449,7 +444,7 @@ struct rbinClient:
         auto host = endpoints.regional_host(rbin_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}/lock", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}/lock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = LockRuleDocument(LockConfiguration=input.LockConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rbin_service(), self.region, host)
@@ -460,7 +455,7 @@ struct rbinClient:
         auto host = endpoints.regional_host(rbin_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Tags:
@@ -475,7 +470,18 @@ struct rbinClient:
         auto host = endpoints.regional_host(rbin_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}/unlock", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}/unlock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, rbin_service(), self.region, host)
+
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rbin_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rbin_service(), self.region, host)
 
     # UpdateRule  PATCH /rules/{identifier}
@@ -484,7 +490,7 @@ struct rbinClient:
         auto host = endpoints.regional_host(rbin_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.Identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/rules/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.RetentionPeriod.is_some():
             auto u0 = input.RetentionPeriod.unwrap()

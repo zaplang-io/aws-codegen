@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 44 operations — 37 with a generated method,
-#   7 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 44 operations — 44 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   126 structs (89 @derive(Json)), 32 enums, 25 error variants.
-#   9 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   10 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -31,6 +31,7 @@ import aws_core.core
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
+import datetime
 
 # The WorkDocs rest-json protocol: SigV4 service "workdocs" (also the endpoint
 # prefix for host resolution). Each operation binds its input members to the
@@ -1365,21 +1366,6 @@ def workdocs_error_from_code(str code) -> WorkDocsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteCustomMetadata (httpQuery `Keys` has unsupported type list[str])
-#   DeleteDocumentVersion (httpQuery `DeletePriorVersions` has unsupported type bool)
-#   DeleteLabels (httpQuery `Labels` has unsupported type list[str])
-#   DescribeActivities (httpQuery `StartTime` has unsupported type DateTime)
-#   GetDocument (httpQuery `IncludeCustomMetadata` has unsupported type bool)
-#   GetDocumentVersion (httpQuery `IncludeCustomMetadata` has unsupported type bool)
-#   GetFolder (httpQuery `IncludeCustomMetadata` has unsupported type bool)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   DescribeActivities (operation not generated)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1556,6 +1542,12 @@ def search_principal_type_to_json(SearchPrincipalType v) -> str:
         parts.append("\"Roles\":" + workdocs_json_arr(e1))
     return workdocs_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def workdocs_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound WorkDocs client: credentials + region, threaded into every operation.
 struct WorkDocsClient:
     core.Credentials creds
@@ -1571,7 +1563,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # ActivateUser  POST /api/v1/users/{UserId}/activation
@@ -1583,7 +1575,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/users/{UserId}/activation", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/users/{UserId}/activation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # AddResourcePermissions  POST /api/v1/resources/{ResourceId}/permissions
@@ -1595,7 +1587,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/resources/{ResourceId}/permissions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/resources/{ResourceId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Principals:
@@ -1617,7 +1609,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}/comment", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}/comment", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateCommentDocument(ParentId=input.ParentId, ThreadId=input.ThreadId, Text=input.Text, Visibility=input.Visibility, NotifyCollaborators=input.NotifyCollaborators)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -1634,7 +1626,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/resources/{ResourceId}/customMetadata", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/resources/{ResourceId}/customMetadata", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.CustomMetadata.keys()):
@@ -1650,7 +1642,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/folders", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/folders", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateFolderDocument(Name=input.Name, ParentFolderId=input.ParentFolderId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -1664,7 +1656,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/resources/{ResourceId}/labels", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/api/v1/resources/{ResourceId}/labels", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.Labels:
@@ -1679,7 +1671,7 @@ struct WorkDocsClient:
         auto host = endpoints.regional_host(workdocs_service(), self.region)
         dict[str, str] labels = {}
         labels["OrganizationId"] = input.OrganizationId
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/organizations/{OrganizationId}/subscriptions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/organizations/{OrganizationId}/subscriptions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateNotificationSubscriptionDocument(Endpoint=input.Endpoint, Protocol=input.Protocol, SubscriptionType=input.SubscriptionType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -1691,7 +1683,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/users", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/users", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateUserDocument(OrganizationId=input.OrganizationId, Username=input.Username, EmailAddress=input.EmailAddress, GivenName=input.GivenName, Surname=input.Surname, Password=input.Password, TimeZoneId=input.TimeZoneId, StorageRule=input.StorageRule)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -1705,7 +1697,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/users/{UserId}/activation", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/users/{UserId}/activation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DeleteComment  DELETE /api/v1/documents/{DocumentId}/versions/{VersionId}/comment/{CommentId}
@@ -1719,7 +1711,27 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}/comment/{CommentId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}/comment/{CommentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
+
+    # DeleteCustomMetadata  DELETE /api/v1/resources/{ResourceId}/customMetadata
+    # errors: EntityNotExistsException, FailedDependencyException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def delete_custom_metadata(self, DeleteCustomMetadataRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceId"] = input.ResourceId
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        if input.DeleteAll.is_some():
+            query["deleteAll"] = workdocs_bind_bool(input.DeleteAll.unwrap_or(False))
+        dict[str, list[str]] multi_query = {}
+        if input.Keys.is_some():
+            multi_query["keys"] = input.Keys.unwrap()
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/resources/{ResourceId}/customMetadata", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DeleteDocument  DELETE /api/v1/documents/{DocumentId}
@@ -1731,7 +1743,22 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/documents/{DocumentId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/documents/{DocumentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
+
+    # DeleteDocumentVersion  DELETE /api/v1/documentVersions/{DocumentId}/versions/{VersionId}
+    # errors: ConcurrentModificationException, ConflictingOperationException, EntityNotExistsException, FailedDependencyException, InvalidOperationException, ProhibitedStateException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def delete_document_version(self, DeleteDocumentVersionRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DocumentId"] = input.DocumentId
+        labels["VersionId"] = input.VersionId
+        dict[str, str] query = {}
+        query["deletePriorVersions"] = workdocs_bind_bool(input.DeletePriorVersions)
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/documentVersions/{DocumentId}/versions/{VersionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DeleteFolder  DELETE /api/v1/folders/{FolderId}
@@ -1743,7 +1770,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DeleteFolderContents  DELETE /api/v1/folders/{FolderId}/contents
@@ -1755,7 +1782,25 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/folders/{FolderId}/contents", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/folders/{FolderId}/contents", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
+
+    # DeleteLabels  DELETE /api/v1/resources/{ResourceId}/labels
+    # errors: EntityNotExistsException, FailedDependencyException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def delete_labels(self, DeleteLabelsRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceId"] = input.ResourceId
+        dict[str, str] query = {}
+        if input.DeleteAll.is_some():
+            query["deleteAll"] = workdocs_bind_bool(input.DeleteAll.unwrap_or(False))
+        dict[str, list[str]] multi_query = {}
+        if input.Labels.is_some():
+            multi_query["labels"] = input.Labels.unwrap()
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/resources/{ResourceId}/labels", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DeleteNotificationSubscription  DELETE /api/v1/organizations/{OrganizationId}/subscriptions/{SubscriptionId}
@@ -1765,7 +1810,7 @@ struct WorkDocsClient:
         dict[str, str] labels = {}
         labels["SubscriptionId"] = input.SubscriptionId
         labels["OrganizationId"] = input.OrganizationId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/organizations/{OrganizationId}/subscriptions/{SubscriptionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/organizations/{OrganizationId}/subscriptions/{SubscriptionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DeleteUser  DELETE /api/v1/users/{UserId}
@@ -1777,7 +1822,39 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/users/{UserId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/users/{UserId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
+
+    # DescribeActivities  GET /api/v1/activities
+    # errors: FailedDependencyException, InvalidArgumentException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def describe_activities(self, DescribeActivitiesRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] query = {}
+        if input.StartTime.is_some():
+            auto qt0 = datetime.strftime(input.StartTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["startTime"] = qt0
+        if input.EndTime.is_some():
+            auto qt1 = datetime.strftime(input.EndTime.unwrap(), "%Y-%m-%dT%H:%M:%SZ")
+            query["endTime"] = qt1
+        if input.OrganizationId.is_some():
+            query["organizationId"] = input.OrganizationId.unwrap_or("")
+        if input.ActivityTypes.is_some():
+            query["activityTypes"] = input.ActivityTypes.unwrap_or("")
+        if input.ResourceId.is_some():
+            query["resourceId"] = input.ResourceId.unwrap_or("")
+        if input.UserId.is_some():
+            query["userId"] = input.UserId.unwrap_or("")
+        if input.IncludeIndirectActivities.is_some():
+            auto qt2 = workdocs_bind_bool(input.IncludeIndirectActivities.unwrap_or(False))
+            query["includeIndirectActivities"] = qt2
+        if input.Limit.is_some():
+            query["limit"] = str(input.Limit.unwrap_or(0))
+        if input.Marker.is_some():
+            query["marker"] = input.Marker.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/activities", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeComments  GET /api/v1/documents/{DocumentId}/versions/{VersionId}/comments
@@ -1795,7 +1872,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}/comments", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}/comments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeDocumentVersions  GET /api/v1/documents/{DocumentId}/versions
@@ -1816,7 +1893,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}/versions", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeFolderContents  GET /api/v1/folders/{FolderId}/contents
@@ -1841,7 +1918,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/folders/{FolderId}/contents", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/folders/{FolderId}/contents", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeGroups  GET /api/v1/groups
@@ -1859,7 +1936,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/groups", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/groups", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeNotificationSubscriptions  GET /api/v1/organizations/{OrganizationId}/subscriptions
@@ -1873,7 +1950,7 @@ struct WorkDocsClient:
             query["marker"] = input.Marker.unwrap_or("")
         if input.Limit.is_some():
             query["limit"] = str(input.Limit.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/organizations/{OrganizationId}/subscriptions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/organizations/{OrganizationId}/subscriptions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeResourcePermissions  GET /api/v1/resources/{ResourceId}/permissions
@@ -1892,7 +1969,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/resources/{ResourceId}/permissions", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/resources/{ResourceId}/permissions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeRootFolders  GET /api/v1/me/root
@@ -1906,7 +1983,7 @@ struct WorkDocsClient:
             query["marker"] = input.Marker.unwrap_or("")
         dict[str, str] headers = {}
         headers["Authentication"] = input.AuthenticationToken
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/me/root", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/me/root", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # DescribeUsers  GET /api/v1/users
@@ -1935,7 +2012,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/users", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/users", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # GetCurrentUser  GET /api/v1/me
@@ -1944,7 +2021,23 @@ struct WorkDocsClient:
         auto host = endpoints.regional_host(workdocs_service(), self.region)
         dict[str, str] headers = {}
         headers["Authentication"] = input.AuthenticationToken
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/me", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/me", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
+
+    # GetDocument  GET /api/v1/documents/{DocumentId}
+    # errors: EntityNotExistsException, FailedDependencyException, InvalidArgumentException, InvalidPasswordException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def get_document(self, GetDocumentRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DocumentId"] = input.DocumentId
+        dict[str, str] query = {}
+        if input.IncludeCustomMetadata.is_some():
+            auto qt0 = workdocs_bind_bool(input.IncludeCustomMetadata.unwrap_or(False))
+            query["includeCustomMetadata"] = qt0
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # GetDocumentPath  GET /api/v1/documents/{DocumentId}/path
@@ -1963,7 +2056,42 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}/path", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}/path", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
+
+    # GetDocumentVersion  GET /api/v1/documents/{DocumentId}/versions/{VersionId}
+    # errors: EntityNotExistsException, FailedDependencyException, InvalidPasswordException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def get_document_version(self, GetDocumentVersionRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["DocumentId"] = input.DocumentId
+        labels["VersionId"] = input.VersionId
+        dict[str, str] query = {}
+        if input.Fields.is_some():
+            query["fields"] = input.Fields.unwrap_or("")
+        if input.IncludeCustomMetadata.is_some():
+            auto qt0 = workdocs_bind_bool(input.IncludeCustomMetadata.unwrap_or(False))
+            query["includeCustomMetadata"] = qt0
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
+
+    # GetFolder  GET /api/v1/folders/{FolderId}
+    # errors: EntityNotExistsException, FailedDependencyException, InvalidArgumentException, ProhibitedStateException, ServiceUnavailableException, UnauthorizedOperationException, UnauthorizedResourceAccessException
+    def get_folder(self, GetFolderRequest input) -> str:
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        dict[str, str] labels = {}
+        labels["FolderId"] = input.FolderId
+        dict[str, str] query = {}
+        if input.IncludeCustomMetadata.is_some():
+            auto qt0 = workdocs_bind_bool(input.IncludeCustomMetadata.unwrap_or(False))
+            query["includeCustomMetadata"] = qt0
+        dict[str, str] headers = {}
+        if input.AuthenticationToken.is_some():
+            headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/folders/{FolderId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # GetFolderPath  GET /api/v1/folders/{FolderId}/path
@@ -1982,7 +2110,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/folders/{FolderId}/path", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/folders/{FolderId}/path", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # GetResources  GET /api/v1/resources
@@ -2001,7 +2129,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/resources", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/v1/resources", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # InitiateDocumentVersionUpload  POST /api/v1/documents
@@ -2011,7 +2139,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/documents", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/documents", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = InitiateDocumentVersionUploadDocument(Id=input.Id, Name=input.Name, ContentCreatedTimestamp=input.ContentCreatedTimestamp, ContentModifiedTimestamp=input.ContentModifiedTimestamp, ContentType=input.ContentType, DocumentSizeInBytes=input.DocumentSizeInBytes, ParentFolderId=input.ParentFolderId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -2025,7 +2153,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/resources/{ResourceId}/permissions", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/resources/{ResourceId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # RemoveResourcePermission  DELETE /api/v1/resources/{ResourceId}/permissions/{PrincipalId}
@@ -2041,7 +2169,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/resources/{ResourceId}/permissions/{PrincipalId}", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/api/v1/resources/{ResourceId}/permissions/{PrincipalId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # RestoreDocumentVersions  POST /api/v1/documentVersions/restore/{DocumentId}
@@ -2053,7 +2181,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/documentVersions/restore/{DocumentId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/documentVersions/restore/{DocumentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, workdocs_service(), self.region, host)
 
     # SearchResources  POST /api/v1/search
@@ -2063,7 +2191,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/search", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/api/v1/search", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.QueryText.is_some():
             auto u0 = input.QueryText.unwrap()
@@ -2110,7 +2238,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/documents/{DocumentId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/documents/{DocumentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDocumentDocument(Name=input.Name, ParentFolderId=input.ParentFolderId, ResourceState=input.ResourceState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -2125,7 +2253,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/documents/{DocumentId}/versions/{VersionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDocumentVersionDocument(VersionStatus=input.VersionStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -2139,7 +2267,7 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/folders/{FolderId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFolderDocument(Name=input.Name, ParentFolderId=input.ParentFolderId, ResourceState=input.ResourceState)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
@@ -2153,10 +2281,23 @@ struct WorkDocsClient:
         dict[str, str] headers = {}
         if input.AuthenticationToken.is_some():
             headers["Authentication"] = input.AuthenticationToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/users/{UserId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/api/v1/users/{UserId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateUserDocument(GivenName=input.GivenName, Surname=input.Surname, Type=input.Type, StorageRule=input.StorageRule, TimeZoneId=input.TimeZoneId, Locale=input.Locale, GrantPoweruserPrivileges=input.GrantPoweruserPrivileges)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, workdocs_service(), self.region, host)
+
+    # Paginator for DescribeActivities — yields each Response page, threading the
+    # Marker -> Marker continuation token until it is absent (result key: UserActivities).
+    def paginate_describe_activities(self, DescribeActivitiesRequest input):
+        auto host = endpoints.regional_host(workdocs_service(), self.region)
+        while True:
+            auto raw = self.describe_activities(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "Marker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
 
     # Paginator for DescribeComments — yields each Response page, threading the
     # Marker -> Marker continuation token until it is absent (result key: Comments).

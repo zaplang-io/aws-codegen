@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 38 operations — 36 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 38 operations — 37 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   131 structs (76 @derive(Json)), 15 enums, 7 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1167,7 +1167,6 @@ def entityresolution_error_from_code(str code) -> EntityResolutionError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   BatchDeleteUniqueId (httpHeader `uniqueIds` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
@@ -1369,7 +1368,7 @@ struct EntityResolutionClient:
         dict[str, str] labels = {}
         labels["arn"] = input.arn
         labels["statementId"] = input.statementId
-        auto b = binding.HttpBinding(method="POST", path_template="/policies/{arn}/{statementId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/policies/{arn}/{statementId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"effect\":" + input.effect.to_json())
         list[str] e0 = []
@@ -1390,7 +1389,7 @@ struct EntityResolutionClient:
     # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
     def create_id_mapping_workflow(self, CreateIdMappingWorkflowInput input) -> str:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/idmappingworkflows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/idmappingworkflows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workflowName\":" + entityresolution_json_str(input.workflowName))
         if input.description.is_some():
@@ -1426,7 +1425,7 @@ struct EntityResolutionClient:
     # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
     def create_id_namespace(self, CreateIdNamespaceInput input) -> str:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/idnamespaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/idnamespaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"idNamespaceName\":" + entityresolution_json_str(input.idNamespaceName))
         if input.description.is_some():
@@ -1461,7 +1460,7 @@ struct EntityResolutionClient:
     # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
     def create_matching_workflow(self, CreateMatchingWorkflowInput input) -> str:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"workflowName\":" + entityresolution_json_str(input.workflowName))
         if input.description.is_some():
@@ -1493,7 +1492,7 @@ struct EntityResolutionClient:
     # errors: AccessDeniedException, ConflictException, ExceedsLimitException, InternalServerException, ThrottlingException, ValidationException
     def create_schema_mapping(self, CreateSchemaMappingInput input) -> str:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/schemas", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/schemas", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"schemaName\":" + entityresolution_json_str(input.schemaName))
         if input.description.is_some():
@@ -1518,7 +1517,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/idmappingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/idmappingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # DeleteIdNamespace  DELETE /idnamespaces/{idNamespaceName}
@@ -1527,7 +1526,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["idNamespaceName"] = input.idNamespaceName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # DeleteMatchingWorkflow  DELETE /matchingworkflows/{workflowName}
@@ -1536,7 +1535,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/matchingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/matchingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # DeletePolicyStatement  DELETE /policies/{arn}/{statementId}
@@ -1546,7 +1545,7 @@ struct EntityResolutionClient:
         dict[str, str] labels = {}
         labels["arn"] = input.arn
         labels["statementId"] = input.statementId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{arn}/{statementId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/policies/{arn}/{statementId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # DeleteSchemaMapping  DELETE /schemas/{schemaName}
@@ -1555,7 +1554,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["schemaName"] = input.schemaName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GenerateMatchId  POST /matchingworkflows/{workflowName}/generateMatches
@@ -1564,7 +1563,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/generateMatches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/generateMatches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.records:
@@ -1583,7 +1582,7 @@ struct EntityResolutionClient:
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows/{workflowName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows/{workflowName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GetIdMappingWorkflow  GET /idmappingworkflows/{workflowName}
@@ -1592,7 +1591,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GetIdNamespace  GET /idnamespaces/{idNamespaceName}
@@ -1601,7 +1600,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["idNamespaceName"] = input.idNamespaceName
-        auto b = binding.HttpBinding(method="GET", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GetMatchId  POST /matchingworkflows/{workflowName}/matches
@@ -1610,7 +1609,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/matches", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/matches", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.record.keys()):
@@ -1629,7 +1628,7 @@ struct EntityResolutionClient:
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows/{workflowName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows/{workflowName}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GetMatchingWorkflow  GET /matchingworkflows/{workflowName}
@@ -1638,7 +1637,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GetPolicy  GET /policies/{arn}
@@ -1647,7 +1646,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="GET", path_template="/policies/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/policies/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GetProviderService  GET /providerservices/{providerName}/{providerServiceName}
@@ -1657,7 +1656,7 @@ struct EntityResolutionClient:
         dict[str, str] labels = {}
         labels["providerName"] = input.providerName
         labels["providerServiceName"] = input.providerServiceName
-        auto b = binding.HttpBinding(method="GET", path_template="/providerservices/{providerName}/{providerServiceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/providerservices/{providerName}/{providerServiceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # GetSchemaMapping  GET /schemas/{schemaName}
@@ -1666,7 +1665,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["schemaName"] = input.schemaName
-        auto b = binding.HttpBinding(method="GET", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListIdMappingJobs  GET /idmappingworkflows/{workflowName}/jobs
@@ -1680,7 +1679,7 @@ struct EntityResolutionClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListIdMappingWorkflows  GET /idmappingworkflows
@@ -1692,7 +1691,7 @@ struct EntityResolutionClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/idmappingworkflows", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListIdNamespaces  GET /idnamespaces
@@ -1704,7 +1703,7 @@ struct EntityResolutionClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/idnamespaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/idnamespaces", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListMatchingJobs  GET /matchingworkflows/{workflowName}/jobs
@@ -1718,7 +1717,7 @@ struct EntityResolutionClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListMatchingWorkflows  GET /matchingworkflows
@@ -1730,7 +1729,7 @@ struct EntityResolutionClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/matchingworkflows", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListProviderServices  GET /providerservices
@@ -1744,7 +1743,7 @@ struct EntityResolutionClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.providerName.is_some():
             query["providerName"] = input.providerName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/providerservices", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/providerservices", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListSchemaMappings  GET /schemas
@@ -1756,7 +1755,7 @@ struct EntityResolutionClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/schemas", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/schemas", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1765,7 +1764,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # PutPolicy  PUT /policies/{arn}
@@ -1774,7 +1773,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["arn"] = input.arn
-        auto b = binding.HttpBinding(method="PUT", path_template="/policies/{arn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/policies/{arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutPolicyDocument(token=input.token, policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
@@ -1785,7 +1784,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="POST", path_template="/idmappingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/idmappingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.outputSourceConfig.is_some():
             auto u0 = input.outputSourceConfig.unwrap()
@@ -1805,7 +1804,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/matchingworkflows/{workflowName}/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1814,7 +1813,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1823,13 +1822,24 @@ struct EntityResolutionClient:
         auto bp = restjson.rest_json_document(b, entityresolution_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, entityresolution_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(entityresolution_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, entityresolution_service(), self.region, host)
+
     # UpdateIdMappingWorkflow  PUT /idmappingworkflows/{workflowName}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_id_mapping_workflow(self, UpdateIdMappingWorkflowInput input) -> str:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="PUT", path_template="/idmappingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/idmappingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1860,7 +1870,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["idNamespaceName"] = input.idNamespaceName
-        auto b = binding.HttpBinding(method="PUT", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/idnamespaces/{idNamespaceName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1889,7 +1899,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["workflowName"] = input.workflowName
-        auto b = binding.HttpBinding(method="PUT", path_template="/matchingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/matchingworkflows/{workflowName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()
@@ -1916,7 +1926,7 @@ struct EntityResolutionClient:
         auto host = endpoints.regional_host(entityresolution_service(), self.region)
         dict[str, str] labels = {}
         labels["schemaName"] = input.schemaName
-        auto b = binding.HttpBinding(method="PUT", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/schemas/{schemaName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.description.is_some():
             auto u0 = input.description.unwrap()

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 7 with a generated method,
-#   4 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 11 operations — 11 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   34 structs (31 @derive(Json)), 1 enums, 12 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -310,18 +310,32 @@ def data_ats_iot_error_from_code(str code) -> IoT_Data_PlaneError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteConnection (httpQuery `cleanSession` has unsupported type bool)
-#   GetConnection (httpQuery `includeSocketInformation` has unsupported type bool)
-#   Publish (httpQuery `retain` has unsupported type bool)
-#   SendDirectMessage (httpQuery `confirmation` has unsupported type bool)
+# Render a bool bound to a URI/query/header slot as its wire text.
+def data_ats_iot_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound IoT_Data_Plane client: credentials + region, threaded into every operation.
 struct IoT_Data_PlaneClient:
     core.Credentials creds
     str region
+
+    # DeleteConnection  DELETE /connections/{clientId}
+    # errors: ForbiddenException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def delete_connection(self, DeleteConnectionRequest input) -> str:
+        auto host = endpoints.regional_host(data_ats_iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clientId"] = input.clientId
+        dict[str, str] query = {}
+        if input.cleanSession.is_some():
+            auto qt0 = data_ats_iot_bind_bool(input.cleanSession.unwrap_or(False))
+            query["cleanSession"] = qt0
+        if input.preventWillMessage.is_some():
+            auto qt1 = data_ats_iot_bind_bool(input.preventWillMessage.unwrap_or(False))
+            query["preventWillMessage"] = qt1
+        auto b = binding.HttpBinding(method="DELETE", path_template="/connections/{clientId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
 
     # DeleteThingShadow  DELETE /things/{thingName}/shadow
     # errors: InternalFailureException, InvalidRequestException, MethodNotAllowedException, ResourceNotFoundException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, UnsupportedDocumentEncodingException
@@ -332,7 +346,20 @@ struct IoT_Data_PlaneClient:
         dict[str, str] query = {}
         if input.shadowName.is_some():
             query["name"] = input.shadowName.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/things/{thingName}/shadow", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/things/{thingName}/shadow", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
+
+    # GetConnection  GET /connections/{clientId}
+    # errors: ForbiddenException, InternalFailureException, InvalidRequestException, ResourceNotFoundException, ThrottlingException
+    def get_connection(self, GetConnectionRequest input) -> str:
+        auto host = endpoints.regional_host(data_ats_iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clientId"] = input.clientId
+        dict[str, str] query = {}
+        if input.includeSocketInformation.is_some():
+            auto qt0 = data_ats_iot_bind_bool(input.includeSocketInformation.unwrap_or(False))
+            query["includeSocketInformation"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/connections/{clientId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
 
     # GetRetainedMessage  GET /retainedMessage/{topic}
@@ -341,7 +368,7 @@ struct IoT_Data_PlaneClient:
         auto host = endpoints.regional_host(data_ats_iot_service(), self.region)
         dict[str, str] labels = {}
         labels["topic"] = input.topic
-        auto b = binding.HttpBinding(method="GET", path_template="/retainedMessage/{topic}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/retainedMessage/{topic}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
 
     # GetThingShadow  GET /things/{thingName}/shadow
@@ -353,7 +380,7 @@ struct IoT_Data_PlaneClient:
         dict[str, str] query = {}
         if input.shadowName.is_some():
             query["name"] = input.shadowName.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/shadow", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/things/{thingName}/shadow", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
 
     # ListNamedShadowsForThing  GET /api/things/shadow/ListNamedShadowsForThing/{thingName}
@@ -367,7 +394,7 @@ struct IoT_Data_PlaneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.pageSize.is_some():
             query["pageSize"] = str(input.pageSize.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/api/things/shadow/ListNamedShadowsForThing/{thingName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/api/things/shadow/ListNamedShadowsForThing/{thingName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
 
     # ListRetainedMessages  GET /retainedMessage
@@ -379,7 +406,7 @@ struct IoT_Data_PlaneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/retainedMessage", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/retainedMessage", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
 
     # ListSubscriptions  GET /connections/{clientId}/subscriptions
@@ -393,8 +420,68 @@ struct IoT_Data_PlaneClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/connections/{clientId}/subscriptions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/connections/{clientId}/subscriptions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, data_ats_iot_service(), self.region, host)
+
+    # Publish  POST /topics/{topic}
+    # errors: InternalFailureException, InvalidRequestException, MethodNotAllowedException, ThrottlingException, UnauthorizedException
+    def publish(self, PublishRequest input) -> str:
+        auto host = endpoints.regional_host(data_ats_iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["topic"] = input.topic
+        dict[str, str] query = {}
+        if input.qos.is_some():
+            query["qos"] = str(input.qos.unwrap_or(0))
+        if input.retain.is_some():
+            query["retain"] = data_ats_iot_bind_bool(input.retain.unwrap_or(False))
+        if input.contentType.is_some():
+            query["contentType"] = input.contentType.unwrap_or("")
+        if input.responseTopic.is_some():
+            query["responseTopic"] = input.responseTopic.unwrap_or("")
+        if input.messageExpiry.is_some():
+            query["messageExpiry"] = str(input.messageExpiry.unwrap_or(0))
+        dict[str, str] headers = {}
+        if input.userProperties.is_some():
+            headers["x-amz-mqtt5-user-properties"] = input.userProperties.unwrap_or("")
+        if input.payloadFormatIndicator.is_some():
+            auto qt0 = input.payloadFormatIndicator.unwrap_or("")
+            headers["x-amz-mqtt5-payload-format-indicator"] = qt0
+        if input.correlationData.is_some():
+            auto qt1 = input.correlationData.unwrap_or("")
+            headers["x-amz-mqtt5-correlation-data"] = qt1
+        auto b = binding.HttpBinding(method="POST", path_template="/topics/{topic}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, str(input.payload.unwrap_or(bytes())), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, data_ats_iot_service(), self.region, host)
+
+    # SendDirectMessage  POST /connections/{clientId}/messages
+    # errors: ForbiddenException, GatewayTimeoutException, InternalFailureException, InvalidRequestException, RequestEntityTooLargeException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
+    def send_direct_message(self, SendDirectMessageRequest input) -> str:
+        auto host = endpoints.regional_host(data_ats_iot_service(), self.region)
+        dict[str, str] labels = {}
+        labels["clientId"] = input.clientId
+        dict[str, str] query = {}
+        query["topic"] = input.topic
+        if input.contentType.is_some():
+            query["contentType"] = input.contentType.unwrap_or("")
+        if input.responseTopic.is_some():
+            query["responseTopic"] = input.responseTopic.unwrap_or("")
+        if input.confirmation.is_some():
+            auto qt0 = data_ats_iot_bind_bool(input.confirmation.unwrap_or(False))
+            query["confirmation"] = qt0
+        if input.timeout.is_some():
+            query["timeout"] = str(input.timeout.unwrap_or(0))
+        dict[str, str] headers = {}
+        if input.userProperties.is_some():
+            headers["x-amz-mqtt5-user-properties"] = input.userProperties.unwrap_or("")
+        if input.payloadFormatIndicator.is_some():
+            auto qt1 = input.payloadFormatIndicator.unwrap_or("")
+            headers["x-amz-mqtt5-payload-format-indicator"] = qt1
+        if input.correlationData.is_some():
+            auto qt2 = input.correlationData.unwrap_or("")
+            headers["x-amz-mqtt5-correlation-data"] = qt2
+        auto b = binding.HttpBinding(method="POST", path_template="/connections/{clientId}/messages", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, str(input.payload.unwrap_or(bytes())), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, data_ats_iot_service(), self.region, host)
 
     # UpdateThingShadow  POST /things/{thingName}/shadow
     # errors: ConflictException, InternalFailureException, InvalidRequestException, MethodNotAllowedException, RequestEntityTooLargeException, ServiceUnavailableException, ThrottlingException, UnauthorizedException, UnsupportedDocumentEncodingException
@@ -405,7 +492,7 @@ struct IoT_Data_PlaneClient:
         dict[str, str] query = {}
         if input.shadowName.is_some():
             query["name"] = input.shadowName.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}/shadow", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/things/{thingName}/shadow", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.payload), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, data_ats_iot_service(), self.region, host)
 

@@ -557,7 +557,7 @@ struct RDS_DataClient:
     # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseResumingException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException
     def batch_execute_statement(self, BatchExecuteStatementRequest input) -> str:
         auto host = endpoints.regional_host(rds_data_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BatchExecute", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BatchExecute", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + rds_data_json_str(input.resourceArn))
         parts.append("\"secretArn\":" + rds_data_json_str(input.secretArn))
@@ -587,7 +587,7 @@ struct RDS_DataClient:
     # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseResumingException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException
     def begin_transaction(self, BeginTransactionRequest input) -> str:
         auto host = endpoints.regional_host(rds_data_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/BeginTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/BeginTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = BeginTransactionDocument(resourceArn=input.resourceArn, secretArn=input.secretArn, database=input.database, schema=input.schema)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rds_data_service(), self.region, host)
@@ -596,7 +596,7 @@ struct RDS_DataClient:
     # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, NotFoundException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException
     def commit_transaction(self, CommitTransactionRequest input) -> str:
         auto host = endpoints.regional_host(rds_data_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CommitTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CommitTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CommitTransactionDocument(resourceArn=input.resourceArn, secretArn=input.secretArn, transactionId=input.transactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rds_data_service(), self.region, host)
@@ -605,7 +605,7 @@ struct RDS_DataClient:
     # errors: AccessDeniedException, BadRequestException, ForbiddenException, InternalServerErrorException, ServiceUnavailableError
     def execute_sql(self, ExecuteSqlRequest input) -> str:
         auto host = endpoints.regional_host(rds_data_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ExecuteSql", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ExecuteSql", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ExecuteSqlDocument(dbClusterOrInstanceArn=input.dbClusterOrInstanceArn, awsSecretStoreArn=input.awsSecretStoreArn, sqlStatements=input.sqlStatements, database=input.database, schema=input.schema)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rds_data_service(), self.region, host)
@@ -614,7 +614,7 @@ struct RDS_DataClient:
     # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseResumingException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException, UnsupportedResultException
     def execute_statement(self, ExecuteStatementRequest input) -> str:
         auto host = endpoints.regional_host(rds_data_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/Execute", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/Execute", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceArn\":" + rds_data_json_str(input.resourceArn))
         parts.append("\"secretArn\":" + rds_data_json_str(input.secretArn))
@@ -653,7 +653,7 @@ struct RDS_DataClient:
     # errors: AccessDeniedException, BadRequestException, DatabaseErrorException, DatabaseNotFoundException, DatabaseUnavailableException, ForbiddenException, HttpEndpointNotEnabledException, InternalServerErrorException, InvalidResourceStateException, InvalidSecretException, NotFoundException, SecretsErrorException, ServiceUnavailableError, StatementTimeoutException, TransactionNotFoundException
     def rollback_transaction(self, RollbackTransactionRequest input) -> str:
         auto host = endpoints.regional_host(rds_data_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/RollbackTransaction", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/RollbackTransaction", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RollbackTransactionDocument(resourceArn=input.resourceArn, secretArn=input.secretArn, transactionId=input.transactionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rds_data_service(), self.region, host)

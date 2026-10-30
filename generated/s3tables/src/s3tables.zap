@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 49 operations — 48 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 49 operations — 49 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   124 structs (91 @derive(Json)), 14 enums, 8 error variants.
 #   3 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -974,11 +974,6 @@ def s3tables_error_from_code(str code) -> S3TablesError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1190,7 +1185,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="PUT", path_template="/namespaces/{tableBucketARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/namespaces/{tableBucketARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.namespace:
@@ -1206,7 +1201,7 @@ struct S3TablesClient:
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
-        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + s3tables_json_str(input.name))
         parts.append("\"format\":" + s3tables_json_str(input.format))
@@ -1232,7 +1227,7 @@ struct S3TablesClient:
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
     def create_table_bucket(self, CreateTableBucketRequest input) -> str:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
-        auto b = binding.HttpBinding(method="PUT", path_template="/buckets", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/buckets", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + s3tables_json_str(input.name))
         if input.encryptionConfiguration.is_some():
@@ -1257,7 +1252,7 @@ struct S3TablesClient:
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
-        auto b = binding.HttpBinding(method="DELETE", path_template="/namespaces/{tableBucketARN}/{namespace}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/namespaces/{tableBucketARN}/{namespace}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTable  DELETE /tables/{tableBucketARN}/{namespace}/{name}
@@ -1271,7 +1266,7 @@ struct S3TablesClient:
         dict[str, str] query = {}
         if input.versionToken.is_some():
             query["versionToken"] = input.versionToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/tables/{tableBucketARN}/{namespace}/{name}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tables/{tableBucketARN}/{namespace}/{name}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTableBucket  DELETE /buckets/{tableBucketARN}
@@ -1280,7 +1275,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTableBucketEncryption  DELETE /buckets/{tableBucketARN}/encryption
@@ -1289,7 +1284,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}/encryption", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}/encryption", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTableBucketMetricsConfiguration  DELETE /buckets/{tableBucketARN}/metrics
@@ -1298,7 +1293,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}/metrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}/metrics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTableBucketPolicy  DELETE /buckets/{tableBucketARN}/policy
@@ -1307,7 +1302,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/buckets/{tableBucketARN}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTableBucketReplication  DELETE /table-bucket-replication
@@ -1318,7 +1313,7 @@ struct S3TablesClient:
         query["tableBucketARN"] = input.tableBucketARN
         if input.versionToken.is_some():
             query["versionToken"] = input.versionToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/table-bucket-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/table-bucket-replication", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTablePolicy  DELETE /tables/{tableBucketARN}/{namespace}/{name}/policy
@@ -1329,7 +1324,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/tables/{tableBucketARN}/{namespace}/{name}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tables/{tableBucketARN}/{namespace}/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # DeleteTableReplication  DELETE /table-replication
@@ -1339,7 +1334,7 @@ struct S3TablesClient:
         dict[str, str] query = {}
         query["tableArn"] = input.tableArn
         query["versionToken"] = input.versionToken
-        auto b = binding.HttpBinding(method="DELETE", path_template="/table-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/table-replication", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetNamespace  GET /namespaces/{tableBucketARN}/{namespace}
@@ -1349,7 +1344,7 @@ struct S3TablesClient:
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
-        auto b = binding.HttpBinding(method="GET", path_template="/namespaces/{tableBucketARN}/{namespace}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/namespaces/{tableBucketARN}/{namespace}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTable  GET /get-table
@@ -1365,7 +1360,7 @@ struct S3TablesClient:
             query["name"] = input.name.unwrap_or("")
         if input.tableArn.is_some():
             query["tableArn"] = input.tableArn.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/get-table", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/get-table", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableBucket  GET /buckets/{tableBucketARN}
@@ -1374,7 +1369,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableBucketEncryption  GET /buckets/{tableBucketARN}/encryption
@@ -1383,7 +1378,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/encryption", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/encryption", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableBucketMaintenanceConfiguration  GET /buckets/{tableBucketARN}/maintenance
@@ -1392,7 +1387,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/maintenance", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/maintenance", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableBucketMetricsConfiguration  GET /buckets/{tableBucketARN}/metrics
@@ -1401,7 +1396,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/metrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/metrics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableBucketPolicy  GET /buckets/{tableBucketARN}/policy
@@ -1410,7 +1405,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableBucketReplication  GET /table-bucket-replication
@@ -1419,7 +1414,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] query = {}
         query["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="GET", path_template="/table-bucket-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/table-bucket-replication", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableBucketStorageClass  GET /buckets/{tableBucketARN}/storage-class
@@ -1428,7 +1423,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/storage-class", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/buckets/{tableBucketARN}/storage-class", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableEncryption  GET /tables/{tableBucketARN}/{namespace}/{name}/encryption
@@ -1439,7 +1434,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/encryption", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/encryption", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableMaintenanceConfiguration  GET /tables/{tableBucketARN}/{namespace}/{name}/maintenance
@@ -1450,7 +1445,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/maintenance", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/maintenance", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableMaintenanceJobStatus  GET /tables/{tableBucketARN}/{namespace}/{name}/maintenance-job-status
@@ -1461,7 +1456,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/maintenance-job-status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/maintenance-job-status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableMetadataLocation  GET /tables/{tableBucketARN}/{namespace}/{name}/metadata-location
@@ -1472,7 +1467,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/metadata-location", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/metadata-location", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTablePolicy  GET /tables/{tableBucketARN}/{namespace}/{name}/policy
@@ -1483,7 +1478,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableRecordExpirationConfiguration  GET /table-record-expiration
@@ -1492,7 +1487,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] query = {}
         query["tableArn"] = input.tableArn
-        auto b = binding.HttpBinding(method="GET", path_template="/table-record-expiration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/table-record-expiration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableRecordExpirationJobStatus  GET /table-record-expiration-job-status
@@ -1501,7 +1496,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] query = {}
         query["tableArn"] = input.tableArn
-        auto b = binding.HttpBinding(method="GET", path_template="/table-record-expiration-job-status", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/table-record-expiration-job-status", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableReplication  GET /table-replication
@@ -1510,7 +1505,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] query = {}
         query["tableArn"] = input.tableArn
-        auto b = binding.HttpBinding(method="GET", path_template="/table-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/table-replication", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableReplicationStatus  GET /replication-status
@@ -1519,7 +1514,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] query = {}
         query["tableArn"] = input.tableArn
-        auto b = binding.HttpBinding(method="GET", path_template="/replication-status", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/replication-status", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # GetTableStorageClass  GET /tables/{tableBucketARN}/{namespace}/{name}/storage-class
@@ -1530,7 +1525,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/storage-class", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}/{namespace}/{name}/storage-class", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # ListNamespaces  GET /namespaces/{tableBucketARN}
@@ -1546,7 +1541,7 @@ struct S3TablesClient:
             query["continuationToken"] = input.continuationToken.unwrap_or("")
         if input.maxNamespaces.is_some():
             query["maxNamespaces"] = str(input.maxNamespaces.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/namespaces/{tableBucketARN}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/namespaces/{tableBucketARN}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # ListTableBuckets  GET /buckets
@@ -1562,7 +1557,7 @@ struct S3TablesClient:
             query["maxBuckets"] = str(input.maxBuckets.unwrap_or(0))
         if input.type.is_some():
             query["type"] = input.type.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/buckets", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/buckets", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # ListTables  GET /tables/{tableBucketARN}
@@ -1580,7 +1575,7 @@ struct S3TablesClient:
             query["continuationToken"] = input.continuationToken.unwrap_or("")
         if input.maxTables.is_some():
             query["maxTables"] = str(input.maxTables.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tables/{tableBucketARN}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # ListTagsForResource  GET /tag/{resourceArn}
@@ -1589,7 +1584,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tag/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tag/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # PutTableBucketEncryption  PUT /buckets/{tableBucketARN}/encryption
@@ -1598,7 +1593,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/encryption", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/encryption", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTableBucketEncryptionDocument(encryptionConfiguration=input.encryptionConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1610,7 +1605,7 @@ struct S3TablesClient:
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
         labels["type"] = input.type
-        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/maintenance/{type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/maintenance/{type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTableBucketMaintenanceConfigurationDocument(value=input.value)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1621,7 +1616,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/metrics", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/metrics", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # PutTableBucketPolicy  PUT /buckets/{tableBucketARN}/policy
@@ -1630,7 +1625,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTableBucketPolicyDocument(resourcePolicy=input.resourcePolicy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1643,7 +1638,7 @@ struct S3TablesClient:
         query["tableBucketARN"] = input.tableBucketARN
         if input.versionToken.is_some():
             query["versionToken"] = input.versionToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/table-bucket-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/table-bucket-replication", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"configuration\":" + table_bucket_replication_configuration_to_json(input.configuration))
         auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
@@ -1655,7 +1650,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["tableBucketARN"] = input.tableBucketARN
-        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/storage-class", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/buckets/{tableBucketARN}/storage-class", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTableBucketStorageClassDocument(storageClassConfiguration=input.storageClassConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1669,7 +1664,7 @@ struct S3TablesClient:
         labels["namespace"] = input.namespace
         labels["name"] = input.name
         labels["type"] = input.type
-        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/maintenance/{type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/maintenance/{type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTableMaintenanceConfigurationDocument(value=input.value)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1682,7 +1677,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTablePolicyDocument(resourcePolicy=input.resourcePolicy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1693,7 +1688,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] query = {}
         query["tableArn"] = input.tableArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/table-record-expiration", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/table-record-expiration", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutTableRecordExpirationConfigurationDocument(value=input.value)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1706,7 +1701,7 @@ struct S3TablesClient:
         query["tableArn"] = input.tableArn
         if input.versionToken.is_some():
             query["versionToken"] = input.versionToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/table-replication", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/table-replication", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"configuration\":" + table_replication_configuration_to_json(input.configuration))
         auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
@@ -1720,7 +1715,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/rename", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/rename", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RenameTableDocument(newNamespaceName=input.newNamespaceName, newName=input.newName, versionToken=input.versionToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
@@ -1731,7 +1726,7 @@ struct S3TablesClient:
         auto host = endpoints.regional_host(s3tables_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tag/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tag/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1739,6 +1734,17 @@ struct S3TablesClient:
         parts.append("\"tags\":" + s3tables_json_obj(m0))
         auto bp = restjson.rest_json_document(b, s3tables_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)
+
+    # UntagResource  DELETE /tag/{resourceArn}
+    # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(s3tables_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tag/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, s3tables_service(), self.region, host)
 
     # UpdateTableMetadataLocation  PUT /tables/{tableBucketARN}/{namespace}/{name}/metadata-location
     # errors: BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException, TooManyRequestsException
@@ -1748,7 +1754,7 @@ struct S3TablesClient:
         labels["tableBucketARN"] = input.tableBucketARN
         labels["namespace"] = input.namespace
         labels["name"] = input.name
-        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/metadata-location", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tables/{tableBucketARN}/{namespace}/{name}/metadata-location", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTableMetadataLocationDocument(versionToken=input.versionToken, metadataLocation=input.metadataLocation)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, s3tables_service(), self.region, host)

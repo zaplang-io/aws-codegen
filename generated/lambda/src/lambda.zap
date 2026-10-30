@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 88 operations — 82 with a generated method,
-#   6 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 88 operations — 85 with a generated method,
+#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   328 structs (227 @derive(Json)), 41 enums, 56 error variants.
-#   14 paginators generated (2 paginated ops skipped) from paginators-1.json.
+#   15 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -3025,16 +3025,12 @@ def lambda__error_from_code(str code) -> LambdaError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   GetDurableExecution (httpQuery `IncludeExecutionData` has unsupported type bool)
-#   GetDurableExecutionHistory (httpQuery `IncludeExecutionData` has unsupported type bool)
 #   ListDurableExecutionsByFunction (httpQuery `Statuses` has unsupported type list[ExecutionStatus])
 #   SendDurableExecutionCallbackFailure (httpPayload member `Error` is a non-derivable structure)
 #   StopDurableExecution (httpPayload member `Error` is a non-derivable structure)
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
-#   GetDurableExecutionHistory (operation not generated)
 #   ListDurableExecutionsByFunction (operation not generated)
 
 # Per-operation JSON document bodies (the unbound "document" members of an
@@ -3463,6 +3459,12 @@ def vpc_config_to_json(VpcConfig v) -> str:
         parts.append("\"Ipv6AllowedForDualStack\":" + json.dumps(JsonValue.Bool(u4)))
     return lambda__json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def lambda__bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Lambda client: credentials + region, threaded into every operation.
 struct LambdaClient:
     core.Credentials creds
@@ -3478,7 +3480,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.RevisionId.is_some():
             query["RevisionId"] = input.RevisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddLayerVersionPermissionDocument(StatementId=input.StatementId, Action=input.Action, Principal=input.Principal, OrganizationId=input.OrganizationId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -3492,7 +3494,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/policy", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AddPermissionDocument(StatementId=input.StatementId, Action=input.Action, Principal=input.Principal, SourceArn=input.SourceArn, FunctionUrlAuthType=input.FunctionUrlAuthType, InvokedViaFunctionUrl=input.InvokedViaFunctionUrl, SourceAccount=input.SourceAccount, EventSourceToken=input.EventSourceToken, RevisionId=input.RevisionId, PrincipalOrgID=input.PrincipalOrgID)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -3503,7 +3505,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["DurableExecutionArn"] = input.DurableExecutionArn
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}/checkpoint", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}/checkpoint", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CheckpointToken\":" + lambda__json_str(input.CheckpointToken))
         if input.Updates.is_some():
@@ -3524,7 +3526,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/aliases", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/aliases", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Name\":" + lambda__json_str(input.Name))
         parts.append("\"FunctionVersion\":" + lambda__json_str(input.FunctionVersion))
@@ -3541,7 +3543,7 @@ struct LambdaClient:
     # errors: CapacityProviderLimitExceededException, InvalidParameterValueException, ResourceConflictException, ServiceException, TooManyRequestsException
     def create_capacity_provider(self, CreateCapacityProviderRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-11-30/capacity-providers", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-11-30/capacity-providers", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"CapacityProviderName\":" + lambda__json_str(input.CapacityProviderName))
         parts.append("\"VpcConfig\":" + capacity_provider_vpc_config_to_json(input.VpcConfig))
@@ -3574,7 +3576,7 @@ struct LambdaClient:
     # errors: InvalidParameterValueException, ServiceException
     def create_code_signing_config(self, CreateCodeSigningConfigRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2020-04-22/code-signing-configs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2020-04-22/code-signing-configs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -3596,7 +3598,7 @@ struct LambdaClient:
     # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def create_event_source_mapping(self, CreateEventSourceMappingRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/event-source-mappings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/event-source-mappings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.EventSourceArn.is_some():
             auto u0 = input.EventSourceArn.unwrap()
@@ -3702,7 +3704,7 @@ struct LambdaClient:
     # errors: CodeSigningConfigNotFoundException, CodeStorageExceededException, CodeVerificationFailedException, FunctionVersionsPerCapacityProviderLimitExceededException, InvalidCodeSignatureException, InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def create_function(self, CreateFunctionRequest input) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"FunctionName\":" + lambda__json_str(input.FunctionName))
         if input.Runtime.is_some():
@@ -3806,7 +3808,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"AuthType\":" + input.AuthType.to_json())
         if input.Cors.is_some():
@@ -3825,7 +3827,7 @@ struct LambdaClient:
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/functions/{FunctionName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/functions/{FunctionName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteCapacityProvider  DELETE /2025-11-30/capacity-providers/{CapacityProviderName}
@@ -3834,7 +3836,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CapacityProviderName"] = input.CapacityProviderName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteCodeSigningConfig  DELETE /2020-04-22/code-signing-configs/{CodeSigningConfigArn}
@@ -3843,7 +3845,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CodeSigningConfigArn"] = input.CodeSigningConfigArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteEventSourceMapping  DELETE /2015-03-31/event-source-mappings/{UUID}
@@ -3852,7 +3854,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["UUID"] = input.UUID
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/event-source-mappings/{UUID}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/event-source-mappings/{UUID}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteFunction  DELETE /2015-03-31/functions/{FunctionName}
@@ -3864,7 +3866,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/functions/{FunctionName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/functions/{FunctionName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteFunctionCodeSigningConfig  DELETE /2020-06-30/functions/{FunctionName}/code-signing-config
@@ -3873,7 +3875,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2020-06-30/functions/{FunctionName}/code-signing-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2020-06-30/functions/{FunctionName}/code-signing-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteFunctionConcurrency  DELETE /2017-10-31/functions/{FunctionName}/concurrency
@@ -3882,7 +3884,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-10-31/functions/{FunctionName}/concurrency", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-10-31/functions/{FunctionName}/concurrency", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteFunctionEventInvokeConfig  DELETE /2019-09-25/functions/{FunctionName}/event-invoke-config
@@ -3894,7 +3896,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteFunctionUrlConfig  DELETE /2021-10-31/functions/{FunctionName}/url
@@ -3906,7 +3908,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteLayerVersion  DELETE /2018-10-31/layers/{LayerName}/versions/{VersionNumber}
@@ -3916,7 +3918,7 @@ struct LambdaClient:
         dict[str, str] labels = {}
         labels["LayerName"] = input.LayerName
         labels["VersionNumber"] = str(input.VersionNumber)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteProvisionedConcurrencyConfig  DELETE /2019-09-30/functions/{FunctionName}/provisioned-concurrency
@@ -3927,7 +3929,7 @@ struct LambdaClient:
         labels["FunctionName"] = input.FunctionName
         dict[str, str] query = {}
         query["Qualifier"] = input.Qualifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # DeleteResourcePolicy  DELETE /2026-07-09/resource-policy/{ResourceArn}
@@ -3939,14 +3941,14 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.RevisionId.is_some():
             query["RevisionId"] = input.RevisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2026-07-09/resource-policy/{ResourceArn}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2026-07-09/resource-policy/{ResourceArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetAccountSettings  GET /2016-08-19/account-settings
     # errors: ServiceException, TooManyRequestsException
     def get_account_settings(self) -> str:
         auto host = endpoints.regional_host(lambda__service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2016-08-19/account-settings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2016-08-19/account-settings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetAlias  GET /2015-03-31/functions/{FunctionName}/aliases/{Name}
@@ -3956,7 +3958,7 @@ struct LambdaClient:
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetCapacityProvider  GET /2025-11-30/capacity-providers/{CapacityProviderName}
@@ -3965,7 +3967,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CapacityProviderName"] = input.CapacityProviderName
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetCodeSigningConfig  GET /2020-04-22/code-signing-configs/{CodeSigningConfigArn}
@@ -3974,7 +3976,40 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CodeSigningConfigArn"] = input.CodeSigningConfigArn
-        auto b = binding.HttpBinding(method="GET", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # GetDurableExecution  GET /2025-12-01/durable-executions/{DurableExecutionArn}
+    # errors: InvalidParameterValueException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def get_durable_execution(self, GetDurableExecutionRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["DurableExecutionArn"] = input.DurableExecutionArn
+        dict[str, str] query = {}
+        if input.IncludeExecutionData.is_some():
+            auto qt0 = lambda__bind_bool(input.IncludeExecutionData.unwrap_or(False))
+            query["IncludeExecutionData"] = qt0
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
+    # GetDurableExecutionHistory  GET /2025-12-01/durable-executions/{DurableExecutionArn}/history
+    # errors: InvalidParameterValueException, KMSAccessDeniedException, KMSDisabledException, KMSInvalidStateException, KMSNotFoundException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def get_durable_execution_history(self, GetDurableExecutionHistoryRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["DurableExecutionArn"] = input.DurableExecutionArn
+        dict[str, str] query = {}
+        if input.IncludeExecutionData.is_some():
+            auto qt0 = lambda__bind_bool(input.IncludeExecutionData.unwrap_or(False))
+            query["IncludeExecutionData"] = qt0
+        if input.MaxItems.is_some():
+            query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
+        if input.Marker.is_some():
+            query["Marker"] = input.Marker.unwrap_or("")
+        if input.ReverseOrder.is_some():
+            auto qt1 = lambda__bind_bool(input.ReverseOrder.unwrap_or(False))
+            query["ReverseOrder"] = qt1
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}/history", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetDurableExecutionState  GET /2025-12-01/durable-executions/{DurableExecutionArn}/state
@@ -3989,7 +4024,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}/state", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-12-01/durable-executions/{DurableExecutionArn}/state", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetEventSourceMapping  GET /2015-03-31/event-source-mappings/{UUID}
@@ -3998,7 +4033,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["UUID"] = input.UUID
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/event-source-mappings/{UUID}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/event-source-mappings/{UUID}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunction  GET /2015-03-31/functions/{FunctionName}
@@ -4010,7 +4045,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunctionCodeSigningConfig  GET /2020-06-30/functions/{FunctionName}/code-signing-config
@@ -4019,7 +4054,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="GET", path_template="/2020-06-30/functions/{FunctionName}/code-signing-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2020-06-30/functions/{FunctionName}/code-signing-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunctionConcurrency  GET /2019-09-30/functions/{FunctionName}/concurrency
@@ -4028,7 +4063,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-30/functions/{FunctionName}/concurrency", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-30/functions/{FunctionName}/concurrency", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunctionConfiguration  GET /2015-03-31/functions/{FunctionName}/configuration
@@ -4040,7 +4075,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/configuration", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/configuration", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunctionEventInvokeConfig  GET /2019-09-25/functions/{FunctionName}/event-invoke-config
@@ -4052,7 +4087,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunctionRecursionConfig  GET /2024-08-31/functions/{FunctionName}/recursion-config
@@ -4061,7 +4096,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="GET", path_template="/2024-08-31/functions/{FunctionName}/recursion-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2024-08-31/functions/{FunctionName}/recursion-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunctionScalingConfig  GET /2025-11-30/functions/{FunctionName}/function-scaling-config
@@ -4072,7 +4107,7 @@ struct LambdaClient:
         labels["FunctionName"] = input.FunctionName
         dict[str, str] query = {}
         query["Qualifier"] = input.Qualifier
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/functions/{FunctionName}/function-scaling-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/functions/{FunctionName}/function-scaling-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetFunctionUrlConfig  GET /2021-10-31/functions/{FunctionName}/url
@@ -4084,7 +4119,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetLayerVersion  GET /2018-10-31/layers/{LayerName}/versions/{VersionNumber}
@@ -4094,7 +4129,7 @@ struct LambdaClient:
         dict[str, str] labels = {}
         labels["LayerName"] = input.LayerName
         labels["VersionNumber"] = str(input.VersionNumber)
-        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetLayerVersionByArn  GET /2018-10-31/layers?find=LayerVersion
@@ -4103,7 +4138,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] query = {}
         query["Arn"] = input.Arn
-        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers?find=LayerVersion", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers?find=LayerVersion", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetLayerVersionPolicy  GET /2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy
@@ -4113,7 +4148,7 @@ struct LambdaClient:
         dict[str, str] labels = {}
         labels["LayerName"] = input.LayerName
         labels["VersionNumber"] = str(input.VersionNumber)
-        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetPolicy  GET /2015-03-31/functions/{FunctionName}/policy
@@ -4125,7 +4160,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/policy", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/policy", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetProvisionedConcurrencyConfig  GET /2019-09-30/functions/{FunctionName}/provisioned-concurrency
@@ -4136,7 +4171,7 @@ struct LambdaClient:
         labels["FunctionName"] = input.FunctionName
         dict[str, str] query = {}
         query["Qualifier"] = input.Qualifier
-        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetResourcePolicy  GET /2026-07-09/resource-policy/{ResourceArn}
@@ -4145,7 +4180,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/2026-07-09/resource-policy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2026-07-09/resource-policy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # GetRuntimeManagementConfig  GET /2021-07-20/functions/{FunctionName}/runtime-management-config
@@ -4157,7 +4192,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-07-20/functions/{FunctionName}/runtime-management-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-07-20/functions/{FunctionName}/runtime-management-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # Invoke  POST /2015-03-31/functions/{FunctionName}/invocations
@@ -4177,10 +4212,11 @@ struct LambdaClient:
         if input.ClientContext.is_some():
             headers["X-Amz-Client-Context"] = input.ClientContext.unwrap_or("")
         if input.DurableExecutionName.is_some():
-            headers["X-Amz-Durable-Execution-Name"] = input.DurableExecutionName.unwrap_or("")
+            auto qt0 = input.DurableExecutionName.unwrap_or("")
+            headers["X-Amz-Durable-Execution-Name"] = qt0
         if input.TenantId.is_some():
             headers["X-Amz-Tenant-Id"] = input.TenantId.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/invocations", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/invocations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Payload.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
@@ -4190,7 +4226,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="POST", path_template="/2014-11-13/functions/{FunctionName}/invoke-async", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2014-11-13/functions/{FunctionName}/invoke-async", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.InvokeArgs), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
@@ -4212,7 +4248,7 @@ struct LambdaClient:
             headers["X-Amz-Tenant-Id"] = input.TenantId.unwrap_or("")
         if input.InvocationType.is_some():
             headers["X-Amz-Invocation-Type"] = input.InvocationType.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2021-11-15/functions/{FunctionName}/response-streaming-invocations", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2021-11-15/functions/{FunctionName}/response-streaming-invocations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Payload.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
@@ -4229,7 +4265,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/aliases", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/aliases", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListCapacityProviders  GET /2025-11-30/capacity-providers
@@ -4243,7 +4279,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/capacity-providers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/capacity-providers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListCodeSigningConfigs  GET /2020-04-22/code-signing-configs
@@ -4255,7 +4291,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2020-04-22/code-signing-configs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2020-04-22/code-signing-configs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListEventSourceMappings  GET /2015-03-31/event-source-mappings
@@ -4271,7 +4307,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/event-source-mappings", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/event-source-mappings", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListFunctionEventInvokeConfigs  GET /2019-09-25/functions/{FunctionName}/event-invoke-config/list
@@ -4285,7 +4321,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config/list", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config/list", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListFunctionUrlConfigs  GET /2021-10-31/functions/{FunctionName}/urls
@@ -4299,7 +4335,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2021-10-31/functions/{FunctionName}/urls", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2021-10-31/functions/{FunctionName}/urls", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListFunctionVersionsByCapacityProvider  GET /2025-11-30/capacity-providers/{CapacityProviderName}/function-versions
@@ -4313,7 +4349,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}/function-versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}/function-versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListFunctions  GET /2015-03-31/functions
@@ -4329,7 +4365,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListFunctionsByCodeSigningConfig  GET /2020-04-22/code-signing-configs/{CodeSigningConfigArn}/functions
@@ -4343,7 +4379,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}/functions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}/functions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListLayerVersions  GET /2018-10-31/layers/{LayerName}/versions
@@ -4361,7 +4397,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers/{LayerName}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers/{LayerName}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListLayers  GET /2018-10-31/layers
@@ -4377,7 +4413,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2018-10-31/layers", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListProvisionedConcurrencyConfigs  GET /2019-09-30/functions/{FunctionName}/provisioned-concurrency?List=ALL
@@ -4391,7 +4427,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency?List=ALL", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency?List=ALL", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListTags  GET /2017-03-31/tags/{Resource}
@@ -4400,7 +4436,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["Resource"] = input.Resource
-        auto b = binding.HttpBinding(method="GET", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # ListVersionsByFunction  GET /2015-03-31/functions/{FunctionName}/versions
@@ -4414,7 +4450,7 @@ struct LambdaClient:
             query["Marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["MaxItems"] = str(input.MaxItems.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2015-03-31/functions/{FunctionName}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # PublishLayerVersion  POST /2018-10-31/layers/{LayerName}/versions
@@ -4423,7 +4459,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["LayerName"] = input.LayerName
-        auto b = binding.HttpBinding(method="POST", path_template="/2018-10-31/layers/{LayerName}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2018-10-31/layers/{LayerName}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -4453,7 +4489,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/versions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-03-31/functions/{FunctionName}/versions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PublishVersionDocument(CodeSha256=input.CodeSha256, Description=input.Description, RevisionId=input.RevisionId, PublishTo=input.PublishTo)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4464,7 +4500,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2020-06-30/functions/{FunctionName}/code-signing-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2020-06-30/functions/{FunctionName}/code-signing-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFunctionCodeSigningConfigDocument(CodeSigningConfigArn=input.CodeSigningConfigArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4475,7 +4511,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2017-10-31/functions/{FunctionName}/concurrency", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2017-10-31/functions/{FunctionName}/concurrency", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFunctionConcurrencyDocument(ReservedConcurrentExecutions=input.ReservedConcurrentExecutions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4489,7 +4525,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFunctionEventInvokeConfigDocument(MaximumRetryAttempts=input.MaximumRetryAttempts, MaximumEventAgeInSeconds=input.MaximumEventAgeInSeconds, DestinationConfig=input.DestinationConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4500,7 +4536,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2024-08-31/functions/{FunctionName}/recursion-config", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2024-08-31/functions/{FunctionName}/recursion-config", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFunctionRecursionConfigDocument(RecursiveLoop=input.RecursiveLoop)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4513,7 +4549,7 @@ struct LambdaClient:
         labels["FunctionName"] = input.FunctionName
         dict[str, str] query = {}
         query["Qualifier"] = input.Qualifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/2025-11-30/functions/{FunctionName}/function-scaling-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-11-30/functions/{FunctionName}/function-scaling-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutFunctionScalingConfigDocument(FunctionScalingConfig=input.FunctionScalingConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4526,7 +4562,7 @@ struct LambdaClient:
         labels["FunctionName"] = input.FunctionName
         dict[str, str] query = {}
         query["Qualifier"] = input.Qualifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2019-09-30/functions/{FunctionName}/provisioned-concurrency", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutProvisionedConcurrencyConfigDocument(ProvisionedConcurrentExecutions=input.ProvisionedConcurrentExecutions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4537,7 +4573,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/2026-07-09/resource-policy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2026-07-09/resource-policy/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutResourcePolicyDocument(Policy=input.Policy, RevisionId=input.RevisionId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4551,7 +4587,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-07-20/functions/{FunctionName}/runtime-management-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-07-20/functions/{FunctionName}/runtime-management-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutRuntimeManagementConfigDocument(UpdateRuntimeOn=input.UpdateRuntimeOn, RuntimeVersionArn=input.RuntimeVersionArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4567,7 +4603,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.RevisionId.is_some():
             query["RevisionId"] = input.RevisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy/{StatementId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy/{StatementId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # RemovePermission  DELETE /2015-03-31/functions/{FunctionName}/policy/{StatementId}
@@ -4582,7 +4618,7 @@ struct LambdaClient:
             query["Qualifier"] = input.Qualifier.unwrap_or("")
         if input.RevisionId.is_some():
             query["RevisionId"] = input.RevisionId.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/functions/{FunctionName}/policy/{StatementId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2015-03-31/functions/{FunctionName}/policy/{StatementId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # SendDurableExecutionCallbackHeartbeat  POST /2025-12-01/durable-execution-callbacks/{CallbackId}/heartbeat
@@ -4591,7 +4627,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CallbackId"] = input.CallbackId
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-execution-callbacks/{CallbackId}/heartbeat", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-execution-callbacks/{CallbackId}/heartbeat", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
 
     # SendDurableExecutionCallbackSuccess  POST /2025-12-01/durable-execution-callbacks/{CallbackId}/succeed
@@ -4600,7 +4636,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CallbackId"] = input.CallbackId
-        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-execution-callbacks/{CallbackId}/succeed", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2025-12-01/durable-execution-callbacks/{CallbackId}/succeed", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.Result.unwrap_or(bytes())), "application/octet-stream")
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
@@ -4610,7 +4646,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["Resource"] = input.Resource
-        auto b = binding.HttpBinding(method="POST", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -4619,6 +4655,17 @@ struct LambdaClient:
         auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
 
+    # UntagResource  DELETE /2017-03-31/tags/{Resource}
+    # errors: InvalidParameterValueException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        dict[str, str] labels = {}
+        labels["Resource"] = input.Resource
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2017-03-31/tags/{Resource}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, lambda__service(), self.region, host)
+
     # UpdateAlias  PUT /2015-03-31/functions/{FunctionName}/aliases/{Name}
     # errors: InvalidParameterValueException, PreconditionFailedException, ResourceConflictException, ResourceNotFoundException, ServiceException, TooManyRequestsException
     def update_alias(self, UpdateAliasRequest input) -> str:
@@ -4626,7 +4673,7 @@ struct LambdaClient:
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/aliases/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FunctionVersion.is_some():
             auto u0 = input.FunctionVersion.unwrap()
@@ -4649,7 +4696,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CapacityProviderName"] = input.CapacityProviderName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2025-11-30/capacity-providers/{CapacityProviderName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.CapacityProviderScalingConfig.is_some():
             auto u0 = input.CapacityProviderScalingConfig.unwrap()
@@ -4669,7 +4716,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["CodeSigningConfigArn"] = input.CodeSigningConfigArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2020-04-22/code-signing-configs/{CodeSigningConfigArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Description.is_some():
             auto u0 = input.Description.unwrap()
@@ -4689,7 +4736,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["UUID"] = input.UUID
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/event-source-mappings/{UUID}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/event-source-mappings/{UUID}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.FunctionName.is_some():
             auto u0 = input.FunctionName.unwrap()
@@ -4769,7 +4816,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/code", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/code", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.ZipFile.is_some():
             auto u0 = input.ZipFile.unwrap()
@@ -4819,7 +4866,7 @@ struct LambdaClient:
         auto host = endpoints.regional_host(lambda__service(), self.region)
         dict[str, str] labels = {}
         labels["FunctionName"] = input.FunctionName
-        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-03-31/functions/{FunctionName}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Role.is_some():
             auto u0 = input.Role.unwrap()
@@ -4899,7 +4946,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2019-09-25/functions/{FunctionName}/event-invoke-config", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFunctionEventInvokeConfigDocument(MaximumRetryAttempts=input.MaximumRetryAttempts, MaximumEventAgeInSeconds=input.MaximumEventAgeInSeconds, DestinationConfig=input.DestinationConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
@@ -4913,7 +4960,7 @@ struct LambdaClient:
         dict[str, str] query = {}
         if input.Qualifier.is_some():
             query["Qualifier"] = input.Qualifier.unwrap_or("")
-        auto b = binding.HttpBinding(method="PUT", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2021-10-31/functions/{FunctionName}/url", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.AuthType.is_some():
             auto u0 = input.AuthType.unwrap()
@@ -4926,6 +4973,19 @@ struct LambdaClient:
             parts.append("\"InvokeMode\":" + u2.to_json())
         auto bp = restjson.rest_json_document(b, lambda__json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, lambda__service(), self.region, host)
+
+    # Paginator for GetDurableExecutionHistory — yields each Response page, threading the
+    # NextMarker -> Marker continuation token until it is absent (result key: Events).
+    def paginate_get_durable_execution_history(self, GetDurableExecutionHistoryRequest input):
+        auto host = endpoints.regional_host(lambda__service(), self.region)
+        while True:
+            auto raw = self.get_durable_execution_history(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "NextMarker")
+            if not np.has_more:
+                break
+            input.Marker = Optional.Some(np.token)
 
     # Paginator for GetDurableExecutionState — yields each Response page, threading the
     # NextMarker -> Marker continuation token until it is absent (result key: Operations).

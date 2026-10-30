@@ -1689,7 +1689,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["HostedZoneId"] = input.HostedZoneId
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey/{HostedZoneId}/{Name}/activate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey/{HostedZoneId}/{Name}/activate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # AssociateVPCWithHostedZone  POST /2013-04-01/hostedzone/{Id}/associatevpc
@@ -1698,7 +1698,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/associatevpc", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/associatevpc", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("AssociateVPCWithHostedZoneRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         auto n0 = restxml.rest_xml_struct(root, "VPC")
         if input.VPC.VPCRegion.is_some():
@@ -1717,7 +1717,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["CidrCollectionId"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ChangeCidrCollectionRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         if input.CollectionVersion.is_some():
             auto t0 = str(input.CollectionVersion.unwrap())
@@ -1738,7 +1738,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/rrset/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/rrset/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ChangeResourceRecordSetsRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         auto n0 = restxml.rest_xml_struct(root, "ChangeBatch")
         if input.ChangeBatch.Comment.is_some():
@@ -1833,7 +1833,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["ResourceType"] = input.ResourceType
         labels["ResourceId"] = input.ResourceId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/tags/{ResourceType}/{ResourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/tags/{ResourceType}/{ResourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ChangeTagsForResourceRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         if input.AddTags.is_some():
             auto t0 = input.AddTags.unwrap()
@@ -1855,7 +1855,7 @@ struct Route_53Client:
     # errors: CidrCollectionAlreadyExistsException, ConcurrentModification, InvalidInput, LimitsExceeded
     def create_cidr_collection(self, CreateCidrCollectionRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/cidrcollection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/cidrcollection", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateCidrCollectionRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "Name", input.Name)
         restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
@@ -1867,7 +1867,7 @@ struct Route_53Client:
     # errors: HealthCheckAlreadyExists, InvalidInput, TooManyHealthChecks
     def create_health_check(self, CreateHealthCheckRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/healthcheck", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/healthcheck", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateHealthCheckRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
         auto n0 = restxml.rest_xml_struct(root, "HealthCheckConfig")
@@ -1935,7 +1935,7 @@ struct Route_53Client:
     # errors: ConflictingDomainExists, DelegationSetNotAvailable, DelegationSetNotReusable, HostedZoneAlreadyExists, InvalidDomainName, InvalidInput, InvalidVPCId, NoSuchDelegationSet, TooManyHostedZones
     def create_hosted_zone(self, CreateHostedZoneRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateHostedZoneRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "Name", input.Name)
         if input.VPC.is_some():
@@ -1965,7 +1965,7 @@ struct Route_53Client:
     # errors: ConcurrentModification, InvalidArgument, InvalidInput, InvalidKMSArn, InvalidKeySigningKeyName, InvalidKeySigningKeyStatus, InvalidSigningStatus, KeySigningKeyAlreadyExists, NoSuchHostedZone, TooManyKeySigningKeys
     def create_key_signing_key(self, CreateKeySigningKeyRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateKeySigningKeyRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
         restxml.rest_xml_scalar(root, "HostedZoneId", input.HostedZoneId)
@@ -1981,7 +1981,7 @@ struct Route_53Client:
     # errors: ConcurrentModification, InsufficientCloudWatchLogsResourcePolicy, InvalidInput, NoSuchCloudWatchLogsLogGroup, NoSuchHostedZone, QueryLoggingConfigAlreadyExists
     def create_query_logging_config(self, CreateQueryLoggingConfigRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/queryloggingconfig", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/queryloggingconfig", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateQueryLoggingConfigRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "HostedZoneId", input.HostedZoneId)
         auto t0 = input.CloudWatchLogsLogGroupArn
@@ -1994,7 +1994,7 @@ struct Route_53Client:
     # errors: DelegationSetAlreadyCreated, DelegationSetAlreadyReusable, DelegationSetNotAvailable, HostedZoneNotFound, InvalidArgument, InvalidInput, LimitsExceeded
     def create_reusable_delegation_set(self, CreateReusableDelegationSetRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/delegationset", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/delegationset", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateReusableDelegationSetRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
         if input.HostedZoneId.is_some():
@@ -2007,7 +2007,7 @@ struct Route_53Client:
     # errors: InvalidInput, InvalidTrafficPolicyDocument, TooManyTrafficPolicies, TrafficPolicyAlreadyExists
     def create_traffic_policy(self, CreateTrafficPolicyRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateTrafficPolicyRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "Name", input.Name)
         restxml.rest_xml_scalar(root, "Document", input.Document)
@@ -2021,7 +2021,7 @@ struct Route_53Client:
     # errors: InvalidInput, NoSuchHostedZone, NoSuchTrafficPolicy, TooManyTrafficPolicyInstances, TrafficPolicyInstanceAlreadyExists
     def create_traffic_policy_instance(self, CreateTrafficPolicyInstanceRequest input) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicyinstance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicyinstance", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateTrafficPolicyInstanceRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "HostedZoneId", input.HostedZoneId)
         restxml.rest_xml_scalar(root, "Name", input.Name)
@@ -2039,7 +2039,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateTrafficPolicyVersionRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "Document", input.Document)
         if input.Comment.is_some():
@@ -2054,7 +2054,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/authorizevpcassociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/authorizevpcassociation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("CreateVPCAssociationAuthorizationRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         auto n0 = restxml.rest_xml_struct(root, "VPC")
         if input.VPC.VPCRegion.is_some():
@@ -2072,7 +2072,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["HostedZoneId"] = input.HostedZoneId
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey/{HostedZoneId}/{Name}/deactivate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey/{HostedZoneId}/{Name}/deactivate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteCidrCollection  DELETE /2013-04-01/cidrcollection/{CidrCollectionId}
@@ -2081,7 +2081,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["CidrCollectionId"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteHealthCheck  DELETE /2013-04-01/healthcheck/{HealthCheckId}
@@ -2090,7 +2090,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["HealthCheckId"] = input.HealthCheckId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/healthcheck/{HealthCheckId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/healthcheck/{HealthCheckId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteHostedZone  DELETE /2013-04-01/hostedzone/{Id}
@@ -2099,7 +2099,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/hostedzone/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/hostedzone/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteKeySigningKey  DELETE /2013-04-01/keysigningkey/{HostedZoneId}/{Name}
@@ -2109,7 +2109,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["HostedZoneId"] = input.HostedZoneId
         labels["Name"] = input.Name
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/keysigningkey/{HostedZoneId}/{Name}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/keysigningkey/{HostedZoneId}/{Name}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteQueryLoggingConfig  DELETE /2013-04-01/queryloggingconfig/{Id}
@@ -2118,7 +2118,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/queryloggingconfig/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/queryloggingconfig/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteReusableDelegationSet  DELETE /2013-04-01/delegationset/{Id}
@@ -2127,7 +2127,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/delegationset/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/delegationset/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteTrafficPolicy  DELETE /2013-04-01/trafficpolicy/{Id}/{Version}
@@ -2137,7 +2137,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["Id"] = input.Id
         labels["Version"] = str(input.Version)
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/trafficpolicy/{Id}/{Version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/trafficpolicy/{Id}/{Version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteTrafficPolicyInstance  DELETE /2013-04-01/trafficpolicyinstance/{Id}
@@ -2146,7 +2146,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DeleteVPCAssociationAuthorization  POST /2013-04-01/hostedzone/{Id}/deauthorizevpcassociation
@@ -2155,7 +2155,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/deauthorizevpcassociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/deauthorizevpcassociation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("DeleteVPCAssociationAuthorizationRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         auto n0 = restxml.rest_xml_struct(root, "VPC")
         if input.VPC.VPCRegion.is_some():
@@ -2172,7 +2172,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/disable-dnssec", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/disable-dnssec", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # DisassociateVPCFromHostedZone  POST /2013-04-01/hostedzone/{Id}/disassociatevpc
@@ -2181,7 +2181,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/disassociatevpc", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/disassociatevpc", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("DisassociateVPCFromHostedZoneRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         auto n0 = restxml.rest_xml_struct(root, "VPC")
         if input.VPC.VPCRegion.is_some():
@@ -2200,7 +2200,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/enable-dnssec", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/enable-dnssec", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetAccountLimit  GET /2013-04-01/accountlimit/{Type}
@@ -2209,7 +2209,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Type"] = input.Type
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/accountlimit/{Type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/accountlimit/{Type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetChange  GET /2013-04-01/change/{Id}
@@ -2218,13 +2218,13 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/change/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/change/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetCheckerIpRanges  GET /2013-04-01/checkeripranges
     def get_checker_ip_ranges(self) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/checkeripranges", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/checkeripranges", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetDNSSEC  GET /2013-04-01/hostedzone/{Id}/dnssec
@@ -2233,7 +2233,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}/dnssec", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}/dnssec", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetGeoLocation  GET /2013-04-01/geolocation
@@ -2247,7 +2247,7 @@ struct Route_53Client:
             query["countrycode"] = input.CountryCode.unwrap_or("")
         if input.SubdivisionCode.is_some():
             query["subdivisioncode"] = input.SubdivisionCode.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/geolocation", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/geolocation", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetHealthCheck  GET /2013-04-01/healthcheck/{HealthCheckId}
@@ -2256,13 +2256,13 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["HealthCheckId"] = input.HealthCheckId
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck/{HealthCheckId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck/{HealthCheckId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetHealthCheckCount  GET /2013-04-01/healthcheckcount
     def get_health_check_count(self) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheckcount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheckcount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetHealthCheckLastFailureReason  GET /2013-04-01/healthcheck/{HealthCheckId}/lastfailurereason
@@ -2271,7 +2271,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["HealthCheckId"] = input.HealthCheckId
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck/{HealthCheckId}/lastfailurereason", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck/{HealthCheckId}/lastfailurereason", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetHealthCheckStatus  GET /2013-04-01/healthcheck/{HealthCheckId}/status
@@ -2280,7 +2280,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["HealthCheckId"] = input.HealthCheckId
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck/{HealthCheckId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck/{HealthCheckId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetHostedZone  GET /2013-04-01/hostedzone/{Id}
@@ -2289,14 +2289,14 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetHostedZoneCount  GET /2013-04-01/hostedzonecount
     # errors: InvalidInput
     def get_hosted_zone_count(self) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonecount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonecount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetHostedZoneLimit  GET /2013-04-01/hostedzonelimit/{Id}/{Type}
@@ -2306,7 +2306,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["Type"] = input.Type
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonelimit/{Id}/{Type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonelimit/{Id}/{Type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetQueryLoggingConfig  GET /2013-04-01/queryloggingconfig/{Id}
@@ -2315,7 +2315,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/queryloggingconfig/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/queryloggingconfig/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetReusableDelegationSet  GET /2013-04-01/delegationset/{Id}
@@ -2324,7 +2324,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/delegationset/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/delegationset/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetReusableDelegationSetLimit  GET /2013-04-01/reusabledelegationsetlimit/{Id}/{Type}
@@ -2334,7 +2334,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["Type"] = input.Type
         labels["Id"] = input.DelegationSetId
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/reusabledelegationsetlimit/{Id}/{Type}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/reusabledelegationsetlimit/{Id}/{Type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetTrafficPolicy  GET /2013-04-01/trafficpolicy/{Id}/{Version}
@@ -2344,7 +2344,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["Id"] = input.Id
         labels["Version"] = str(input.Version)
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicy/{Id}/{Version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicy/{Id}/{Version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetTrafficPolicyInstance  GET /2013-04-01/trafficpolicyinstance/{Id}
@@ -2353,13 +2353,13 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # GetTrafficPolicyInstanceCount  GET /2013-04-01/trafficpolicyinstancecount
     def get_traffic_policy_instance_count(self) -> str:
         auto host = endpoints.regional_host(route53_service(), self.region)
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstancecount", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstancecount", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListCidrBlocks  GET /2013-04-01/cidrcollection/{CidrCollectionId}/cidrblocks
@@ -2375,7 +2375,7 @@ struct Route_53Client:
             query["nexttoken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxresults"] = input.MaxResults.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}/cidrblocks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}/cidrblocks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListCidrCollections  GET /2013-04-01/cidrcollection
@@ -2387,7 +2387,7 @@ struct Route_53Client:
             query["nexttoken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxresults"] = input.MaxResults.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/cidrcollection", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/cidrcollection", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListCidrLocations  GET /2013-04-01/cidrcollection/{CidrCollectionId}
@@ -2401,7 +2401,7 @@ struct Route_53Client:
             query["nexttoken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxresults"] = input.MaxResults.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListGeoLocations  GET /2013-04-01/geolocations
@@ -2417,7 +2417,7 @@ struct Route_53Client:
             query["startsubdivisioncode"] = input.StartSubdivisionCode.unwrap_or("")
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/geolocations", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/geolocations", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListHealthChecks  GET /2013-04-01/healthcheck
@@ -2429,7 +2429,7 @@ struct Route_53Client:
             query["marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/healthcheck", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListHostedZones  GET /2013-04-01/hostedzone
@@ -2445,7 +2445,7 @@ struct Route_53Client:
             query["delegationsetid"] = input.DelegationSetId.unwrap_or("")
         if input.HostedZoneType.is_some():
             query["hostedzonetype"] = input.HostedZoneType.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListHostedZonesByName  GET /2013-04-01/hostedzonesbyname
@@ -2459,7 +2459,7 @@ struct Route_53Client:
             query["hostedzoneid"] = input.HostedZoneId.unwrap_or("")
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonesbyname", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonesbyname", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListHostedZonesByVPC  GET /2013-04-01/hostedzonesbyvpc
@@ -2473,7 +2473,7 @@ struct Route_53Client:
             query["maxitems"] = input.MaxItems.unwrap_or("")
         if input.NextToken.is_some():
             query["nexttoken"] = input.NextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonesbyvpc", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzonesbyvpc", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListQueryLoggingConfigs  GET /2013-04-01/queryloggingconfig
@@ -2487,7 +2487,7 @@ struct Route_53Client:
             query["nexttoken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxresults"] = input.MaxResults.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/queryloggingconfig", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/queryloggingconfig", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListResourceRecordSets  GET /2013-04-01/hostedzone/{Id}/rrset
@@ -2505,7 +2505,7 @@ struct Route_53Client:
             query["identifier"] = input.StartRecordIdentifier.unwrap_or("")
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}/rrset", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}/rrset", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListReusableDelegationSets  GET /2013-04-01/delegationset
@@ -2517,7 +2517,7 @@ struct Route_53Client:
             query["marker"] = input.Marker.unwrap_or("")
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/delegationset", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/delegationset", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListTagsForResource  GET /2013-04-01/tags/{ResourceType}/{ResourceId}
@@ -2527,7 +2527,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["ResourceType"] = input.ResourceType
         labels["ResourceId"] = input.ResourceId
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/tags/{ResourceType}/{ResourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/tags/{ResourceType}/{ResourceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListTagsForResources  POST /2013-04-01/tags/{ResourceType}
@@ -2536,7 +2536,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceType"] = input.ResourceType
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/tags/{ResourceType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/tags/{ResourceType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("ListTagsForResourcesRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         auto t0 = input.ResourceIds
         restxml.rest_xml_wrapped_list(root, "ResourceIds", "ResourceId", t0)
@@ -2553,7 +2553,7 @@ struct Route_53Client:
             query["trafficpolicyid"] = input.TrafficPolicyIdMarker.unwrap_or("")
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicies", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicies", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListTrafficPolicyInstances  GET /2013-04-01/trafficpolicyinstances
@@ -2564,12 +2564,14 @@ struct Route_53Client:
         if input.HostedZoneIdMarker.is_some():
             query["hostedzoneid"] = input.HostedZoneIdMarker.unwrap_or("")
         if input.TrafficPolicyInstanceNameMarker.is_some():
-            query["trafficpolicyinstancename"] = input.TrafficPolicyInstanceNameMarker.unwrap_or("")
+            auto qt0 = input.TrafficPolicyInstanceNameMarker.unwrap_or("")
+            query["trafficpolicyinstancename"] = qt0
         if input.TrafficPolicyInstanceTypeMarker.is_some():
-            query["trafficpolicyinstancetype"] = input.TrafficPolicyInstanceTypeMarker.unwrap_or("")
+            auto qt1 = input.TrafficPolicyInstanceTypeMarker.unwrap_or("")
+            query["trafficpolicyinstancetype"] = qt1
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstances", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstances", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListTrafficPolicyInstancesByHostedZone  GET /2013-04-01/trafficpolicyinstances/hostedzone
@@ -2579,12 +2581,14 @@ struct Route_53Client:
         dict[str, str] query = {}
         query["id"] = input.HostedZoneId
         if input.TrafficPolicyInstanceNameMarker.is_some():
-            query["trafficpolicyinstancename"] = input.TrafficPolicyInstanceNameMarker.unwrap_or("")
+            auto qt0 = input.TrafficPolicyInstanceNameMarker.unwrap_or("")
+            query["trafficpolicyinstancename"] = qt0
         if input.TrafficPolicyInstanceTypeMarker.is_some():
-            query["trafficpolicyinstancetype"] = input.TrafficPolicyInstanceTypeMarker.unwrap_or("")
+            auto qt1 = input.TrafficPolicyInstanceTypeMarker.unwrap_or("")
+            query["trafficpolicyinstancetype"] = qt1
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstances/hostedzone", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstances/hostedzone", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListTrafficPolicyInstancesByPolicy  GET /2013-04-01/trafficpolicyinstances/trafficpolicy
@@ -2597,12 +2601,14 @@ struct Route_53Client:
         if input.HostedZoneIdMarker.is_some():
             query["hostedzoneid"] = input.HostedZoneIdMarker.unwrap_or("")
         if input.TrafficPolicyInstanceNameMarker.is_some():
-            query["trafficpolicyinstancename"] = input.TrafficPolicyInstanceNameMarker.unwrap_or("")
+            auto qt0 = input.TrafficPolicyInstanceNameMarker.unwrap_or("")
+            query["trafficpolicyinstancename"] = qt0
         if input.TrafficPolicyInstanceTypeMarker.is_some():
-            query["trafficpolicyinstancetype"] = input.TrafficPolicyInstanceTypeMarker.unwrap_or("")
+            auto qt1 = input.TrafficPolicyInstanceTypeMarker.unwrap_or("")
+            query["trafficpolicyinstancetype"] = qt1
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstances/trafficpolicy", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicyinstances/trafficpolicy", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListTrafficPolicyVersions  GET /2013-04-01/trafficpolicies/{Id}/versions
@@ -2613,10 +2619,11 @@ struct Route_53Client:
         labels["Id"] = input.Id
         dict[str, str] query = {}
         if input.TrafficPolicyVersionMarker.is_some():
-            query["trafficpolicyversion"] = input.TrafficPolicyVersionMarker.unwrap_or("")
+            auto qt0 = input.TrafficPolicyVersionMarker.unwrap_or("")
+            query["trafficpolicyversion"] = qt0
         if input.MaxItems.is_some():
             query["maxitems"] = input.MaxItems.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicies/{Id}/versions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/trafficpolicies/{Id}/versions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # ListVPCAssociationAuthorizations  GET /2013-04-01/hostedzone/{Id}/authorizevpcassociation
@@ -2630,7 +2637,7 @@ struct Route_53Client:
             query["nexttoken"] = input.NextToken.unwrap_or("")
         if input.MaxResults.is_some():
             query["maxresults"] = input.MaxResults.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}/authorizevpcassociation", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/hostedzone/{Id}/authorizevpcassociation", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # TestDNSAnswer  GET /2013-04-01/testdnsanswer
@@ -2647,7 +2654,7 @@ struct Route_53Client:
             query["edns0clientsubnetip"] = input.EDNS0ClientSubnetIP.unwrap_or("")
         if input.EDNS0ClientSubnetMask.is_some():
             query["edns0clientsubnetmask"] = input.EDNS0ClientSubnetMask.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/testdnsanswer", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/testdnsanswer", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
     # UpdateHealthCheck  POST /2013-04-01/healthcheck/{HealthCheckId}
@@ -2656,7 +2663,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["HealthCheckId"] = input.HealthCheckId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/healthcheck/{HealthCheckId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/healthcheck/{HealthCheckId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("UpdateHealthCheckRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         if input.HealthCheckVersion.is_some():
             auto t0 = str(input.HealthCheckVersion.unwrap())
@@ -2716,7 +2723,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("UpdateHostedZoneCommentRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         if input.Comment.is_some():
             restxml.rest_xml_scalar(root, "Comment", input.Comment.unwrap())
@@ -2730,7 +2737,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.HostedZoneId
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/features", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/features", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("UpdateHostedZoneFeaturesRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         if input.EnableAcceleratedRecovery.is_some():
             auto t0 = route53_xml_bool(input.EnableAcceleratedRecovery.unwrap())
@@ -2746,7 +2753,7 @@ struct Route_53Client:
         dict[str, str] labels = {}
         labels["Id"] = input.Id
         labels["Version"] = str(input.Version)
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy/{Id}/{Version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy/{Id}/{Version}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("UpdateTrafficPolicyCommentRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "Comment", input.Comment)
         auto body = restxml.rest_xml_serialize(root)
@@ -2759,7 +2766,7 @@ struct Route_53Client:
         auto host = endpoints.regional_host(route53_service(), self.region)
         dict[str, str] labels = {}
         labels["Id"] = input.Id
-        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("UpdateTrafficPolicyInstanceRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
         restxml.rest_xml_scalar(root, "TTL", str(input.TTL))
         restxml.rest_xml_scalar(root, "TrafficPolicyId", input.TrafficPolicyId)

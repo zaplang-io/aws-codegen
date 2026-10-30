@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 26 operations — 25 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 26 operations — 26 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   84 structs (69 @derive(Json)), 9 enums, 7 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -661,11 +661,6 @@ def appfabric_error_from_code(str code) -> AppFabricError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -700,7 +695,7 @@ struct AppFabricClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def batch_get_user_access_tasks(self, BatchGetUserAccessTasksRequest input) -> str:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/useraccess/batchget", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/useraccess/batchget", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"appBundleIdentifier\":" + appfabric_json_str(input.appBundleIdentifier))
         list[str] e0 = []
@@ -717,7 +712,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["appAuthorizationIdentifier"] = input.appAuthorizationIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}/connect", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}/connect", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ConnectAppAuthorizationDocument(authRequest=input.authRequest)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
@@ -728,7 +723,7 @@ struct AppFabricClient:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/appauthorizations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/appauthorizations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"app\":" + appfabric_json_str(input.app))
         parts.append("\"credential\":" + input.credential.to_json())
@@ -750,7 +745,7 @@ struct AppFabricClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_app_bundle(self, CreateAppBundleRequest input) -> str:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/appbundles", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.clientToken.is_some():
             auto u0 = input.clientToken.unwrap()
@@ -773,7 +768,7 @@ struct AppFabricClient:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"app\":" + appfabric_json_str(input.app))
         parts.append("\"tenantId\":" + appfabric_json_str(input.tenantId))
@@ -797,7 +792,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["ingestionIdentifier"] = input.ingestionIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"processingConfiguration\":" + input.processingConfiguration.to_json())
         parts.append("\"destinationConfiguration\":" + input.destinationConfiguration.to_json())
@@ -820,7 +815,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["appAuthorizationIdentifier"] = input.appAuthorizationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # DeleteAppBundle  DELETE /appbundles/{appBundleIdentifier}
@@ -829,7 +824,7 @@ struct AppFabricClient:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # DeleteIngestion  DELETE /appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}
@@ -839,7 +834,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["ingestionIdentifier"] = input.ingestionIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # DeleteIngestionDestination  DELETE /appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}
@@ -850,7 +845,7 @@ struct AppFabricClient:
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["ingestionIdentifier"] = input.ingestionIdentifier
         labels["ingestionDestinationIdentifier"] = input.ingestionDestinationIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # GetAppAuthorization  GET /appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}
@@ -860,7 +855,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["appAuthorizationIdentifier"] = input.appAuthorizationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # GetAppBundle  GET /appbundles/{appBundleIdentifier}
@@ -869,7 +864,7 @@ struct AppFabricClient:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # GetIngestion  GET /appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}
@@ -879,7 +874,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["ingestionIdentifier"] = input.ingestionIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # GetIngestionDestination  GET /appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}
@@ -890,7 +885,7 @@ struct AppFabricClient:
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["ingestionIdentifier"] = input.ingestionIdentifier
         labels["ingestionDestinationIdentifier"] = input.ingestionDestinationIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # ListAppAuthorizations  GET /appbundles/{appBundleIdentifier}/appauthorizations
@@ -904,7 +899,7 @@ struct AppFabricClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/appauthorizations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/appauthorizations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # ListAppBundles  GET /appbundles
@@ -916,7 +911,7 @@ struct AppFabricClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # ListIngestionDestinations  GET /appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations
@@ -931,7 +926,7 @@ struct AppFabricClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # ListIngestions  GET /appbundles/{appBundleIdentifier}/ingestions
@@ -945,7 +940,7 @@ struct AppFabricClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/appbundles/{appBundleIdentifier}/ingestions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -954,7 +949,7 @@ struct AppFabricClient:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # StartIngestion  POST /appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/start
@@ -964,14 +959,14 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["ingestionIdentifier"] = input.ingestionIdentifier
         labels["appBundleIdentifier"] = input.appBundleIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # StartUserAccessTasks  POST /useraccess/start
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_user_access_tasks(self, StartUserAccessTasksRequest input) -> str:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/useraccess/start", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/useraccess/start", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartUserAccessTasksDocument(appBundleIdentifier=input.appBundleIdentifier, email=input.email)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
@@ -983,7 +978,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["ingestionIdentifier"] = input.ingestionIdentifier
         labels["appBundleIdentifier"] = input.appBundleIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -992,7 +987,7 @@ struct AppFabricClient:
         auto host = endpoints.regional_host(appfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tags:
@@ -1001,6 +996,17 @@ struct AppFabricClient:
         auto bp = restjson.rest_json_document(b, appfabric_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(appfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, appfabric_service(), self.region, host)
+
     # UpdateAppAuthorization  PATCH /appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_app_authorization(self, UpdateAppAuthorizationRequest input) -> str:
@@ -1008,7 +1014,7 @@ struct AppFabricClient:
         dict[str, str] labels = {}
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["appAuthorizationIdentifier"] = input.appAuthorizationIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/appbundles/{appBundleIdentifier}/appauthorizations/{appAuthorizationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateAppAuthorizationDocument(credential=input.credential, tenant=input.tenant)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)
@@ -1021,7 +1027,7 @@ struct AppFabricClient:
         labels["appBundleIdentifier"] = input.appBundleIdentifier
         labels["ingestionIdentifier"] = input.ingestionIdentifier
         labels["ingestionDestinationIdentifier"] = input.ingestionDestinationIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/appbundles/{appBundleIdentifier}/ingestions/{ingestionIdentifier}/ingestiondestinations/{ingestionDestinationIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateIngestionDestinationDocument(destinationConfiguration=input.destinationConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, appfabric_service(), self.region, host)

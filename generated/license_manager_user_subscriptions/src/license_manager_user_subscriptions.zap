@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 16 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 17 operations — 17 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   60 structs (20 @derive(Json)), 3 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -514,11 +514,6 @@ def license_manager_user_subscriptions_error_from_code(str code) -> License_Mana
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -653,7 +648,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def associate_user(self, AssociateUserRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/user/AssociateUser", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user/AssociateUser", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Username\":" + license_manager_user_subscriptions_json_str(input.Username))
         parts.append("\"InstanceId\":" + license_manager_user_subscriptions_json_str(input.InstanceId))
@@ -674,7 +669,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_license_server_endpoint(self, CreateLicenseServerEndpointRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/license-server/CreateLicenseServerEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/license-server/CreateLicenseServerEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"IdentityProviderArn\":" + license_manager_user_subscriptions_json_str(input.IdentityProviderArn))
         parts.append("\"LicenseServerSettings\":" + input.LicenseServerSettings.to_json())
@@ -691,7 +686,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def delete_license_server_endpoint(self, DeleteLicenseServerEndpointRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/license-server/DeleteLicenseServerEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/license-server/DeleteLicenseServerEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLicenseServerEndpointDocument(LicenseServerEndpointArn=input.LicenseServerEndpointArn, ServerType=input.ServerType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
@@ -700,7 +695,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def deregister_identity_provider(self, DeregisterIdentityProviderRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/DeregisterIdentityProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/DeregisterIdentityProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.IdentityProvider.is_some():
             auto u0 = input.IdentityProvider.unwrap()
@@ -718,7 +713,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def disassociate_user(self, DisassociateUserRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/user/DisassociateUser", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user/DisassociateUser", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Username.is_some():
             auto u0 = input.Username.unwrap()
@@ -742,7 +737,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_identity_providers(self, ListIdentityProvidersRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/ListIdentityProviders", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/ListIdentityProviders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -763,7 +758,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_instances(self, ListInstancesRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/instance/ListInstances", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/instance/ListInstances", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -784,7 +779,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_license_server_endpoints(self, ListLicenseServerEndpointsRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/license-server/ListLicenseServerEndpoints", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/license-server/ListLicenseServerEndpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.MaxResults.is_some():
             auto u0 = input.MaxResults.unwrap()
@@ -805,7 +800,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_product_subscriptions(self, ListProductSubscriptionsRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/user/ListProductSubscriptions", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user/ListProductSubscriptions", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Product.is_some():
             auto u0 = input.Product.unwrap()
@@ -832,14 +827,14 @@ struct License_Manager_User_SubscriptionsClient:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, license_manager_user_subscriptions_service(), self.region, host)
 
     # ListUserAssociations  POST /user/ListUserAssociations
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def list_user_associations(self, ListUserAssociationsRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/user/ListUserAssociations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user/ListUserAssociations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"InstanceId\":" + license_manager_user_subscriptions_json_str(input.InstanceId))
         parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
@@ -862,7 +857,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def register_identity_provider(self, RegisterIdentityProviderRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/RegisterIdentityProvider", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/RegisterIdentityProvider", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
         parts.append("\"Product\":" + license_manager_user_subscriptions_json_str(input.Product))
@@ -882,7 +877,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_product_subscription(self, StartProductSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/user/StartProductSubscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user/StartProductSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"Username\":" + license_manager_user_subscriptions_json_str(input.Username))
         parts.append("\"IdentityProvider\":" + identity_provider_to_json(input.IdentityProvider))
@@ -903,7 +898,7 @@ struct License_Manager_User_SubscriptionsClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def stop_product_subscription(self, StopProductSubscriptionRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/user/StopProductSubscription", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/user/StopProductSubscription", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.Username.is_some():
             auto u0 = input.Username.unwrap()
@@ -929,7 +924,7 @@ struct License_Manager_User_SubscriptionsClient:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
         dict[str, str] labels = {}
         labels["ResourceArn"] = input.ResourceArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.Tags.keys()):
@@ -938,11 +933,22 @@ struct License_Manager_User_SubscriptionsClient:
         auto bp = restjson.rest_json_document(b, license_manager_user_subscriptions_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, license_manager_user_subscriptions_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{ResourceArn}
+    # errors: InternalServerException, ResourceNotFoundException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceArn"] = input.ResourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.TagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{ResourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, license_manager_user_subscriptions_service(), self.region, host)
+
     # UpdateIdentityProviderSettings  POST /identity-provider/UpdateIdentityProviderSettings
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def update_identity_provider_settings(self, UpdateIdentityProviderSettingsRequest input) -> str:
         auto host = endpoints.regional_host(license_manager_user_subscriptions_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/UpdateIdentityProviderSettings", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/identity-provider/UpdateIdentityProviderSettings", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.IdentityProvider.is_some():
             auto u0 = input.IdentityProvider.unwrap()

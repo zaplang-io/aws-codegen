@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 127 operations — 125 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 127 operations — 126 with a generated method,
+#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   431 structs (277 @derive(Json)), 66 enums, 7 error variants.
 #   30 paginators generated (1 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -4188,7 +4188,6 @@ def deadline_error_from_code(str code) -> deadlineError:
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
 #   ListMemberships (httpQuery `resourceTypes` has unsupported type list[MembershipResourceType])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
 
 # Paginated operations (paginators-1.json) not surfaced — their operation is
 # skipped above, or the continuation token is not a simple string field:
@@ -4769,7 +4768,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMemberToFarmDocument(principalType=input.principalType, identityStoreId=input.identityStoreId, membershipLevel=input.membershipLevel, identityCenterRegion=input.identityCenterRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -4782,7 +4781,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMemberToFleetDocument(principalType=input.principalType, identityStoreId=input.identityStoreId, membershipLevel=input.membershipLevel, identityCenterRegion=input.identityCenterRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -4796,7 +4795,7 @@ struct deadlineClient:
         labels["queueId"] = input.queueId
         labels["jobId"] = input.jobId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMemberToJobDocument(principalType=input.principalType, identityStoreId=input.identityStoreId, membershipLevel=input.membershipLevel, identityCenterRegion=input.identityCenterRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -4809,7 +4808,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateMemberToQueueDocument(principalType=input.principalType, identityStoreId=input.identityStoreId, membershipLevel=input.membershipLevel, identityCenterRegion=input.identityCenterRegion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -4821,7 +4820,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/read-roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/read-roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # AssumeFleetRoleForWorker  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/fleet-roles
@@ -4832,7 +4831,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["workerId"] = input.workerId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/fleet-roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/fleet-roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # AssumeQueueRoleForRead  GET /2023-10-12/farms/{farmId}/queues/{queueId}/read-roles
@@ -4842,7 +4841,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/read-roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/read-roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # AssumeQueueRoleForUser  GET /2023-10-12/farms/{farmId}/queues/{queueId}/user-roles
@@ -4852,7 +4851,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/user-roles", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/user-roles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # AssumeQueueRoleForWorker  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/queue-roles
@@ -4865,14 +4864,14 @@ struct deadlineClient:
         labels["workerId"] = input.workerId
         dict[str, str] query = {}
         query["queueId"] = input.queueId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/queue-roles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/queue-roles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # BatchGetJob  POST /2023-10-12/batch-get-job
     # errors: AccessDeniedException, InternalServerErrorException, ThrottlingException, ValidationException
     def batch_get_job(self, BatchGetJobRequest input) -> str:
         auto host = endpoints.regional_host(deadline_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-job", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.identifiers:
@@ -4889,7 +4888,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["workerId"] = input.workerId
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/batchGetJobEntity", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/batchGetJobEntity", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.identifiers:
@@ -4902,7 +4901,7 @@ struct deadlineClient:
     # errors: AccessDeniedException, InternalServerErrorException, ThrottlingException, ValidationException
     def batch_get_session(self, BatchGetSessionRequest input) -> str:
         auto host = endpoints.regional_host(deadline_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-session", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-session", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.identifiers:
@@ -4915,7 +4914,7 @@ struct deadlineClient:
     # errors: AccessDeniedException, InternalServerErrorException, ThrottlingException, ValidationException
     def batch_get_session_action(self, BatchGetSessionActionRequest input) -> str:
         auto host = endpoints.regional_host(deadline_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-session-action", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-session-action", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.identifiers:
@@ -4928,7 +4927,7 @@ struct deadlineClient:
     # errors: AccessDeniedException, InternalServerErrorException, ThrottlingException, ValidationException
     def batch_get_step(self, BatchGetStepRequest input) -> str:
         auto host = endpoints.regional_host(deadline_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-step", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-step", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.identifiers:
@@ -4941,7 +4940,7 @@ struct deadlineClient:
     # errors: AccessDeniedException, InternalServerErrorException, ThrottlingException, ValidationException
     def batch_get_task(self, BatchGetTaskRequest input) -> str:
         auto host = endpoints.regional_host(deadline_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.identifiers:
@@ -4954,7 +4953,7 @@ struct deadlineClient:
     # errors: AccessDeniedException, InternalServerErrorException, ThrottlingException, ValidationException
     def batch_get_worker(self, BatchGetWorkerRequest input) -> str:
         auto host = endpoints.regional_host(deadline_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-worker", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/batch-get-worker", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.identifiers:
@@ -4970,7 +4969,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/batch-update-job", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/batch-update-job", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.jobs:
@@ -4986,7 +4985,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/batch-update-task", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/batch-update-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.tasks:
@@ -5003,7 +5002,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/template", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/template", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CopyJobTemplateDocument(targetS3Location=input.targetS3Location)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -5017,7 +5016,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/budgets", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/budgets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + deadline_json_str(input.displayName))
         if input.description.is_some():
@@ -5046,7 +5045,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + deadline_json_str(input.displayName))
         if input.description.is_some():
@@ -5076,7 +5075,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/fleets", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/fleets", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + deadline_json_str(input.displayName))
         if input.description.is_some():
@@ -5110,7 +5109,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.template.is_some():
             auto u0 = input.template.unwrap()
@@ -5168,7 +5167,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/license-endpoints", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/license-endpoints", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"vpcId\":" + deadline_json_str(input.vpcId))
         list[str] e0 = []
@@ -5197,7 +5196,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/limits", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/limits", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateLimitDocument(displayName=input.displayName, amountRequirementName=input.amountRequirementName, maxCount=input.maxCount, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -5209,7 +5208,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/monitors", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/monitors", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + deadline_json_str(input.displayName))
         parts.append("\"identityCenterInstanceArn\":" + deadline_json_str(input.identityCenterInstanceArn))
@@ -5236,7 +5235,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + deadline_json_str(input.displayName))
         if input.description.is_some():
@@ -5288,7 +5287,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateQueueEnvironmentDocument(priority=input.priority, templateType=input.templateType, template=input.template)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -5299,7 +5298,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateQueueFleetAssociationDocument(queueId=input.queueId, fleetId=input.fleetId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -5310,7 +5309,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateQueueLimitAssociationDocument(queueId=input.queueId, limitId=input.limitId)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -5324,7 +5323,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/storage-profiles", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/storage-profiles", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"displayName\":" + deadline_json_str(input.displayName))
         parts.append("\"osFamily\":" + input.osFamily.to_json())
@@ -5347,7 +5346,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.hostProperties.is_some():
             auto u0 = input.hostProperties.unwrap()
@@ -5368,7 +5367,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["budgetId"] = input.budgetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/budgets/{budgetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/budgets/{budgetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteFarm  DELETE /2023-10-12/farms/{farmId}
@@ -5377,7 +5376,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteFleet  DELETE /2023-10-12/farms/{farmId}/fleets/{fleetId}
@@ -5390,7 +5389,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteLicenseEndpoint  DELETE /2023-10-12/license-endpoints/{licenseEndpointId}
@@ -5399,7 +5398,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["licenseEndpointId"] = input.licenseEndpointId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteLimit  DELETE /2023-10-12/farms/{farmId}/limits/{limitId}
@@ -5409,7 +5408,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["limitId"] = input.limitId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/limits/{limitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/limits/{limitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteMeteredProduct  DELETE /2023-10-12/license-endpoints/{licenseEndpointId}/metered-products/{productId}
@@ -5419,7 +5418,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["licenseEndpointId"] = input.licenseEndpointId
         labels["productId"] = input.productId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}/metered-products/{productId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}/metered-products/{productId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteMonitor  DELETE /2023-10-12/monitors/{monitorId}
@@ -5428,7 +5427,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorId"] = input.monitorId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/monitors/{monitorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/monitors/{monitorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteQueue  DELETE /2023-10-12/farms/{farmId}/queues/{queueId}
@@ -5438,7 +5437,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteQueueEnvironment  DELETE /2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}
@@ -5449,7 +5448,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["queueEnvironmentId"] = input.queueEnvironmentId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteQueueFleetAssociation  DELETE /2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}
@@ -5460,7 +5459,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["fleetId"] = input.fleetId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteQueueLimitAssociation  DELETE /2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}
@@ -5471,7 +5470,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["limitId"] = input.limitId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteStorageProfile  DELETE /2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}
@@ -5481,7 +5480,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["storageProfileId"] = input.storageProfileId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteVolume  DELETE /2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}
@@ -5492,7 +5491,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["volumeId"] = input.volumeId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DeleteWorker  DELETE /2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}
@@ -5503,7 +5502,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["workerId"] = input.workerId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DisassociateMemberFromFarm  DELETE /2023-10-12/farms/{farmId}/members/{principalId}
@@ -5513,7 +5512,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DisassociateMemberFromFleet  DELETE /2023-10-12/farms/{farmId}/fleets/{fleetId}/members/{principalId}
@@ -5524,7 +5523,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DisassociateMemberFromJob  DELETE /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members/{principalId}
@@ -5536,7 +5535,7 @@ struct deadlineClient:
         labels["queueId"] = input.queueId
         labels["jobId"] = input.jobId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # DisassociateMemberFromQueue  DELETE /2023-10-12/farms/{farmId}/queues/{queueId}/members/{principalId}
@@ -5547,7 +5546,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["principalId"] = input.principalId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/members/{principalId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetBudget  GET /2023-10-12/farms/{farmId}/budgets/{budgetId}
@@ -5557,7 +5556,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["budgetId"] = input.budgetId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/budgets/{budgetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/budgets/{budgetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetFarm  GET /2023-10-12/farms/{farmId}
@@ -5566,7 +5565,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetFleet  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}
@@ -5576,7 +5575,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetJob  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}
@@ -5587,7 +5586,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["jobId"] = input.jobId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetLicenseEndpoint  GET /2023-10-12/license-endpoints/{licenseEndpointId}
@@ -5596,7 +5595,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["licenseEndpointId"] = input.licenseEndpointId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetLimit  GET /2023-10-12/farms/{farmId}/limits/{limitId}
@@ -5606,7 +5605,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["limitId"] = input.limitId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/limits/{limitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/limits/{limitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetMonitor  GET /2023-10-12/monitors/{monitorId}
@@ -5615,7 +5614,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorId"] = input.monitorId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/monitors/{monitorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/monitors/{monitorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetMonitorSettings  GET /2023-10-12/monitors/{monitorId}/settings
@@ -5624,7 +5623,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorId"] = input.monitorId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/monitors/{monitorId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/monitors/{monitorId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetQueue  GET /2023-10-12/farms/{farmId}/queues/{queueId}
@@ -5634,7 +5633,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetQueueEnvironment  GET /2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}
@@ -5645,7 +5644,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["queueEnvironmentId"] = input.queueEnvironmentId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetQueueFleetAssociation  GET /2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}
@@ -5656,7 +5655,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["fleetId"] = input.fleetId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetQueueLimitAssociation  GET /2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}
@@ -5667,7 +5666,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["limitId"] = input.limitId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetSession  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions/{sessionId}
@@ -5679,7 +5678,7 @@ struct deadlineClient:
         labels["queueId"] = input.queueId
         labels["jobId"] = input.jobId
         labels["sessionId"] = input.sessionId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetSessionAction  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/session-actions/{sessionActionId}
@@ -5691,7 +5690,7 @@ struct deadlineClient:
         labels["queueId"] = input.queueId
         labels["jobId"] = input.jobId
         labels["sessionActionId"] = input.sessionActionId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/session-actions/{sessionActionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/session-actions/{sessionActionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetSessionsStatisticsAggregation  GET /2023-10-12/farms/{farmId}/sessions-statistics-aggregation
@@ -5706,7 +5705,7 @@ struct deadlineClient:
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         query["aggregationId"] = input.aggregationId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/sessions-statistics-aggregation", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/sessions-statistics-aggregation", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetStep  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}
@@ -5718,7 +5717,7 @@ struct deadlineClient:
         labels["queueId"] = input.queueId
         labels["jobId"] = input.jobId
         labels["stepId"] = input.stepId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetStorageProfile  GET /2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}
@@ -5728,7 +5727,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["storageProfileId"] = input.storageProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetStorageProfileForQueue  GET /2023-10-12/farms/{farmId}/queues/{queueId}/storage-profiles/{storageProfileId}
@@ -5739,7 +5738,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["storageProfileId"] = input.storageProfileId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetTask  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks/{taskId}
@@ -5752,7 +5751,7 @@ struct deadlineClient:
         labels["jobId"] = input.jobId
         labels["stepId"] = input.stepId
         labels["taskId"] = input.taskId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetVolume  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}
@@ -5763,7 +5762,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["volumeId"] = input.volumeId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes/{volumeId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # GetWorker  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}
@@ -5774,7 +5773,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["workerId"] = input.workerId
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListAvailableMeteredProducts  GET /2023-10-12/metered-products
@@ -5786,7 +5785,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/metered-products", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/metered-products", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListBudgets  GET /2023-10-12/farms/{farmId}/budgets
@@ -5802,7 +5801,7 @@ struct deadlineClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/budgets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/budgets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListFarmMembers  GET /2023-10-12/farms/{farmId}/members
@@ -5816,7 +5815,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListFarms  GET /2023-10-12/farms
@@ -5830,7 +5829,7 @@ struct deadlineClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.principalId.is_some():
             query["principalId"] = input.principalId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListFleetMembers  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/members
@@ -5845,7 +5844,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListFleets  GET /2023-10-12/farms/{farmId}/fleets
@@ -5865,7 +5864,7 @@ struct deadlineClient:
             query["displayName"] = input.displayName.unwrap_or("")
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListJobMembers  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members
@@ -5881,7 +5880,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListJobParameterDefinitions  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/parameter-definitions
@@ -5897,7 +5896,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/parameter-definitions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/parameter-definitions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListJobs  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs
@@ -5914,7 +5913,7 @@ struct deadlineClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.principalId.is_some():
             query["principalId"] = input.principalId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListLicenseEndpoints  GET /2023-10-12/license-endpoints
@@ -5926,7 +5925,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/license-endpoints", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/license-endpoints", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListLimits  GET /2023-10-12/farms/{farmId}/limits
@@ -5940,7 +5939,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/limits", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/limits", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListMeteredProducts  GET /2023-10-12/license-endpoints/{licenseEndpointId}/metered-products
@@ -5954,7 +5953,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}/metered-products", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}/metered-products", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListMonitors  GET /2023-10-12/monitors
@@ -5966,7 +5965,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/monitors", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/monitors", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListQueueEnvironments  GET /2023-10-12/farms/{farmId}/queues/{queueId}/environments
@@ -5981,7 +5980,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListQueueFleetAssociations  GET /2023-10-12/farms/{farmId}/queue-fleet-associations
@@ -5999,7 +5998,7 @@ struct deadlineClient:
             query["queueId"] = input.queueId.unwrap_or("")
         if input.fleetId.is_some():
             query["fleetId"] = input.fleetId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListQueueLimitAssociations  GET /2023-10-12/farms/{farmId}/queue-limit-associations
@@ -6017,7 +6016,7 @@ struct deadlineClient:
             query["queueId"] = input.queueId.unwrap_or("")
         if input.limitId.is_some():
             query["limitId"] = input.limitId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListQueueMembers  GET /2023-10-12/farms/{farmId}/queues/{queueId}/members
@@ -6032,7 +6031,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/members", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/members", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListQueues  GET /2023-10-12/farms/{farmId}/queues
@@ -6050,7 +6049,7 @@ struct deadlineClient:
             query["principalId"] = input.principalId.unwrap_or("")
         if input.status.is_some():
             query["status"] = input.status.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListSessionActions  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/session-actions
@@ -6070,7 +6069,7 @@ struct deadlineClient:
             query["sessionId"] = input.sessionId.unwrap_or("")
         if input.taskId.is_some():
             query["taskId"] = input.taskId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/session-actions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/session-actions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListSessions  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions
@@ -6086,7 +6085,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListSessionsForWorker  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/sessions
@@ -6102,7 +6101,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/sessions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/sessions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListStepConsumers  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/consumers
@@ -6119,7 +6118,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/consumers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/consumers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListStepDependencies  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/dependencies
@@ -6136,7 +6135,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/dependencies", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/dependencies", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListSteps  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps
@@ -6152,7 +6151,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListStorageProfiles  GET /2023-10-12/farms/{farmId}/storage-profiles
@@ -6166,7 +6165,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/storage-profiles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/storage-profiles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListStorageProfilesForQueue  GET /2023-10-12/farms/{farmId}/queues/{queueId}/storage-profiles
@@ -6181,7 +6180,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/storage-profiles", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/storage-profiles", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListTagsForResource  GET /2023-10-12/tags/{resourceArn}
@@ -6190,7 +6189,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListTasks  GET /2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks
@@ -6207,7 +6206,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListVolumes  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes
@@ -6222,7 +6221,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/volumes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # ListWorkers  GET /2023-10-12/farms/{farmId}/fleets/{fleetId}/workers
@@ -6237,7 +6236,7 @@ struct deadlineClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # PutMeteredProduct  PUT /2023-10-12/license-endpoints/{licenseEndpointId}/metered-products/{productId}
@@ -6247,7 +6246,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["licenseEndpointId"] = input.licenseEndpointId
         labels["productId"] = input.productId
-        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}/metered-products/{productId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2023-10-12/license-endpoints/{licenseEndpointId}/metered-products/{productId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # SearchJobs  POST /2023-10-12/farms/{farmId}/search/jobs
@@ -6256,7 +6255,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/jobs", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/jobs", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterExpressions.is_some():
             auto u0 = input.filterExpressions.unwrap()
@@ -6284,7 +6283,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/steps", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/steps", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterExpressions.is_some():
             auto u0 = input.filterExpressions.unwrap()
@@ -6315,7 +6314,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/tasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/tasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterExpressions.is_some():
             auto u0 = input.filterExpressions.unwrap()
@@ -6346,7 +6345,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/workers", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/search/workers", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.filterExpressions.is_some():
             auto u0 = input.filterExpressions.unwrap()
@@ -6374,7 +6373,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/sessions-statistics-aggregation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/farms/{farmId}/sessions-statistics-aggregation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"resourceIds\":" + sessions_statistics_resources_to_json(input.resourceIds))
         parts.append("\"startTime\":" + deadline_json_ts_iso(input.startTime))
@@ -6402,7 +6401,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/2023-10-12/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.tags.is_some():
             auto u0 = input.tags.unwrap()
@@ -6412,6 +6411,17 @@ struct deadlineClient:
             parts.append("\"tags\":" + deadline_json_obj(m1))
         auto bp = restjson.rest_json_document(b, deadline_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
+
+    # UntagResource  DELETE /2023-10-12/tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, InternalServerErrorException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(deadline_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/2023-10-12/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, deadline_service(), self.region, host)
 
     # UpdateBudget  PATCH /2023-10-12/farms/{farmId}/budgets/{budgetId}
     # errors: AccessDeniedException, InternalServerErrorException, ResourceNotFoundException, ThrottlingException, ValidationException
@@ -6423,7 +6433,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/budgets/{budgetId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/budgets/{budgetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -6461,7 +6471,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateFarmDocument(displayName=input.displayName, description=input.description, costScaleFactor=input.costScaleFactor)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6476,7 +6486,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -6513,7 +6523,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateJobDocument(targetTaskRunStatus=input.targetTaskRunStatus, priority=input.priority, maxFailedTasksCount=input.maxFailedTasksCount, maxRetriesPerTask=input.maxRetriesPerTask, lifecycleStatus=input.lifecycleStatus, maxWorkerCount=input.maxWorkerCount, name=input.name, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6525,7 +6535,7 @@ struct deadlineClient:
         dict[str, str] labels = {}
         labels["farmId"] = input.farmId
         labels["limitId"] = input.limitId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/limits/{limitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/limits/{limitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLimitDocument(displayName=input.displayName, description=input.description, maxCount=input.maxCount)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6536,7 +6546,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorId"] = input.monitorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/monitors/{monitorId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/monitors/{monitorId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMonitorDocument(subdomain=input.subdomain, displayName=input.displayName, roleArn=input.roleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6547,7 +6557,7 @@ struct deadlineClient:
         auto host = endpoints.regional_host(deadline_service(), self.region)
         dict[str, str] labels = {}
         labels["monitorId"] = input.monitorId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/monitors/{monitorId}/settings", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/monitors/{monitorId}/settings", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.settings.keys()):
@@ -6566,7 +6576,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -6627,7 +6637,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/environments/{queueEnvironmentId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueEnvironmentDocument(priority=input.priority, templateType=input.templateType, template=input.template)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6640,7 +6650,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["fleetId"] = input.fleetId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queue-fleet-associations/{queueId}/{fleetId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueFleetAssociationDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6653,7 +6663,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["queueId"] = input.queueId
         labels["limitId"] = input.limitId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateQueueLimitAssociationDocument(status=input.status)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6670,7 +6680,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/sessions/{sessionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSessionDocument(targetLifecycleStatus=input.targetLifecycleStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6687,7 +6697,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateStepDocument(targetTaskRunStatus=input.targetTaskRunStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6702,7 +6712,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/storage-profiles/{storageProfileId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.displayName.is_some():
             auto u0 = input.displayName.unwrap()
@@ -6738,7 +6748,7 @@ struct deadlineClient:
         dict[str, str] headers = {}
         if input.clientToken.is_some():
             headers["X-Amz-Client-Token"] = input.clientToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/queues/{queueId}/jobs/{jobId}/steps/{stepId}/tasks/{taskId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateTaskDocument(targetRunStatus=input.targetRunStatus)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, deadline_service(), self.region, host)
@@ -6751,7 +6761,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["workerId"] = input.workerId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.status.is_some():
             auto u0 = input.status.unwrap()
@@ -6773,7 +6783,7 @@ struct deadlineClient:
         labels["farmId"] = input.farmId
         labels["fleetId"] = input.fleetId
         labels["workerId"] = input.workerId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/schedule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/2023-10-12/farms/{farmId}/fleets/{fleetId}/workers/{workerId}/schedule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.updatedSessionActions.is_some():
             auto u0 = input.updatedSessionActions.unwrap()

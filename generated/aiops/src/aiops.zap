@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 11 operations — 10 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 11 operations — 11 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   32 structs (25 @derive(Json)), 1 enums, 8 error variants.
 #   1 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -274,11 +274,6 @@ def aiops_error_from_code(str code) -> AIOpsError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -296,7 +291,7 @@ struct AIOpsClient:
     # errors: AccessDeniedException, ConflictException, ForbiddenException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_investigation_group(self, CreateInvestigationGroupInput input) -> str:
         auto host = endpoints.regional_host(aiops_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/investigationGroups", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/investigationGroups", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + aiops_json_str(input.name))
         parts.append("\"roleArn\":" + aiops_json_str(input.roleArn))
@@ -345,7 +340,7 @@ struct AIOpsClient:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/investigationGroups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/investigationGroups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aiops_service(), self.region, host)
 
     # DeleteInvestigationGroupPolicy  DELETE /investigationGroups/{identifier}/policy
@@ -354,7 +349,7 @@ struct AIOpsClient:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/investigationGroups/{identifier}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/investigationGroups/{identifier}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aiops_service(), self.region, host)
 
     # GetInvestigationGroup  GET /investigationGroups/{identifier}
@@ -363,7 +358,7 @@ struct AIOpsClient:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/investigationGroups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/investigationGroups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aiops_service(), self.region, host)
 
     # GetInvestigationGroupPolicy  GET /investigationGroups/{identifier}/policy
@@ -372,7 +367,7 @@ struct AIOpsClient:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="GET", path_template="/investigationGroups/{identifier}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/investigationGroups/{identifier}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aiops_service(), self.region, host)
 
     # ListInvestigationGroups  GET /investigationGroups
@@ -384,7 +379,7 @@ struct AIOpsClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/investigationGroups", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/investigationGroups", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aiops_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -393,7 +388,7 @@ struct AIOpsClient:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, aiops_service(), self.region, host)
 
     # PutInvestigationGroupPolicy  POST /investigationGroups/{identifier}/policy
@@ -402,7 +397,7 @@ struct AIOpsClient:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="POST", path_template="/investigationGroups/{identifier}/policy", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/investigationGroups/{identifier}/policy", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = PutInvestigationGroupPolicyDocument(policy=input.policy)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, aiops_service(), self.region, host)
@@ -413,7 +408,7 @@ struct AIOpsClient:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -422,13 +417,24 @@ struct AIOpsClient:
         auto bp = restjson.rest_json_document(b, aiops_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, aiops_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, ConflictException, ForbiddenException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(aiops_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, aiops_service(), self.region, host)
+
     # UpdateInvestigationGroup  PATCH /investigationGroups/{identifier}
     # errors: AccessDeniedException, ConflictException, ForbiddenException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_investigation_group(self, UpdateInvestigationGroupRequest input) -> str:
         auto host = endpoints.regional_host(aiops_service(), self.region)
         dict[str, str] labels = {}
         labels["identifier"] = input.identifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/investigationGroups/{identifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/investigationGroups/{identifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.roleArn.is_some():
             auto u0 = input.roleArn.unwrap()

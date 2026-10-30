@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 14 with a generated method,
-#   3 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 17 operations — 17 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   71 structs (43 @derive(Json)), 13 enums, 9 error variants.
 #   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -748,13 +748,6 @@ def braket_error_from_code(str code) -> BraketError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   GetJob (httpQuery `additionalAttributeNames` has unsupported type list[str])
-#   GetQuantumTask (httpQuery `additionalAttributeNames` has unsupported type list[str])
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -854,7 +847,7 @@ struct BraketClient:
         auto host = endpoints.regional_host(braket_service(), self.region)
         dict[str, str] labels = {}
         labels["jobArn"] = input.jobArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/job/{jobArn}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/job/{jobArn}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
 
     # CancelQuantumTask  PUT /quantum-task/{quantumTaskArn}/cancel
@@ -863,7 +856,7 @@ struct BraketClient:
         auto host = endpoints.regional_host(braket_service(), self.region)
         dict[str, str] labels = {}
         labels["quantumTaskArn"] = input.quantumTaskArn
-        auto b = binding.HttpBinding(method="PUT", path_template="/quantum-task/{quantumTaskArn}/cancel", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/quantum-task/{quantumTaskArn}/cancel", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CancelQuantumTaskDocument(clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
@@ -872,7 +865,7 @@ struct BraketClient:
     # errors: AccessDeniedException, ConflictException, DeviceOfflineException, DeviceRetiredException, InternalServiceException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_job(self, CreateJobRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/job", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/job", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + braket_json_str(input.clientToken))
         parts.append("\"algorithmSpecification\":" + input.algorithmSpecification.to_json())
@@ -918,7 +911,7 @@ struct BraketClient:
     # errors: AccessDeniedException, DeviceOfflineException, DeviceRetiredException, InternalServiceException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_quantum_task(self, CreateQuantumTaskRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/quantum-task", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/quantum-task", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + braket_json_str(input.clientToken))
         parts.append("\"deviceArn\":" + braket_json_str(input.deviceArn))
@@ -954,7 +947,7 @@ struct BraketClient:
     # errors: AccessDeniedException, DeviceRetiredException, InternalServiceException, ThrottlingException, ValidationException
     def create_spending_limit(self, CreateSpendingLimitRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/spending-limit", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spending-limit", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + braket_json_str(input.clientToken))
         parts.append("\"deviceArn\":" + braket_json_str(input.deviceArn))
@@ -977,7 +970,7 @@ struct BraketClient:
         auto host = endpoints.regional_host(braket_service(), self.region)
         dict[str, str] labels = {}
         labels["spendingLimitArn"] = input.spendingLimitArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/spending-limit/{spendingLimitArn}/delete", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/spending-limit/{spendingLimitArn}/delete", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
 
     # GetDevice  GET /device/{deviceArn}
@@ -986,7 +979,31 @@ struct BraketClient:
         auto host = endpoints.regional_host(braket_service(), self.region)
         dict[str, str] labels = {}
         labels["deviceArn"] = input.deviceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/device/{deviceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/device/{deviceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
+
+    # GetJob  GET /job/{jobArn}
+    # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_job(self, GetJobRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        dict[str, str] labels = {}
+        labels["jobArn"] = input.jobArn
+        dict[str, list[str]] multi_query = {}
+        if input.additionalAttributeNames.is_some():
+            multi_query["additionalAttributeNames"] = input.additionalAttributeNames.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/job/{jobArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
+
+    # GetQuantumTask  GET /quantum-task/{quantumTaskArn}
+    # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def get_quantum_task(self, GetQuantumTaskRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        dict[str, str] labels = {}
+        labels["quantumTaskArn"] = input.quantumTaskArn
+        dict[str, list[str]] multi_query = {}
+        if input.additionalAttributeNames.is_some():
+            multi_query["additionalAttributeNames"] = input.additionalAttributeNames.unwrap()
+        auto b = binding.HttpBinding(method="GET", path_template="/quantum-task/{quantumTaskArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -995,14 +1012,14 @@ struct BraketClient:
         auto host = endpoints.regional_host(braket_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
 
     # SearchDevices  POST /devices
     # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
     def search_devices(self, SearchDevicesRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/devices", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/devices", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.nextToken.is_some():
             auto u0 = input.nextToken.unwrap()
@@ -1021,7 +1038,7 @@ struct BraketClient:
     # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
     def search_jobs(self, SearchJobsRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/jobs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.nextToken.is_some():
             auto u0 = input.nextToken.unwrap()
@@ -1040,7 +1057,7 @@ struct BraketClient:
     # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
     def search_quantum_tasks(self, SearchQuantumTasksRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/quantum-tasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/quantum-tasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.nextToken.is_some():
             auto u0 = input.nextToken.unwrap()
@@ -1059,7 +1076,7 @@ struct BraketClient:
     # errors: AccessDeniedException, InternalServiceException, ThrottlingException, ValidationException
     def search_spending_limits(self, SearchSpendingLimitsRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/spending-limits", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/spending-limits", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.nextToken.is_some():
             auto u0 = input.nextToken.unwrap()
@@ -1082,7 +1099,7 @@ struct BraketClient:
         auto host = endpoints.regional_host(braket_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1091,13 +1108,24 @@ struct BraketClient:
         auto bp = restjson.rest_json_document(b, braket_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServiceException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(braket_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, braket_service(), self.region, host)
+
     # UpdateSpendingLimit  PATCH /spending-limit/{spendingLimitArn}/update
     # errors: AccessDeniedException, InternalServiceException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_spending_limit(self, UpdateSpendingLimitRequest input) -> str:
         auto host = endpoints.regional_host(braket_service(), self.region)
         dict[str, str] labels = {}
         labels["spendingLimitArn"] = input.spendingLimitArn
-        auto b = binding.HttpBinding(method="PATCH", path_template="/spending-limit/{spendingLimitArn}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/spending-limit/{spendingLimitArn}/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSpendingLimitDocument(clientToken=input.clientToken, spendingLimit=input.spendingLimit, timePeriod=input.timePeriod)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, braket_service(), self.region, host)

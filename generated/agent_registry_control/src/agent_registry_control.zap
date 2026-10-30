@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 15 operations — 14 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 15 operations — 15 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   116 structs (47 @derive(Json)), 15 enums, 7 error variants.
 #   2 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1029,11 +1029,6 @@ def agent_registry_control_error_from_code(str code) -> Agent_Registry_ControlEr
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1688,7 +1683,7 @@ struct Agent_Registry_ControlClient:
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_registry(self, CreateRegistryRequest input) -> str:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/registries", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + agent_registry_control_json_str(input.name))
         if input.description.is_some():
@@ -1727,7 +1722,7 @@ struct Agent_Registry_ControlClient:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"name\":" + agent_registry_control_json_str(input.name))
         if input.displayName.is_some():
@@ -1768,7 +1763,7 @@ struct Agent_Registry_ControlClient:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
     # DeleteRegistryRecord  DELETE /registries/{registryId}/records/{recordId}
@@ -1778,7 +1773,7 @@ struct Agent_Registry_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
     # GetRegistry  GET /registries/{registryId}
@@ -1787,7 +1782,7 @@ struct Agent_Registry_ControlClient:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
     # GetRegistryRecord  GET /registries/{registryId}/records/{recordId}
@@ -1797,14 +1792,14 @@ struct Agent_Registry_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
     # ListRegistries  POST /registries-list
     # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
     def list_registries(self, ListRegistriesRequest input) -> str:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/registries-list", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries-list", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -1827,7 +1822,7 @@ struct Agent_Registry_ControlClient:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records-list", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records-list", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.maxResults.is_some():
             auto u0 = input.maxResults.unwrap()
@@ -1850,7 +1845,7 @@ struct Agent_Registry_ControlClient:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
     # SubmitRegistryRecordForApproval  POST /registries/{registryId}/records/{recordId}/submit-for-approval
@@ -1860,7 +1855,7 @@ struct Agent_Registry_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records/{recordId}/submit-for-approval", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/registries/{registryId}/records/{recordId}/submit-for-approval", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn+}
@@ -1869,7 +1864,7 @@ struct Agent_Registry_ControlClient:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
         dict[str, str] greedy_labels = {}
         greedy_labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1878,13 +1873,24 @@ struct Agent_Registry_ControlClient:
         auto bp = restjson.rest_json_document(b, agent_registry_control_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn+}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, agent_registry_control_service(), self.region, host)
+
     # UpdateRegistry  PATCH /registries/{registryId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def update_registry(self, UpdateRegistryRequest input) -> str:
         auto host = endpoints.regional_host(agent_registry_control_service(), self.region)
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1914,7 +1920,7 @@ struct Agent_Registry_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -1956,7 +1962,7 @@ struct Agent_Registry_ControlClient:
         dict[str, str] labels = {}
         labels["registryId"] = input.registryId
         labels["recordId"] = input.recordId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}/status", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/registries/{registryId}/records/{recordId}/status", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRegistryRecordStatusDocument(status=input.status, statusReason=input.statusReason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, agent_registry_control_service(), self.region, host)

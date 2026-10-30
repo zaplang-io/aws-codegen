@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 25 operations — 24 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 25 operations — 25 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   77 structs (44 @derive(Json)), 12 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -750,11 +750,6 @@ def grafana_error_from_code(str code) -> grafanaError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -903,14 +898,14 @@ struct grafanaClient:
         dict[str, str] headers = {}
         if input.grafanaToken.is_some():
             headers["Grafana-Token"] = input.grafanaToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/licenses/{licenseType}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/licenses/{licenseType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # CreateWorkspace  POST /workspaces
     # errors: AccessDeniedException, ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_workspace(self, CreateWorkspaceRequest input) -> str:
         auto host = endpoints.regional_host(grafana_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"accountAccessType\":" + input.accountAccessType.to_json())
         if input.clientToken.is_some():
@@ -987,7 +982,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/apikeys", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/apikeys", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWorkspaceApiKeyDocument(keyName=input.keyName, keyRole=input.keyRole, secondsToLive=input.secondsToLive)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
@@ -998,7 +993,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/serviceaccounts", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/serviceaccounts", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWorkspaceServiceAccountDocument(name=input.name, grafanaRole=input.grafanaRole)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
@@ -1010,7 +1005,7 @@ struct grafanaClient:
         dict[str, str] labels = {}
         labels["serviceAccountId"] = input.serviceAccountId
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = CreateWorkspaceServiceAccountTokenDocument(name=input.name, secondsToLive=input.secondsToLive)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
@@ -1021,7 +1016,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # DeleteWorkspaceApiKey  DELETE /workspaces/{workspaceId}/apikeys/{keyName}
@@ -1031,7 +1026,7 @@ struct grafanaClient:
         dict[str, str] labels = {}
         labels["keyName"] = input.keyName
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/apikeys/{keyName}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/apikeys/{keyName}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # DeleteWorkspaceServiceAccount  DELETE /workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}
@@ -1041,7 +1036,7 @@ struct grafanaClient:
         dict[str, str] labels = {}
         labels["serviceAccountId"] = input.serviceAccountId
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # DeleteWorkspaceServiceAccountToken  DELETE /workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens/{tokenId}
@@ -1052,7 +1047,7 @@ struct grafanaClient:
         labels["tokenId"] = input.tokenId
         labels["serviceAccountId"] = input.serviceAccountId
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens/{tokenId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens/{tokenId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # DescribeWorkspace  GET /workspaces/{workspaceId}
@@ -1061,7 +1056,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # DescribeWorkspaceAuthentication  GET /workspaces/{workspaceId}/authentication
@@ -1070,7 +1065,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/authentication", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/authentication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # DescribeWorkspaceConfiguration  GET /workspaces/{workspaceId}/configuration
@@ -1079,7 +1074,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # DisassociateLicense  DELETE /workspaces/{workspaceId}/licenses/{licenseType}
@@ -1089,7 +1084,7 @@ struct grafanaClient:
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
         labels["licenseType"] = input.licenseType
-        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/licenses/{licenseType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/workspaces/{workspaceId}/licenses/{licenseType}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # ListPermissions  GET /workspaces/{workspaceId}/permissions
@@ -1109,7 +1104,7 @@ struct grafanaClient:
             query["userId"] = input.userId.unwrap_or("")
         if input.groupId.is_some():
             query["groupId"] = input.groupId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/permissions", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/permissions", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1118,7 +1113,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # ListVersions  GET /versions
@@ -1132,7 +1127,7 @@ struct grafanaClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.workspaceId.is_some():
             query["workspace-id"] = input.workspaceId.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/versions", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/versions", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # ListWorkspaceServiceAccountTokens  GET /workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens
@@ -1147,7 +1142,7 @@ struct grafanaClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # ListWorkspaceServiceAccounts  GET /workspaces/{workspaceId}/serviceaccounts
@@ -1161,7 +1156,7 @@ struct grafanaClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/serviceaccounts", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces/{workspaceId}/serviceaccounts", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # ListWorkspaces  GET /workspaces
@@ -1173,7 +1168,7 @@ struct grafanaClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/workspaces", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1182,7 +1177,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1191,13 +1186,24 @@ struct grafanaClient:
         auto bp = restjson.rest_json_document(b, grafana_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(grafana_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, grafana_service(), self.region, host)
+
     # UpdatePermissions  PATCH /workspaces/{workspaceId}/permissions
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_permissions(self, UpdatePermissionsRequest input) -> str:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/workspaces/{workspaceId}/permissions", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/workspaces/{workspaceId}/permissions", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.updateInstructionBatch:
@@ -1212,7 +1218,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.accountAccessType.is_some():
             auto u0 = input.accountAccessType.unwrap()
@@ -1277,7 +1283,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/authentication", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/workspaces/{workspaceId}/authentication", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] e0 = []
         for x0 in input.authenticationProviders:
@@ -1295,7 +1301,7 @@ struct grafanaClient:
         auto host = endpoints.regional_host(grafana_service(), self.region)
         dict[str, str] labels = {}
         labels["workspaceId"] = input.workspaceId
-        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/workspaces/{workspaceId}/configuration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateWorkspaceConfigurationDocument(configuration=input.configuration, grafanaVersion=input.grafanaVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, grafana_service(), self.region, host)

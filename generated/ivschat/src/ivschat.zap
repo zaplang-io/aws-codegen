@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 17 operations — 16 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 17 operations — 17 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   48 structs (29 @derive(Json)), 4 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -466,11 +466,6 @@ def ivschat_error_from_code(str code) -> ivschatError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -539,7 +534,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
     def create_chat_token(self, CreateChatTokenRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateChatToken", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateChatToken", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"roomIdentifier\":" + ivschat_json_str(input.roomIdentifier))
         parts.append("\"userId\":" + ivschat_json_str(input.userId))
@@ -565,7 +560,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_logging_configuration(self, CreateLoggingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateLoggingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateLoggingConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -584,7 +579,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ServiceQuotaExceededException, ValidationException
     def create_room(self, CreateRoomRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/CreateRoom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/CreateRoom", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.name.is_some():
             auto u0 = input.name.unwrap()
@@ -617,7 +612,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_logging_configuration(self, DeleteLoggingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLoggingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteLoggingConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteLoggingConfigurationDocument(identifier=input.identifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -626,7 +621,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_message(self, DeleteMessageRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteMessage", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteMessage", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteMessageDocument(roomIdentifier=input.roomIdentifier, id=input.id, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -635,7 +630,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
     def delete_room(self, DeleteRoomRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRoom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DeleteRoom", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteRoomDocument(identifier=input.identifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -644,7 +639,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ThrottlingException, ValidationException
     def disconnect_user(self, DisconnectUserRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectUser", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/DisconnectUser", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DisconnectUserDocument(roomIdentifier=input.roomIdentifier, userId=input.userId, reason=input.reason)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -653,7 +648,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_logging_configuration(self, GetLoggingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetLoggingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetLoggingConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetLoggingConfigurationDocument(identifier=input.identifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -662,7 +657,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def get_room(self, GetRoomRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/GetRoom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/GetRoom", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetRoomDocument(identifier=input.identifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -671,7 +666,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, ValidationException
     def list_logging_configurations(self, ListLoggingConfigurationsRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListLoggingConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListLoggingConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListLoggingConfigurationsDocument(nextToken=input.nextToken, maxResults=input.maxResults)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -680,7 +675,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, ResourceNotFoundException, ValidationException
     def list_rooms(self, ListRoomsRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListRooms", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListRooms", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListRoomsDocument(name=input.name, nextToken=input.nextToken, maxResults=input.maxResults, messageReviewHandlerUri=input.messageReviewHandlerUri, loggingConfigurationIdentifier=input.loggingConfigurationIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -691,14 +686,14 @@ struct ivschatClient:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, ivschat_service(), self.region, host)
 
     # SendEvent  POST /SendEvent
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ThrottlingException, ValidationException
     def send_event(self, SendEventRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/SendEvent", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/SendEvent", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"roomIdentifier\":" + ivschat_json_str(input.roomIdentifier))
         parts.append("\"eventName\":" + ivschat_json_str(input.eventName))
@@ -717,7 +712,7 @@ struct ivschatClient:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -726,11 +721,22 @@ struct ivschatClient:
         auto bp = restjson.rest_json_document(b, ivschat_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(ivschat_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, ivschat_service(), self.region, host)
+
     # UpdateLoggingConfiguration  POST /UpdateLoggingConfiguration
     # errors: AccessDeniedException, ConflictException, PendingVerification, ResourceNotFoundException, ValidationException
     def update_logging_configuration(self, UpdateLoggingConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLoggingConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateLoggingConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLoggingConfigurationDocument(identifier=input.identifier, name=input.name, destinationConfiguration=input.destinationConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, ivschat_service(), self.region, host)
@@ -739,7 +745,7 @@ struct ivschatClient:
     # errors: AccessDeniedException, PendingVerification, ResourceNotFoundException, ValidationException
     def update_room(self, UpdateRoomRequest input) -> str:
         auto host = endpoints.regional_host(ivschat_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRoom", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UpdateRoom", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"identifier\":" + ivschat_json_str(input.identifier))
         if input.name.is_some():

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 36 operations — 35 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 36 operations — 36 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   105 structs (66 @derive(Json)), 13 enums, 7 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1015,11 +1015,6 @@ def rtbfabric_error_from_code(str code) -> RTBFabricError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1222,7 +1217,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/accept", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/accept", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.attributes.is_some():
             auto u0 = input.attributes.unwrap()
@@ -1240,7 +1235,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/certificate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/certificate", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = AssociateCertificateDocument(acmCertificateArn=input.acmCertificateArn, clientToken=input.clientToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
@@ -1251,7 +1246,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/inbound-external-link", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/inbound-external-link", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
         if input.attributes.is_some():
@@ -1273,7 +1268,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/create-link", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/create-link", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"peerGatewayId\":" + rtbfabric_json_str(input.peerGatewayId))
         if input.attributes.is_some():
@@ -1302,7 +1297,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
         parts.append("\"priority\":" + str(input.priority))
@@ -1322,7 +1317,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway/{gatewayId}/outbound-external-link", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway/{gatewayId}/outbound-external-link", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
         if input.attributes.is_some():
@@ -1343,7 +1338,7 @@ struct RTBFabricClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_requester_gateway(self, CreateRequesterGatewayRequest input) -> str:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"vpcId\":" + rtbfabric_json_str(input.vpcId))
         list[str] e0 = []
@@ -1371,7 +1366,7 @@ struct RTBFabricClient:
     # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_responder_gateway(self, CreateResponderGatewayRequest input) -> str:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"vpcId\":" + rtbfabric_json_str(input.vpcId))
         list[str] e0 = []
@@ -1422,7 +1417,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}/inbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}/inbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # DeleteLink  DELETE /gateway/{gatewayId}/link/{linkId}
@@ -1432,7 +1427,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/gateway/{gatewayId}/link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/gateway/{gatewayId}/link/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # DeleteLinkRoutingRule  DELETE /responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}
@@ -1443,7 +1438,7 @@ struct RTBFabricClient:
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
         labels["ruleId"] = input.ruleId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # DeleteOutboundExternalLink  DELETE /requester-gateway/{gatewayId}/outbound-external-link/{linkId}
@@ -1453,7 +1448,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/requester-gateway/{gatewayId}/outbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/requester-gateway/{gatewayId}/outbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # DeleteRequesterGateway  DELETE /requester-gateway/{gatewayId}
@@ -1462,7 +1457,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/requester-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/requester-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # DeleteResponderGateway  DELETE /responder-gateway/{gatewayId}
@@ -1471,7 +1466,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # DisassociateCertificate  DELETE /responder-gateway/{gatewayId}/certificate
@@ -1482,7 +1477,7 @@ struct RTBFabricClient:
         labels["gatewayId"] = input.gatewayId
         dict[str, str] query = {}
         query["acmCertificateArn"] = input.acmCertificateArn
-        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}/certificate", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/responder-gateway/{gatewayId}/certificate", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # GetCertificateAssociation  GET /responder-gateway/{gatewayId}/certificate
@@ -1493,7 +1488,7 @@ struct RTBFabricClient:
         labels["gatewayId"] = input.gatewayId
         dict[str, str] query = {}
         query["acmCertificateArn"] = input.acmCertificateArn
-        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/certificate", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/certificate", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # GetInboundExternalLink  GET /responder-gateway/{gatewayId}/inbound-external-link/{linkId}
@@ -1503,7 +1498,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/inbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/inbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # GetLink  GET /gateway/{gatewayId}/link/{linkId}
@@ -1513,7 +1508,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="GET", path_template="/gateway/{gatewayId}/link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateway/{gatewayId}/link/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # GetLinkRoutingRule  GET /responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}
@@ -1524,7 +1519,7 @@ struct RTBFabricClient:
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
         labels["ruleId"] = input.ruleId
-        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # GetOutboundExternalLink  GET /requester-gateway/{gatewayId}/outbound-external-link/{linkId}
@@ -1534,7 +1529,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="GET", path_template="/requester-gateway/{gatewayId}/outbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/requester-gateway/{gatewayId}/outbound-external-link/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # GetRequesterGateway  GET /requester-gateway/{gatewayId}
@@ -1543,7 +1538,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="GET", path_template="/requester-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/requester-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # GetResponderGateway  GET /responder-gateway/{gatewayId}
@@ -1552,7 +1547,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # ListCertificateAssociations  GET /responder-gateway/{gatewayId}/certificates
@@ -1566,7 +1561,7 @@ struct RTBFabricClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/certificates", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/certificates", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # ListLinkRoutingRules  GET /responder-gateway/{gatewayId}/link/{linkId}/routing-rules
@@ -1581,7 +1576,7 @@ struct RTBFabricClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rules", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rules", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # ListLinks  GET /gateway/{gatewayId}/links/
@@ -1595,7 +1590,7 @@ struct RTBFabricClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/gateway/{gatewayId}/links/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/gateway/{gatewayId}/links/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # ListRequesterGateways  GET /requester-gateways
@@ -1607,7 +1602,7 @@ struct RTBFabricClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/requester-gateways", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/requester-gateways", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # ListResponderGateways  GET /responder-gateways
@@ -1619,7 +1614,7 @@ struct RTBFabricClient:
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
         if input.nextToken.is_some():
             query["nextToken"] = input.nextToken.unwrap_or("")
-        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateways", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/responder-gateways", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1628,7 +1623,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # RejectLink  POST /gateway/{gatewayId}/link/{linkId}/reject
@@ -1638,7 +1633,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/reject", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/reject", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1647,7 +1642,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1656,6 +1651,17 @@ struct RTBFabricClient:
         auto bp = restjson.rest_json_document(b, rtbfabric_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: AccessDeniedException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(rtbfabric_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, rtbfabric_service(), self.region, host)
+
     # UpdateLink  PATCH /gateway/{gatewayId}/link/{linkId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_link(self, UpdateLinkRequest input) -> str:
@@ -1663,7 +1669,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="PATCH", path_template="/gateway/{gatewayId}/link/{linkId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/gateway/{gatewayId}/link/{linkId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLinkDocument(logSettings=input.logSettings, timeoutInMillis=input.timeoutInMillis)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
@@ -1675,7 +1681,7 @@ struct RTBFabricClient:
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
-        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/module-flow", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/gateway/{gatewayId}/link/{linkId}/module-flow", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"clientToken\":" + rtbfabric_json_str(input.clientToken))
         list[str] e0 = []
@@ -1693,7 +1699,7 @@ struct RTBFabricClient:
         labels["gatewayId"] = input.gatewayId
         labels["linkId"] = input.linkId
         labels["ruleId"] = input.ruleId
-        auto b = binding.HttpBinding(method="PUT", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/responder-gateway/{gatewayId}/link/{linkId}/routing-rule/{ruleId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateLinkRoutingRuleDocument(priority=input.priority, conditions=input.conditions)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
@@ -1704,7 +1710,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway/{gatewayId}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/requester-gateway/{gatewayId}/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateRequesterGatewayDocument(clientToken=input.clientToken, description=input.description)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, rtbfabric_service(), self.region, host)
@@ -1715,7 +1721,7 @@ struct RTBFabricClient:
         auto host = endpoints.regional_host(rtbfabric_service(), self.region)
         dict[str, str] labels = {}
         labels["gatewayId"] = input.gatewayId
-        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/update", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/responder-gateway/{gatewayId}/update", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.domainName.is_some():
             auto u0 = input.domainName.unwrap()

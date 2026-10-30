@@ -1088,7 +1088,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, AccountChannelLimitExceededException, ClientLimitExceededException, InvalidArgumentException, ResourceInUseException, TagsPerResourceExceededLimitException
     def create_signaling_channel(self, CreateSignalingChannelInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createSignalingChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createSignalingChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChannelName\":" + kinesisvideo_json_str(input.ChannelName))
         if input.ChannelType.is_some():
@@ -1110,7 +1110,7 @@ struct Kinesis_VideoClient:
     # errors: AccountStreamLimitExceededException, ClientLimitExceededException, DeviceStreamLimitExceededException, InvalidArgumentException, InvalidDeviceException, ResourceInUseException, TagsPerResourceExceededLimitException
     def create_stream(self, CreateStreamInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/createStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/createStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.DeviceName.is_some():
             auto u0 = input.DeviceName.unwrap()
@@ -1141,7 +1141,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException, StreamEdgeConfigurationNotFoundException
     def delete_edge_configuration(self, DeleteEdgeConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteEdgeConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteEdgeConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteEdgeConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1150,7 +1150,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException, VersionMismatchException
     def delete_signaling_channel(self, DeleteSignalingChannelInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteSignalingChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteSignalingChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteSignalingChannelDocument(ChannelARN=input.ChannelARN, CurrentVersion=input.CurrentVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1159,7 +1159,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceInUseException, ResourceNotFoundException, VersionMismatchException
     def delete_stream(self, DeleteStreamInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/deleteStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/deleteStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DeleteStreamDocument(StreamARN=input.StreamARN, CurrentVersion=input.CurrentVersion)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1168,7 +1168,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException, StreamEdgeConfigurationNotFoundException
     def describe_edge_configuration(self, DescribeEdgeConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeEdgeConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeEdgeConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeEdgeConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1177,7 +1177,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def describe_image_generation_configuration(self, DescribeImageGenerationConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeImageGenerationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeImageGenerationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeImageGenerationConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1186,7 +1186,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def describe_mapped_resource_configuration(self, DescribeMappedResourceConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeMappedResourceConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeMappedResourceConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeMappedResourceConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1195,7 +1195,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def describe_media_storage_configuration(self, DescribeMediaStorageConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeMediaStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeMediaStorageConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeMediaStorageConfigurationDocument(ChannelName=input.ChannelName, ChannelARN=input.ChannelARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1204,7 +1204,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def describe_notification_configuration(self, DescribeNotificationConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeNotificationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeNotificationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeNotificationConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1213,7 +1213,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def describe_signaling_channel(self, DescribeSignalingChannelInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeSignalingChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeSignalingChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeSignalingChannelDocument(ChannelName=input.ChannelName, ChannelARN=input.ChannelARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1222,7 +1222,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceNotFoundException
     def describe_stream(self, DescribeStreamInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeStreamDocument(StreamName=input.StreamName, StreamARN=input.StreamARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1231,7 +1231,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def describe_stream_storage_configuration(self, DescribeStreamStorageConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/describeStreamStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/describeStreamStorageConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = DescribeStreamStorageConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1240,7 +1240,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceNotFoundException
     def get_data_endpoint(self, GetDataEndpointInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getDataEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getDataEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = GetDataEndpointDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, APIName=input.APIName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1249,7 +1249,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException
     def get_signaling_channel_endpoint(self, GetSignalingChannelEndpointInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/getSignalingChannelEndpoint", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/getSignalingChannelEndpoint", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ChannelARN\":" + kinesisvideo_json_str(input.ChannelARN))
         if input.SingleMasterChannelEndpointConfiguration.is_some():
@@ -1262,7 +1262,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException
     def list_edge_agent_configurations(self, ListEdgeAgentConfigurationsInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listEdgeAgentConfigurations", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listEdgeAgentConfigurations", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListEdgeAgentConfigurationsDocument(HubDeviceArn=input.HubDeviceArn, MaxResults=input.MaxResults, NextToken=input.NextToken)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1271,7 +1271,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException
     def list_signaling_channels(self, ListSignalingChannelsInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listSignalingChannels", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listSignalingChannels", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListSignalingChannelsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, ChannelNameCondition=input.ChannelNameCondition)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1280,7 +1280,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException
     def list_streams(self, ListStreamsInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listStreams", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listStreams", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListStreamsDocument(MaxResults=input.MaxResults, NextToken=input.NextToken, StreamNameCondition=input.StreamNameCondition)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1289,7 +1289,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def list_tags_for_resource(self, ListTagsForResourceInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/ListTagsForResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForResourceDocument(NextToken=input.NextToken, ResourceARN=input.ResourceARN)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1298,7 +1298,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, InvalidResourceFormatException, NotAuthorizedException, ResourceNotFoundException
     def list_tags_for_stream(self, ListTagsForStreamInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/listTagsForStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ListTagsForStreamDocument(NextToken=input.NextToken, StreamARN=input.StreamARN, StreamName=input.StreamName)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1307,7 +1307,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, NoDataRetentionException, ResourceInUseException, ResourceNotFoundException
     def start_edge_configuration_update(self, StartEdgeConfigurationUpdateInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/startEdgeConfigurationUpdate", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/startEdgeConfigurationUpdate", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartEdgeConfigurationUpdateDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, EdgeConfig=input.EdgeConfig)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1316,7 +1316,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException, TagsPerResourceExceededLimitException
     def tag_resource(self, TagResourceInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/TagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + kinesisvideo_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1330,7 +1330,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, InvalidResourceFormatException, NotAuthorizedException, ResourceNotFoundException, TagsPerResourceExceededLimitException
     def tag_stream(self, TagStreamInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/tagStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tagStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.StreamARN.is_some():
             auto u0 = input.StreamARN.unwrap()
@@ -1349,7 +1349,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceNotFoundException
     def untag_resource(self, UntagResourceInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/UntagResource", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"ResourceARN\":" + kinesisvideo_json_str(input.ResourceARN))
         list[str] e0 = []
@@ -1363,7 +1363,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, InvalidResourceFormatException, NotAuthorizedException, ResourceNotFoundException
     def untag_stream(self, UntagStreamInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/untagStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/untagStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.StreamARN.is_some():
             auto u0 = input.StreamARN.unwrap()
@@ -1382,7 +1382,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceInUseException, ResourceNotFoundException, VersionMismatchException
     def update_data_retention(self, UpdateDataRetentionInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateDataRetention", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateDataRetention", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateDataRetentionDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, CurrentVersion=input.CurrentVersion, Operation=input.Operation, DataRetentionChangeInHours=input.DataRetentionChangeInHours)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1391,7 +1391,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, NoDataRetentionException, ResourceInUseException, ResourceNotFoundException
     def update_image_generation_configuration(self, UpdateImageGenerationConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateImageGenerationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateImageGenerationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.StreamName.is_some():
             auto u0 = input.StreamName.unwrap()
@@ -1409,7 +1409,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, NoDataRetentionException, ResourceInUseException, ResourceNotFoundException
     def update_media_storage_configuration(self, UpdateMediaStorageConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateMediaStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateMediaStorageConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateMediaStorageConfigurationDocument(ChannelARN=input.ChannelARN, MediaStorageConfiguration=input.MediaStorageConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1418,7 +1418,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, NoDataRetentionException, ResourceInUseException, ResourceNotFoundException
     def update_notification_configuration(self, UpdateNotificationConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateNotificationConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateNotificationConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateNotificationConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, NotificationConfiguration=input.NotificationConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1427,7 +1427,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException, VersionMismatchException
     def update_signaling_channel(self, UpdateSignalingChannelInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateSignalingChannel", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateSignalingChannel", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateSignalingChannelDocument(ChannelARN=input.ChannelARN, CurrentVersion=input.CurrentVersion, SingleMasterConfiguration=input.SingleMasterConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1436,7 +1436,7 @@ struct Kinesis_VideoClient:
     # errors: ClientLimitExceededException, InvalidArgumentException, NotAuthorizedException, ResourceInUseException, ResourceNotFoundException, VersionMismatchException
     def update_stream(self, UpdateStreamInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateStream", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateStream", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateStreamDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, CurrentVersion=input.CurrentVersion, DeviceName=input.DeviceName, MediaType=input.MediaType)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)
@@ -1445,7 +1445,7 @@ struct Kinesis_VideoClient:
     # errors: AccessDeniedException, ClientLimitExceededException, InvalidArgumentException, ResourceInUseException, ResourceNotFoundException, VersionMismatchException
     def update_stream_storage_configuration(self, UpdateStreamStorageConfigurationInput input) -> str:
         auto host = endpoints.regional_host(kinesisvideo_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/updateStreamStorageConfiguration", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/updateStreamStorageConfiguration", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateStreamStorageConfigurationDocument(StreamName=input.StreamName, StreamARN=input.StreamARN, CurrentVersion=input.CurrentVersion, StreamStorageConfiguration=input.StreamStorageConfiguration)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, kinesisvideo_service(), self.region, host)

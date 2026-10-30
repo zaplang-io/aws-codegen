@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 34 operations — 32 with a generated method,
-#   2 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 34 operations — 34 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
 #   93 structs (65 @derive(Json)), 15 enums, 8 error variants.
 #   5 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1034,12 +1034,6 @@ def neptune_graph_error_from_code(str code) -> Neptune_GraphError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   DeleteGraph (httpQuery `skipSnapshot` has unsupported type bool)
-#   UntagResource (httpQuery `tagKeys` has unsupported type list[str])
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -1124,6 +1118,12 @@ def export_filter_element_to_json(ExportFilterElement v) -> str:
         parts.append("\"properties\":" + neptune_graph_json_obj(m1))
     return neptune_graph_json_obj(parts)
 
+# Render a bool bound to a URI/query/header slot as its wire text.
+def neptune_graph_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound Neptune_Graph client: credentials + region, threaded into every operation.
 struct Neptune_GraphClient:
     core.Credentials creds
@@ -1135,7 +1135,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["taskIdentifier"] = input.taskIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/exporttasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/exporttasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # CancelImportTask  DELETE /importtasks/{taskIdentifier}
@@ -1144,7 +1144,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["taskIdentifier"] = input.taskIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/importtasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/importtasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # CancelQuery  DELETE /queries/{queryId}
@@ -1155,14 +1155,14 @@ struct Neptune_GraphClient:
         labels["queryId"] = input.queryId
         dict[str, str] headers = {}
         headers["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/queries/{queryId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/queries/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # CreateGraph  POST /graphs
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_graph(self, CreateGraphInput input) -> str:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/graphs", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"graphName\":" + neptune_graph_json_str(input.graphName))
         if input.tags.is_some():
@@ -1194,7 +1194,7 @@ struct Neptune_GraphClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_graph_snapshot(self, CreateGraphSnapshotInput input) -> str:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/snapshots", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/snapshots", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"graphIdentifier\":" + neptune_graph_json_str(input.graphIdentifier))
         parts.append("\"snapshotName\":" + neptune_graph_json_str(input.snapshotName))
@@ -1211,7 +1211,7 @@ struct Neptune_GraphClient:
     # errors: ConflictException, InternalServerException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def create_graph_using_import_task(self, CreateGraphUsingImportTaskInput input) -> str:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/importtasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/importtasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"graphName\":" + neptune_graph_json_str(input.graphName))
         if input.tags.is_some():
@@ -1267,7 +1267,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/endpoints/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/endpoints/", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         if input.vpcId.is_some():
             auto u0 = input.vpcId.unwrap()
@@ -1287,13 +1287,24 @@ struct Neptune_GraphClient:
         auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
 
+    # DeleteGraph  DELETE /graphs/{graphIdentifier}
+    # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def delete_graph(self, DeleteGraphInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        dict[str, str] labels = {}
+        labels["graphIdentifier"] = input.graphIdentifier
+        dict[str, str] query = {}
+        query["skipSnapshot"] = neptune_graph_bind_bool(input.skipSnapshot)
+        auto b = binding.HttpBinding(method="DELETE", path_template="/graphs/{graphIdentifier}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
+
     # DeleteGraphSnapshot  DELETE /snapshots/{snapshotIdentifier}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def delete_graph_snapshot(self, DeleteGraphSnapshotInput input) -> str:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["snapshotIdentifier"] = input.snapshotIdentifier
-        auto b = binding.HttpBinding(method="DELETE", path_template="/snapshots/{snapshotIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/snapshots/{snapshotIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # DeletePrivateGraphEndpoint  DELETE /graphs/{graphIdentifier}/endpoints/{vpcId}
@@ -1303,7 +1314,7 @@ struct Neptune_GraphClient:
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
         labels["vpcId"] = input.vpcId
-        auto b = binding.HttpBinding(method="DELETE", path_template="/graphs/{graphIdentifier}/endpoints/{vpcId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="DELETE", path_template="/graphs/{graphIdentifier}/endpoints/{vpcId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ExecuteQuery  POST /queries
@@ -1312,7 +1323,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] headers = {}
         headers["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/queries", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/queries", labels={}, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"query\":" + neptune_graph_json_str(input.queryString))
         parts.append("\"language\":" + neptune_graph_json_str(input.language))
@@ -1340,7 +1351,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["taskIdentifier"] = input.taskIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/exporttasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/exporttasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # GetGraph  GET /graphs/{graphIdentifier}
@@ -1349,7 +1360,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/graphs/{graphIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/graphs/{graphIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # GetGraphSnapshot  GET /snapshots/{snapshotIdentifier}
@@ -1358,7 +1369,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["snapshotIdentifier"] = input.snapshotIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{snapshotIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/snapshots/{snapshotIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # GetGraphSummary  GET /summary
@@ -1370,7 +1381,7 @@ struct Neptune_GraphClient:
             query["mode"] = input.mode.unwrap_or("")
         dict[str, str] headers = {}
         headers["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/summary", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/summary", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # GetImportTask  GET /importtasks/{taskIdentifier}
@@ -1379,7 +1390,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["taskIdentifier"] = input.taskIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/importtasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/importtasks/{taskIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # GetPrivateGraphEndpoint  GET /graphs/{graphIdentifier}/endpoints/{vpcId}
@@ -1389,7 +1400,7 @@ struct Neptune_GraphClient:
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
         labels["vpcId"] = input.vpcId
-        auto b = binding.HttpBinding(method="GET", path_template="/graphs/{graphIdentifier}/endpoints/{vpcId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/graphs/{graphIdentifier}/endpoints/{vpcId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # GetQuery  GET /queries/{queryId}
@@ -1400,7 +1411,7 @@ struct Neptune_GraphClient:
         labels["queryId"] = input.queryId
         dict[str, str] headers = {}
         headers["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/queries/{queryId}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/queries/{queryId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ListExportTasks  GET /exporttasks
@@ -1414,7 +1425,7 @@ struct Neptune_GraphClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/exporttasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/exporttasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ListGraphSnapshots  GET /snapshots
@@ -1428,7 +1439,7 @@ struct Neptune_GraphClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/snapshots", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/snapshots", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ListGraphs  GET /graphs
@@ -1440,7 +1451,7 @@ struct Neptune_GraphClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/graphs", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/graphs", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ListImportTasks  GET /importtasks
@@ -1454,7 +1465,7 @@ struct Neptune_GraphClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/importtasks", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/importtasks", labels={}, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ListPrivateGraphEndpoints  GET /graphs/{graphIdentifier}/endpoints/
@@ -1468,7 +1479,7 @@ struct Neptune_GraphClient:
             query["nextToken"] = input.nextToken.unwrap_or("")
         if input.maxResults.is_some():
             query["maxResults"] = str(input.maxResults.unwrap_or(0))
-        auto b = binding.HttpBinding(method="GET", path_template="/graphs/{graphIdentifier}/endpoints/", labels=labels, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/graphs/{graphIdentifier}/endpoints/", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ListQueries  GET /queries
@@ -1481,7 +1492,7 @@ struct Neptune_GraphClient:
             query["state"] = input.state.unwrap_or("")
         dict[str, str] headers = {}
         headers["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="GET", path_template="/queries", labels={}, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/queries", labels={}, greedy_labels={}, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ListTagsForResource  GET /tags/{resourceArn}
@@ -1490,7 +1501,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # ResetGraph  PUT /graphs/{graphIdentifier}
@@ -1499,7 +1510,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="PUT", path_template="/graphs/{graphIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PUT", path_template="/graphs/{graphIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = ResetGraphDocument(skipSnapshot=input.skipSnapshot)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
@@ -1510,7 +1521,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["snapshotIdentifier"] = input.snapshotIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/snapshots/{snapshotIdentifier}/restore", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/snapshots/{snapshotIdentifier}/restore", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"graphName\":" + neptune_graph_json_str(input.graphName))
         if input.provisionedMemory.is_some():
@@ -1538,7 +1549,7 @@ struct Neptune_GraphClient:
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def start_export_task(self, StartExportTaskInput input) -> str:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
-        auto b = binding.HttpBinding(method="POST", path_template="/exporttasks", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/exporttasks", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         parts.append("\"graphIdentifier\":" + neptune_graph_json_str(input.graphIdentifier))
         parts.append("\"roleArn\":" + neptune_graph_json_str(input.roleArn))
@@ -1566,7 +1577,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/start", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # StartImportTask  POST /graphs/{graphIdentifier}/importtasks
@@ -1575,7 +1586,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/importtasks", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/importtasks", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = StartImportTaskDocument(importOptions=input.importOptions, failOnError=input.failOnError, source=input.source, format=input.format, parquetType=input.parquetType, blankNodeHandling=input.blankNodeHandling, roleArn=input.roleArn)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
@@ -1586,7 +1597,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/stop", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/graphs/{graphIdentifier}/stop", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
 
     # TagResource  POST /tags/{resourceArn}
@@ -1595,7 +1606,7 @@ struct Neptune_GraphClient:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["resourceArn"] = input.resourceArn
-        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="POST", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         list[str] parts = []
         list[str] m0 = []
         for k0 in sorted(input.tags.keys()):
@@ -1604,13 +1615,24 @@ struct Neptune_GraphClient:
         auto bp = restjson.rest_json_document(b, neptune_graph_json_obj(parts))
         return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
 
+    # UntagResource  DELETE /tags/{resourceArn}
+    # errors: InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def untag_resource(self, UntagResourceInput input) -> str:
+        auto host = endpoints.regional_host(neptune_graph_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resourceArn"] = input.resourceArn
+        dict[str, list[str]] multi_query = {}
+        multi_query["tagKeys"] = input.tagKeys
+        auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, neptune_graph_service(), self.region, host)
+
     # UpdateGraph  PATCH /graphs/{graphIdentifier}
     # errors: ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
     def update_graph(self, UpdateGraphInput input) -> str:
         auto host = endpoints.regional_host(neptune_graph_service(), self.region)
         dict[str, str] labels = {}
         labels["graphIdentifier"] = input.graphIdentifier
-        auto b = binding.HttpBinding(method="PATCH", path_template="/graphs/{graphIdentifier}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/graphs/{graphIdentifier}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = UpdateGraphDocument(publicConnectivity=input.publicConnectivity, provisionedMemory=input.provisionedMemory, deletionProtection=input.deletionProtection)
         auto bp = restjson.rest_json_document(b, doc.to_json())
         return restjson.rest_json_request(self.creds, bp, neptune_graph_service(), self.region, host)
