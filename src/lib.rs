@@ -11,6 +11,7 @@
 //! form-urlencoded body (`aws.query`). See the module docs and `README.md`.
 
 pub mod binding;
+pub mod cborbody;
 pub mod emit;
 pub mod jsonbody;
 pub mod model;
@@ -41,12 +42,12 @@ pub fn generate_from_json_with_paginators(
     let proto = model.metadata.protocol.trim();
     if !matches!(
         proto,
-        "json" | "rest-json" | "rest-xml" | "query" | "ec2" | ""
+        "json" | "rest-json" | "rest-xml" | "query" | "ec2" | "smithy-rpc-v2-cbor" | ""
     ) {
         return Err(format!(
             "unsupported protocol `{proto}`; the generator emits awsJson (`json`), \
-             rest-json (`rest-json`), rest-xml (`rest-xml`) and query/ec2 \
-             (`query`, `ec2`)"
+             rest-json (`rest-json`), rest-xml (`rest-xml`), query/ec2 \
+             (`query`, `ec2`) and smithy-rpc-v2-cbor"
         ));
     }
     let paginators = match paginators_json {
