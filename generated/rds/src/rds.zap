@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 168 operations — 78 with a generated method,
-#   90 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 168 operations — 168 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   593 structs (plain carriers), 37 enums, 150 error variants.
 #   0 paginators generated (43 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -4783,99 +4783,6 @@ def rds_error_from_code(str code) -> RDSError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AddTagsToResource (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CopyDBClusterParameterGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CopyDBClusterSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CopyDBParameterGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CopyDBSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CopyOptionGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateBlueGreenDeployment (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateCustomDBEngineVersion (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBCapacityReservation (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBCluster (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBClusterEndpoint (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBClusterParameterGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBClusterSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBInstance (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBInstanceReadReplica (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBParameterGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBProxy (member `Auth` is a list of UserAuthConfig (only scalar lists in v0))
-#   CreateDBProxyEndpoint (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBSecurityGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBShardGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateDBSubnetGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateEventSubscription (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateGlobalCluster (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateIntegration (member `AdditionalEncryptionContext` is a map (query maps are a v0 follow-up))
-#   CreateOptionGroup (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateTenantDatabase (member `Tags` is a list of Tag (only scalar lists in v0))
-#   DescribeBlueGreenDeployments (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeCertificates (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBCapacityReservations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBClusterAutomatedBackups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBClusterBacktracks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBClusterEndpoints (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBClusterParameterGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBClusterParameters (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBClusterSnapshots (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBClusters (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBEngineVersions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBInstanceAutomatedBackups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBLogFiles (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBParameterGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBParameters (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBProxies (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBProxyEndpoints (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBProxyTargetGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBProxyTargets (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBRecommendations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBSecurityGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBShardGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBSnapshotTenantDatabases (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBSnapshots (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeDBSubnetGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeEngineDefaultClusterParameters (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeEngineDefaultParameters (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeEventCategories (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeEventSubscriptions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeEvents (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeExportTasks (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeGlobalClusters (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeIntegrations (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeOptionGroupOptions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeOptionGroups (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeOrderableDBInstanceOptions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribePendingMaintenanceActions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeReservedDBInstances (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeReservedDBInstancesOfferings (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeServerlessV2PlatformVersions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeSourceRegions (member `Filters` is a list of Filter (only scalar lists in v0))
-#   DescribeTenantDatabases (member `Filters` is a list of Filter (only scalar lists in v0))
-#   ListTagsForResource (member `Filters` is a list of Filter (only scalar lists in v0))
-#   ModifyDBCluster (member `CloudwatchLogsExportConfiguration` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyDBClusterParameterGroup (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   ModifyDBInstance (member `CloudwatchLogsExportConfiguration` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyDBParameterGroup (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   ModifyDBProxy (member `Auth` is a list of UserAuthConfig (only scalar lists in v0))
-#   ModifyDBProxyTargetGroup (member `ConnectionPoolConfig` is a nested structure (query nesting is a v0 follow-up))
-#   ModifyDBRecommendation (member `RecommendedActionUpdates` is a list of RecommendedActionUpdate (only scalar lists in v0))
-#   ModifyOptionGroup (member `OptionsToInclude` is a list of OptionConfiguration (only scalar lists in v0))
-#   PromoteReadReplica (member `TagSpecifications` is a list of TagSpecification (only scalar lists in v0))
-#   PurchaseReservedDBInstancesOffering (member `Tags` is a list of Tag (only scalar lists in v0))
-#   ResetDBClusterParameterGroup (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   ResetDBParameterGroup (member `Parameters` is a list of Parameter (only scalar lists in v0))
-#   RestoreDBClusterFromS3 (member `Tags` is a list of Tag (only scalar lists in v0))
-#   RestoreDBClusterFromSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   RestoreDBClusterToPointInTime (member `Tags` is a list of Tag (only scalar lists in v0))
-#   RestoreDBInstanceFromDBSnapshot (member `Tags` is a list of Tag (only scalar lists in v0))
-#   RestoreDBInstanceFromS3 (member `Tags` is a list of Tag (only scalar lists in v0))
-#   RestoreDBInstanceToPointInTime (member `Tags` is a list of Tag (only scalar lists in v0))
-#   StartDBInstanceAutomatedBackupsReplication (member `Tags` is a list of Tag (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeBlueGreenDeployments
@@ -4922,6 +4829,285 @@ def rds_error_from_code(str code) -> RDSError:
 #   DescribeTenantDatabases
 #   DownloadDBLogFilePortion
 
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AdditionalStorageVolume into the query form parameters under `prefix`.
+def additional_storage_volume_to_query(list[query.QueryPair] p, str prefix, AdditionalStorageVolume v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "VolumeName"), v.VolumeName)
+    if v.AllocatedStorage.is_some():
+        auto t0 = str(v.AllocatedStorage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AllocatedStorage"), t0)
+    if v.IOPS.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "IOPS"), str(v.IOPS.unwrap()))
+    if v.MaxAllocatedStorage.is_some():
+        auto t1 = str(v.MaxAllocatedStorage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxAllocatedStorage"), t1)
+    if v.StorageThroughput.is_some():
+        auto t2 = str(v.StorageThroughput.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "StorageThroughput"), t2)
+    if v.StorageType.is_some():
+        auto t3 = v.StorageType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StorageType"), t3)
+    return p
+
+# Serialize CloudwatchLogsExportConfiguration into the query form parameters under `prefix`.
+def cloudwatch_logs_export_configuration_to_query(list[query.QueryPair] p, str prefix, CloudwatchLogsExportConfiguration v) -> list[query.QueryPair]:
+    auto t0 = v.EnableLogTypes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "EnableLogTypes"), "member", t0)
+    auto t1 = v.DisableLogTypes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "DisableLogTypes"), "member", t1)
+    return p
+
+# Serialize ConnectionPoolConfiguration into the query form parameters under `prefix`.
+def connection_pool_configuration_to_query(list[query.QueryPair] p, str prefix, ConnectionPoolConfiguration v) -> list[query.QueryPair]:
+    if v.MaxConnectionsPercent.is_some():
+        auto t0 = str(v.MaxConnectionsPercent.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxConnectionsPercent"), t0)
+    if v.MaxIdleConnectionsPercent.is_some():
+        auto t1 = str(v.MaxIdleConnectionsPercent.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxIdleConnectionsPercent"), t1)
+    if v.ConnectionBorrowTimeout.is_some():
+        auto t2 = str(v.ConnectionBorrowTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "ConnectionBorrowTimeout"), t2)
+    auto t3 = v.SessionPinningFilters.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "SessionPinningFilters"), "member", t3)
+    if v.InitQuery.is_some():
+        auto t4 = v.InitQuery.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InitQuery"), t4)
+    return p
+
+# Serialize DBClusterAssociatedRole into the query form parameters under `prefix`.
+def db_cluster_associated_role_to_query(list[query.QueryPair] p, str prefix, DBClusterAssociatedRole v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "RoleArn"), v.RoleArn)
+    if v.FeatureName.is_some():
+        auto t0 = v.FeatureName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "FeatureName"), t0)
+    return p
+
+# Serialize Filter into the query form parameters under `prefix`.
+def filter_to_query(list[query.QueryPair] p, str prefix, Filter v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_list(p, query.query_key(prefix, "Values"), "Value", v.Values)
+    return p
+
+# Serialize ModifyAdditionalStorageVolume into the query form parameters under `prefix`.
+def modify_additional_storage_volume_to_query(list[query.QueryPair] p, str prefix, ModifyAdditionalStorageVolume v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "VolumeName"), v.VolumeName)
+    if v.AllocatedStorage.is_some():
+        auto t0 = str(v.AllocatedStorage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AllocatedStorage"), t0)
+    if v.IOPS.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "IOPS"), str(v.IOPS.unwrap()))
+    if v.MaxAllocatedStorage.is_some():
+        auto t1 = str(v.MaxAllocatedStorage.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxAllocatedStorage"), t1)
+    if v.StorageThroughput.is_some():
+        auto t2 = str(v.StorageThroughput.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "StorageThroughput"), t2)
+    if v.StorageType.is_some():
+        auto t3 = v.StorageType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "StorageType"), t3)
+    if v.SetForDelete.is_some():
+        auto t4 = query.query_bool(v.SetForDelete.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SetForDelete"), t4)
+    return p
+
+# Serialize OptionConfiguration into the query form parameters under `prefix`.
+def option_configuration_to_query(list[query.QueryPair] p, str prefix, OptionConfiguration v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "OptionName"), v.OptionName)
+    if v.Port.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Port"), str(v.Port.unwrap()))
+    if v.OptionVersion.is_some():
+        auto t0 = v.OptionVersion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OptionVersion"), t0)
+    auto t1 = v.DBSecurityGroupMemberships.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "DBSecurityGroupMemberships"), "DBSecurityGroupName", t1)
+    auto t2 = v.VpcSecurityGroupMemberships.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "VpcSecurityGroupMemberships"), "VpcSecurityGroupId", t2)
+    auto qi3 = 1
+    for qe4 in v.OptionSettings.unwrap_or([]):
+        auto t5 = qe4
+        p = option_setting_to_query(p, query.query_key(prefix, "OptionSettings") + ".OptionSetting" + "." + str(qi3), t5)
+        qi3 = qi3 + 1
+    return p
+
+# Serialize OptionSetting into the query form parameters under `prefix`.
+def option_setting_to_query(list[query.QueryPair] p, str prefix, OptionSetting v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    if v.DefaultValue.is_some():
+        auto t0 = v.DefaultValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DefaultValue"), t0)
+    if v.Description.is_some():
+        auto t1 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t1)
+    if v.ApplyType.is_some():
+        auto t2 = v.ApplyType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApplyType"), t2)
+    if v.DataType.is_some():
+        auto t3 = v.DataType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DataType"), t3)
+    if v.AllowedValues.is_some():
+        auto t4 = v.AllowedValues.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllowedValues"), t4)
+    if v.IsModifiable.is_some():
+        auto t5 = query.query_bool(v.IsModifiable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IsModifiable"), t5)
+    if v.IsCollection.is_some():
+        auto t6 = query.query_bool(v.IsCollection.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IsCollection"), t6)
+    return p
+
+# Serialize Parameter into the query form parameters under `prefix`.
+def parameter_to_query(list[query.QueryPair] p, str prefix, Parameter v) -> list[query.QueryPair]:
+    if v.ParameterName.is_some():
+        auto t0 = v.ParameterName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterName"), t0)
+    if v.ParameterValue.is_some():
+        auto t1 = v.ParameterValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ParameterValue"), t1)
+    if v.Description.is_some():
+        auto t2 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t2)
+    if v.Source.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Source"), v.Source.unwrap())
+    if v.ApplyType.is_some():
+        auto t3 = v.ApplyType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApplyType"), t3)
+    if v.DataType.is_some():
+        auto t4 = v.DataType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DataType"), t4)
+    if v.AllowedValues.is_some():
+        auto t5 = v.AllowedValues.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AllowedValues"), t5)
+    if v.IsModifiable.is_some():
+        auto t6 = query.query_bool(v.IsModifiable.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "IsModifiable"), t6)
+    if v.MinimumEngineVersion.is_some():
+        auto t7 = v.MinimumEngineVersion.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "MinimumEngineVersion"), t7)
+    if v.ApplyMethod.is_some():
+        auto t8 = v.ApplyMethod.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApplyMethod"), t8)
+    auto t9 = v.SupportedEngineModes.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "SupportedEngineModes"), "member", t9)
+    return p
+
+# Serialize ProcessorFeature into the query form parameters under `prefix`.
+def processor_feature_to_query(list[query.QueryPair] p, str prefix, ProcessorFeature v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize RdsCustomClusterConfiguration into the query form parameters under `prefix`.
+def rds_custom_cluster_configuration_to_query(list[query.QueryPair] p, str prefix, RdsCustomClusterConfiguration v) -> list[query.QueryPair]:
+    if v.InterconnectSubnetId.is_some():
+        auto t0 = v.InterconnectSubnetId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InterconnectSubnetId"), t0)
+    if v.TransitGatewayMulticastDomainId.is_some():
+        auto t1 = v.TransitGatewayMulticastDomainId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TransitGatewayMulticastDomainId"), t1)
+    if v.ReplicaMode.is_some():
+        auto t2 = v.ReplicaMode.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ReplicaMode"), t2)
+    return p
+
+# Serialize RecommendedActionUpdate into the query form parameters under `prefix`.
+def recommended_action_update_to_query(list[query.QueryPair] p, str prefix, RecommendedActionUpdate v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ActionId"), v.ActionId)
+    p = query.query_scalar(p, query.query_key(prefix, "Status"), v.Status)
+    return p
+
+# Serialize ScalingConfiguration into the query form parameters under `prefix`.
+def scaling_configuration_to_query(list[query.QueryPair] p, str prefix, ScalingConfiguration v) -> list[query.QueryPair]:
+    if v.MinCapacity.is_some():
+        auto t0 = str(v.MinCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MinCapacity"), t0)
+    if v.MaxCapacity.is_some():
+        auto t1 = str(v.MaxCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxCapacity"), t1)
+    if v.AutoPause.is_some():
+        auto t2 = query.query_bool(v.AutoPause.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "AutoPause"), t2)
+    if v.SecondsUntilAutoPause.is_some():
+        auto t3 = str(v.SecondsUntilAutoPause.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SecondsUntilAutoPause"), t3)
+    if v.TimeoutAction.is_some():
+        auto t4 = v.TimeoutAction.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TimeoutAction"), t4)
+    if v.SecondsBeforeTimeout.is_some():
+        auto t5 = str(v.SecondsBeforeTimeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SecondsBeforeTimeout"), t5)
+    return p
+
+# Serialize ServerlessV2ScalingConfiguration into the query form parameters under `prefix`.
+def serverless_v2_scaling_configuration_to_query(list[query.QueryPair] p, str prefix, ServerlessV2ScalingConfiguration v) -> list[query.QueryPair]:
+    if v.MinCapacity.is_some():
+        auto t0 = str(v.MinCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MinCapacity"), t0)
+    if v.MaxCapacity.is_some():
+        auto t1 = str(v.MaxCapacity.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxCapacity"), t1)
+    if v.SecondsUntilAutoPause.is_some():
+        auto t2 = str(v.SecondsUntilAutoPause.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "SecondsUntilAutoPause"), t2)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize TagSpecification into the query form parameters under `prefix`.
+def tag_specification_to_query(list[query.QueryPair] p, str prefix, TagSpecification v) -> list[query.QueryPair]:
+    if v.ResourceType.is_some():
+        auto t0 = v.ResourceType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceType"), t0)
+    auto qi1 = 1
+    for qe2 in v.Tags.unwrap_or([]):
+        auto t3 = qe2
+        p = tag_to_query(p, query.query_key(prefix, "Tags") + ".Tag" + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize TargetResourceConfiguration into the query form parameters under `prefix`.
+def target_resource_configuration_to_query(list[query.QueryPair] p, str prefix, TargetResourceConfiguration v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "SourceArn"), v.SourceArn)
+    if v.TargetKmsKeyId.is_some():
+        auto t0 = v.TargetKmsKeyId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TargetKmsKeyId"), t0)
+    return p
+
+# Serialize UserAuthConfig into the query form parameters under `prefix`.
+def user_auth_config_to_query(list[query.QueryPair] p, str prefix, UserAuthConfig v) -> list[query.QueryPair]:
+    if v.Description.is_some():
+        auto t0 = v.Description.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Description"), t0)
+    if v.UserName.is_some():
+        auto t1 = v.UserName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "UserName"), t1)
+    if v.AuthScheme.is_some():
+        auto t2 = v.AuthScheme.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AuthScheme"), t2)
+    if v.SecretArn.is_some():
+        auto t3 = v.SecretArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SecretArn"), t3)
+    if v.IAMAuth.is_some():
+        auto t4 = v.IAMAuth.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "IAMAuth"), t4)
+    if v.ClientPasswordAuthType.is_some():
+        auto t5 = v.ClientPasswordAuthType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ClientPasswordAuthType"), t5)
+    return p
+
 # A bound RDS client: credentials + region, threaded into every operation.
 struct RDSClient:
     core.Credentials creds
@@ -4952,6 +5138,17 @@ struct RDSClient:
         auto p = query.query_params("AddSourceIdentifierToSubscription", "2014-10-31")
         p = query.query_scalar(p, "SubscriptionName", input.SubscriptionName)
         p = query.query_scalar(p, "SourceIdentifier", input.SourceIdentifier)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # AddTagsToResource
+    # errors: BlueGreenDeploymentNotFoundFault, DBCapacityReservationNotFoundFault, DBClusterNotFoundFault, DBInstanceNotFoundFault, DBProxyEndpointNotFoundFault, DBProxyNotFoundFault, DBProxyTargetGroupNotFoundFault, DBShardGroupNotFoundFault, DBSnapshotNotFoundFault, DBSnapshotTenantDatabaseNotFoundFault, IntegrationNotFoundFault, InvalidDBClusterEndpointStateFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault, TenantDatabaseNotFoundFault
+    def add_tags_to_resource(self, AddTagsToResourceMessage input) -> str:
+        auto p = query.query_params("AddTagsToResource", "2014-10-31")
+        p = query.query_scalar(p, "ResourceName", input.ResourceName)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # ApplyPendingMaintenanceAction
@@ -5008,6 +5205,1021 @@ struct RDSClient:
     def cancel_export_task(self, CancelExportTaskMessage input) -> str:
         auto p = query.query_params("CancelExportTask", "2014-10-31")
         p = query.query_scalar(p, "ExportTaskIdentifier", input.ExportTaskIdentifier)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CopyDBClusterParameterGroup
+    # errors: DBParameterGroupAlreadyExistsFault, DBParameterGroupNotFoundFault, DBParameterGroupQuotaExceededFault
+    def copy_db_cluster_parameter_group(self, CopyDBClusterParameterGroupMessage input) -> str:
+        auto p = query.query_params("CopyDBClusterParameterGroup", "2014-10-31")
+        auto t0 = input.SourceDBClusterParameterGroupIdentifier
+        p = query.query_scalar(p, "SourceDBClusterParameterGroupIdentifier", t0)
+        auto t1 = input.TargetDBClusterParameterGroupIdentifier
+        p = query.query_scalar(p, "TargetDBClusterParameterGroupIdentifier", t1)
+        auto t2 = input.TargetDBClusterParameterGroupDescription
+        p = query.query_scalar(p, "TargetDBClusterParameterGroupDescription", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CopyDBClusterSnapshot
+    # errors: DBClusterSnapshotAlreadyExistsFault, DBClusterSnapshotNotFoundFault, InvalidDBClusterSnapshotStateFault, InvalidDBClusterStateFault, KMSKeyNotAccessibleFault, SnapshotQuotaExceededFault
+    def copy_db_cluster_snapshot(self, CopyDBClusterSnapshotMessage input) -> str:
+        auto p = query.query_params("CopyDBClusterSnapshot", "2014-10-31")
+        auto t0 = input.SourceDBClusterSnapshotIdentifier
+        p = query.query_scalar(p, "SourceDBClusterSnapshotIdentifier", t0)
+        auto t1 = input.TargetDBClusterSnapshotIdentifier
+        p = query.query_scalar(p, "TargetDBClusterSnapshotIdentifier", t1)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.PreSignedUrl.is_some():
+            p = query.query_scalar(p, "PreSignedUrl", input.PreSignedUrl.unwrap())
+        if input.CopyTags.is_some():
+            auto t2 = query.query_bool(input.CopyTags.unwrap())
+            p = query.query_scalar(p, "CopyTags", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CopyDBParameterGroup
+    # errors: DBParameterGroupAlreadyExistsFault, DBParameterGroupNotFoundFault, DBParameterGroupQuotaExceededFault
+    def copy_db_parameter_group(self, CopyDBParameterGroupMessage input) -> str:
+        auto p = query.query_params("CopyDBParameterGroup", "2014-10-31")
+        auto t0 = input.SourceDBParameterGroupIdentifier
+        p = query.query_scalar(p, "SourceDBParameterGroupIdentifier", t0)
+        auto t1 = input.TargetDBParameterGroupIdentifier
+        p = query.query_scalar(p, "TargetDBParameterGroupIdentifier", t1)
+        auto t2 = input.TargetDBParameterGroupDescription
+        p = query.query_scalar(p, "TargetDBParameterGroupDescription", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CopyDBSnapshot
+    # errors: CustomAvailabilityZoneNotFoundFault, DBSnapshotAlreadyExistsFault, DBSnapshotNotFoundFault, InvalidDBSnapshotStateFault, KMSKeyNotAccessibleFault, SnapshotQuotaExceededFault
+    def copy_db_snapshot(self, CopyDBSnapshotMessage input) -> str:
+        auto p = query.query_params("CopyDBSnapshot", "2014-10-31")
+        auto t0 = input.SourceDBSnapshotIdentifier
+        p = query.query_scalar(p, "SourceDBSnapshotIdentifier", t0)
+        auto t1 = input.TargetDBSnapshotIdentifier
+        p = query.query_scalar(p, "TargetDBSnapshotIdentifier", t1)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.CopyTags.is_some():
+            auto t4 = query.query_bool(input.CopyTags.unwrap())
+            p = query.query_scalar(p, "CopyTags", t4)
+        if input.PreSignedUrl.is_some():
+            p = query.query_scalar(p, "PreSignedUrl", input.PreSignedUrl.unwrap())
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.TargetCustomAvailabilityZone.is_some():
+            auto t5 = input.TargetCustomAvailabilityZone.unwrap()
+            p = query.query_scalar(p, "TargetCustomAvailabilityZone", t5)
+        if input.SnapshotTarget.is_some():
+            p = query.query_scalar(p, "SnapshotTarget", input.SnapshotTarget.unwrap())
+        if input.CopyOptionGroup.is_some():
+            auto t6 = query.query_bool(input.CopyOptionGroup.unwrap())
+            p = query.query_scalar(p, "CopyOptionGroup", t6)
+        if input.SnapshotAvailabilityZone.is_some():
+            auto t7 = input.SnapshotAvailabilityZone.unwrap()
+            p = query.query_scalar(p, "SnapshotAvailabilityZone", t7)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CopyOptionGroup
+    # errors: OptionGroupAlreadyExistsFault, OptionGroupNotFoundFault, OptionGroupQuotaExceededFault
+    def copy_option_group(self, CopyOptionGroupMessage input) -> str:
+        auto p = query.query_params("CopyOptionGroup", "2014-10-31")
+        auto t0 = input.SourceOptionGroupIdentifier
+        p = query.query_scalar(p, "SourceOptionGroupIdentifier", t0)
+        auto t1 = input.TargetOptionGroupIdentifier
+        p = query.query_scalar(p, "TargetOptionGroupIdentifier", t1)
+        auto t2 = input.TargetOptionGroupDescription
+        p = query.query_scalar(p, "TargetOptionGroupDescription", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateBlueGreenDeployment
+    # errors: BlueGreenDeploymentAlreadyExistsFault, DBClusterNotFoundFault, DBClusterParameterGroupNotFoundFault, DBClusterQuotaExceededFault, DBInstanceNotFoundFault, DBParameterGroupNotFoundFault, InstanceQuotaExceededFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault, SourceClusterNotSupportedFault, SourceDatabaseNotSupportedFault, StorageQuotaExceededFault
+    def create_blue_green_deployment(self, CreateBlueGreenDeploymentRequest input) -> str:
+        auto p = query.query_params("CreateBlueGreenDeployment", "2014-10-31")
+        auto t0 = input.BlueGreenDeploymentName
+        p = query.query_scalar(p, "BlueGreenDeploymentName", t0)
+        p = query.query_scalar(p, "Source", input.Source)
+        if input.TargetEngineVersion.is_some():
+            auto t1 = input.TargetEngineVersion.unwrap()
+            p = query.query_scalar(p, "TargetEngineVersion", t1)
+        if input.TargetDBParameterGroupName.is_some():
+            auto t2 = input.TargetDBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "TargetDBParameterGroupName", t2)
+        if input.TargetDBClusterParameterGroupName.is_some():
+            auto t3 = input.TargetDBClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "TargetDBClusterParameterGroupName", t3)
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.TargetDBInstanceClass.is_some():
+            auto t6 = input.TargetDBInstanceClass.unwrap()
+            p = query.query_scalar(p, "TargetDBInstanceClass", t6)
+        if input.UpgradeTargetStorageConfig.is_some():
+            auto t7 = query.query_bool(input.UpgradeTargetStorageConfig.unwrap())
+            p = query.query_scalar(p, "UpgradeTargetStorageConfig", t7)
+        if input.TargetIops.is_some():
+            p = query.query_scalar(p, "TargetIops", str(input.TargetIops.unwrap()))
+        if input.TargetStorageType.is_some():
+            auto t8 = input.TargetStorageType.unwrap()
+            p = query.query_scalar(p, "TargetStorageType", t8)
+        if input.TargetAllocatedStorage.is_some():
+            auto t9 = str(input.TargetAllocatedStorage.unwrap())
+            p = query.query_scalar(p, "TargetAllocatedStorage", t9)
+        if input.TargetStorageThroughput.is_some():
+            auto t10 = str(input.TargetStorageThroughput.unwrap())
+            p = query.query_scalar(p, "TargetStorageThroughput", t10)
+        auto qi11 = 1
+        for qe12 in input.TargetResourceConfigurations.unwrap_or([]):
+            auto t13 = qe12
+            p = target_resource_configuration_to_query(p, "TargetResourceConfigurations.TargetResourceConfiguration." + str(qi11), t13)
+            qi11 = qi11 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateCustomDBEngineVersion
+    # errors: CreateCustomDBEngineVersionFault, CustomDBEngineVersionAlreadyExistsFault, CustomDBEngineVersionNotFoundFault, CustomDBEngineVersionQuotaExceededFault, Ec2ImagePropertiesNotSupportedFault, InvalidCustomDBEngineVersionStateFault, KMSKeyNotAccessibleFault
+    def create_custom_db_engine_version(self, CreateCustomDBEngineVersionMessage input) -> str:
+        auto p = query.query_params("CreateCustomDBEngineVersion", "2014-10-31")
+        p = query.query_scalar(p, "Engine", input.Engine)
+        p = query.query_scalar(p, "EngineVersion", input.EngineVersion)
+        if input.DatabaseInstallationFilesS3BucketName.is_some():
+            auto t0 = input.DatabaseInstallationFilesS3BucketName.unwrap()
+            p = query.query_scalar(p, "DatabaseInstallationFilesS3BucketName", t0)
+        if input.DatabaseInstallationFilesS3Prefix.is_some():
+            auto t1 = input.DatabaseInstallationFilesS3Prefix.unwrap()
+            p = query.query_scalar(p, "DatabaseInstallationFilesS3Prefix", t1)
+        auto t2 = input.DatabaseInstallationFiles.unwrap_or([])
+        p = query.query_list(p, "DatabaseInstallationFiles", "member", t2)
+        if input.ImageId.is_some():
+            p = query.query_scalar(p, "ImageId", input.ImageId.unwrap())
+        if input.KMSKeyId.is_some():
+            p = query.query_scalar(p, "KMSKeyId", input.KMSKeyId.unwrap())
+        if input.SourceCustomDbEngineVersionIdentifier.is_some():
+            auto t3 = input.SourceCustomDbEngineVersionIdentifier.unwrap()
+            p = query.query_scalar(p, "SourceCustomDbEngineVersionIdentifier", t3)
+        if input.UseAwsProvidedLatestImage.is_some():
+            auto t4 = query.query_bool(input.UseAwsProvidedLatestImage.unwrap())
+            p = query.query_scalar(p, "UseAwsProvidedLatestImage", t4)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Manifest.is_some():
+            p = query.query_scalar(p, "Manifest", input.Manifest.unwrap())
+        auto qi5 = 1
+        for qe6 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBCapacityReservation
+    # errors: DBCapacityReservationAlreadyExistsFault, DBCapacityReservationUnsupportedFault, InstanceQuotaExceededFault, InsufficientDBInstanceCapacityFault
+    def create_db_capacity_reservation(self, CreateDBCapacityReservationRequest input) -> str:
+        auto p = query.query_params("CreateDBCapacityReservation", "2014-10-31")
+        auto t0 = input.DBCapacityReservationName
+        p = query.query_scalar(p, "DBCapacityReservationName", t0)
+        p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        auto t1 = str(input.CapacityPerAvailabilityZone)
+        p = query.query_scalar(p, "CapacityPerAvailabilityZone", t1)
+        auto t2 = input.AvailabilityZones
+        p = query.query_list(p, "AvailabilityZones", "AvailabilityZone", t2)
+        if input.EndDate.is_some():
+            auto t3 = query.query_timestamp_iso8601(input.EndDate.unwrap())
+            p = query.query_scalar(p, "EndDate", t3)
+        if input.StartDate.is_some():
+            auto t4 = query.query_timestamp_iso8601(input.StartDate.unwrap())
+            p = query.query_scalar(p, "StartDate", t4)
+        if input.CommitmentDuration.is_some():
+            auto t5 = str(input.CommitmentDuration.unwrap())
+            p = query.query_scalar(p, "CommitmentDuration", t5)
+        if input.LicenseModel.is_some():
+            p = query.query_scalar(p, "LicenseModel", input.LicenseModel.unwrap())
+        auto qi6 = 1
+        for qe7 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBCluster
+    # errors: DBClusterAlreadyExistsFault, DBClusterNotFoundFault, DBClusterParameterGroupNotFoundFault, DBClusterQuotaExceededFault, DBClusterRoleQuotaExceededFault, DBInstanceNotFoundFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupNotFoundFault, DomainNotFoundFault, GlobalClusterNotFoundFault, InsufficientDBInstanceCapacityFault, InsufficientStorageClusterCapacityFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault, InvalidDBSubnetGroupFault, InvalidDBSubnetGroupStateFault, InvalidGlobalClusterStateFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, VpcEncryptionControlViolationException
+    def create_db_cluster(self, CreateDBClusterMessage input) -> str:
+        auto p = query.query_params("CreateDBCluster", "2014-10-31")
+        auto t0 = input.AvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZones", "AvailabilityZone", t0)
+        if input.BackupRetentionPeriod.is_some():
+            auto t1 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t1)
+        if input.CharacterSetName.is_some():
+            auto t2 = input.CharacterSetName.unwrap()
+            p = query.query_scalar(p, "CharacterSetName", t2)
+        if input.DatabaseName.is_some():
+            p = query.query_scalar(p, "DatabaseName", input.DatabaseName.unwrap())
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        if input.DBClusterParameterGroupName.is_some():
+            auto t3 = input.DBClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBClusterParameterGroupName", t3)
+        auto t4 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t4)
+        if input.DBSubnetGroupName.is_some():
+            auto t5 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t5)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.MasterUsername.is_some():
+            p = query.query_scalar(p, "MasterUsername", input.MasterUsername.unwrap())
+        if input.MasterUserPassword.is_some():
+            auto t6 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t6)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.PreferredBackupWindow.is_some():
+            auto t7 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t7)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t8 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t8)
+        if input.ReplicationSourceIdentifier.is_some():
+            auto t9 = input.ReplicationSourceIdentifier.unwrap()
+            p = query.query_scalar(p, "ReplicationSourceIdentifier", t9)
+        auto qi10 = 1
+        for qe11 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi10), qe11)
+            qi10 = qi10 + 1
+        if input.StorageEncrypted.is_some():
+            auto t12 = query.query_bool(input.StorageEncrypted.unwrap())
+            p = query.query_scalar(p, "StorageEncrypted", t12)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.PreSignedUrl.is_some():
+            p = query.query_scalar(p, "PreSignedUrl", input.PreSignedUrl.unwrap())
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t13 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t13)
+        if input.BacktrackWindow.is_some():
+            auto t14 = str(input.BacktrackWindow.unwrap())
+            p = query.query_scalar(p, "BacktrackWindow", t14)
+        auto t15 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t15)
+        if input.EngineMode.is_some():
+            p = query.query_scalar(p, "EngineMode", input.EngineMode.unwrap())
+        if input.ScalingConfiguration.is_some():
+            auto t16 = input.ScalingConfiguration.unwrap()
+            p = scaling_configuration_to_query(p, "ScalingConfiguration", t16)
+        if input.RdsCustomClusterConfiguration.is_some():
+            auto t17 = input.RdsCustomClusterConfiguration.unwrap()
+            p = rds_custom_cluster_configuration_to_query(p, "RdsCustomClusterConfiguration", t17)
+        if input.DBClusterInstanceClass.is_some():
+            auto t18 = input.DBClusterInstanceClass.unwrap()
+            p = query.query_scalar(p, "DBClusterInstanceClass", t18)
+        if input.AllocatedStorage.is_some():
+            auto t19 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t19)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.PubliclyAccessible.is_some():
+            auto t20 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t20)
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t21 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t21)
+        if input.DeletionProtection.is_some():
+            auto t22 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t22)
+        if input.GlobalClusterIdentifier.is_some():
+            auto t23 = input.GlobalClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "GlobalClusterIdentifier", t23)
+        if input.EnableHttpEndpoint.is_some():
+            auto t24 = query.query_bool(input.EnableHttpEndpoint.unwrap())
+            p = query.query_scalar(p, "EnableHttpEndpoint", t24)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t25 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t25)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainIAMRoleName.is_some():
+            auto t26 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t26)
+        if input.EnableGlobalWriteForwarding.is_some():
+            auto t27 = query.query_bool(input.EnableGlobalWriteForwarding.unwrap())
+            p = query.query_scalar(p, "EnableGlobalWriteForwarding", t27)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.ServerlessV2ScalingConfiguration.is_some():
+            auto t28 = input.ServerlessV2ScalingConfiguration.unwrap()
+            p = serverless_v2_scaling_configuration_to_query(p, "ServerlessV2ScalingConfiguration", t28)
+        if input.MonitoringInterval.is_some():
+            auto t29 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t29)
+        if input.MonitoringRoleArn.is_some():
+            auto t30 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t30)
+        if input.DatabaseInsightsMode.is_some():
+            auto t31 = input.DatabaseInsightsMode.unwrap()
+            p = query.query_scalar(p, "DatabaseInsightsMode", t31)
+        if input.EnablePerformanceInsights.is_some():
+            auto t32 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t32)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t33 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t33)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t34 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t34)
+        if input.EnableLimitlessDatabase.is_some():
+            auto t35 = query.query_bool(input.EnableLimitlessDatabase.unwrap())
+            p = query.query_scalar(p, "EnableLimitlessDatabase", t35)
+        if input.ClusterScalabilityType.is_some():
+            auto t36 = input.ClusterScalabilityType.unwrap()
+            p = query.query_scalar(p, "ClusterScalabilityType", t36)
+        if input.DBSystemId.is_some():
+            p = query.query_scalar(p, "DBSystemId", input.DBSystemId.unwrap())
+        if input.ManageMasterUserPassword.is_some():
+            auto t37 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t37)
+        if input.EnableLocalWriteForwarding.is_some():
+            auto t38 = query.query_bool(input.EnableLocalWriteForwarding.unwrap())
+            p = query.query_scalar(p, "EnableLocalWriteForwarding", t38)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t39 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t39)
+        if input.CACertificateIdentifier.is_some():
+            auto t40 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t40)
+        if input.EngineLifecycleSupport.is_some():
+            auto t41 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t41)
+        auto qi42 = 1
+        for qe43 in input.TagSpecifications.unwrap_or([]):
+            auto t44 = qe43
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi42), t44)
+            qi42 = qi42 + 1
+        if input.MasterUserAuthenticationType.is_some():
+            auto t45 = input.MasterUserAuthenticationType.unwrap()
+            p = query.query_scalar(p, "MasterUserAuthenticationType", t45)
+        if input.WithExpressConfiguration.is_some():
+            auto t46 = query.query_bool(input.WithExpressConfiguration.unwrap())
+            p = query.query_scalar(p, "WithExpressConfiguration", t46)
+        auto qi47 = 1
+        for qe48 in input.AssociatedRoles.unwrap_or([]):
+            auto t49 = qe48
+            p = db_cluster_associated_role_to_query(p, "AssociatedRoles.DBClusterAssociatedRole." + str(qi47), t49)
+            qi47 = qi47 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBClusterEndpoint
+    # errors: DBClusterEndpointAlreadyExistsFault, DBClusterEndpointQuotaExceededFault, DBClusterNotFoundFault, DBInstanceNotFoundFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault
+    def create_db_cluster_endpoint(self, CreateDBClusterEndpointMessage input) -> str:
+        auto p = query.query_params("CreateDBClusterEndpoint", "2014-10-31")
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        auto t0 = input.DBClusterEndpointIdentifier
+        p = query.query_scalar(p, "DBClusterEndpointIdentifier", t0)
+        p = query.query_scalar(p, "EndpointType", input.EndpointType)
+        auto t1 = input.StaticMembers.unwrap_or([])
+        p = query.query_list(p, "StaticMembers", "member", t1)
+        auto t2 = input.ExcludedMembers.unwrap_or([])
+        p = query.query_list(p, "ExcludedMembers", "member", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBClusterParameterGroup
+    # errors: DBParameterGroupAlreadyExistsFault, DBParameterGroupQuotaExceededFault
+    def create_db_cluster_parameter_group(self, CreateDBClusterParameterGroupMessage input) -> str:
+        auto p = query.query_params("CreateDBClusterParameterGroup", "2014-10-31")
+        auto t0 = input.DBClusterParameterGroupName
+        p = query.query_scalar(p, "DBClusterParameterGroupName", t0)
+        auto t1 = input.DBParameterGroupFamily
+        p = query.query_scalar(p, "DBParameterGroupFamily", t1)
+        p = query.query_scalar(p, "Description", input.Description)
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBClusterSnapshot
+    # errors: DBClusterNotFoundFault, DBClusterSnapshotAlreadyExistsFault, InvalidDBClusterSnapshotStateFault, InvalidDBClusterStateFault, SnapshotQuotaExceededFault
+    def create_db_cluster_snapshot(self, CreateDBClusterSnapshotMessage input) -> str:
+        auto p = query.query_params("CreateDBClusterSnapshot", "2014-10-31")
+        auto t0 = input.DBClusterSnapshotIdentifier
+        p = query.query_scalar(p, "DBClusterSnapshotIdentifier", t0)
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBInstance
+    # errors: AuthorizationNotFoundFault, BackupPolicyNotFoundFault, CertificateNotFoundFault, DBCapacityReservationNotFoundFault, DBClusterNotFoundFault, DBInstanceAlreadyExistsFault, DBParameterGroupNotFoundFault, DBSecurityGroupNotFoundFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InstanceQuotaExceededFault, InsufficientDBInstanceCapacityFault, InvalidDBCapacityReservationStateFault, InvalidDBClusterStateFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, ProvisionedIopsNotAvailableInAZFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, TenantDatabaseQuotaExceededFault, VpcEncryptionControlViolationException
+    def create_db_instance(self, CreateDBInstanceMessage input) -> str:
+        auto p = query.query_params("CreateDBInstance", "2014-10-31")
+        if input.DBName.is_some():
+            p = query.query_scalar(p, "DBName", input.DBName.unwrap())
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        if input.AllocatedStorage.is_some():
+            auto t0 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t0)
+        p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        if input.MasterUsername.is_some():
+            p = query.query_scalar(p, "MasterUsername", input.MasterUsername.unwrap())
+        if input.MasterUserPassword.is_some():
+            auto t1 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t1)
+        auto t2 = input.DBSecurityGroups.unwrap_or([])
+        p = query.query_list(p, "DBSecurityGroups", "DBSecurityGroupName", t2)
+        auto t3 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t3)
+        if input.AvailabilityZone.is_some():
+            auto t4 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t4)
+        if input.DBSubnetGroupName.is_some():
+            auto t5 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t5)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t6 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t6)
+        if input.DBParameterGroupName.is_some():
+            auto t7 = input.DBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupName", t7)
+        if input.BackupRetentionPeriod.is_some():
+            auto t8 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t8)
+        if input.PreferredBackupWindow.is_some():
+            auto t9 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t9)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.MultiAZ.is_some():
+            auto t10 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t10)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t11 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t11)
+        if input.LicenseModel.is_some():
+            p = query.query_scalar(p, "LicenseModel", input.LicenseModel.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.StorageThroughput.is_some():
+            auto t12 = str(input.StorageThroughput.unwrap())
+            p = query.query_scalar(p, "StorageThroughput", t12)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.CharacterSetName.is_some():
+            auto t13 = input.CharacterSetName.unwrap()
+            p = query.query_scalar(p, "CharacterSetName", t13)
+        if input.NcharCharacterSetName.is_some():
+            auto t14 = input.NcharCharacterSetName.unwrap()
+            p = query.query_scalar(p, "NcharCharacterSetName", t14)
+        if input.PubliclyAccessible.is_some():
+            auto t15 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t15)
+        auto qi16 = 1
+        for qe17 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi16), qe17)
+            qi16 = qi16 + 1
+        if input.DBClusterIdentifier.is_some():
+            auto t18 = input.DBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterIdentifier", t18)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.TdeCredentialArn.is_some():
+            auto t19 = input.TdeCredentialArn.unwrap()
+            p = query.query_scalar(p, "TdeCredentialArn", t19)
+        if input.TdeCredentialPassword.is_some():
+            auto t20 = input.TdeCredentialPassword.unwrap()
+            p = query.query_scalar(p, "TdeCredentialPassword", t20)
+        if input.StorageEncrypted.is_some():
+            auto t21 = query.query_bool(input.StorageEncrypted.unwrap())
+            p = query.query_scalar(p, "StorageEncrypted", t21)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainFqdn.is_some():
+            p = query.query_scalar(p, "DomainFqdn", input.DomainFqdn.unwrap())
+        if input.DomainOu.is_some():
+            p = query.query_scalar(p, "DomainOu", input.DomainOu.unwrap())
+        if input.DomainAuthSecretArn.is_some():
+            auto t22 = input.DomainAuthSecretArn.unwrap()
+            p = query.query_scalar(p, "DomainAuthSecretArn", t22)
+        auto t23 = input.DomainDnsIps.unwrap_or([])
+        p = query.query_list(p, "DomainDnsIps", "member", t23)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t24 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t24)
+        if input.MonitoringInterval.is_some():
+            auto t25 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t25)
+        if input.MonitoringRoleArn.is_some():
+            auto t26 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t26)
+        if input.DomainIAMRoleName.is_some():
+            auto t27 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t27)
+        if input.PromotionTier.is_some():
+            auto t28 = str(input.PromotionTier.unwrap())
+            p = query.query_scalar(p, "PromotionTier", t28)
+        if input.Timezone.is_some():
+            p = query.query_scalar(p, "Timezone", input.Timezone.unwrap())
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t29 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t29)
+        if input.DatabaseInsightsMode.is_some():
+            auto t30 = input.DatabaseInsightsMode.unwrap()
+            p = query.query_scalar(p, "DatabaseInsightsMode", t30)
+        if input.EnablePerformanceInsights.is_some():
+            auto t31 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t31)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t32 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t32)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t33 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t33)
+        auto t34 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t34)
+        auto qi35 = 1
+        for qe36 in input.ProcessorFeatures.unwrap_or([]):
+            auto t37 = qe36
+            p = processor_feature_to_query(p, "ProcessorFeatures.ProcessorFeature." + str(qi35), t37)
+            qi35 = qi35 + 1
+        if input.DeletionProtection.is_some():
+            auto t38 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t38)
+        if input.MaxAllocatedStorage.is_some():
+            auto t39 = str(input.MaxAllocatedStorage.unwrap())
+            p = query.query_scalar(p, "MaxAllocatedStorage", t39)
+        if input.EnableCustomerOwnedIp.is_some():
+            auto t40 = query.query_bool(input.EnableCustomerOwnedIp.unwrap())
+            p = query.query_scalar(p, "EnableCustomerOwnedIp", t40)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.BackupTarget.is_some():
+            p = query.query_scalar(p, "BackupTarget", input.BackupTarget.unwrap())
+        if input.CustomIamInstanceProfile.is_some():
+            auto t41 = input.CustomIamInstanceProfile.unwrap()
+            p = query.query_scalar(p, "CustomIamInstanceProfile", t41)
+        if input.DBSystemId.is_some():
+            p = query.query_scalar(p, "DBSystemId", input.DBSystemId.unwrap())
+        if input.CACertificateIdentifier.is_some():
+            auto t42 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t42)
+        if input.ManageMasterUserPassword.is_some():
+            auto t43 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t43)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t44 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t44)
+        if input.MultiTenant.is_some():
+            auto t45 = query.query_bool(input.MultiTenant.unwrap())
+            p = query.query_scalar(p, "MultiTenant", t45)
+        if input.DedicatedLogVolume.is_some():
+            auto t46 = query.query_bool(input.DedicatedLogVolume.unwrap())
+            p = query.query_scalar(p, "DedicatedLogVolume", t46)
+        if input.EngineLifecycleSupport.is_some():
+            auto t47 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t47)
+        auto qi48 = 1
+        for qe49 in input.AdditionalStorageVolumes.unwrap_or([]):
+            auto t50 = qe49
+            p = additional_storage_volume_to_query(p, "AdditionalStorageVolumes.member." + str(qi48), t50)
+            qi48 = qi48 + 1
+        auto qi51 = 1
+        for qe52 in input.TagSpecifications.unwrap_or([]):
+            auto t53 = qe52
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi51), t53)
+            qi51 = qi51 + 1
+        if input.DBCapacityReservationIdentifier.is_some():
+            auto t54 = input.DBCapacityReservationIdentifier.unwrap()
+            p = query.query_scalar(p, "DBCapacityReservationIdentifier", t54)
+        if input.MasterUserAuthenticationType.is_some():
+            auto t55 = input.MasterUserAuthenticationType.unwrap()
+            p = query.query_scalar(p, "MasterUserAuthenticationType", t55)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBInstanceReadReplica
+    # errors: CertificateNotFoundFault, DBCapacityReservationNotFoundFault, DBClusterNotFoundFault, DBInstanceAlreadyExistsFault, DBInstanceNotFoundFault, DBParameterGroupNotFoundFault, DBSecurityGroupNotFoundFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupNotAllowedFault, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InstanceQuotaExceededFault, InsufficientDBInstanceCapacityFault, InvalidDBCapacityReservationStateFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault, InvalidDBSubnetGroupFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, ProvisionedIopsNotAvailableInAZFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, TenantDatabaseQuotaExceededFault, VpcEncryptionControlViolationException
+    def create_db_instance_read_replica(self, CreateDBInstanceReadReplicaMessage input) -> str:
+        auto p = query.query_params("CreateDBInstanceReadReplica", "2014-10-31")
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        if input.SourceDBInstanceIdentifier.is_some():
+            auto t0 = input.SourceDBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "SourceDBInstanceIdentifier", t0)
+        if input.DBInstanceClass.is_some():
+            p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass.unwrap())
+        if input.AvailabilityZone.is_some():
+            auto t1 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t1)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.MultiAZ.is_some():
+            auto t2 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t2)
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t3 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t3)
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.StorageThroughput.is_some():
+            auto t4 = str(input.StorageThroughput.unwrap())
+            p = query.query_scalar(p, "StorageThroughput", t4)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.DBParameterGroupName.is_some():
+            auto t5 = input.DBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupName", t5)
+        if input.PubliclyAccessible.is_some():
+            auto t6 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t6)
+        auto qi7 = 1
+        for qe8 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi7), qe8)
+            qi7 = qi7 + 1
+        if input.DBSubnetGroupName.is_some():
+            auto t9 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t9)
+        auto t10 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t10)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.CopyTagsToSnapshot.is_some():
+            auto t11 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t11)
+        if input.MonitoringInterval.is_some():
+            auto t12 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t12)
+        if input.MonitoringRoleArn.is_some():
+            auto t13 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t13)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.PreSignedUrl.is_some():
+            p = query.query_scalar(p, "PreSignedUrl", input.PreSignedUrl.unwrap())
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t14 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t14)
+        if input.DatabaseInsightsMode.is_some():
+            auto t15 = input.DatabaseInsightsMode.unwrap()
+            p = query.query_scalar(p, "DatabaseInsightsMode", t15)
+        if input.EnablePerformanceInsights.is_some():
+            auto t16 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t16)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t17 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t17)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t18 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t18)
+        auto t19 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t19)
+        auto qi20 = 1
+        for qe21 in input.ProcessorFeatures.unwrap_or([]):
+            auto t22 = qe21
+            p = processor_feature_to_query(p, "ProcessorFeatures.ProcessorFeature." + str(qi20), t22)
+            qi20 = qi20 + 1
+        if input.UseDefaultProcessorFeatures.is_some():
+            auto t23 = query.query_bool(input.UseDefaultProcessorFeatures.unwrap())
+            p = query.query_scalar(p, "UseDefaultProcessorFeatures", t23)
+        if input.DeletionProtection.is_some():
+            auto t24 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t24)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainIAMRoleName.is_some():
+            auto t25 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t25)
+        if input.DomainFqdn.is_some():
+            p = query.query_scalar(p, "DomainFqdn", input.DomainFqdn.unwrap())
+        if input.DomainOu.is_some():
+            p = query.query_scalar(p, "DomainOu", input.DomainOu.unwrap())
+        if input.DomainAuthSecretArn.is_some():
+            auto t26 = input.DomainAuthSecretArn.unwrap()
+            p = query.query_scalar(p, "DomainAuthSecretArn", t26)
+        auto t27 = input.DomainDnsIps.unwrap_or([])
+        p = query.query_list(p, "DomainDnsIps", "member", t27)
+        if input.ReplicaMode.is_some():
+            p = query.query_scalar(p, "ReplicaMode", input.ReplicaMode.unwrap())
+        if input.EnableCustomerOwnedIp.is_some():
+            auto t28 = query.query_bool(input.EnableCustomerOwnedIp.unwrap())
+            p = query.query_scalar(p, "EnableCustomerOwnedIp", t28)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.MaxAllocatedStorage.is_some():
+            auto t29 = str(input.MaxAllocatedStorage.unwrap())
+            p = query.query_scalar(p, "MaxAllocatedStorage", t29)
+        if input.BackupTarget.is_some():
+            p = query.query_scalar(p, "BackupTarget", input.BackupTarget.unwrap())
+        if input.CustomIamInstanceProfile.is_some():
+            auto t30 = input.CustomIamInstanceProfile.unwrap()
+            p = query.query_scalar(p, "CustomIamInstanceProfile", t30)
+        if input.AllocatedStorage.is_some():
+            auto t31 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t31)
+        if input.SourceDBClusterIdentifier.is_some():
+            auto t32 = input.SourceDBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "SourceDBClusterIdentifier", t32)
+        if input.DedicatedLogVolume.is_some():
+            auto t33 = query.query_bool(input.DedicatedLogVolume.unwrap())
+            p = query.query_scalar(p, "DedicatedLogVolume", t33)
+        if input.UpgradeStorageConfig.is_some():
+            auto t34 = query.query_bool(input.UpgradeStorageConfig.unwrap())
+            p = query.query_scalar(p, "UpgradeStorageConfig", t34)
+        if input.CACertificateIdentifier.is_some():
+            auto t35 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t35)
+        auto qi36 = 1
+        for qe37 in input.AdditionalStorageVolumes.unwrap_or([]):
+            auto t38 = qe37
+            p = additional_storage_volume_to_query(p, "AdditionalStorageVolumes.member." + str(qi36), t38)
+            qi36 = qi36 + 1
+        auto qi39 = 1
+        for qe40 in input.TagSpecifications.unwrap_or([]):
+            auto t41 = qe40
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi39), t41)
+            qi39 = qi39 + 1
+        if input.DBCapacityReservationIdentifier.is_some():
+            auto t42 = input.DBCapacityReservationIdentifier.unwrap()
+            p = query.query_scalar(p, "DBCapacityReservationIdentifier", t42)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBParameterGroup
+    # errors: DBParameterGroupAlreadyExistsFault, DBParameterGroupQuotaExceededFault
+    def create_db_parameter_group(self, CreateDBParameterGroupMessage input) -> str:
+        auto p = query.query_params("CreateDBParameterGroup", "2014-10-31")
+        p = query.query_scalar(p, "DBParameterGroupName", input.DBParameterGroupName)
+        auto t0 = input.DBParameterGroupFamily
+        p = query.query_scalar(p, "DBParameterGroupFamily", t0)
+        p = query.query_scalar(p, "Description", input.Description)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBProxy
+    # errors: DBProxyAlreadyExistsFault, DBProxyQuotaExceededFault, InvalidSubnet
+    def create_db_proxy(self, CreateDBProxyRequest input) -> str:
+        auto p = query.query_params("CreateDBProxy", "2014-10-31")
+        p = query.query_scalar(p, "DBProxyName", input.DBProxyName)
+        p = query.query_scalar(p, "EngineFamily", input.EngineFamily)
+        if input.DefaultAuthScheme.is_some():
+            auto t0 = input.DefaultAuthScheme.unwrap()
+            p = query.query_scalar(p, "DefaultAuthScheme", t0)
+        auto qi1 = 1
+        for qe2 in input.Auth.unwrap_or([]):
+            p = user_auth_config_to_query(p, "Auth.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        p = query.query_scalar(p, "RoleArn", input.RoleArn)
+        p = query.query_list(p, "VpcSubnetIds", "member", input.VpcSubnetIds)
+        auto t3 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "member", t3)
+        if input.RequireTLS.is_some():
+            auto t4 = query.query_bool(input.RequireTLS.unwrap())
+            p = query.query_scalar(p, "RequireTLS", t4)
+        if input.IdleClientTimeout.is_some():
+            auto t5 = str(input.IdleClientTimeout.unwrap())
+            p = query.query_scalar(p, "IdleClientTimeout", t5)
+        if input.DebugLogging.is_some():
+            auto t6 = query.query_bool(input.DebugLogging.unwrap())
+            p = query.query_scalar(p, "DebugLogging", t6)
+        auto qi7 = 1
+        for qe8 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi7), qe8)
+            qi7 = qi7 + 1
+        if input.EndpointNetworkType.is_some():
+            auto t9 = input.EndpointNetworkType.unwrap()
+            p = query.query_scalar(p, "EndpointNetworkType", t9)
+        if input.TargetConnectionNetworkType.is_some():
+            auto t10 = input.TargetConnectionNetworkType.unwrap()
+            p = query.query_scalar(p, "TargetConnectionNetworkType", t10)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBProxyEndpoint
+    # errors: DBProxyEndpointAlreadyExistsFault, DBProxyEndpointQuotaExceededFault, DBProxyNotFoundFault, InvalidDBProxyStateFault, InvalidSubnet
+    def create_db_proxy_endpoint(self, CreateDBProxyEndpointRequest input) -> str:
+        auto p = query.query_params("CreateDBProxyEndpoint", "2014-10-31")
+        p = query.query_scalar(p, "DBProxyName", input.DBProxyName)
+        p = query.query_scalar(p, "DBProxyEndpointName", input.DBProxyEndpointName)
+        p = query.query_list(p, "VpcSubnetIds", "member", input.VpcSubnetIds)
+        auto t0 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "member", t0)
+        if input.TargetRole.is_some():
+            p = query.query_scalar(p, "TargetRole", input.TargetRole.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.EndpointNetworkType.is_some():
+            auto t3 = input.EndpointNetworkType.unwrap()
+            p = query.query_scalar(p, "EndpointNetworkType", t3)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBSecurityGroup
+    # errors: DBSecurityGroupAlreadyExistsFault, DBSecurityGroupNotSupportedFault, DBSecurityGroupQuotaExceededFault
+    def create_db_security_group(self, CreateDBSecurityGroupMessage input) -> str:
+        auto p = query.query_params("CreateDBSecurityGroup", "2014-10-31")
+        p = query.query_scalar(p, "DBSecurityGroupName", input.DBSecurityGroupName)
+        auto t0 = input.DBSecurityGroupDescription
+        p = query.query_scalar(p, "DBSecurityGroupDescription", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBShardGroup
+    # errors: DBClusterNotFoundFault, DBShardGroupAlreadyExistsFault, InvalidDBClusterStateFault, InvalidVPCNetworkStateFault, MaxDBShardGroupLimitReached, NetworkTypeNotSupported, UnsupportedDBEngineVersionFault
+    def create_db_shard_group(self, CreateDBShardGroupMessage input) -> str:
+        auto p = query.query_params("CreateDBShardGroup", "2014-10-31")
+        auto t0 = input.DBShardGroupIdentifier
+        p = query.query_scalar(p, "DBShardGroupIdentifier", t0)
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        if input.ComputeRedundancy.is_some():
+            auto t1 = str(input.ComputeRedundancy.unwrap())
+            p = query.query_scalar(p, "ComputeRedundancy", t1)
+        p = query.query_scalar(p, "MaxACU", str(input.MaxACU))
+        if input.MinACU.is_some():
+            p = query.query_scalar(p, "MinACU", str(input.MinACU.unwrap()))
+        if input.PubliclyAccessible.is_some():
+            auto t2 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBSnapshot
+    # errors: DBInstanceNotFoundFault, DBSnapshotAlreadyExistsFault, InvalidDBInstanceStateFault, SnapshotQuotaExceededFault
+    def create_db_snapshot(self, CreateDBSnapshotMessage input) -> str:
+        auto p = query.query_params("CreateDBSnapshot", "2014-10-31")
+        p = query.query_scalar(p, "DBSnapshotIdentifier", input.DBSnapshotIdentifier)
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateDBSubnetGroup
+    # errors: DBSubnetGroupAlreadyExistsFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupQuotaExceededFault, DBSubnetQuotaExceededFault, InvalidSubnet
+    def create_db_subnet_group(self, CreateDBSubnetGroupMessage input) -> str:
+        auto p = query.query_params("CreateDBSubnetGroup", "2014-10-31")
+        p = query.query_scalar(p, "DBSubnetGroupName", input.DBSubnetGroupName)
+        auto t0 = input.DBSubnetGroupDescription
+        p = query.query_scalar(p, "DBSubnetGroupDescription", t0)
+        p = query.query_list(p, "SubnetIds", "SubnetIdentifier", input.SubnetIds)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateEventSubscription
+    # errors: EventSubscriptionQuotaExceededFault, SNSInvalidTopicFault, SNSNoAuthorizationFault, SNSTopicArnNotFoundFault, SourceNotFoundFault, SubscriptionAlreadyExistFault, SubscriptionCategoryNotFoundFault
+    def create_event_subscription(self, CreateEventSubscriptionMessage input) -> str:
+        auto p = query.query_params("CreateEventSubscription", "2014-10-31")
+        p = query.query_scalar(p, "SubscriptionName", input.SubscriptionName)
+        p = query.query_scalar(p, "SnsTopicArn", input.SnsTopicArn)
+        if input.SourceType.is_some():
+            p = query.query_scalar(p, "SourceType", input.SourceType.unwrap())
+        auto t0 = input.EventCategories.unwrap_or([])
+        p = query.query_list(p, "EventCategories", "EventCategory", t0)
+        p = query.query_list(p, "SourceIds", "SourceId", input.SourceIds.unwrap_or([]))
+        if input.Enabled.is_some():
+            auto t1 = query.query_bool(input.Enabled.unwrap())
+            p = query.query_scalar(p, "Enabled", t1)
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateGlobalCluster
+    # errors: DBClusterNotFoundFault, GlobalClusterAlreadyExistsFault, GlobalClusterQuotaExceededFault, InvalidDBClusterStateFault, InvalidDBShardGroupStateFault, ResourceNotFoundFault
+    def create_global_cluster(self, CreateGlobalClusterMessage input) -> str:
+        auto p = query.query_params("CreateGlobalCluster", "2014-10-31")
+        auto t0 = input.GlobalClusterIdentifier
+        p = query.query_scalar(p, "GlobalClusterIdentifier", t0)
+        if input.SourceDBClusterIdentifier.is_some():
+            auto t1 = input.SourceDBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "SourceDBClusterIdentifier", t1)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.EngineLifecycleSupport.is_some():
+            auto t2 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t2)
+        if input.DeletionProtection.is_some():
+            auto t3 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t3)
+        if input.DatabaseName.is_some():
+            p = query.query_scalar(p, "DatabaseName", input.DatabaseName.unwrap())
+        if input.StorageEncrypted.is_some():
+            auto t4 = query.query_bool(input.StorageEncrypted.unwrap())
+            p = query.query_scalar(p, "StorageEncrypted", t4)
+        auto qi5 = 1
+        for qe6 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateIntegration
+    # errors: DBClusterNotFoundFault, DBInstanceNotFoundFault, IntegrationAlreadyExistsFault, IntegrationConflictOperationFault, IntegrationQuotaExceededFault, KMSKeyNotAccessibleFault
+    def create_integration(self, CreateIntegrationMessage input) -> str:
+        auto p = query.query_params("CreateIntegration", "2014-10-31")
+        p = query.query_scalar(p, "SourceArn", input.SourceArn)
+        p = query.query_scalar(p, "TargetArn", input.TargetArn)
+        p = query.query_scalar(p, "IntegrationName", input.IntegrationName)
+        if input.KMSKeyId.is_some():
+            p = query.query_scalar(p, "KMSKeyId", input.KMSKeyId.unwrap())
+        list[str] qks1 = []
+        list[str] qvs2 = []
+        for qk0 in sorted(input.AdditionalEncryptionContext.unwrap_or({}).keys()):
+            qks1.append(qk0)
+            qvs2.append(input.AdditionalEncryptionContext.unwrap_or({})[qk0])
+        auto t3 = qvs2
+        p = query.query_map(p, "AdditionalEncryptionContext", "key", "value", qks1, t3)
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.DataFilter.is_some():
+            p = query.query_scalar(p, "DataFilter", input.DataFilter.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateOptionGroup
+    # errors: OptionGroupAlreadyExistsFault, OptionGroupQuotaExceededFault
+    def create_option_group(self, CreateOptionGroupMessage input) -> str:
+        auto p = query.query_params("CreateOptionGroup", "2014-10-31")
+        p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName)
+        p = query.query_scalar(p, "EngineName", input.EngineName)
+        p = query.query_scalar(p, "MajorEngineVersion", input.MajorEngineVersion)
+        auto t0 = input.OptionGroupDescription
+        p = query.query_scalar(p, "OptionGroupDescription", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # CreateTenantDatabase
+    # errors: DBInstanceNotFoundFault, InvalidDBInstanceStateFault, KMSKeyNotAccessibleFault, TenantDatabaseAlreadyExistsFault, TenantDatabaseQuotaExceededFault
+    def create_tenant_database(self, CreateTenantDatabaseMessage input) -> str:
+        auto p = query.query_params("CreateTenantDatabase", "2014-10-31")
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        p = query.query_scalar(p, "TenantDBName", input.TenantDBName)
+        p = query.query_scalar(p, "MasterUsername", input.MasterUsername)
+        if input.MasterUserPassword.is_some():
+            auto t0 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t0)
+        if input.CharacterSetName.is_some():
+            auto t1 = input.CharacterSetName.unwrap()
+            p = query.query_scalar(p, "CharacterSetName", t1)
+        if input.NcharCharacterSetName.is_some():
+            auto t2 = input.NcharCharacterSetName.unwrap()
+            p = query.query_scalar(p, "NcharCharacterSetName", t2)
+        if input.ManageMasterUserPassword.is_some():
+            auto t3 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t3)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t4 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t4)
+        auto qi5 = 1
+        for qe6 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi5), qe6)
+            qi5 = qi5 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # DeleteBlueGreenDeployment
@@ -5214,12 +6426,301 @@ struct RDSClient:
         auto p = query.query_params("DescribeAccountAttributes", "2014-10-31")
         return query.query_request(self.creds, rds_service(), self.region, p)
 
+    # DescribeBlueGreenDeployments
+    # errors: BlueGreenDeploymentNotFoundFault
+    def describe_blue_green_deployments(self, DescribeBlueGreenDeploymentsRequest input) -> str:
+        auto p = query.query_params("DescribeBlueGreenDeployments", "2014-10-31")
+        if input.BlueGreenDeploymentIdentifier.is_some():
+            auto t0 = input.BlueGreenDeploymentIdentifier.unwrap()
+            p = query.query_scalar(p, "BlueGreenDeploymentIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeCertificates
+    # errors: CertificateNotFoundFault
+    def describe_certificates(self, DescribeCertificatesMessage input) -> str:
+        auto p = query.query_params("DescribeCertificates", "2014-10-31")
+        if input.CertificateIdentifier.is_some():
+            auto t0 = input.CertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CertificateIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBCapacityReservations
+    # errors: DBCapacityReservationNotFoundFault
+    def describe_db_capacity_reservations(self, DescribeDBCapacityReservationsRequest input) -> str:
+        auto p = query.query_params("DescribeDBCapacityReservations", "2014-10-31")
+        if input.DBCapacityReservationIdentifier.is_some():
+            auto t0 = input.DBCapacityReservationIdentifier.unwrap()
+            p = query.query_scalar(p, "DBCapacityReservationIdentifier", t0)
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBClusterAutomatedBackups
+    # errors: DBClusterAutomatedBackupNotFoundFault
+    def describe_db_cluster_automated_backups(self, DescribeDBClusterAutomatedBackupsMessage input) -> str:
+        auto p = query.query_params("DescribeDBClusterAutomatedBackups", "2014-10-31")
+        if input.DbClusterResourceId.is_some():
+            auto t0 = input.DbClusterResourceId.unwrap()
+            p = query.query_scalar(p, "DbClusterResourceId", t0)
+        if input.DBClusterIdentifier.is_some():
+            auto t1 = input.DBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterIdentifier", t1)
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBClusterBacktracks
+    # errors: DBClusterBacktrackNotFoundFault, DBClusterNotFoundFault
+    def describe_db_cluster_backtracks(self, DescribeDBClusterBacktracksMessage input) -> str:
+        auto p = query.query_params("DescribeDBClusterBacktracks", "2014-10-31")
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        if input.BacktrackIdentifier.is_some():
+            auto t0 = input.BacktrackIdentifier.unwrap()
+            p = query.query_scalar(p, "BacktrackIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBClusterEndpoints
+    # errors: DBClusterNotFoundFault
+    def describe_db_cluster_endpoints(self, DescribeDBClusterEndpointsMessage input) -> str:
+        auto p = query.query_params("DescribeDBClusterEndpoints", "2014-10-31")
+        if input.DBClusterIdentifier.is_some():
+            auto t0 = input.DBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterIdentifier", t0)
+        if input.DBClusterEndpointIdentifier.is_some():
+            auto t1 = input.DBClusterEndpointIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterEndpointIdentifier", t1)
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBClusterParameterGroups
+    # errors: DBParameterGroupNotFoundFault
+    def describe_db_cluster_parameter_groups(self, DescribeDBClusterParameterGroupsMessage input) -> str:
+        auto p = query.query_params("DescribeDBClusterParameterGroups", "2014-10-31")
+        if input.DBClusterParameterGroupName.is_some():
+            auto t0 = input.DBClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBClusterParameterGroupName", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBClusterParameters
+    # errors: DBParameterGroupNotFoundFault
+    def describe_db_cluster_parameters(self, DescribeDBClusterParametersMessage input) -> str:
+        auto p = query.query_params("DescribeDBClusterParameters", "2014-10-31")
+        auto t0 = input.DBClusterParameterGroupName
+        p = query.query_scalar(p, "DBClusterParameterGroupName", t0)
+        if input.Source.is_some():
+            p = query.query_scalar(p, "Source", input.Source.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
     # DescribeDBClusterSnapshotAttributes
     # errors: DBClusterSnapshotNotFoundFault
     def describe_db_cluster_snapshot_attributes(self, DescribeDBClusterSnapshotAttributesMessage input) -> str:
         auto p = query.query_params("DescribeDBClusterSnapshotAttributes", "2014-10-31")
         auto t0 = input.DBClusterSnapshotIdentifier
         p = query.query_scalar(p, "DBClusterSnapshotIdentifier", t0)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBClusterSnapshots
+    # errors: DBClusterSnapshotNotFoundFault
+    def describe_db_cluster_snapshots(self, DescribeDBClusterSnapshotsMessage input) -> str:
+        auto p = query.query_params("DescribeDBClusterSnapshots", "2014-10-31")
+        if input.DBClusterIdentifier.is_some():
+            auto t0 = input.DBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterIdentifier", t0)
+        if input.DBClusterSnapshotIdentifier.is_some():
+            auto t1 = input.DBClusterSnapshotIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterSnapshotIdentifier", t1)
+        if input.SnapshotType.is_some():
+            p = query.query_scalar(p, "SnapshotType", input.SnapshotType.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.IncludeShared.is_some():
+            auto t4 = query.query_bool(input.IncludeShared.unwrap())
+            p = query.query_scalar(p, "IncludeShared", t4)
+        if input.IncludePublic.is_some():
+            auto t5 = query.query_bool(input.IncludePublic.unwrap())
+            p = query.query_scalar(p, "IncludePublic", t5)
+        if input.DbClusterResourceId.is_some():
+            auto t6 = input.DbClusterResourceId.unwrap()
+            p = query.query_scalar(p, "DbClusterResourceId", t6)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBClusters
+    # errors: DBClusterNotFoundFault
+    def describe_db_clusters(self, DescribeDBClustersMessage input) -> str:
+        auto p = query.query_params("DescribeDBClusters", "2014-10-31")
+        if input.DBClusterIdentifier.is_some():
+            auto t0 = input.DBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.IncludeShared.is_some():
+            auto t3 = query.query_bool(input.IncludeShared.unwrap())
+            p = query.query_scalar(p, "IncludeShared", t3)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBEngineVersions
+    def describe_db_engine_versions(self, DescribeDBEngineVersionsMessage input) -> str:
+        auto p = query.query_params("DescribeDBEngineVersions", "2014-10-31")
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.DBParameterGroupFamily.is_some():
+            auto t0 = input.DBParameterGroupFamily.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupFamily", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.DefaultOnly.is_some():
+            auto t3 = query.query_bool(input.DefaultOnly.unwrap())
+            p = query.query_scalar(p, "DefaultOnly", t3)
+        if input.ListSupportedCharacterSets.is_some():
+            auto t4 = query.query_bool(input.ListSupportedCharacterSets.unwrap())
+            p = query.query_scalar(p, "ListSupportedCharacterSets", t4)
+        if input.ListSupportedTimezones.is_some():
+            auto t5 = query.query_bool(input.ListSupportedTimezones.unwrap())
+            p = query.query_scalar(p, "ListSupportedTimezones", t5)
+        if input.IncludeAll.is_some():
+            auto t6 = query.query_bool(input.IncludeAll.unwrap())
+            p = query.query_scalar(p, "IncludeAll", t6)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBInstanceAutomatedBackups
+    # errors: DBInstanceAutomatedBackupNotFoundFault
+    def describe_db_instance_automated_backups(self, DescribeDBInstanceAutomatedBackupsMessage input) -> str:
+        auto p = query.query_params("DescribeDBInstanceAutomatedBackups", "2014-10-31")
+        if input.DbiResourceId.is_some():
+            p = query.query_scalar(p, "DbiResourceId", input.DbiResourceId.unwrap())
+        if input.DBInstanceIdentifier.is_some():
+            auto t0 = input.DBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "DBInstanceIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.DBInstanceAutomatedBackupsArn.is_some():
+            auto t3 = input.DBInstanceAutomatedBackupsArn.unwrap()
+            p = query.query_scalar(p, "DBInstanceAutomatedBackupsArn", t3)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBInstances
+    # errors: DBInstanceNotFoundFault
+    def describe_db_instances(self, DescribeDBInstancesMessage input) -> str:
+        auto p = query.query_params("DescribeDBInstances", "2014-10-31")
+        if input.DBInstanceIdentifier.is_some():
+            auto t0 = input.DBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "DBInstanceIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBLogFiles
+    # errors: DBInstanceNotFoundFault, DBInstanceNotReadyFault
+    def describe_db_log_files(self, DescribeDBLogFilesMessage input) -> str:
+        auto p = query.query_params("DescribeDBLogFiles", "2014-10-31")
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        if input.FilenameContains.is_some():
+            auto t0 = input.FilenameContains.unwrap()
+            p = query.query_scalar(p, "FilenameContains", t0)
+        if input.FileLastWritten.is_some():
+            auto t1 = str(input.FileLastWritten.unwrap())
+            p = query.query_scalar(p, "FileLastWritten", t1)
+        if input.FileSize.is_some():
+            p = query.query_scalar(p, "FileSize", str(input.FileSize.unwrap()))
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # DescribeDBMajorEngineVersions
@@ -5236,11 +6737,582 @@ struct RDSClient:
             p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         return query.query_request(self.creds, rds_service(), self.region, p)
 
+    # DescribeDBParameterGroups
+    # errors: DBParameterGroupNotFoundFault
+    def describe_db_parameter_groups(self, DescribeDBParameterGroupsMessage input) -> str:
+        auto p = query.query_params("DescribeDBParameterGroups", "2014-10-31")
+        if input.DBParameterGroupName.is_some():
+            auto t0 = input.DBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupName", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBParameters
+    # errors: DBParameterGroupNotFoundFault
+    def describe_db_parameters(self, DescribeDBParametersMessage input) -> str:
+        auto p = query.query_params("DescribeDBParameters", "2014-10-31")
+        p = query.query_scalar(p, "DBParameterGroupName", input.DBParameterGroupName)
+        if input.Source.is_some():
+            p = query.query_scalar(p, "Source", input.Source.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBProxies
+    # errors: DBProxyNotFoundFault
+    def describe_db_proxies(self, DescribeDBProxiesRequest input) -> str:
+        auto p = query.query_params("DescribeDBProxies", "2014-10-31")
+        if input.DBProxyName.is_some():
+            p = query.query_scalar(p, "DBProxyName", input.DBProxyName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBProxyEndpoints
+    # errors: DBProxyEndpointNotFoundFault, DBProxyNotFoundFault
+    def describe_db_proxy_endpoints(self, DescribeDBProxyEndpointsRequest input) -> str:
+        auto p = query.query_params("DescribeDBProxyEndpoints", "2014-10-31")
+        if input.DBProxyName.is_some():
+            p = query.query_scalar(p, "DBProxyName", input.DBProxyName.unwrap())
+        if input.DBProxyEndpointName.is_some():
+            auto t0 = input.DBProxyEndpointName.unwrap()
+            p = query.query_scalar(p, "DBProxyEndpointName", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBProxyTargetGroups
+    # errors: DBProxyNotFoundFault, DBProxyTargetGroupNotFoundFault, InvalidDBProxyStateFault
+    def describe_db_proxy_target_groups(self, DescribeDBProxyTargetGroupsRequest input) -> str:
+        auto p = query.query_params("DescribeDBProxyTargetGroups", "2014-10-31")
+        p = query.query_scalar(p, "DBProxyName", input.DBProxyName)
+        if input.TargetGroupName.is_some():
+            p = query.query_scalar(p, "TargetGroupName", input.TargetGroupName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBProxyTargets
+    # errors: DBProxyNotFoundFault, DBProxyTargetGroupNotFoundFault, DBProxyTargetNotFoundFault, InvalidDBProxyStateFault
+    def describe_db_proxy_targets(self, DescribeDBProxyTargetsRequest input) -> str:
+        auto p = query.query_params("DescribeDBProxyTargets", "2014-10-31")
+        p = query.query_scalar(p, "DBProxyName", input.DBProxyName)
+        if input.TargetGroupName.is_some():
+            p = query.query_scalar(p, "TargetGroupName", input.TargetGroupName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBRecommendations
+    def describe_db_recommendations(self, DescribeDBRecommendationsMessage input) -> str:
+        auto p = query.query_params("DescribeDBRecommendations", "2014-10-31")
+        if input.LastUpdatedAfter.is_some():
+            auto t0 = query.query_timestamp_iso8601(input.LastUpdatedAfter.unwrap())
+            p = query.query_scalar(p, "LastUpdatedAfter", t0)
+        if input.LastUpdatedBefore.is_some():
+            auto t1 = query.query_timestamp_iso8601(input.LastUpdatedBefore.unwrap())
+            p = query.query_scalar(p, "LastUpdatedBefore", t1)
+        if input.Locale.is_some():
+            p = query.query_scalar(p, "Locale", input.Locale.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBSecurityGroups
+    # errors: DBSecurityGroupNotFoundFault
+    def describe_db_security_groups(self, DescribeDBSecurityGroupsMessage input) -> str:
+        auto p = query.query_params("DescribeDBSecurityGroups", "2014-10-31")
+        if input.DBSecurityGroupName.is_some():
+            auto t0 = input.DBSecurityGroupName.unwrap()
+            p = query.query_scalar(p, "DBSecurityGroupName", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBShardGroups
+    # errors: DBClusterNotFoundFault, DBShardGroupNotFoundFault
+    def describe_db_shard_groups(self, DescribeDBShardGroupsMessage input) -> str:
+        auto p = query.query_params("DescribeDBShardGroups", "2014-10-31")
+        if input.DBShardGroupIdentifier.is_some():
+            auto t0 = input.DBShardGroupIdentifier.unwrap()
+            p = query.query_scalar(p, "DBShardGroupIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
     # DescribeDBSnapshotAttributes
     # errors: DBSnapshotNotFoundFault
     def describe_db_snapshot_attributes(self, DescribeDBSnapshotAttributesMessage input) -> str:
         auto p = query.query_params("DescribeDBSnapshotAttributes", "2014-10-31")
         p = query.query_scalar(p, "DBSnapshotIdentifier", input.DBSnapshotIdentifier)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBSnapshotTenantDatabases
+    # errors: DBSnapshotNotFoundFault
+    def describe_db_snapshot_tenant_databases(self, DescribeDBSnapshotTenantDatabasesMessage input) -> str:
+        auto p = query.query_params("DescribeDBSnapshotTenantDatabases", "2014-10-31")
+        if input.DBInstanceIdentifier.is_some():
+            auto t0 = input.DBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "DBInstanceIdentifier", t0)
+        if input.DBSnapshotIdentifier.is_some():
+            auto t1 = input.DBSnapshotIdentifier.unwrap()
+            p = query.query_scalar(p, "DBSnapshotIdentifier", t1)
+        if input.SnapshotType.is_some():
+            p = query.query_scalar(p, "SnapshotType", input.SnapshotType.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.DbiResourceId.is_some():
+            p = query.query_scalar(p, "DbiResourceId", input.DbiResourceId.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBSnapshots
+    # errors: DBSnapshotNotFoundFault
+    def describe_db_snapshots(self, DescribeDBSnapshotsMessage input) -> str:
+        auto p = query.query_params("DescribeDBSnapshots", "2014-10-31")
+        if input.DBInstanceIdentifier.is_some():
+            auto t0 = input.DBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "DBInstanceIdentifier", t0)
+        if input.DBSnapshotIdentifier.is_some():
+            auto t1 = input.DBSnapshotIdentifier.unwrap()
+            p = query.query_scalar(p, "DBSnapshotIdentifier", t1)
+        if input.SnapshotType.is_some():
+            p = query.query_scalar(p, "SnapshotType", input.SnapshotType.unwrap())
+        auto qi2 = 1
+        for qe3 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.IncludeShared.is_some():
+            auto t4 = query.query_bool(input.IncludeShared.unwrap())
+            p = query.query_scalar(p, "IncludeShared", t4)
+        if input.IncludePublic.is_some():
+            auto t5 = query.query_bool(input.IncludePublic.unwrap())
+            p = query.query_scalar(p, "IncludePublic", t5)
+        if input.DbiResourceId.is_some():
+            p = query.query_scalar(p, "DbiResourceId", input.DbiResourceId.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeDBSubnetGroups
+    # errors: DBSubnetGroupNotFoundFault
+    def describe_db_subnet_groups(self, DescribeDBSubnetGroupsMessage input) -> str:
+        auto p = query.query_params("DescribeDBSubnetGroups", "2014-10-31")
+        if input.DBSubnetGroupName.is_some():
+            auto t0 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeEngineDefaultClusterParameters
+    def describe_engine_default_cluster_parameters(self, DescribeEngineDefaultClusterParametersMessage input) -> str:
+        auto p = query.query_params("DescribeEngineDefaultClusterParameters", "2014-10-31")
+        auto t0 = input.DBParameterGroupFamily
+        p = query.query_scalar(p, "DBParameterGroupFamily", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeEngineDefaultParameters
+    def describe_engine_default_parameters(self, DescribeEngineDefaultParametersMessage input) -> str:
+        auto p = query.query_params("DescribeEngineDefaultParameters", "2014-10-31")
+        auto t0 = input.DBParameterGroupFamily
+        p = query.query_scalar(p, "DBParameterGroupFamily", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeEventCategories
+    def describe_event_categories(self, DescribeEventCategoriesMessage input) -> str:
+        auto p = query.query_params("DescribeEventCategories", "2014-10-31")
+        if input.SourceType.is_some():
+            p = query.query_scalar(p, "SourceType", input.SourceType.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeEventSubscriptions
+    # errors: SubscriptionNotFoundFault
+    def describe_event_subscriptions(self, DescribeEventSubscriptionsMessage input) -> str:
+        auto p = query.query_params("DescribeEventSubscriptions", "2014-10-31")
+        if input.SubscriptionName.is_some():
+            auto t0 = input.SubscriptionName.unwrap()
+            p = query.query_scalar(p, "SubscriptionName", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeEvents
+    def describe_events(self, DescribeEventsMessage input) -> str:
+        auto p = query.query_params("DescribeEvents", "2014-10-31")
+        if input.SourceIdentifier.is_some():
+            auto t0 = input.SourceIdentifier.unwrap()
+            p = query.query_scalar(p, "SourceIdentifier", t0)
+        if input.SourceType.is_some():
+            p = query.query_scalar(p, "SourceType", input.SourceType.unwrap())
+        if input.StartTime.is_some():
+            auto t1 = query.query_timestamp_iso8601(input.StartTime.unwrap())
+            p = query.query_scalar(p, "StartTime", t1)
+        if input.EndTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.EndTime.unwrap())
+            p = query.query_scalar(p, "EndTime", t2)
+        if input.Duration.is_some():
+            p = query.query_scalar(p, "Duration", str(input.Duration.unwrap()))
+        auto t3 = input.EventCategories.unwrap_or([])
+        p = query.query_list(p, "EventCategories", "EventCategory", t3)
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeExportTasks
+    # errors: ExportTaskNotFoundFault
+    def describe_export_tasks(self, DescribeExportTasksMessage input) -> str:
+        auto p = query.query_params("DescribeExportTasks", "2014-10-31")
+        if input.ExportTaskIdentifier.is_some():
+            auto t0 = input.ExportTaskIdentifier.unwrap()
+            p = query.query_scalar(p, "ExportTaskIdentifier", t0)
+        if input.SourceArn.is_some():
+            p = query.query_scalar(p, "SourceArn", input.SourceArn.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.SourceType.is_some():
+            p = query.query_scalar(p, "SourceType", input.SourceType.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeGlobalClusters
+    # errors: GlobalClusterNotFoundFault
+    def describe_global_clusters(self, DescribeGlobalClustersMessage input) -> str:
+        auto p = query.query_params("DescribeGlobalClusters", "2014-10-31")
+        if input.GlobalClusterIdentifier.is_some():
+            auto t0 = input.GlobalClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "GlobalClusterIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeIntegrations
+    # errors: IntegrationNotFoundFault
+    def describe_integrations(self, DescribeIntegrationsMessage input) -> str:
+        auto p = query.query_params("DescribeIntegrations", "2014-10-31")
+        if input.IntegrationIdentifier.is_some():
+            auto t0 = input.IntegrationIdentifier.unwrap()
+            p = query.query_scalar(p, "IntegrationIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeOptionGroupOptions
+    def describe_option_group_options(self, DescribeOptionGroupOptionsMessage input) -> str:
+        auto p = query.query_params("DescribeOptionGroupOptions", "2014-10-31")
+        p = query.query_scalar(p, "EngineName", input.EngineName)
+        if input.MajorEngineVersion.is_some():
+            auto t0 = input.MajorEngineVersion.unwrap()
+            p = query.query_scalar(p, "MajorEngineVersion", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeOptionGroups
+    # errors: OptionGroupNotFoundFault
+    def describe_option_groups(self, DescribeOptionGroupsMessage input) -> str:
+        auto p = query.query_params("DescribeOptionGroups", "2014-10-31")
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.EngineName.is_some():
+            p = query.query_scalar(p, "EngineName", input.EngineName.unwrap())
+        if input.MajorEngineVersion.is_some():
+            auto t2 = input.MajorEngineVersion.unwrap()
+            p = query.query_scalar(p, "MajorEngineVersion", t2)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeOrderableDBInstanceOptions
+    def describe_orderable_db_instance_options(self, DescribeOrderableDBInstanceOptionsMessage input) -> str:
+        auto p = query.query_params("DescribeOrderableDBInstanceOptions", "2014-10-31")
+        p = query.query_scalar(p, "Engine", input.Engine)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.DBInstanceClass.is_some():
+            p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass.unwrap())
+        if input.LicenseModel.is_some():
+            p = query.query_scalar(p, "LicenseModel", input.LicenseModel.unwrap())
+        if input.AvailabilityZoneGroup.is_some():
+            auto t0 = input.AvailabilityZoneGroup.unwrap()
+            p = query.query_scalar(p, "AvailabilityZoneGroup", t0)
+        if input.Vpc.is_some():
+            p = query.query_scalar(p, "Vpc", query.query_bool(input.Vpc.unwrap()))
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribePendingMaintenanceActions
+    # errors: ResourceNotFoundFault
+    def describe_pending_maintenance_actions(self, DescribePendingMaintenanceActionsMessage input) -> str:
+        auto p = query.query_params("DescribePendingMaintenanceActions", "2014-10-31")
+        if input.ResourceIdentifier.is_some():
+            auto t0 = input.ResourceIdentifier.unwrap()
+            p = query.query_scalar(p, "ResourceIdentifier", t0)
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeReservedDBInstances
+    # errors: ReservedDBInstanceNotFoundFault
+    def describe_reserved_db_instances(self, DescribeReservedDBInstancesMessage input) -> str:
+        auto p = query.query_params("DescribeReservedDBInstances", "2014-10-31")
+        if input.ReservedDBInstanceId.is_some():
+            auto t0 = input.ReservedDBInstanceId.unwrap()
+            p = query.query_scalar(p, "ReservedDBInstanceId", t0)
+        if input.ReservedDBInstancesOfferingId.is_some():
+            auto t1 = input.ReservedDBInstancesOfferingId.unwrap()
+            p = query.query_scalar(p, "ReservedDBInstancesOfferingId", t1)
+        if input.DBInstanceClass.is_some():
+            p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass.unwrap())
+        if input.Duration.is_some():
+            p = query.query_scalar(p, "Duration", input.Duration.unwrap())
+        if input.ProductDescription.is_some():
+            auto t2 = input.ProductDescription.unwrap()
+            p = query.query_scalar(p, "ProductDescription", t2)
+        if input.OfferingType.is_some():
+            p = query.query_scalar(p, "OfferingType", input.OfferingType.unwrap())
+        if input.MultiAZ.is_some():
+            auto t3 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t3)
+        if input.LeaseId.is_some():
+            p = query.query_scalar(p, "LeaseId", input.LeaseId.unwrap())
+        auto qi4 = 1
+        for qe5 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeReservedDBInstancesOfferings
+    # errors: ReservedDBInstancesOfferingNotFoundFault
+    def describe_reserved_db_instances_offerings(self, DescribeReservedDBInstancesOfferingsMessage input) -> str:
+        auto p = query.query_params("DescribeReservedDBInstancesOfferings", "2014-10-31")
+        if input.ReservedDBInstancesOfferingId.is_some():
+            auto t0 = input.ReservedDBInstancesOfferingId.unwrap()
+            p = query.query_scalar(p, "ReservedDBInstancesOfferingId", t0)
+        if input.DBInstanceClass.is_some():
+            p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass.unwrap())
+        if input.Duration.is_some():
+            p = query.query_scalar(p, "Duration", input.Duration.unwrap())
+        if input.ProductDescription.is_some():
+            auto t1 = input.ProductDescription.unwrap()
+            p = query.query_scalar(p, "ProductDescription", t1)
+        if input.OfferingType.is_some():
+            p = query.query_scalar(p, "OfferingType", input.OfferingType.unwrap())
+        if input.MultiAZ.is_some():
+            auto t2 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t2)
+        auto qi3 = 1
+        for qe4 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeServerlessV2PlatformVersions
+    def describe_serverless_v2_platform_versions(self, DescribeServerlessV2PlatformVersionsMessage input) -> str:
+        auto p = query.query_params("DescribeServerlessV2PlatformVersions", "2014-10-31")
+        if input.ServerlessV2PlatformVersion.is_some():
+            auto t0 = input.ServerlessV2PlatformVersion.unwrap()
+            p = query.query_scalar(p, "ServerlessV2PlatformVersion", t0)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.DefaultOnly.is_some():
+            auto t3 = query.query_bool(input.DefaultOnly.unwrap())
+            p = query.query_scalar(p, "DefaultOnly", t3)
+        if input.IncludeAll.is_some():
+            auto t4 = query.query_bool(input.IncludeAll.unwrap())
+            p = query.query_scalar(p, "IncludeAll", t4)
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeSourceRegions
+    def describe_source_regions(self, DescribeSourceRegionsMessage input) -> str:
+        auto p = query.query_params("DescribeSourceRegions", "2014-10-31")
+        if input.RegionName.is_some():
+            p = query.query_scalar(p, "RegionName", input.RegionName.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # DescribeTenantDatabases
+    # errors: DBInstanceNotFoundFault
+    def describe_tenant_databases(self, DescribeTenantDatabasesMessage input) -> str:
+        auto p = query.query_params("DescribeTenantDatabases", "2014-10-31")
+        if input.DBInstanceIdentifier.is_some():
+            auto t0 = input.DBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "DBInstanceIdentifier", t0)
+        if input.TenantDBName.is_some():
+            p = query.query_scalar(p, "TenantDBName", input.TenantDBName.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # DescribeValidDBInstanceModifications
@@ -5301,6 +7373,17 @@ struct RDSClient:
         if input.Switchover.is_some():
             auto t3 = query.query_bool(input.Switchover.unwrap())
             p = query.query_scalar(p, "Switchover", t3)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # ListTagsForResource
+    # errors: BlueGreenDeploymentNotFoundFault, DBCapacityReservationNotFoundFault, DBClusterNotFoundFault, DBInstanceNotFoundFault, DBProxyEndpointNotFoundFault, DBProxyNotFoundFault, DBProxyTargetGroupNotFoundFault, DBShardGroupNotFoundFault, DBSnapshotNotFoundFault, DBSnapshotTenantDatabaseNotFoundFault, IntegrationNotFoundFault, TenantDatabaseNotFoundFault
+    def list_tags_for_resource(self, ListTagsForResourceMessage input) -> str:
+        auto p = query.query_params("ListTagsForResource", "2014-10-31")
+        p = query.query_scalar(p, "ResourceName", input.ResourceName)
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = filter_to_query(p, "Filters.Filter." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # ModifyActivityStream
@@ -5368,6 +7451,145 @@ struct RDSClient:
             p = query.query_scalar(p, "EndDate", t2)
         return query.query_request(self.creds, rds_service(), self.region, p)
 
+    # ModifyDBCluster
+    # errors: DBClusterAlreadyExistsFault, DBClusterNotFoundFault, DBClusterParameterGroupNotFoundFault, DBInstanceAlreadyExistsFault, DBParameterGroupNotFoundFault, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault, InvalidDBSecurityGroupStateFault, InvalidDBSubnetGroupStateFault, InvalidGlobalClusterStateFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, StorageQuotaExceededFault, StorageTypeNotAvailableFault, StorageTypeNotSupportedFault, VpcEncryptionControlViolationException
+    def modify_db_cluster(self, ModifyDBClusterMessage input) -> str:
+        auto p = query.query_params("ModifyDBCluster", "2014-10-31")
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        if input.NewDBClusterIdentifier.is_some():
+            auto t0 = input.NewDBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "NewDBClusterIdentifier", t0)
+        if input.ApplyImmediately.is_some():
+            auto t1 = query.query_bool(input.ApplyImmediately.unwrap())
+            p = query.query_scalar(p, "ApplyImmediately", t1)
+        if input.BackupRetentionPeriod.is_some():
+            auto t2 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t2)
+        if input.DBClusterParameterGroupName.is_some():
+            auto t3 = input.DBClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBClusterParameterGroupName", t3)
+        auto t4 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t4)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.MasterUserPassword.is_some():
+            auto t5 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t5)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.PreferredBackupWindow.is_some():
+            auto t6 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t6)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t7 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t7)
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t8 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t8)
+        if input.BacktrackWindow.is_some():
+            auto t9 = str(input.BacktrackWindow.unwrap())
+            p = query.query_scalar(p, "BacktrackWindow", t9)
+        if input.CloudwatchLogsExportConfiguration.is_some():
+            auto t10 = input.CloudwatchLogsExportConfiguration.unwrap()
+            p = cloudwatch_logs_export_configuration_to_query(p, "CloudwatchLogsExportConfiguration", t10)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.AllowMajorVersionUpgrade.is_some():
+            auto t11 = query.query_bool(input.AllowMajorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AllowMajorVersionUpgrade", t11)
+        if input.DBInstanceParameterGroupName.is_some():
+            auto t12 = input.DBInstanceParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBInstanceParameterGroupName", t12)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainIAMRoleName.is_some():
+            auto t13 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t13)
+        if input.ScalingConfiguration.is_some():
+            auto t14 = input.ScalingConfiguration.unwrap()
+            p = scaling_configuration_to_query(p, "ScalingConfiguration", t14)
+        if input.DeletionProtection.is_some():
+            auto t15 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t15)
+        if input.EnableHttpEndpoint.is_some():
+            auto t16 = query.query_bool(input.EnableHttpEndpoint.unwrap())
+            p = query.query_scalar(p, "EnableHttpEndpoint", t16)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t17 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t17)
+        if input.EnableGlobalWriteForwarding.is_some():
+            auto t18 = query.query_bool(input.EnableGlobalWriteForwarding.unwrap())
+            p = query.query_scalar(p, "EnableGlobalWriteForwarding", t18)
+        if input.DBClusterInstanceClass.is_some():
+            auto t19 = input.DBClusterInstanceClass.unwrap()
+            p = query.query_scalar(p, "DBClusterInstanceClass", t19)
+        if input.AllocatedStorage.is_some():
+            auto t20 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t20)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t21 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t21)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.ServerlessV2ScalingConfiguration.is_some():
+            auto t22 = input.ServerlessV2ScalingConfiguration.unwrap()
+            p = serverless_v2_scaling_configuration_to_query(p, "ServerlessV2ScalingConfiguration", t22)
+        if input.MonitoringInterval.is_some():
+            auto t23 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t23)
+        if input.MonitoringRoleArn.is_some():
+            auto t24 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t24)
+        if input.DatabaseInsightsMode.is_some():
+            auto t25 = input.DatabaseInsightsMode.unwrap()
+            p = query.query_scalar(p, "DatabaseInsightsMode", t25)
+        if input.EnablePerformanceInsights.is_some():
+            auto t26 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t26)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t27 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t27)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t28 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t28)
+        if input.ManageMasterUserPassword.is_some():
+            auto t29 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t29)
+        if input.RotateMasterUserPassword.is_some():
+            auto t30 = query.query_bool(input.RotateMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "RotateMasterUserPassword", t30)
+        if input.EnableLocalWriteForwarding.is_some():
+            auto t31 = query.query_bool(input.EnableLocalWriteForwarding.unwrap())
+            p = query.query_scalar(p, "EnableLocalWriteForwarding", t31)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t32 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t32)
+        if input.EngineMode.is_some():
+            p = query.query_scalar(p, "EngineMode", input.EngineMode.unwrap())
+        if input.AllowEngineModeChange.is_some():
+            auto t33 = query.query_bool(input.AllowEngineModeChange.unwrap())
+            p = query.query_scalar(p, "AllowEngineModeChange", t33)
+        if input.AwsBackupRecoveryPointArn.is_some():
+            auto t34 = input.AwsBackupRecoveryPointArn.unwrap()
+            p = query.query_scalar(p, "AwsBackupRecoveryPointArn", t34)
+        if input.EnableLimitlessDatabase.is_some():
+            auto t35 = query.query_bool(input.EnableLimitlessDatabase.unwrap())
+            p = query.query_scalar(p, "EnableLimitlessDatabase", t35)
+        if input.CACertificateIdentifier.is_some():
+            auto t36 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t36)
+        if input.MasterUserAuthenticationType.is_some():
+            auto t37 = input.MasterUserAuthenticationType.unwrap()
+            p = query.query_scalar(p, "MasterUserAuthenticationType", t37)
+        if input.EngineLifecycleSupport.is_some():
+            auto t38 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t38)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
     # ModifyDBClusterEndpoint
     # errors: DBClusterEndpointNotFoundFault, DBInstanceNotFoundFault, InvalidDBClusterEndpointStateFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault
     def modify_db_cluster_endpoint(self, ModifyDBClusterEndpointMessage input) -> str:
@@ -5380,6 +7602,18 @@ struct RDSClient:
         p = query.query_list(p, "StaticMembers", "member", t1)
         auto t2 = input.ExcludedMembers.unwrap_or([])
         p = query.query_list(p, "ExcludedMembers", "member", t2)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # ModifyDBClusterParameterGroup
+    # errors: DBParameterGroupNotFoundFault, InvalidDBParameterGroupStateFault
+    def modify_db_cluster_parameter_group(self, ModifyDBClusterParameterGroupMessage input) -> str:
+        auto p = query.query_params("ModifyDBClusterParameterGroup", "2014-10-31")
+        auto t0 = input.DBClusterParameterGroupName
+        p = query.query_scalar(p, "DBClusterParameterGroupName", t0)
+        auto qi1 = 1
+        for qe2 in input.Parameters:
+            p = parameter_to_query(p, "Parameters.Parameter." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # ModifyDBClusterSnapshotAttribute
@@ -5395,6 +7629,237 @@ struct RDSClient:
         p = query.query_list(p, "ValuesToRemove", "AttributeValue", t2)
         return query.query_request(self.creds, rds_service(), self.region, p)
 
+    # ModifyDBInstance
+    # errors: AuthorizationNotFoundFault, BackupPolicyNotFoundFault, CertificateNotFoundFault, DBCapacityReservationNotFoundFault, DBInstanceAlreadyExistsFault, DBInstanceNotFoundFault, DBParameterGroupNotFoundFault, DBSecurityGroupNotFoundFault, DBUpgradeDependencyFailureFault, DomainNotFoundFault, InsufficientDBInstanceCapacityFault, InvalidDBCapacityReservationStateFault, InvalidDBClusterStateFault, InvalidDBInstanceStateFault, InvalidDBSecurityGroupStateFault, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, ProvisionedIopsNotAvailableInAZFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, TenantDatabaseQuotaExceededFault, VpcEncryptionControlViolationException
+    def modify_db_instance(self, ModifyDBInstanceMessage input) -> str:
+        auto p = query.query_params("ModifyDBInstance", "2014-10-31")
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        if input.AllocatedStorage.is_some():
+            auto t0 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t0)
+        if input.DBInstanceClass.is_some():
+            p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass.unwrap())
+        if input.DBSubnetGroupName.is_some():
+            auto t1 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t1)
+        auto t2 = input.DBSecurityGroups.unwrap_or([])
+        p = query.query_list(p, "DBSecurityGroups", "DBSecurityGroupName", t2)
+        auto t3 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t3)
+        if input.ApplyImmediately.is_some():
+            auto t4 = query.query_bool(input.ApplyImmediately.unwrap())
+            p = query.query_scalar(p, "ApplyImmediately", t4)
+        if input.MasterUserPassword.is_some():
+            auto t5 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t5)
+        if input.DBParameterGroupName.is_some():
+            auto t6 = input.DBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupName", t6)
+        if input.BackupRetentionPeriod.is_some():
+            auto t7 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t7)
+        if input.PreferredBackupWindow.is_some():
+            auto t8 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t8)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t9 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t9)
+        if input.MultiAZ.is_some():
+            auto t10 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t10)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.AllowMajorVersionUpgrade.is_some():
+            auto t11 = query.query_bool(input.AllowMajorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AllowMajorVersionUpgrade", t11)
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t12 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t12)
+        if input.LicenseModel.is_some():
+            p = query.query_scalar(p, "LicenseModel", input.LicenseModel.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.StorageThroughput.is_some():
+            auto t13 = str(input.StorageThroughput.unwrap())
+            p = query.query_scalar(p, "StorageThroughput", t13)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.NewDBInstanceIdentifier.is_some():
+            auto t14 = input.NewDBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "NewDBInstanceIdentifier", t14)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.TdeCredentialArn.is_some():
+            auto t15 = input.TdeCredentialArn.unwrap()
+            p = query.query_scalar(p, "TdeCredentialArn", t15)
+        if input.TdeCredentialPassword.is_some():
+            auto t16 = input.TdeCredentialPassword.unwrap()
+            p = query.query_scalar(p, "TdeCredentialPassword", t16)
+        if input.CACertificateIdentifier.is_some():
+            auto t17 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t17)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainFqdn.is_some():
+            p = query.query_scalar(p, "DomainFqdn", input.DomainFqdn.unwrap())
+        if input.DomainOu.is_some():
+            p = query.query_scalar(p, "DomainOu", input.DomainOu.unwrap())
+        if input.DomainAuthSecretArn.is_some():
+            auto t18 = input.DomainAuthSecretArn.unwrap()
+            p = query.query_scalar(p, "DomainAuthSecretArn", t18)
+        auto t19 = input.DomainDnsIps.unwrap_or([])
+        p = query.query_list(p, "DomainDnsIps", "member", t19)
+        if input.DisableDomain.is_some():
+            auto t20 = query.query_bool(input.DisableDomain.unwrap())
+            p = query.query_scalar(p, "DisableDomain", t20)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t21 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t21)
+        if input.MonitoringInterval.is_some():
+            auto t22 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t22)
+        if input.DBPortNumber.is_some():
+            p = query.query_scalar(p, "DBPortNumber", str(input.DBPortNumber.unwrap()))
+        if input.PubliclyAccessible.is_some():
+            auto t23 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t23)
+        if input.MonitoringRoleArn.is_some():
+            auto t24 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t24)
+        if input.DomainIAMRoleName.is_some():
+            auto t25 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t25)
+        if input.PromotionTier.is_some():
+            auto t26 = str(input.PromotionTier.unwrap())
+            p = query.query_scalar(p, "PromotionTier", t26)
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t27 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t27)
+        if input.DatabaseInsightsMode.is_some():
+            auto t28 = input.DatabaseInsightsMode.unwrap()
+            p = query.query_scalar(p, "DatabaseInsightsMode", t28)
+        if input.EnablePerformanceInsights.is_some():
+            auto t29 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t29)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t30 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t30)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t31 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t31)
+        if input.CloudwatchLogsExportConfiguration.is_some():
+            auto t32 = input.CloudwatchLogsExportConfiguration.unwrap()
+            p = cloudwatch_logs_export_configuration_to_query(p, "CloudwatchLogsExportConfiguration", t32)
+        auto qi33 = 1
+        for qe34 in input.ProcessorFeatures.unwrap_or([]):
+            auto t35 = qe34
+            p = processor_feature_to_query(p, "ProcessorFeatures.ProcessorFeature." + str(qi33), t35)
+            qi33 = qi33 + 1
+        if input.UseDefaultProcessorFeatures.is_some():
+            auto t36 = query.query_bool(input.UseDefaultProcessorFeatures.unwrap())
+            p = query.query_scalar(p, "UseDefaultProcessorFeatures", t36)
+        if input.DeletionProtection.is_some():
+            auto t37 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t37)
+        if input.MaxAllocatedStorage.is_some():
+            auto t38 = str(input.MaxAllocatedStorage.unwrap())
+            p = query.query_scalar(p, "MaxAllocatedStorage", t38)
+        if input.CertificateRotationRestart.is_some():
+            auto t39 = query.query_bool(input.CertificateRotationRestart.unwrap())
+            p = query.query_scalar(p, "CertificateRotationRestart", t39)
+        if input.ReplicaMode.is_some():
+            p = query.query_scalar(p, "ReplicaMode", input.ReplicaMode.unwrap())
+        if input.AutomationMode.is_some():
+            p = query.query_scalar(p, "AutomationMode", input.AutomationMode.unwrap())
+        if input.ResumeFullAutomationModeMinutes.is_some():
+            auto t40 = str(input.ResumeFullAutomationModeMinutes.unwrap())
+            p = query.query_scalar(p, "ResumeFullAutomationModeMinutes", t40)
+        if input.EnableCustomerOwnedIp.is_some():
+            auto t41 = query.query_bool(input.EnableCustomerOwnedIp.unwrap())
+            p = query.query_scalar(p, "EnableCustomerOwnedIp", t41)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.AwsBackupRecoveryPointArn.is_some():
+            auto t42 = input.AwsBackupRecoveryPointArn.unwrap()
+            p = query.query_scalar(p, "AwsBackupRecoveryPointArn", t42)
+        if input.ManageMasterUserPassword.is_some():
+            auto t43 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t43)
+        if input.RotateMasterUserPassword.is_some():
+            auto t44 = query.query_bool(input.RotateMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "RotateMasterUserPassword", t44)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t45 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t45)
+        if input.MultiTenant.is_some():
+            auto t46 = query.query_bool(input.MultiTenant.unwrap())
+            p = query.query_scalar(p, "MultiTenant", t46)
+        if input.DedicatedLogVolume.is_some():
+            auto t47 = query.query_bool(input.DedicatedLogVolume.unwrap())
+            p = query.query_scalar(p, "DedicatedLogVolume", t47)
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        auto qi48 = 1
+        for qe49 in input.AdditionalStorageVolumes.unwrap_or([]):
+            auto t50 = qe49
+            p = modify_additional_storage_volume_to_query(p, "AdditionalStorageVolumes.member." + str(qi48), t50)
+            qi48 = qi48 + 1
+        if input.DBCapacityReservationIdentifier.is_some():
+            auto t51 = input.DBCapacityReservationIdentifier.unwrap()
+            p = query.query_scalar(p, "DBCapacityReservationIdentifier", t51)
+        auto qi52 = 1
+        for qe53 in input.TagSpecifications.unwrap_or([]):
+            auto t54 = qe53
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi52), t54)
+            qi52 = qi52 + 1
+        if input.MasterUserAuthenticationType.is_some():
+            auto t55 = input.MasterUserAuthenticationType.unwrap()
+            p = query.query_scalar(p, "MasterUserAuthenticationType", t55)
+        if input.EngineLifecycleSupport.is_some():
+            auto t56 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t56)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # ModifyDBParameterGroup
+    # errors: DBParameterGroupNotFoundFault, InvalidDBParameterGroupStateFault
+    def modify_db_parameter_group(self, ModifyDBParameterGroupMessage input) -> str:
+        auto p = query.query_params("ModifyDBParameterGroup", "2014-10-31")
+        p = query.query_scalar(p, "DBParameterGroupName", input.DBParameterGroupName)
+        auto qi0 = 1
+        for qe1 in input.Parameters:
+            p = parameter_to_query(p, "Parameters.Parameter." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # ModifyDBProxy
+    # errors: DBProxyAlreadyExistsFault, DBProxyNotFoundFault, InvalidDBProxyStateFault
+    def modify_db_proxy(self, ModifyDBProxyRequest input) -> str:
+        auto p = query.query_params("ModifyDBProxy", "2014-10-31")
+        p = query.query_scalar(p, "DBProxyName", input.DBProxyName)
+        if input.NewDBProxyName.is_some():
+            p = query.query_scalar(p, "NewDBProxyName", input.NewDBProxyName.unwrap())
+        if input.DefaultAuthScheme.is_some():
+            auto t0 = input.DefaultAuthScheme.unwrap()
+            p = query.query_scalar(p, "DefaultAuthScheme", t0)
+        auto qi1 = 1
+        for qe2 in input.Auth.unwrap_or([]):
+            p = user_auth_config_to_query(p, "Auth.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        if input.RequireTLS.is_some():
+            auto t3 = query.query_bool(input.RequireTLS.unwrap())
+            p = query.query_scalar(p, "RequireTLS", t3)
+        if input.IdleClientTimeout.is_some():
+            auto t4 = str(input.IdleClientTimeout.unwrap())
+            p = query.query_scalar(p, "IdleClientTimeout", t4)
+        if input.DebugLogging.is_some():
+            auto t5 = query.query_bool(input.DebugLogging.unwrap())
+            p = query.query_scalar(p, "DebugLogging", t5)
+        if input.RoleArn.is_some():
+            p = query.query_scalar(p, "RoleArn", input.RoleArn.unwrap())
+        auto t6 = input.SecurityGroups.unwrap_or([])
+        p = query.query_list(p, "SecurityGroups", "member", t6)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
     # ModifyDBProxyEndpoint
     # errors: DBProxyEndpointAlreadyExistsFault, DBProxyEndpointNotFoundFault, InvalidDBProxyEndpointStateFault, InvalidDBProxyStateFault
     def modify_db_proxy_endpoint(self, ModifyDBProxyEndpointRequest input) -> str:
@@ -5405,6 +7870,34 @@ struct RDSClient:
             p = query.query_scalar(p, "NewDBProxyEndpointName", t0)
         auto t1 = input.VpcSecurityGroupIds.unwrap_or([])
         p = query.query_list(p, "VpcSecurityGroupIds", "member", t1)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # ModifyDBProxyTargetGroup
+    # errors: DBProxyNotFoundFault, DBProxyTargetGroupNotFoundFault, InvalidDBProxyStateFault
+    def modify_db_proxy_target_group(self, ModifyDBProxyTargetGroupRequest input) -> str:
+        auto p = query.query_params("ModifyDBProxyTargetGroup", "2014-10-31")
+        p = query.query_scalar(p, "TargetGroupName", input.TargetGroupName)
+        p = query.query_scalar(p, "DBProxyName", input.DBProxyName)
+        if input.ConnectionPoolConfig.is_some():
+            auto t0 = input.ConnectionPoolConfig.unwrap()
+            p = connection_pool_configuration_to_query(p, "ConnectionPoolConfig", t0)
+        if input.NewName.is_some():
+            p = query.query_scalar(p, "NewName", input.NewName.unwrap())
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # ModifyDBRecommendation
+    def modify_db_recommendation(self, ModifyDBRecommendationMessage input) -> str:
+        auto p = query.query_params("ModifyDBRecommendation", "2014-10-31")
+        p = query.query_scalar(p, "RecommendationId", input.RecommendationId)
+        if input.Locale.is_some():
+            p = query.query_scalar(p, "Locale", input.Locale.unwrap())
+        if input.Status.is_some():
+            p = query.query_scalar(p, "Status", input.Status.unwrap())
+        auto qi0 = 1
+        for qe1 in input.RecommendedActionUpdates.unwrap_or([]):
+            auto t2 = qe1
+            p = recommended_action_update_to_query(p, "RecommendedActionUpdates.member." + str(qi0), t2)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # ModifyDBShardGroup
@@ -5504,6 +7997,23 @@ struct RDSClient:
             p = query.query_scalar(p, "Description", input.Description.unwrap())
         return query.query_request(self.creds, rds_service(), self.region, p)
 
+    # ModifyOptionGroup
+    # errors: InvalidOptionGroupStateFault, OptionGroupNotFoundFault
+    def modify_option_group(self, ModifyOptionGroupMessage input) -> str:
+        auto p = query.query_params("ModifyOptionGroup", "2014-10-31")
+        p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName)
+        auto qi0 = 1
+        for qe1 in input.OptionsToInclude.unwrap_or([]):
+            auto t2 = qe1
+            p = option_configuration_to_query(p, "OptionsToInclude.OptionConfiguration." + str(qi0), t2)
+            qi0 = qi0 + 1
+        auto t3 = input.OptionsToRemove.unwrap_or([])
+        p = query.query_list(p, "OptionsToRemove", "member", t3)
+        if input.ApplyImmediately.is_some():
+            auto t4 = query.query_bool(input.ApplyImmediately.unwrap())
+            p = query.query_scalar(p, "ApplyImmediately", t4)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
     # ModifyTenantDatabase
     # errors: DBInstanceNotFoundFault, InvalidDBInstanceStateFault, KMSKeyNotAccessibleFault, TenantDatabaseAlreadyExistsFault, TenantDatabaseNotFoundFault
     def modify_tenant_database(self, ModifyTenantDatabaseMessage input) -> str:
@@ -5526,11 +8036,46 @@ struct RDSClient:
             p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t3)
         return query.query_request(self.creds, rds_service(), self.region, p)
 
+    # PromoteReadReplica
+    # errors: DBInstanceNotFoundFault, InvalidDBInstanceStateFault
+    def promote_read_replica(self, PromoteReadReplicaMessage input) -> str:
+        auto p = query.query_params("PromoteReadReplica", "2014-10-31")
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        if input.BackupRetentionPeriod.is_some():
+            auto t0 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t0)
+        if input.PreferredBackupWindow.is_some():
+            auto t1 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t1)
+        auto qi2 = 1
+        for qe3 in input.TagSpecifications.unwrap_or([]):
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
     # PromoteReadReplicaDBCluster
     # errors: DBClusterNotFoundFault, InvalidDBClusterStateFault
     def promote_read_replica_db_cluster(self, PromoteReadReplicaDBClusterMessage input) -> str:
         auto p = query.query_params("PromoteReadReplicaDBCluster", "2014-10-31")
         p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # PurchaseReservedDBInstancesOffering
+    # errors: ReservedDBInstanceAlreadyExistsFault, ReservedDBInstanceQuotaExceededFault, ReservedDBInstancesOfferingNotFoundFault
+    def purchase_reserved_db_instances_offering(self, PurchaseReservedDBInstancesOfferingMessage input) -> str:
+        auto p = query.query_params("PurchaseReservedDBInstancesOffering", "2014-10-31")
+        auto t0 = input.ReservedDBInstancesOfferingId
+        p = query.query_scalar(p, "ReservedDBInstancesOfferingId", t0)
+        if input.ReservedDBInstanceId.is_some():
+            auto t1 = input.ReservedDBInstanceId.unwrap()
+            p = query.query_scalar(p, "ReservedDBInstanceId", t1)
+        if input.DBInstanceCount.is_some():
+            auto t2 = str(input.DBInstanceCount.unwrap())
+            p = query.query_scalar(p, "DBInstanceCount", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # RebootDBCluster
@@ -5615,6 +8160,820 @@ struct RDSClient:
         p = query.query_list(p, "TagKeys", "member", input.TagKeys)
         return query.query_request(self.creds, rds_service(), self.region, p)
 
+    # ResetDBClusterParameterGroup
+    # errors: DBParameterGroupNotFoundFault, InvalidDBParameterGroupStateFault
+    def reset_db_cluster_parameter_group(self, ResetDBClusterParameterGroupMessage input) -> str:
+        auto p = query.query_params("ResetDBClusterParameterGroup", "2014-10-31")
+        auto t0 = input.DBClusterParameterGroupName
+        p = query.query_scalar(p, "DBClusterParameterGroupName", t0)
+        if input.ResetAllParameters.is_some():
+            auto t1 = query.query_bool(input.ResetAllParameters.unwrap())
+            p = query.query_scalar(p, "ResetAllParameters", t1)
+        auto qi2 = 1
+        for qe3 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.Parameter." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # ResetDBParameterGroup
+    # errors: DBParameterGroupNotFoundFault, InvalidDBParameterGroupStateFault
+    def reset_db_parameter_group(self, ResetDBParameterGroupMessage input) -> str:
+        auto p = query.query_params("ResetDBParameterGroup", "2014-10-31")
+        p = query.query_scalar(p, "DBParameterGroupName", input.DBParameterGroupName)
+        if input.ResetAllParameters.is_some():
+            auto t0 = query.query_bool(input.ResetAllParameters.unwrap())
+            p = query.query_scalar(p, "ResetAllParameters", t0)
+        auto qi1 = 1
+        for qe2 in input.Parameters.unwrap_or([]):
+            p = parameter_to_query(p, "Parameters.Parameter." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # RestoreDBClusterFromS3
+    # errors: DBClusterAlreadyExistsFault, DBClusterNotFoundFault, DBClusterParameterGroupNotFoundFault, DBClusterQuotaExceededFault, DBClusterRoleQuotaExceededFault, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InsufficientStorageClusterCapacityFault, InvalidDBClusterStateFault, InvalidDBSubnetGroupStateFault, InvalidS3BucketFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, StorageQuotaExceededFault, StorageTypeNotSupportedFault
+    def restore_db_cluster_from_s3(self, RestoreDBClusterFromS3Message input) -> str:
+        auto p = query.query_params("RestoreDBClusterFromS3", "2014-10-31")
+        auto t0 = input.AvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZones", "AvailabilityZone", t0)
+        if input.BackupRetentionPeriod.is_some():
+            auto t1 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t1)
+        if input.CharacterSetName.is_some():
+            auto t2 = input.CharacterSetName.unwrap()
+            p = query.query_scalar(p, "CharacterSetName", t2)
+        if input.DatabaseName.is_some():
+            p = query.query_scalar(p, "DatabaseName", input.DatabaseName.unwrap())
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        if input.DBClusterParameterGroupName.is_some():
+            auto t3 = input.DBClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBClusterParameterGroupName", t3)
+        auto t4 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t4)
+        if input.DBSubnetGroupName.is_some():
+            auto t5 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t5)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        p = query.query_scalar(p, "MasterUsername", input.MasterUsername)
+        if input.MasterUserPassword.is_some():
+            auto t6 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t6)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.PreferredBackupWindow.is_some():
+            auto t7 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t7)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t8 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t8)
+        auto qi9 = 1
+        for qe10 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi9), qe10)
+            qi9 = qi9 + 1
+        if input.StorageEncrypted.is_some():
+            auto t11 = query.query_bool(input.StorageEncrypted.unwrap())
+            p = query.query_scalar(p, "StorageEncrypted", t11)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t12 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t12)
+        p = query.query_scalar(p, "SourceEngine", input.SourceEngine)
+        p = query.query_scalar(p, "SourceEngineVersion", input.SourceEngineVersion)
+        p = query.query_scalar(p, "S3BucketName", input.S3BucketName)
+        if input.S3Prefix.is_some():
+            p = query.query_scalar(p, "S3Prefix", input.S3Prefix.unwrap())
+        p = query.query_scalar(p, "S3IngestionRoleArn", input.S3IngestionRoleArn)
+        if input.BacktrackWindow.is_some():
+            auto t13 = str(input.BacktrackWindow.unwrap())
+            p = query.query_scalar(p, "BacktrackWindow", t13)
+        auto t14 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t14)
+        if input.DeletionProtection.is_some():
+            auto t15 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t15)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t16 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t16)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainIAMRoleName.is_some():
+            auto t17 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t17)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.ServerlessV2ScalingConfiguration.is_some():
+            auto t18 = input.ServerlessV2ScalingConfiguration.unwrap()
+            p = serverless_v2_scaling_configuration_to_query(p, "ServerlessV2ScalingConfiguration", t18)
+        if input.ManageMasterUserPassword.is_some():
+            auto t19 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t19)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t20 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t20)
+        if input.EngineLifecycleSupport.is_some():
+            auto t21 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t21)
+        auto qi22 = 1
+        for qe23 in input.TagSpecifications.unwrap_or([]):
+            auto t24 = qe23
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi22), t24)
+            qi22 = qi22 + 1
+        auto qi25 = 1
+        for qe26 in input.AssociatedRoles.unwrap_or([]):
+            auto t27 = qe26
+            p = db_cluster_associated_role_to_query(p, "AssociatedRoles.DBClusterAssociatedRole." + str(qi25), t27)
+            qi25 = qi25 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # RestoreDBClusterFromSnapshot
+    # errors: DBClusterAlreadyExistsFault, DBClusterParameterGroupNotFoundFault, DBClusterQuotaExceededFault, DBClusterRoleQuotaExceededFault, DBClusterSnapshotNotFoundFault, DBSnapshotNotFoundFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InsufficientDBClusterCapacityFault, InsufficientDBInstanceCapacityFault, InsufficientStorageClusterCapacityFault, InvalidDBClusterSnapshotStateFault, InvalidDBInstanceStateFault, InvalidDBSnapshotStateFault, InvalidRestoreFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, VpcEncryptionControlViolationException
+    def restore_db_cluster_from_snapshot(self, RestoreDBClusterFromSnapshotMessage input) -> str:
+        auto p = query.query_params("RestoreDBClusterFromSnapshot", "2014-10-31")
+        auto t0 = input.AvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZones", "AvailabilityZone", t0)
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        p = query.query_scalar(p, "SnapshotIdentifier", input.SnapshotIdentifier)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.DBSubnetGroupName.is_some():
+            auto t1 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t1)
+        if input.DatabaseName.is_some():
+            p = query.query_scalar(p, "DatabaseName", input.DatabaseName.unwrap())
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        auto t2 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t5 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t5)
+        if input.BacktrackWindow.is_some():
+            auto t6 = str(input.BacktrackWindow.unwrap())
+            p = query.query_scalar(p, "BacktrackWindow", t6)
+        auto t7 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t7)
+        if input.EngineMode.is_some():
+            p = query.query_scalar(p, "EngineMode", input.EngineMode.unwrap())
+        if input.ScalingConfiguration.is_some():
+            auto t8 = input.ScalingConfiguration.unwrap()
+            p = scaling_configuration_to_query(p, "ScalingConfiguration", t8)
+        if input.DBClusterParameterGroupName.is_some():
+            auto t9 = input.DBClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBClusterParameterGroupName", t9)
+        if input.DeletionProtection.is_some():
+            auto t10 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t10)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t11 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t11)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainIAMRoleName.is_some():
+            auto t12 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t12)
+        if input.DBClusterInstanceClass.is_some():
+            auto t13 = input.DBClusterInstanceClass.unwrap()
+            p = query.query_scalar(p, "DBClusterInstanceClass", t13)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.PubliclyAccessible.is_some():
+            auto t14 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t14)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.ServerlessV2ScalingConfiguration.is_some():
+            auto t15 = input.ServerlessV2ScalingConfiguration.unwrap()
+            p = serverless_v2_scaling_configuration_to_query(p, "ServerlessV2ScalingConfiguration", t15)
+        if input.RdsCustomClusterConfiguration.is_some():
+            auto t16 = input.RdsCustomClusterConfiguration.unwrap()
+            p = rds_custom_cluster_configuration_to_query(p, "RdsCustomClusterConfiguration", t16)
+        if input.MonitoringInterval.is_some():
+            auto t17 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t17)
+        if input.MonitoringRoleArn.is_some():
+            auto t18 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t18)
+        if input.EnablePerformanceInsights.is_some():
+            auto t19 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t19)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t20 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t20)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t21 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t21)
+        if input.BackupRetentionPeriod.is_some():
+            auto t22 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t22)
+        if input.PreferredBackupWindow.is_some():
+            auto t23 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t23)
+        if input.EngineLifecycleSupport.is_some():
+            auto t24 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t24)
+        auto qi25 = 1
+        for qe26 in input.TagSpecifications.unwrap_or([]):
+            auto t27 = qe26
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi25), t27)
+            qi25 = qi25 + 1
+        if input.EnableVPCNetworking.is_some():
+            auto t28 = query.query_bool(input.EnableVPCNetworking.unwrap())
+            p = query.query_scalar(p, "EnableVPCNetworking", t28)
+        if input.EnableInternetAccessGateway.is_some():
+            auto t29 = query.query_bool(input.EnableInternetAccessGateway.unwrap())
+            p = query.query_scalar(p, "EnableInternetAccessGateway", t29)
+        auto qi30 = 1
+        for qe31 in input.AssociatedRoles.unwrap_or([]):
+            auto t32 = qe31
+            p = db_cluster_associated_role_to_query(p, "AssociatedRoles.DBClusterAssociatedRole." + str(qi30), t32)
+            qi30 = qi30 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # RestoreDBClusterToPointInTime
+    # errors: DBClusterAlreadyExistsFault, DBClusterAutomatedBackupNotFoundFault, DBClusterNotFoundFault, DBClusterParameterGroupNotFoundFault, DBClusterQuotaExceededFault, DBClusterRoleQuotaExceededFault, DBClusterSnapshotNotFoundFault, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InsufficientDBClusterCapacityFault, InsufficientDBInstanceCapacityFault, InsufficientStorageClusterCapacityFault, InvalidDBClusterSnapshotStateFault, InvalidDBClusterStateFault, InvalidDBSnapshotStateFault, InvalidRestoreFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, VpcEncryptionControlViolationException
+    def restore_db_cluster_to_point_in_time(self, RestoreDBClusterToPointInTimeMessage input) -> str:
+        auto p = query.query_params("RestoreDBClusterToPointInTime", "2014-10-31")
+        p = query.query_scalar(p, "DBClusterIdentifier", input.DBClusterIdentifier)
+        if input.RestoreType.is_some():
+            p = query.query_scalar(p, "RestoreType", input.RestoreType.unwrap())
+        if input.SourceDBClusterIdentifier.is_some():
+            auto t0 = input.SourceDBClusterIdentifier.unwrap()
+            p = query.query_scalar(p, "SourceDBClusterIdentifier", t0)
+        if input.RestoreToTime.is_some():
+            auto t1 = query.query_timestamp_iso8601(input.RestoreToTime.unwrap())
+            p = query.query_scalar(p, "RestoreToTime", t1)
+        if input.UseLatestRestorableTime.is_some():
+            auto t2 = query.query_bool(input.UseLatestRestorableTime.unwrap())
+            p = query.query_scalar(p, "UseLatestRestorableTime", t2)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.DBSubnetGroupName.is_some():
+            auto t3 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t3)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        auto t4 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t4)
+        auto qi5 = 1
+        for qe6 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t7 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t7)
+        if input.BacktrackWindow.is_some():
+            auto t8 = str(input.BacktrackWindow.unwrap())
+            p = query.query_scalar(p, "BacktrackWindow", t8)
+        auto t9 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t9)
+        if input.DBClusterParameterGroupName.is_some():
+            auto t10 = input.DBClusterParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBClusterParameterGroupName", t10)
+        if input.DeletionProtection.is_some():
+            auto t11 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t11)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t12 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t12)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainIAMRoleName.is_some():
+            auto t13 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t13)
+        if input.DBClusterInstanceClass.is_some():
+            auto t14 = input.DBClusterInstanceClass.unwrap()
+            p = query.query_scalar(p, "DBClusterInstanceClass", t14)
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.PubliclyAccessible.is_some():
+            auto t15 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t15)
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.SourceDbClusterResourceId.is_some():
+            auto t16 = input.SourceDbClusterResourceId.unwrap()
+            p = query.query_scalar(p, "SourceDbClusterResourceId", t16)
+        if input.ServerlessV2ScalingConfiguration.is_some():
+            auto t17 = input.ServerlessV2ScalingConfiguration.unwrap()
+            p = serverless_v2_scaling_configuration_to_query(p, "ServerlessV2ScalingConfiguration", t17)
+        if input.ScalingConfiguration.is_some():
+            auto t18 = input.ScalingConfiguration.unwrap()
+            p = scaling_configuration_to_query(p, "ScalingConfiguration", t18)
+        if input.EngineMode.is_some():
+            p = query.query_scalar(p, "EngineMode", input.EngineMode.unwrap())
+        if input.RdsCustomClusterConfiguration.is_some():
+            auto t19 = input.RdsCustomClusterConfiguration.unwrap()
+            p = rds_custom_cluster_configuration_to_query(p, "RdsCustomClusterConfiguration", t19)
+        if input.MonitoringInterval.is_some():
+            auto t20 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t20)
+        if input.MonitoringRoleArn.is_some():
+            auto t21 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t21)
+        if input.EnablePerformanceInsights.is_some():
+            auto t22 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t22)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t23 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t23)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t24 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t24)
+        if input.BackupRetentionPeriod.is_some():
+            auto t25 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t25)
+        if input.PreferredBackupWindow.is_some():
+            auto t26 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t26)
+        if input.EngineLifecycleSupport.is_some():
+            auto t27 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t27)
+        auto qi28 = 1
+        for qe29 in input.TagSpecifications.unwrap_or([]):
+            auto t30 = qe29
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi28), t30)
+            qi28 = qi28 + 1
+        if input.EnableVPCNetworking.is_some():
+            auto t31 = query.query_bool(input.EnableVPCNetworking.unwrap())
+            p = query.query_scalar(p, "EnableVPCNetworking", t31)
+        if input.EnableInternetAccessGateway.is_some():
+            auto t32 = query.query_bool(input.EnableInternetAccessGateway.unwrap())
+            p = query.query_scalar(p, "EnableInternetAccessGateway", t32)
+        auto qi33 = 1
+        for qe34 in input.AssociatedRoles.unwrap_or([]):
+            auto t35 = qe34
+            p = db_cluster_associated_role_to_query(p, "AssociatedRoles.DBClusterAssociatedRole." + str(qi33), t35)
+            qi33 = qi33 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # RestoreDBInstanceFromDBSnapshot
+    # errors: AuthorizationNotFoundFault, BackupPolicyNotFoundFault, CertificateNotFoundFault, DBCapacityReservationNotFoundFault, DBClusterSnapshotNotFoundFault, DBInstanceAlreadyExistsFault, DBParameterGroupNotFoundFault, DBSecurityGroupNotFoundFault, DBSnapshotNotFoundFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InstanceQuotaExceededFault, InsufficientDBInstanceCapacityFault, InvalidDBCapacityReservationStateFault, InvalidDBSnapshotStateFault, InvalidRestoreFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, ProvisionedIopsNotAvailableInAZFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, TenantDatabaseQuotaExceededFault, VpcEncryptionControlViolationException
+    def restore_db_instance_from_db_snapshot(self, RestoreDBInstanceFromDBSnapshotMessage input) -> str:
+        auto p = query.query_params("RestoreDBInstanceFromDBSnapshot", "2014-10-31")
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        if input.DBSnapshotIdentifier.is_some():
+            auto t0 = input.DBSnapshotIdentifier.unwrap()
+            p = query.query_scalar(p, "DBSnapshotIdentifier", t0)
+        if input.DBInstanceClass.is_some():
+            p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.AvailabilityZone.is_some():
+            auto t1 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t1)
+        if input.DBSubnetGroupName.is_some():
+            auto t2 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t2)
+        if input.MultiAZ.is_some():
+            auto t3 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t3)
+        if input.PubliclyAccessible.is_some():
+            auto t4 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t4)
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t5 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t5)
+        if input.LicenseModel.is_some():
+            p = query.query_scalar(p, "LicenseModel", input.LicenseModel.unwrap())
+        if input.DBName.is_some():
+            p = query.query_scalar(p, "DBName", input.DBName.unwrap())
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.StorageThroughput.is_some():
+            auto t6 = str(input.StorageThroughput.unwrap())
+            p = query.query_scalar(p, "StorageThroughput", t6)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        auto qi7 = 1
+        for qe8 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi7), qe8)
+            qi7 = qi7 + 1
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.TdeCredentialArn.is_some():
+            auto t9 = input.TdeCredentialArn.unwrap()
+            p = query.query_scalar(p, "TdeCredentialArn", t9)
+        if input.TdeCredentialPassword.is_some():
+            auto t10 = input.TdeCredentialPassword.unwrap()
+            p = query.query_scalar(p, "TdeCredentialPassword", t10)
+        auto t11 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t11)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainFqdn.is_some():
+            p = query.query_scalar(p, "DomainFqdn", input.DomainFqdn.unwrap())
+        if input.DomainOu.is_some():
+            p = query.query_scalar(p, "DomainOu", input.DomainOu.unwrap())
+        if input.DomainAuthSecretArn.is_some():
+            auto t12 = input.DomainAuthSecretArn.unwrap()
+            p = query.query_scalar(p, "DomainAuthSecretArn", t12)
+        auto t13 = input.DomainDnsIps.unwrap_or([])
+        p = query.query_list(p, "DomainDnsIps", "member", t13)
+        if input.CopyTagsToSnapshot.is_some():
+            auto t14 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t14)
+        if input.DomainIAMRoleName.is_some():
+            auto t15 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t15)
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t16 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t16)
+        auto t17 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t17)
+        auto qi18 = 1
+        for qe19 in input.ProcessorFeatures.unwrap_or([]):
+            auto t20 = qe19
+            p = processor_feature_to_query(p, "ProcessorFeatures.ProcessorFeature." + str(qi18), t20)
+            qi18 = qi18 + 1
+        if input.UseDefaultProcessorFeatures.is_some():
+            auto t21 = query.query_bool(input.UseDefaultProcessorFeatures.unwrap())
+            p = query.query_scalar(p, "UseDefaultProcessorFeatures", t21)
+        if input.DBParameterGroupName.is_some():
+            auto t22 = input.DBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupName", t22)
+        if input.DeletionProtection.is_some():
+            auto t23 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t23)
+        if input.EnableCustomerOwnedIp.is_some():
+            auto t24 = query.query_bool(input.EnableCustomerOwnedIp.unwrap())
+            p = query.query_scalar(p, "EnableCustomerOwnedIp", t24)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.BackupTarget.is_some():
+            p = query.query_scalar(p, "BackupTarget", input.BackupTarget.unwrap())
+        if input.CustomIamInstanceProfile.is_some():
+            auto t25 = input.CustomIamInstanceProfile.unwrap()
+            p = query.query_scalar(p, "CustomIamInstanceProfile", t25)
+        if input.AllocatedStorage.is_some():
+            auto t26 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t26)
+        if input.DBClusterSnapshotIdentifier.is_some():
+            auto t27 = input.DBClusterSnapshotIdentifier.unwrap()
+            p = query.query_scalar(p, "DBClusterSnapshotIdentifier", t27)
+        if input.BackupRetentionPeriod.is_some():
+            auto t28 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t28)
+        if input.PreferredBackupWindow.is_some():
+            auto t29 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t29)
+        if input.DBCapacityReservationIdentifier.is_some():
+            auto t30 = input.DBCapacityReservationIdentifier.unwrap()
+            p = query.query_scalar(p, "DBCapacityReservationIdentifier", t30)
+        if input.DedicatedLogVolume.is_some():
+            auto t31 = query.query_bool(input.DedicatedLogVolume.unwrap())
+            p = query.query_scalar(p, "DedicatedLogVolume", t31)
+        if input.CACertificateIdentifier.is_some():
+            auto t32 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t32)
+        if input.EngineLifecycleSupport.is_some():
+            auto t33 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t33)
+        auto qi34 = 1
+        for qe35 in input.AdditionalStorageVolumes.unwrap_or([]):
+            auto t36 = qe35
+            p = additional_storage_volume_to_query(p, "AdditionalStorageVolumes.member." + str(qi34), t36)
+            qi34 = qi34 + 1
+        auto qi37 = 1
+        for qe38 in input.TagSpecifications.unwrap_or([]):
+            auto t39 = qe38
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi37), t39)
+            qi37 = qi37 + 1
+        if input.ManageMasterUserPassword.is_some():
+            auto t40 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t40)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t41 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t41)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # RestoreDBInstanceFromS3
+    # errors: AuthorizationNotFoundFault, BackupPolicyNotFoundFault, CertificateNotFoundFault, DBCapacityReservationNotFoundFault, DBInstanceAlreadyExistsFault, DBParameterGroupNotFoundFault, DBSecurityGroupNotFoundFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupNotFoundFault, InstanceQuotaExceededFault, InsufficientDBInstanceCapacityFault, InvalidDBCapacityReservationStateFault, InvalidS3BucketFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, ProvisionedIopsNotAvailableInAZFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, VpcEncryptionControlViolationException
+    def restore_db_instance_from_s3(self, RestoreDBInstanceFromS3Message input) -> str:
+        auto p = query.query_params("RestoreDBInstanceFromS3", "2014-10-31")
+        if input.DBName.is_some():
+            p = query.query_scalar(p, "DBName", input.DBName.unwrap())
+        p = query.query_scalar(p, "DBInstanceIdentifier", input.DBInstanceIdentifier)
+        if input.AllocatedStorage.is_some():
+            auto t0 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t0)
+        p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass)
+        p = query.query_scalar(p, "Engine", input.Engine)
+        if input.MasterUsername.is_some():
+            p = query.query_scalar(p, "MasterUsername", input.MasterUsername.unwrap())
+        if input.MasterUserPassword.is_some():
+            auto t1 = input.MasterUserPassword.unwrap()
+            p = query.query_scalar(p, "MasterUserPassword", t1)
+        auto t2 = input.DBSecurityGroups.unwrap_or([])
+        p = query.query_list(p, "DBSecurityGroups", "DBSecurityGroupName", t2)
+        auto t3 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t3)
+        if input.AvailabilityZone.is_some():
+            auto t4 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t4)
+        if input.DBSubnetGroupName.is_some():
+            auto t5 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t5)
+        if input.PreferredMaintenanceWindow.is_some():
+            auto t6 = input.PreferredMaintenanceWindow.unwrap()
+            p = query.query_scalar(p, "PreferredMaintenanceWindow", t6)
+        if input.DBParameterGroupName.is_some():
+            auto t7 = input.DBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupName", t7)
+        if input.BackupRetentionPeriod.is_some():
+            auto t8 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t8)
+        if input.PreferredBackupWindow.is_some():
+            auto t9 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t9)
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.MultiAZ.is_some():
+            auto t10 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t10)
+        if input.EngineVersion.is_some():
+            p = query.query_scalar(p, "EngineVersion", input.EngineVersion.unwrap())
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t11 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t11)
+        if input.LicenseModel.is_some():
+            p = query.query_scalar(p, "LicenseModel", input.LicenseModel.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.StorageThroughput.is_some():
+            auto t12 = str(input.StorageThroughput.unwrap())
+            p = query.query_scalar(p, "StorageThroughput", t12)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.PubliclyAccessible.is_some():
+            auto t13 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t13)
+        auto qi14 = 1
+        for qe15 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi14), qe15)
+            qi14 = qi14 + 1
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.StorageEncrypted.is_some():
+            auto t16 = query.query_bool(input.StorageEncrypted.unwrap())
+            p = query.query_scalar(p, "StorageEncrypted", t16)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.CopyTagsToSnapshot.is_some():
+            auto t17 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t17)
+        if input.MonitoringInterval.is_some():
+            auto t18 = str(input.MonitoringInterval.unwrap())
+            p = query.query_scalar(p, "MonitoringInterval", t18)
+        if input.MonitoringRoleArn.is_some():
+            auto t19 = input.MonitoringRoleArn.unwrap()
+            p = query.query_scalar(p, "MonitoringRoleArn", t19)
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t20 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t20)
+        p = query.query_scalar(p, "SourceEngine", input.SourceEngine)
+        p = query.query_scalar(p, "SourceEngineVersion", input.SourceEngineVersion)
+        p = query.query_scalar(p, "S3BucketName", input.S3BucketName)
+        if input.S3Prefix.is_some():
+            p = query.query_scalar(p, "S3Prefix", input.S3Prefix.unwrap())
+        p = query.query_scalar(p, "S3IngestionRoleArn", input.S3IngestionRoleArn)
+        if input.DatabaseInsightsMode.is_some():
+            auto t21 = input.DatabaseInsightsMode.unwrap()
+            p = query.query_scalar(p, "DatabaseInsightsMode", t21)
+        if input.EnablePerformanceInsights.is_some():
+            auto t22 = query.query_bool(input.EnablePerformanceInsights.unwrap())
+            p = query.query_scalar(p, "EnablePerformanceInsights", t22)
+        if input.PerformanceInsightsKMSKeyId.is_some():
+            auto t23 = input.PerformanceInsightsKMSKeyId.unwrap()
+            p = query.query_scalar(p, "PerformanceInsightsKMSKeyId", t23)
+        if input.PerformanceInsightsRetentionPeriod.is_some():
+            auto t24 = str(input.PerformanceInsightsRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "PerformanceInsightsRetentionPeriod", t24)
+        auto t25 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t25)
+        auto qi26 = 1
+        for qe27 in input.ProcessorFeatures.unwrap_or([]):
+            auto t28 = qe27
+            p = processor_feature_to_query(p, "ProcessorFeatures.ProcessorFeature." + str(qi26), t28)
+            qi26 = qi26 + 1
+        if input.UseDefaultProcessorFeatures.is_some():
+            auto t29 = query.query_bool(input.UseDefaultProcessorFeatures.unwrap())
+            p = query.query_scalar(p, "UseDefaultProcessorFeatures", t29)
+        if input.DeletionProtection.is_some():
+            auto t30 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t30)
+        if input.MaxAllocatedStorage.is_some():
+            auto t31 = str(input.MaxAllocatedStorage.unwrap())
+            p = query.query_scalar(p, "MaxAllocatedStorage", t31)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.ManageMasterUserPassword.is_some():
+            auto t32 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t32)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t33 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t33)
+        if input.DBCapacityReservationIdentifier.is_some():
+            auto t34 = input.DBCapacityReservationIdentifier.unwrap()
+            p = query.query_scalar(p, "DBCapacityReservationIdentifier", t34)
+        if input.DedicatedLogVolume.is_some():
+            auto t35 = query.query_bool(input.DedicatedLogVolume.unwrap())
+            p = query.query_scalar(p, "DedicatedLogVolume", t35)
+        if input.CACertificateIdentifier.is_some():
+            auto t36 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t36)
+        if input.EngineLifecycleSupport.is_some():
+            auto t37 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t37)
+        auto qi38 = 1
+        for qe39 in input.AdditionalStorageVolumes.unwrap_or([]):
+            auto t40 = qe39
+            p = additional_storage_volume_to_query(p, "AdditionalStorageVolumes.member." + str(qi38), t40)
+            qi38 = qi38 + 1
+        auto qi41 = 1
+        for qe42 in input.TagSpecifications.unwrap_or([]):
+            auto t43 = qe42
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi41), t43)
+            qi41 = qi41 + 1
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # RestoreDBInstanceToPointInTime
+    # errors: AuthorizationNotFoundFault, BackupPolicyNotFoundFault, CertificateNotFoundFault, DBCapacityReservationNotFoundFault, DBInstanceAlreadyExistsFault, DBInstanceAutomatedBackupNotFoundFault, DBInstanceNotFoundFault, DBParameterGroupNotFoundFault, DBSecurityGroupNotFoundFault, DBSubnetGroupDoesNotCoverEnoughAZs, DBSubnetGroupNotFoundFault, DomainNotFoundFault, InstanceQuotaExceededFault, InsufficientDBInstanceCapacityFault, InvalidDBCapacityReservationStateFault, InvalidDBInstanceStateFault, InvalidRestoreFault, InvalidSubnet, InvalidVPCNetworkStateFault, KMSKeyNotAccessibleFault, NetworkTypeNotSupported, OptionGroupNotFoundFault, PointInTimeRestoreNotEnabledFault, ProvisionedIopsNotAvailableInAZFault, StorageQuotaExceededFault, StorageTypeNotSupportedFault, TenantDatabaseQuotaExceededFault, VpcEncryptionControlViolationException
+    def restore_db_instance_to_point_in_time(self, RestoreDBInstanceToPointInTimeMessage input) -> str:
+        auto p = query.query_params("RestoreDBInstanceToPointInTime", "2014-10-31")
+        if input.SourceDBInstanceIdentifier.is_some():
+            auto t0 = input.SourceDBInstanceIdentifier.unwrap()
+            p = query.query_scalar(p, "SourceDBInstanceIdentifier", t0)
+        auto t1 = input.TargetDBInstanceIdentifier
+        p = query.query_scalar(p, "TargetDBInstanceIdentifier", t1)
+        if input.RestoreTime.is_some():
+            auto t2 = query.query_timestamp_iso8601(input.RestoreTime.unwrap())
+            p = query.query_scalar(p, "RestoreTime", t2)
+        if input.UseLatestRestorableTime.is_some():
+            auto t3 = query.query_bool(input.UseLatestRestorableTime.unwrap())
+            p = query.query_scalar(p, "UseLatestRestorableTime", t3)
+        if input.DBInstanceClass.is_some():
+            p = query.query_scalar(p, "DBInstanceClass", input.DBInstanceClass.unwrap())
+        if input.Port.is_some():
+            p = query.query_scalar(p, "Port", str(input.Port.unwrap()))
+        if input.AvailabilityZone.is_some():
+            auto t4 = input.AvailabilityZone.unwrap()
+            p = query.query_scalar(p, "AvailabilityZone", t4)
+        if input.DBSubnetGroupName.is_some():
+            auto t5 = input.DBSubnetGroupName.unwrap()
+            p = query.query_scalar(p, "DBSubnetGroupName", t5)
+        if input.MultiAZ.is_some():
+            auto t6 = query.query_bool(input.MultiAZ.unwrap())
+            p = query.query_scalar(p, "MultiAZ", t6)
+        if input.PubliclyAccessible.is_some():
+            auto t7 = query.query_bool(input.PubliclyAccessible.unwrap())
+            p = query.query_scalar(p, "PubliclyAccessible", t7)
+        if input.AutoMinorVersionUpgrade.is_some():
+            auto t8 = query.query_bool(input.AutoMinorVersionUpgrade.unwrap())
+            p = query.query_scalar(p, "AutoMinorVersionUpgrade", t8)
+        if input.LicenseModel.is_some():
+            p = query.query_scalar(p, "LicenseModel", input.LicenseModel.unwrap())
+        if input.DBName.is_some():
+            p = query.query_scalar(p, "DBName", input.DBName.unwrap())
+        if input.Engine.is_some():
+            p = query.query_scalar(p, "Engine", input.Engine.unwrap())
+        if input.Iops.is_some():
+            p = query.query_scalar(p, "Iops", str(input.Iops.unwrap()))
+        if input.StorageThroughput.is_some():
+            auto t9 = str(input.StorageThroughput.unwrap())
+            p = query.query_scalar(p, "StorageThroughput", t9)
+        if input.OptionGroupName.is_some():
+            p = query.query_scalar(p, "OptionGroupName", input.OptionGroupName.unwrap())
+        if input.CopyTagsToSnapshot.is_some():
+            auto t10 = query.query_bool(input.CopyTagsToSnapshot.unwrap())
+            p = query.query_scalar(p, "CopyTagsToSnapshot", t10)
+        auto qi11 = 1
+        for qe12 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi11), qe12)
+            qi11 = qi11 + 1
+        if input.StorageType.is_some():
+            p = query.query_scalar(p, "StorageType", input.StorageType.unwrap())
+        if input.TdeCredentialArn.is_some():
+            auto t13 = input.TdeCredentialArn.unwrap()
+            p = query.query_scalar(p, "TdeCredentialArn", t13)
+        if input.TdeCredentialPassword.is_some():
+            auto t14 = input.TdeCredentialPassword.unwrap()
+            p = query.query_scalar(p, "TdeCredentialPassword", t14)
+        auto t15 = input.VpcSecurityGroupIds.unwrap_or([])
+        p = query.query_list(p, "VpcSecurityGroupIds", "VpcSecurityGroupId", t15)
+        if input.Domain.is_some():
+            p = query.query_scalar(p, "Domain", input.Domain.unwrap())
+        if input.DomainIAMRoleName.is_some():
+            auto t16 = input.DomainIAMRoleName.unwrap()
+            p = query.query_scalar(p, "DomainIAMRoleName", t16)
+        if input.DomainFqdn.is_some():
+            p = query.query_scalar(p, "DomainFqdn", input.DomainFqdn.unwrap())
+        if input.DomainOu.is_some():
+            p = query.query_scalar(p, "DomainOu", input.DomainOu.unwrap())
+        if input.DomainAuthSecretArn.is_some():
+            auto t17 = input.DomainAuthSecretArn.unwrap()
+            p = query.query_scalar(p, "DomainAuthSecretArn", t17)
+        auto t18 = input.DomainDnsIps.unwrap_or([])
+        p = query.query_list(p, "DomainDnsIps", "member", t18)
+        if input.EnableIAMDatabaseAuthentication.is_some():
+            auto t19 = query.query_bool(input.EnableIAMDatabaseAuthentication.unwrap())
+            p = query.query_scalar(p, "EnableIAMDatabaseAuthentication", t19)
+        auto t20 = input.EnableCloudwatchLogsExports.unwrap_or([])
+        p = query.query_list(p, "EnableCloudwatchLogsExports", "member", t20)
+        auto qi21 = 1
+        for qe22 in input.ProcessorFeatures.unwrap_or([]):
+            auto t23 = qe22
+            p = processor_feature_to_query(p, "ProcessorFeatures.ProcessorFeature." + str(qi21), t23)
+            qi21 = qi21 + 1
+        if input.UseDefaultProcessorFeatures.is_some():
+            auto t24 = query.query_bool(input.UseDefaultProcessorFeatures.unwrap())
+            p = query.query_scalar(p, "UseDefaultProcessorFeatures", t24)
+        if input.DBParameterGroupName.is_some():
+            auto t25 = input.DBParameterGroupName.unwrap()
+            p = query.query_scalar(p, "DBParameterGroupName", t25)
+        if input.DeletionProtection.is_some():
+            auto t26 = query.query_bool(input.DeletionProtection.unwrap())
+            p = query.query_scalar(p, "DeletionProtection", t26)
+        if input.SourceDbiResourceId.is_some():
+            auto t27 = input.SourceDbiResourceId.unwrap()
+            p = query.query_scalar(p, "SourceDbiResourceId", t27)
+        if input.MaxAllocatedStorage.is_some():
+            auto t28 = str(input.MaxAllocatedStorage.unwrap())
+            p = query.query_scalar(p, "MaxAllocatedStorage", t28)
+        if input.EnableCustomerOwnedIp.is_some():
+            auto t29 = query.query_bool(input.EnableCustomerOwnedIp.unwrap())
+            p = query.query_scalar(p, "EnableCustomerOwnedIp", t29)
+        if input.NetworkType.is_some():
+            p = query.query_scalar(p, "NetworkType", input.NetworkType.unwrap())
+        if input.SourceDBInstanceAutomatedBackupsArn.is_some():
+            auto t30 = input.SourceDBInstanceAutomatedBackupsArn.unwrap()
+            p = query.query_scalar(p, "SourceDBInstanceAutomatedBackupsArn", t30)
+        if input.BackupTarget.is_some():
+            p = query.query_scalar(p, "BackupTarget", input.BackupTarget.unwrap())
+        if input.CustomIamInstanceProfile.is_some():
+            auto t31 = input.CustomIamInstanceProfile.unwrap()
+            p = query.query_scalar(p, "CustomIamInstanceProfile", t31)
+        if input.AllocatedStorage.is_some():
+            auto t32 = str(input.AllocatedStorage.unwrap())
+            p = query.query_scalar(p, "AllocatedStorage", t32)
+        if input.BackupRetentionPeriod.is_some():
+            auto t33 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t33)
+        if input.PreferredBackupWindow.is_some():
+            auto t34 = input.PreferredBackupWindow.unwrap()
+            p = query.query_scalar(p, "PreferredBackupWindow", t34)
+        if input.DBCapacityReservationIdentifier.is_some():
+            auto t35 = input.DBCapacityReservationIdentifier.unwrap()
+            p = query.query_scalar(p, "DBCapacityReservationIdentifier", t35)
+        if input.DedicatedLogVolume.is_some():
+            auto t36 = query.query_bool(input.DedicatedLogVolume.unwrap())
+            p = query.query_scalar(p, "DedicatedLogVolume", t36)
+        if input.CACertificateIdentifier.is_some():
+            auto t37 = input.CACertificateIdentifier.unwrap()
+            p = query.query_scalar(p, "CACertificateIdentifier", t37)
+        if input.EngineLifecycleSupport.is_some():
+            auto t38 = input.EngineLifecycleSupport.unwrap()
+            p = query.query_scalar(p, "EngineLifecycleSupport", t38)
+        auto qi39 = 1
+        for qe40 in input.AdditionalStorageVolumes.unwrap_or([]):
+            auto t41 = qe40
+            p = additional_storage_volume_to_query(p, "AdditionalStorageVolumes.member." + str(qi39), t41)
+            qi39 = qi39 + 1
+        auto qi42 = 1
+        for qe43 in input.TagSpecifications.unwrap_or([]):
+            auto t44 = qe43
+            p = tag_specification_to_query(p, "TagSpecifications.item." + str(qi42), t44)
+            qi42 = qi42 + 1
+        if input.ManageMasterUserPassword.is_some():
+            auto t45 = query.query_bool(input.ManageMasterUserPassword.unwrap())
+            p = query.query_scalar(p, "ManageMasterUserPassword", t45)
+        if input.MasterUserSecretKmsKeyId.is_some():
+            auto t46 = input.MasterUserSecretKmsKeyId.unwrap()
+            p = query.query_scalar(p, "MasterUserSecretKmsKeyId", t46)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
     # RevokeDBSecurityGroupIngress
     # errors: AuthorizationNotFoundFault, DBSecurityGroupNotFoundFault, InvalidDBSecurityGroupStateFault
     def revoke_db_security_group_ingress(self, RevokeDBSecurityGroupIngressMessage input) -> str:
@@ -5663,6 +9022,24 @@ struct RDSClient:
         if input.DBCapacityReservationIdentifier.is_some():
             auto t0 = input.DBCapacityReservationIdentifier.unwrap()
             p = query.query_scalar(p, "DBCapacityReservationIdentifier", t0)
+        return query.query_request(self.creds, rds_service(), self.region, p)
+
+    # StartDBInstanceAutomatedBackupsReplication
+    # errors: DBInstanceAutomatedBackupQuotaExceededFault, DBInstanceNotFoundFault, InvalidDBInstanceAutomatedBackupStateFault, InvalidDBInstanceStateFault, KMSKeyNotAccessibleFault, StorageTypeNotSupportedFault
+    def start_db_instance_automated_backups_replication(self, StartDBInstanceAutomatedBackupsReplicationMessage input) -> str:
+        auto p = query.query_params("StartDBInstanceAutomatedBackupsReplication", "2014-10-31")
+        p = query.query_scalar(p, "SourceDBInstanceArn", input.SourceDBInstanceArn)
+        if input.BackupRetentionPeriod.is_some():
+            auto t0 = str(input.BackupRetentionPeriod.unwrap())
+            p = query.query_scalar(p, "BackupRetentionPeriod", t0)
+        if input.KmsKeyId.is_some():
+            p = query.query_scalar(p, "KmsKeyId", input.KmsKeyId.unwrap())
+        if input.PreSignedUrl.is_some():
+            p = query.query_scalar(p, "PreSignedUrl", input.PreSignedUrl.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.Tag." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, rds_service(), self.region, p)
 
     # StartExportTask

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 22 operations — 18 with a generated method,
-#   4 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 22 operations — 22 with a generated method,
+#   0 skipped (a body member is not yet serializable by the XML emitter).
 #   133 structs (plain carriers), 9 enums, 49 error variants.
 #   0 paginators generated (4 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -853,20 +853,18 @@ def cloudfront_error_from_code(str code) -> CloudFrontError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a body member is not yet serializable by the XML
-# emitter — a bool, a map, a list/map of non-scalars, or an XML document body
-# with no httpPayload):
-#   CreateDistribution (member `Items` is a list of Origin (only string lists in v0))
-#   CreateStreamingDistribution (member `Enabled` is a bool (the codec has no xml_bool yet))
-#   UpdateDistribution (member `Items` is a list of Origin (only string lists in v0))
-#   UpdateStreamingDistribution (member `Enabled` is a bool (the codec has no xml_bool yet))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   ListCloudFrontOriginAccessIdentities
 #   ListDistributions
 #   ListInvalidations
 #   ListStreamingDistributions
+
+# Render a boolean as its XML text (the rest-xml codec has no bool helper).
+def cloudfront_xml_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound CloudFront client: credentials + region, threaded into every operation.
 struct CloudFrontClient:
@@ -887,6 +885,245 @@ struct CloudFrontClient:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, cloudfront_service(), self.region, host)
 
+    # CreateDistribution  POST /2015-09-17/distribution
+    # errors: AccessDenied, CNAMEAlreadyExists, DistributionAlreadyExists, InconsistentQuantities, InvalidArgument, InvalidDefaultRootObject, InvalidErrorCode, InvalidForwardCookies, InvalidGeoRestrictionParameter, InvalidHeadersForS3Origin, InvalidLocationCode, InvalidMinimumProtocolVersion, InvalidOrigin, InvalidOriginAccessIdentity, InvalidProtocolSettings, InvalidRelativePath, InvalidRequiredProtocol, InvalidResponseCode, InvalidTTLOrder, InvalidViewerCertificate, InvalidWebACLId, MissingBody, NoSuchOrigin, TooManyCacheBehaviors, TooManyCertificates, TooManyCookieNamesInWhiteList, TooManyDistributionCNAMEs, TooManyDistributions, TooManyHeadersInForwardedValues, TooManyOrigins, TooManyTrustedSigners, TrustedSignerDoesNotExist
+    def create_distribution(self, CreateDistributionRequest input) -> str:
+        auto host = endpoints.regional_host(cloudfront_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/distribution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("DistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
+        auto t0 = input.DistributionConfig.CallerReference
+        restxml.rest_xml_scalar(root, "CallerReference", t0)
+        if input.DistributionConfig.Aliases.is_some():
+            auto n1 = restxml.rest_xml_struct(root, "Aliases")
+            auto t2 = str(input.DistributionConfig.Aliases.unwrap().Quantity)
+            restxml.rest_xml_scalar(n1, "Quantity", t2)
+            if input.DistributionConfig.Aliases.unwrap().Items.is_some():
+                auto t3 = input.DistributionConfig.Aliases.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n1, "Items", "CNAME", t3)
+        if input.DistributionConfig.DefaultRootObject.is_some():
+            auto t4 = input.DistributionConfig.DefaultRootObject.unwrap()
+            restxml.rest_xml_scalar(root, "DefaultRootObject", t4)
+        auto n5 = restxml.rest_xml_struct(root, "Origins")
+        auto t6 = str(input.DistributionConfig.Origins.Quantity)
+        restxml.rest_xml_scalar(n5, "Quantity", t6)
+        if input.DistributionConfig.Origins.Items.is_some():
+            auto t7 = input.DistributionConfig.Origins.Items.unwrap()
+            auto n8 = restxml.rest_xml_struct(n5, "Items")
+            for t9 in t7:
+                auto n10 = restxml.rest_xml_struct(n8, "Origin")
+                restxml.rest_xml_scalar(n10, "Id", t9.Id)
+                restxml.rest_xml_scalar(n10, "DomainName", t9.DomainName)
+                if t9.OriginPath.is_some():
+                    restxml.rest_xml_scalar(n10, "OriginPath", t9.OriginPath.unwrap())
+                if t9.S3OriginConfig.is_some():
+                    auto n11 = restxml.rest_xml_struct(n10, "S3OriginConfig")
+                    auto t12 = t9.S3OriginConfig.unwrap().OriginAccessIdentity
+                    restxml.rest_xml_scalar(n11, "OriginAccessIdentity", t12)
+                if t9.CustomOriginConfig.is_some():
+                    auto n13 = restxml.rest_xml_struct(n10, "CustomOriginConfig")
+                    auto t14 = str(t9.CustomOriginConfig.unwrap().HTTPPort)
+                    restxml.rest_xml_scalar(n13, "HTTPPort", t14)
+                    auto t15 = str(t9.CustomOriginConfig.unwrap().HTTPSPort)
+                    restxml.rest_xml_scalar(n13, "HTTPSPort", t15)
+                    auto t16 = t9.CustomOriginConfig.unwrap().OriginProtocolPolicy
+                    restxml.rest_xml_scalar(n13, "OriginProtocolPolicy", t16)
+        auto n17 = restxml.rest_xml_struct(root, "DefaultCacheBehavior")
+        auto t18 = input.DistributionConfig.DefaultCacheBehavior.TargetOriginId
+        restxml.rest_xml_scalar(n17, "TargetOriginId", t18)
+        auto n19 = restxml.rest_xml_struct(n17, "ForwardedValues")
+        auto t20 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.QueryString)
+        restxml.rest_xml_scalar(n19, "QueryString", t20)
+        auto n21 = restxml.rest_xml_struct(n19, "Cookies")
+        auto t22 = input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.Forward
+        restxml.rest_xml_scalar(n21, "Forward", t22)
+        if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.is_some():
+            auto n23 = restxml.rest_xml_struct(n21, "WhitelistedNames")
+            auto t24 = str(input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.unwrap().Quantity)
+            restxml.rest_xml_scalar(n23, "Quantity", t24)
+            if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.is_some():
+                auto t25 = input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n23, "Items", "Name", t25)
+        if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.is_some():
+            auto n26 = restxml.rest_xml_struct(n19, "Headers")
+            auto t27 = str(input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.unwrap().Quantity)
+            restxml.rest_xml_scalar(n26, "Quantity", t27)
+            if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.unwrap().Items.is_some():
+                auto t28 = input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n26, "Items", "Name", t28)
+        auto n29 = restxml.rest_xml_struct(n17, "TrustedSigners")
+        auto t30 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Enabled)
+        restxml.rest_xml_scalar(n29, "Enabled", t30)
+        auto t31 = str(input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Quantity)
+        restxml.rest_xml_scalar(n29, "Quantity", t31)
+        if input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Items.is_some():
+            auto t32 = input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Items.unwrap()
+            restxml.rest_xml_wrapped_list(n29, "Items", "AwsAccountNumber", t32)
+        auto t33 = input.DistributionConfig.DefaultCacheBehavior.ViewerProtocolPolicy
+        restxml.rest_xml_scalar(n17, "ViewerProtocolPolicy", t33)
+        auto t34 = str(input.DistributionConfig.DefaultCacheBehavior.MinTTL)
+        restxml.rest_xml_scalar(n17, "MinTTL", t34)
+        if input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.is_some():
+            auto n35 = restxml.rest_xml_struct(n17, "AllowedMethods")
+            auto t36 = str(input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().Quantity)
+            restxml.rest_xml_scalar(n35, "Quantity", t36)
+            auto t37 = input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().Items
+            restxml.rest_xml_wrapped_list(n35, "Items", "Method", t37)
+            if input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().CachedMethods.is_some():
+                auto n38 = restxml.rest_xml_struct(n35, "CachedMethods")
+                auto t39 = str(input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().CachedMethods.unwrap().Quantity)
+                restxml.rest_xml_scalar(n38, "Quantity", t39)
+                auto t40 = input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().CachedMethods.unwrap().Items
+                restxml.rest_xml_wrapped_list(n38, "Items", "Method", t40)
+        if input.DistributionConfig.DefaultCacheBehavior.SmoothStreaming.is_some():
+            auto t41 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.SmoothStreaming.unwrap())
+            restxml.rest_xml_scalar(n17, "SmoothStreaming", t41)
+        if input.DistributionConfig.DefaultCacheBehavior.DefaultTTL.is_some():
+            auto t42 = str(input.DistributionConfig.DefaultCacheBehavior.DefaultTTL.unwrap())
+            restxml.rest_xml_scalar(n17, "DefaultTTL", t42)
+        if input.DistributionConfig.DefaultCacheBehavior.MaxTTL.is_some():
+            auto t43 = str(input.DistributionConfig.DefaultCacheBehavior.MaxTTL.unwrap())
+            restxml.rest_xml_scalar(n17, "MaxTTL", t43)
+        if input.DistributionConfig.DefaultCacheBehavior.Compress.is_some():
+            auto t44 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.Compress.unwrap())
+            restxml.rest_xml_scalar(n17, "Compress", t44)
+        if input.DistributionConfig.CacheBehaviors.is_some():
+            auto n45 = restxml.rest_xml_struct(root, "CacheBehaviors")
+            auto t46 = str(input.DistributionConfig.CacheBehaviors.unwrap().Quantity)
+            restxml.rest_xml_scalar(n45, "Quantity", t46)
+            if input.DistributionConfig.CacheBehaviors.unwrap().Items.is_some():
+                auto t47 = input.DistributionConfig.CacheBehaviors.unwrap().Items.unwrap()
+                auto n48 = restxml.rest_xml_struct(n45, "Items")
+                for t49 in t47:
+                    auto n50 = restxml.rest_xml_struct(n48, "CacheBehavior")
+                    restxml.rest_xml_scalar(n50, "PathPattern", t49.PathPattern)
+                    restxml.rest_xml_scalar(n50, "TargetOriginId", t49.TargetOriginId)
+                    auto n51 = restxml.rest_xml_struct(n50, "ForwardedValues")
+                    auto t52 = cloudfront_xml_bool(t49.ForwardedValues.QueryString)
+                    restxml.rest_xml_scalar(n51, "QueryString", t52)
+                    auto n53 = restxml.rest_xml_struct(n51, "Cookies")
+                    auto t54 = t49.ForwardedValues.Cookies.Forward
+                    restxml.rest_xml_scalar(n53, "Forward", t54)
+                    if t49.ForwardedValues.Cookies.WhitelistedNames.is_some():
+                        auto n55 = restxml.rest_xml_struct(n53, "WhitelistedNames")
+                        auto t56 = str(t49.ForwardedValues.Cookies.WhitelistedNames.unwrap().Quantity)
+                        restxml.rest_xml_scalar(n55, "Quantity", t56)
+                        if t49.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.is_some():
+                            auto t57 = t49.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.unwrap()
+                            restxml.rest_xml_wrapped_list(n55, "Items", "Name", t57)
+                    if t49.ForwardedValues.Headers.is_some():
+                        auto n58 = restxml.rest_xml_struct(n51, "Headers")
+                        auto t59 = str(t49.ForwardedValues.Headers.unwrap().Quantity)
+                        restxml.rest_xml_scalar(n58, "Quantity", t59)
+                        if t49.ForwardedValues.Headers.unwrap().Items.is_some():
+                            auto t60 = t49.ForwardedValues.Headers.unwrap().Items.unwrap()
+                            restxml.rest_xml_wrapped_list(n58, "Items", "Name", t60)
+                    auto n61 = restxml.rest_xml_struct(n50, "TrustedSigners")
+                    auto t62 = cloudfront_xml_bool(t49.TrustedSigners.Enabled)
+                    restxml.rest_xml_scalar(n61, "Enabled", t62)
+                    auto t63 = str(t49.TrustedSigners.Quantity)
+                    restxml.rest_xml_scalar(n61, "Quantity", t63)
+                    if t49.TrustedSigners.Items.is_some():
+                        auto t64 = t49.TrustedSigners.Items.unwrap()
+                        auto t65 = t64
+                        restxml.rest_xml_wrapped_list(n61, "Items", "AwsAccountNumber", t65)
+                    auto t66 = t49.ViewerProtocolPolicy
+                    restxml.rest_xml_scalar(n50, "ViewerProtocolPolicy", t66)
+                    restxml.rest_xml_scalar(n50, "MinTTL", str(t49.MinTTL))
+                    if t49.AllowedMethods.is_some():
+                        auto n67 = restxml.rest_xml_struct(n50, "AllowedMethods")
+                        auto t68 = str(t49.AllowedMethods.unwrap().Quantity)
+                        restxml.rest_xml_scalar(n67, "Quantity", t68)
+                        auto t69 = t49.AllowedMethods.unwrap().Items
+                        restxml.rest_xml_wrapped_list(n67, "Items", "Method", t69)
+                        if t49.AllowedMethods.unwrap().CachedMethods.is_some():
+                            auto n70 = restxml.rest_xml_struct(n67, "CachedMethods")
+                            auto t71 = str(t49.AllowedMethods.unwrap().CachedMethods.unwrap().Quantity)
+                            restxml.rest_xml_scalar(n70, "Quantity", t71)
+                            auto t72 = t49.AllowedMethods.unwrap().CachedMethods.unwrap().Items
+                            restxml.rest_xml_wrapped_list(n70, "Items", "Method", t72)
+                    if t49.SmoothStreaming.is_some():
+                        auto t73 = cloudfront_xml_bool(t49.SmoothStreaming.unwrap())
+                        restxml.rest_xml_scalar(n50, "SmoothStreaming", t73)
+                    if t49.DefaultTTL.is_some():
+                        auto t74 = str(t49.DefaultTTL.unwrap())
+                        restxml.rest_xml_scalar(n50, "DefaultTTL", t74)
+                    if t49.MaxTTL.is_some():
+                        restxml.rest_xml_scalar(n50, "MaxTTL", str(t49.MaxTTL.unwrap()))
+                    if t49.Compress.is_some():
+                        auto t75 = cloudfront_xml_bool(t49.Compress.unwrap())
+                        restxml.rest_xml_scalar(n50, "Compress", t75)
+        if input.DistributionConfig.CustomErrorResponses.is_some():
+            auto n76 = restxml.rest_xml_struct(root, "CustomErrorResponses")
+            auto t77 = str(input.DistributionConfig.CustomErrorResponses.unwrap().Quantity)
+            restxml.rest_xml_scalar(n76, "Quantity", t77)
+            if input.DistributionConfig.CustomErrorResponses.unwrap().Items.is_some():
+                auto t78 = input.DistributionConfig.CustomErrorResponses.unwrap().Items.unwrap()
+                auto n79 = restxml.rest_xml_struct(n76, "Items")
+                for t80 in t78:
+                    auto n81 = restxml.rest_xml_struct(n79, "CustomErrorResponse")
+                    restxml.rest_xml_scalar(n81, "ErrorCode", str(t80.ErrorCode))
+                    if t80.ResponsePagePath.is_some():
+                        auto t82 = t80.ResponsePagePath.unwrap()
+                        restxml.rest_xml_scalar(n81, "ResponsePagePath", t82)
+                    if t80.ResponseCode.is_some():
+                        auto t83 = t80.ResponseCode.unwrap()
+                        restxml.rest_xml_scalar(n81, "ResponseCode", t83)
+                    if t80.ErrorCachingMinTTL.is_some():
+                        auto t84 = str(t80.ErrorCachingMinTTL.unwrap())
+                        restxml.rest_xml_scalar(n81, "ErrorCachingMinTTL", t84)
+        restxml.rest_xml_scalar(root, "Comment", input.DistributionConfig.Comment)
+        if input.DistributionConfig.Logging.is_some():
+            auto n85 = restxml.rest_xml_struct(root, "Logging")
+            auto t86 = cloudfront_xml_bool(input.DistributionConfig.Logging.unwrap().Enabled)
+            restxml.rest_xml_scalar(n85, "Enabled", t86)
+            auto t87 = cloudfront_xml_bool(input.DistributionConfig.Logging.unwrap().IncludeCookies)
+            restxml.rest_xml_scalar(n85, "IncludeCookies", t87)
+            auto t88 = input.DistributionConfig.Logging.unwrap().Bucket
+            restxml.rest_xml_scalar(n85, "Bucket", t88)
+            auto t89 = input.DistributionConfig.Logging.unwrap().Prefix
+            restxml.rest_xml_scalar(n85, "Prefix", t89)
+        if input.DistributionConfig.PriceClass.is_some():
+            auto t90 = input.DistributionConfig.PriceClass.unwrap()
+            restxml.rest_xml_scalar(root, "PriceClass", t90)
+        auto t91 = cloudfront_xml_bool(input.DistributionConfig.Enabled)
+        restxml.rest_xml_scalar(root, "Enabled", t91)
+        if input.DistributionConfig.ViewerCertificate.is_some():
+            auto n92 = restxml.rest_xml_struct(root, "ViewerCertificate")
+            if input.DistributionConfig.ViewerCertificate.unwrap().Certificate.is_some():
+                auto t93 = input.DistributionConfig.ViewerCertificate.unwrap().Certificate.unwrap()
+                restxml.rest_xml_scalar(n92, "Certificate", t93)
+            if input.DistributionConfig.ViewerCertificate.unwrap().CertificateSource.is_some():
+                auto t94 = input.DistributionConfig.ViewerCertificate.unwrap().CertificateSource.unwrap()
+                restxml.rest_xml_scalar(n92, "CertificateSource", t94)
+            if input.DistributionConfig.ViewerCertificate.unwrap().SSLSupportMethod.is_some():
+                auto t95 = input.DistributionConfig.ViewerCertificate.unwrap().SSLSupportMethod.unwrap()
+                restxml.rest_xml_scalar(n92, "SSLSupportMethod", t95)
+            if input.DistributionConfig.ViewerCertificate.unwrap().MinimumProtocolVersion.is_some():
+                auto t96 = input.DistributionConfig.ViewerCertificate.unwrap().MinimumProtocolVersion.unwrap()
+                restxml.rest_xml_scalar(n92, "MinimumProtocolVersion", t96)
+            if input.DistributionConfig.ViewerCertificate.unwrap().IAMCertificateId.is_some():
+                auto t97 = input.DistributionConfig.ViewerCertificate.unwrap().IAMCertificateId.unwrap()
+                restxml.rest_xml_scalar(n92, "IAMCertificateId", t97)
+            if input.DistributionConfig.ViewerCertificate.unwrap().CloudFrontDefaultCertificate.is_some():
+                auto t98 = cloudfront_xml_bool(input.DistributionConfig.ViewerCertificate.unwrap().CloudFrontDefaultCertificate.unwrap())
+                restxml.rest_xml_scalar(n92, "CloudFrontDefaultCertificate", t98)
+        if input.DistributionConfig.Restrictions.is_some():
+            auto n99 = restxml.rest_xml_struct(root, "Restrictions")
+            auto n100 = restxml.rest_xml_struct(n99, "GeoRestriction")
+            auto t101 = input.DistributionConfig.Restrictions.unwrap().GeoRestriction.RestrictionType
+            restxml.rest_xml_scalar(n100, "RestrictionType", t101)
+            auto t102 = str(input.DistributionConfig.Restrictions.unwrap().GeoRestriction.Quantity)
+            restxml.rest_xml_scalar(n100, "Quantity", t102)
+            if input.DistributionConfig.Restrictions.unwrap().GeoRestriction.Items.is_some():
+                auto t103 = input.DistributionConfig.Restrictions.unwrap().GeoRestriction.Items.unwrap()
+                restxml.rest_xml_wrapped_list(n100, "Items", "Location", t103)
+        if input.DistributionConfig.WebACLId.is_some():
+            auto t104 = input.DistributionConfig.WebACLId.unwrap()
+            restxml.rest_xml_scalar(root, "WebACLId", t104)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, cloudfront_service(), self.region, host)
+
     # CreateInvalidation  POST /2015-09-17/distribution/{DistributionId}/invalidation
     # errors: AccessDenied, BatchTooLarge, InconsistentQuantities, InvalidArgument, MissingBody, NoSuchDistribution, TooManyInvalidationsInProgress
     def create_invalidation(self, CreateInvalidationRequest input) -> str:
@@ -903,6 +1140,53 @@ struct CloudFrontClient:
             restxml.rest_xml_wrapped_list(n0, "Items", "Path", t2)
         auto t3 = input.InvalidationBatch.CallerReference
         restxml.rest_xml_scalar(root, "CallerReference", t3)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, cloudfront_service(), self.region, host)
+
+    # CreateStreamingDistribution  POST /2015-09-17/streaming-distribution
+    # errors: AccessDenied, CNAMEAlreadyExists, InconsistentQuantities, InvalidArgument, InvalidOrigin, InvalidOriginAccessIdentity, MissingBody, StreamingDistributionAlreadyExists, TooManyStreamingDistributionCNAMEs, TooManyStreamingDistributions, TooManyTrustedSigners, TrustedSignerDoesNotExist
+    def create_streaming_distribution(self, CreateStreamingDistributionRequest input) -> str:
+        auto host = endpoints.regional_host(cloudfront_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2015-09-17/streaming-distribution", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("StreamingDistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
+        auto t0 = input.StreamingDistributionConfig.CallerReference
+        restxml.rest_xml_scalar(root, "CallerReference", t0)
+        auto n1 = restxml.rest_xml_struct(root, "S3Origin")
+        auto t2 = input.StreamingDistributionConfig.S3Origin.DomainName
+        restxml.rest_xml_scalar(n1, "DomainName", t2)
+        auto t3 = input.StreamingDistributionConfig.S3Origin.OriginAccessIdentity
+        restxml.rest_xml_scalar(n1, "OriginAccessIdentity", t3)
+        if input.StreamingDistributionConfig.Aliases.is_some():
+            auto n4 = restxml.rest_xml_struct(root, "Aliases")
+            auto t5 = str(input.StreamingDistributionConfig.Aliases.unwrap().Quantity)
+            restxml.rest_xml_scalar(n4, "Quantity", t5)
+            if input.StreamingDistributionConfig.Aliases.unwrap().Items.is_some():
+                auto t6 = input.StreamingDistributionConfig.Aliases.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n4, "Items", "CNAME", t6)
+        auto t7 = input.StreamingDistributionConfig.Comment
+        restxml.rest_xml_scalar(root, "Comment", t7)
+        if input.StreamingDistributionConfig.Logging.is_some():
+            auto n8 = restxml.rest_xml_struct(root, "Logging")
+            auto t9 = cloudfront_xml_bool(input.StreamingDistributionConfig.Logging.unwrap().Enabled)
+            restxml.rest_xml_scalar(n8, "Enabled", t9)
+            auto t10 = input.StreamingDistributionConfig.Logging.unwrap().Bucket
+            restxml.rest_xml_scalar(n8, "Bucket", t10)
+            auto t11 = input.StreamingDistributionConfig.Logging.unwrap().Prefix
+            restxml.rest_xml_scalar(n8, "Prefix", t11)
+        auto n12 = restxml.rest_xml_struct(root, "TrustedSigners")
+        auto t13 = cloudfront_xml_bool(input.StreamingDistributionConfig.TrustedSigners.Enabled)
+        restxml.rest_xml_scalar(n12, "Enabled", t13)
+        auto t14 = str(input.StreamingDistributionConfig.TrustedSigners.Quantity)
+        restxml.rest_xml_scalar(n12, "Quantity", t14)
+        if input.StreamingDistributionConfig.TrustedSigners.Items.is_some():
+            auto t15 = input.StreamingDistributionConfig.TrustedSigners.Items.unwrap()
+            restxml.rest_xml_wrapped_list(n12, "Items", "AwsAccountNumber", t15)
+        if input.StreamingDistributionConfig.PriceClass.is_some():
+            auto t16 = input.StreamingDistributionConfig.PriceClass.unwrap()
+            restxml.rest_xml_scalar(root, "PriceClass", t16)
+        auto t17 = cloudfront_xml_bool(input.StreamingDistributionConfig.Enabled)
+        restxml.rest_xml_scalar(root, "Enabled", t17)
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, cloudfront_service(), self.region, host)
@@ -1086,6 +1370,302 @@ struct CloudFrontClient:
         restxml.rest_xml_scalar(root, "CallerReference", t0)
         auto t1 = input.CloudFrontOriginAccessIdentityConfig.Comment
         restxml.rest_xml_scalar(root, "Comment", t1)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, cloudfront_service(), self.region, host)
+
+    # UpdateDistribution  PUT /2015-09-17/distribution/{Id}/config
+    # errors: AccessDenied, CNAMEAlreadyExists, IllegalUpdate, InconsistentQuantities, InvalidArgument, InvalidDefaultRootObject, InvalidErrorCode, InvalidForwardCookies, InvalidGeoRestrictionParameter, InvalidHeadersForS3Origin, InvalidIfMatchVersion, InvalidLocationCode, InvalidMinimumProtocolVersion, InvalidOriginAccessIdentity, InvalidRelativePath, InvalidRequiredProtocol, InvalidResponseCode, InvalidTTLOrder, InvalidViewerCertificate, InvalidWebACLId, MissingBody, NoSuchDistribution, NoSuchOrigin, PreconditionFailed, TooManyCacheBehaviors, TooManyCertificates, TooManyCookieNamesInWhiteList, TooManyDistributionCNAMEs, TooManyHeadersInForwardedValues, TooManyOrigins, TooManyTrustedSigners, TrustedSignerDoesNotExist
+    def update_distribution(self, UpdateDistributionRequest input) -> str:
+        auto host = endpoints.regional_host(cloudfront_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        dict[str, str] headers = {}
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("DistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
+        auto t0 = input.DistributionConfig.CallerReference
+        restxml.rest_xml_scalar(root, "CallerReference", t0)
+        if input.DistributionConfig.Aliases.is_some():
+            auto n1 = restxml.rest_xml_struct(root, "Aliases")
+            auto t2 = str(input.DistributionConfig.Aliases.unwrap().Quantity)
+            restxml.rest_xml_scalar(n1, "Quantity", t2)
+            if input.DistributionConfig.Aliases.unwrap().Items.is_some():
+                auto t3 = input.DistributionConfig.Aliases.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n1, "Items", "CNAME", t3)
+        if input.DistributionConfig.DefaultRootObject.is_some():
+            auto t4 = input.DistributionConfig.DefaultRootObject.unwrap()
+            restxml.rest_xml_scalar(root, "DefaultRootObject", t4)
+        auto n5 = restxml.rest_xml_struct(root, "Origins")
+        auto t6 = str(input.DistributionConfig.Origins.Quantity)
+        restxml.rest_xml_scalar(n5, "Quantity", t6)
+        if input.DistributionConfig.Origins.Items.is_some():
+            auto t7 = input.DistributionConfig.Origins.Items.unwrap()
+            auto n8 = restxml.rest_xml_struct(n5, "Items")
+            for t9 in t7:
+                auto n10 = restxml.rest_xml_struct(n8, "Origin")
+                restxml.rest_xml_scalar(n10, "Id", t9.Id)
+                restxml.rest_xml_scalar(n10, "DomainName", t9.DomainName)
+                if t9.OriginPath.is_some():
+                    restxml.rest_xml_scalar(n10, "OriginPath", t9.OriginPath.unwrap())
+                if t9.S3OriginConfig.is_some():
+                    auto n11 = restxml.rest_xml_struct(n10, "S3OriginConfig")
+                    auto t12 = t9.S3OriginConfig.unwrap().OriginAccessIdentity
+                    restxml.rest_xml_scalar(n11, "OriginAccessIdentity", t12)
+                if t9.CustomOriginConfig.is_some():
+                    auto n13 = restxml.rest_xml_struct(n10, "CustomOriginConfig")
+                    auto t14 = str(t9.CustomOriginConfig.unwrap().HTTPPort)
+                    restxml.rest_xml_scalar(n13, "HTTPPort", t14)
+                    auto t15 = str(t9.CustomOriginConfig.unwrap().HTTPSPort)
+                    restxml.rest_xml_scalar(n13, "HTTPSPort", t15)
+                    auto t16 = t9.CustomOriginConfig.unwrap().OriginProtocolPolicy
+                    restxml.rest_xml_scalar(n13, "OriginProtocolPolicy", t16)
+        auto n17 = restxml.rest_xml_struct(root, "DefaultCacheBehavior")
+        auto t18 = input.DistributionConfig.DefaultCacheBehavior.TargetOriginId
+        restxml.rest_xml_scalar(n17, "TargetOriginId", t18)
+        auto n19 = restxml.rest_xml_struct(n17, "ForwardedValues")
+        auto t20 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.QueryString)
+        restxml.rest_xml_scalar(n19, "QueryString", t20)
+        auto n21 = restxml.rest_xml_struct(n19, "Cookies")
+        auto t22 = input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.Forward
+        restxml.rest_xml_scalar(n21, "Forward", t22)
+        if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.is_some():
+            auto n23 = restxml.rest_xml_struct(n21, "WhitelistedNames")
+            auto t24 = str(input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.unwrap().Quantity)
+            restxml.rest_xml_scalar(n23, "Quantity", t24)
+            if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.is_some():
+                auto t25 = input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n23, "Items", "Name", t25)
+        if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.is_some():
+            auto n26 = restxml.rest_xml_struct(n19, "Headers")
+            auto t27 = str(input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.unwrap().Quantity)
+            restxml.rest_xml_scalar(n26, "Quantity", t27)
+            if input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.unwrap().Items.is_some():
+                auto t28 = input.DistributionConfig.DefaultCacheBehavior.ForwardedValues.Headers.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n26, "Items", "Name", t28)
+        auto n29 = restxml.rest_xml_struct(n17, "TrustedSigners")
+        auto t30 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Enabled)
+        restxml.rest_xml_scalar(n29, "Enabled", t30)
+        auto t31 = str(input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Quantity)
+        restxml.rest_xml_scalar(n29, "Quantity", t31)
+        if input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Items.is_some():
+            auto t32 = input.DistributionConfig.DefaultCacheBehavior.TrustedSigners.Items.unwrap()
+            restxml.rest_xml_wrapped_list(n29, "Items", "AwsAccountNumber", t32)
+        auto t33 = input.DistributionConfig.DefaultCacheBehavior.ViewerProtocolPolicy
+        restxml.rest_xml_scalar(n17, "ViewerProtocolPolicy", t33)
+        auto t34 = str(input.DistributionConfig.DefaultCacheBehavior.MinTTL)
+        restxml.rest_xml_scalar(n17, "MinTTL", t34)
+        if input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.is_some():
+            auto n35 = restxml.rest_xml_struct(n17, "AllowedMethods")
+            auto t36 = str(input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().Quantity)
+            restxml.rest_xml_scalar(n35, "Quantity", t36)
+            auto t37 = input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().Items
+            restxml.rest_xml_wrapped_list(n35, "Items", "Method", t37)
+            if input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().CachedMethods.is_some():
+                auto n38 = restxml.rest_xml_struct(n35, "CachedMethods")
+                auto t39 = str(input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().CachedMethods.unwrap().Quantity)
+                restxml.rest_xml_scalar(n38, "Quantity", t39)
+                auto t40 = input.DistributionConfig.DefaultCacheBehavior.AllowedMethods.unwrap().CachedMethods.unwrap().Items
+                restxml.rest_xml_wrapped_list(n38, "Items", "Method", t40)
+        if input.DistributionConfig.DefaultCacheBehavior.SmoothStreaming.is_some():
+            auto t41 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.SmoothStreaming.unwrap())
+            restxml.rest_xml_scalar(n17, "SmoothStreaming", t41)
+        if input.DistributionConfig.DefaultCacheBehavior.DefaultTTL.is_some():
+            auto t42 = str(input.DistributionConfig.DefaultCacheBehavior.DefaultTTL.unwrap())
+            restxml.rest_xml_scalar(n17, "DefaultTTL", t42)
+        if input.DistributionConfig.DefaultCacheBehavior.MaxTTL.is_some():
+            auto t43 = str(input.DistributionConfig.DefaultCacheBehavior.MaxTTL.unwrap())
+            restxml.rest_xml_scalar(n17, "MaxTTL", t43)
+        if input.DistributionConfig.DefaultCacheBehavior.Compress.is_some():
+            auto t44 = cloudfront_xml_bool(input.DistributionConfig.DefaultCacheBehavior.Compress.unwrap())
+            restxml.rest_xml_scalar(n17, "Compress", t44)
+        if input.DistributionConfig.CacheBehaviors.is_some():
+            auto n45 = restxml.rest_xml_struct(root, "CacheBehaviors")
+            auto t46 = str(input.DistributionConfig.CacheBehaviors.unwrap().Quantity)
+            restxml.rest_xml_scalar(n45, "Quantity", t46)
+            if input.DistributionConfig.CacheBehaviors.unwrap().Items.is_some():
+                auto t47 = input.DistributionConfig.CacheBehaviors.unwrap().Items.unwrap()
+                auto n48 = restxml.rest_xml_struct(n45, "Items")
+                for t49 in t47:
+                    auto n50 = restxml.rest_xml_struct(n48, "CacheBehavior")
+                    restxml.rest_xml_scalar(n50, "PathPattern", t49.PathPattern)
+                    restxml.rest_xml_scalar(n50, "TargetOriginId", t49.TargetOriginId)
+                    auto n51 = restxml.rest_xml_struct(n50, "ForwardedValues")
+                    auto t52 = cloudfront_xml_bool(t49.ForwardedValues.QueryString)
+                    restxml.rest_xml_scalar(n51, "QueryString", t52)
+                    auto n53 = restxml.rest_xml_struct(n51, "Cookies")
+                    auto t54 = t49.ForwardedValues.Cookies.Forward
+                    restxml.rest_xml_scalar(n53, "Forward", t54)
+                    if t49.ForwardedValues.Cookies.WhitelistedNames.is_some():
+                        auto n55 = restxml.rest_xml_struct(n53, "WhitelistedNames")
+                        auto t56 = str(t49.ForwardedValues.Cookies.WhitelistedNames.unwrap().Quantity)
+                        restxml.rest_xml_scalar(n55, "Quantity", t56)
+                        if t49.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.is_some():
+                            auto t57 = t49.ForwardedValues.Cookies.WhitelistedNames.unwrap().Items.unwrap()
+                            restxml.rest_xml_wrapped_list(n55, "Items", "Name", t57)
+                    if t49.ForwardedValues.Headers.is_some():
+                        auto n58 = restxml.rest_xml_struct(n51, "Headers")
+                        auto t59 = str(t49.ForwardedValues.Headers.unwrap().Quantity)
+                        restxml.rest_xml_scalar(n58, "Quantity", t59)
+                        if t49.ForwardedValues.Headers.unwrap().Items.is_some():
+                            auto t60 = t49.ForwardedValues.Headers.unwrap().Items.unwrap()
+                            restxml.rest_xml_wrapped_list(n58, "Items", "Name", t60)
+                    auto n61 = restxml.rest_xml_struct(n50, "TrustedSigners")
+                    auto t62 = cloudfront_xml_bool(t49.TrustedSigners.Enabled)
+                    restxml.rest_xml_scalar(n61, "Enabled", t62)
+                    auto t63 = str(t49.TrustedSigners.Quantity)
+                    restxml.rest_xml_scalar(n61, "Quantity", t63)
+                    if t49.TrustedSigners.Items.is_some():
+                        auto t64 = t49.TrustedSigners.Items.unwrap()
+                        auto t65 = t64
+                        restxml.rest_xml_wrapped_list(n61, "Items", "AwsAccountNumber", t65)
+                    auto t66 = t49.ViewerProtocolPolicy
+                    restxml.rest_xml_scalar(n50, "ViewerProtocolPolicy", t66)
+                    restxml.rest_xml_scalar(n50, "MinTTL", str(t49.MinTTL))
+                    if t49.AllowedMethods.is_some():
+                        auto n67 = restxml.rest_xml_struct(n50, "AllowedMethods")
+                        auto t68 = str(t49.AllowedMethods.unwrap().Quantity)
+                        restxml.rest_xml_scalar(n67, "Quantity", t68)
+                        auto t69 = t49.AllowedMethods.unwrap().Items
+                        restxml.rest_xml_wrapped_list(n67, "Items", "Method", t69)
+                        if t49.AllowedMethods.unwrap().CachedMethods.is_some():
+                            auto n70 = restxml.rest_xml_struct(n67, "CachedMethods")
+                            auto t71 = str(t49.AllowedMethods.unwrap().CachedMethods.unwrap().Quantity)
+                            restxml.rest_xml_scalar(n70, "Quantity", t71)
+                            auto t72 = t49.AllowedMethods.unwrap().CachedMethods.unwrap().Items
+                            restxml.rest_xml_wrapped_list(n70, "Items", "Method", t72)
+                    if t49.SmoothStreaming.is_some():
+                        auto t73 = cloudfront_xml_bool(t49.SmoothStreaming.unwrap())
+                        restxml.rest_xml_scalar(n50, "SmoothStreaming", t73)
+                    if t49.DefaultTTL.is_some():
+                        auto t74 = str(t49.DefaultTTL.unwrap())
+                        restxml.rest_xml_scalar(n50, "DefaultTTL", t74)
+                    if t49.MaxTTL.is_some():
+                        restxml.rest_xml_scalar(n50, "MaxTTL", str(t49.MaxTTL.unwrap()))
+                    if t49.Compress.is_some():
+                        auto t75 = cloudfront_xml_bool(t49.Compress.unwrap())
+                        restxml.rest_xml_scalar(n50, "Compress", t75)
+        if input.DistributionConfig.CustomErrorResponses.is_some():
+            auto n76 = restxml.rest_xml_struct(root, "CustomErrorResponses")
+            auto t77 = str(input.DistributionConfig.CustomErrorResponses.unwrap().Quantity)
+            restxml.rest_xml_scalar(n76, "Quantity", t77)
+            if input.DistributionConfig.CustomErrorResponses.unwrap().Items.is_some():
+                auto t78 = input.DistributionConfig.CustomErrorResponses.unwrap().Items.unwrap()
+                auto n79 = restxml.rest_xml_struct(n76, "Items")
+                for t80 in t78:
+                    auto n81 = restxml.rest_xml_struct(n79, "CustomErrorResponse")
+                    restxml.rest_xml_scalar(n81, "ErrorCode", str(t80.ErrorCode))
+                    if t80.ResponsePagePath.is_some():
+                        auto t82 = t80.ResponsePagePath.unwrap()
+                        restxml.rest_xml_scalar(n81, "ResponsePagePath", t82)
+                    if t80.ResponseCode.is_some():
+                        auto t83 = t80.ResponseCode.unwrap()
+                        restxml.rest_xml_scalar(n81, "ResponseCode", t83)
+                    if t80.ErrorCachingMinTTL.is_some():
+                        auto t84 = str(t80.ErrorCachingMinTTL.unwrap())
+                        restxml.rest_xml_scalar(n81, "ErrorCachingMinTTL", t84)
+        restxml.rest_xml_scalar(root, "Comment", input.DistributionConfig.Comment)
+        if input.DistributionConfig.Logging.is_some():
+            auto n85 = restxml.rest_xml_struct(root, "Logging")
+            auto t86 = cloudfront_xml_bool(input.DistributionConfig.Logging.unwrap().Enabled)
+            restxml.rest_xml_scalar(n85, "Enabled", t86)
+            auto t87 = cloudfront_xml_bool(input.DistributionConfig.Logging.unwrap().IncludeCookies)
+            restxml.rest_xml_scalar(n85, "IncludeCookies", t87)
+            auto t88 = input.DistributionConfig.Logging.unwrap().Bucket
+            restxml.rest_xml_scalar(n85, "Bucket", t88)
+            auto t89 = input.DistributionConfig.Logging.unwrap().Prefix
+            restxml.rest_xml_scalar(n85, "Prefix", t89)
+        if input.DistributionConfig.PriceClass.is_some():
+            auto t90 = input.DistributionConfig.PriceClass.unwrap()
+            restxml.rest_xml_scalar(root, "PriceClass", t90)
+        auto t91 = cloudfront_xml_bool(input.DistributionConfig.Enabled)
+        restxml.rest_xml_scalar(root, "Enabled", t91)
+        if input.DistributionConfig.ViewerCertificate.is_some():
+            auto n92 = restxml.rest_xml_struct(root, "ViewerCertificate")
+            if input.DistributionConfig.ViewerCertificate.unwrap().Certificate.is_some():
+                auto t93 = input.DistributionConfig.ViewerCertificate.unwrap().Certificate.unwrap()
+                restxml.rest_xml_scalar(n92, "Certificate", t93)
+            if input.DistributionConfig.ViewerCertificate.unwrap().CertificateSource.is_some():
+                auto t94 = input.DistributionConfig.ViewerCertificate.unwrap().CertificateSource.unwrap()
+                restxml.rest_xml_scalar(n92, "CertificateSource", t94)
+            if input.DistributionConfig.ViewerCertificate.unwrap().SSLSupportMethod.is_some():
+                auto t95 = input.DistributionConfig.ViewerCertificate.unwrap().SSLSupportMethod.unwrap()
+                restxml.rest_xml_scalar(n92, "SSLSupportMethod", t95)
+            if input.DistributionConfig.ViewerCertificate.unwrap().MinimumProtocolVersion.is_some():
+                auto t96 = input.DistributionConfig.ViewerCertificate.unwrap().MinimumProtocolVersion.unwrap()
+                restxml.rest_xml_scalar(n92, "MinimumProtocolVersion", t96)
+            if input.DistributionConfig.ViewerCertificate.unwrap().IAMCertificateId.is_some():
+                auto t97 = input.DistributionConfig.ViewerCertificate.unwrap().IAMCertificateId.unwrap()
+                restxml.rest_xml_scalar(n92, "IAMCertificateId", t97)
+            if input.DistributionConfig.ViewerCertificate.unwrap().CloudFrontDefaultCertificate.is_some():
+                auto t98 = cloudfront_xml_bool(input.DistributionConfig.ViewerCertificate.unwrap().CloudFrontDefaultCertificate.unwrap())
+                restxml.rest_xml_scalar(n92, "CloudFrontDefaultCertificate", t98)
+        if input.DistributionConfig.Restrictions.is_some():
+            auto n99 = restxml.rest_xml_struct(root, "Restrictions")
+            auto n100 = restxml.rest_xml_struct(n99, "GeoRestriction")
+            auto t101 = input.DistributionConfig.Restrictions.unwrap().GeoRestriction.RestrictionType
+            restxml.rest_xml_scalar(n100, "RestrictionType", t101)
+            auto t102 = str(input.DistributionConfig.Restrictions.unwrap().GeoRestriction.Quantity)
+            restxml.rest_xml_scalar(n100, "Quantity", t102)
+            if input.DistributionConfig.Restrictions.unwrap().GeoRestriction.Items.is_some():
+                auto t103 = input.DistributionConfig.Restrictions.unwrap().GeoRestriction.Items.unwrap()
+                restxml.rest_xml_wrapped_list(n100, "Items", "Location", t103)
+        if input.DistributionConfig.WebACLId.is_some():
+            auto t104 = input.DistributionConfig.WebACLId.unwrap()
+            restxml.rest_xml_scalar(root, "WebACLId", t104)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, cloudfront_service(), self.region, host)
+
+    # UpdateStreamingDistribution  PUT /2015-09-17/streaming-distribution/{Id}/config
+    # errors: AccessDenied, CNAMEAlreadyExists, IllegalUpdate, InconsistentQuantities, InvalidArgument, InvalidIfMatchVersion, InvalidOriginAccessIdentity, MissingBody, NoSuchStreamingDistribution, PreconditionFailed, TooManyStreamingDistributionCNAMEs, TooManyTrustedSigners, TrustedSignerDoesNotExist
+    def update_streaming_distribution(self, UpdateStreamingDistributionRequest input) -> str:
+        auto host = endpoints.regional_host(cloudfront_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        dict[str, str] headers = {}
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/2015-09-17/streaming-distribution/{Id}/config", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("StreamingDistributionConfig", "http://cloudfront.amazonaws.com/doc/2015-09-17/")
+        auto t0 = input.StreamingDistributionConfig.CallerReference
+        restxml.rest_xml_scalar(root, "CallerReference", t0)
+        auto n1 = restxml.rest_xml_struct(root, "S3Origin")
+        auto t2 = input.StreamingDistributionConfig.S3Origin.DomainName
+        restxml.rest_xml_scalar(n1, "DomainName", t2)
+        auto t3 = input.StreamingDistributionConfig.S3Origin.OriginAccessIdentity
+        restxml.rest_xml_scalar(n1, "OriginAccessIdentity", t3)
+        if input.StreamingDistributionConfig.Aliases.is_some():
+            auto n4 = restxml.rest_xml_struct(root, "Aliases")
+            auto t5 = str(input.StreamingDistributionConfig.Aliases.unwrap().Quantity)
+            restxml.rest_xml_scalar(n4, "Quantity", t5)
+            if input.StreamingDistributionConfig.Aliases.unwrap().Items.is_some():
+                auto t6 = input.StreamingDistributionConfig.Aliases.unwrap().Items.unwrap()
+                restxml.rest_xml_wrapped_list(n4, "Items", "CNAME", t6)
+        auto t7 = input.StreamingDistributionConfig.Comment
+        restxml.rest_xml_scalar(root, "Comment", t7)
+        if input.StreamingDistributionConfig.Logging.is_some():
+            auto n8 = restxml.rest_xml_struct(root, "Logging")
+            auto t9 = cloudfront_xml_bool(input.StreamingDistributionConfig.Logging.unwrap().Enabled)
+            restxml.rest_xml_scalar(n8, "Enabled", t9)
+            auto t10 = input.StreamingDistributionConfig.Logging.unwrap().Bucket
+            restxml.rest_xml_scalar(n8, "Bucket", t10)
+            auto t11 = input.StreamingDistributionConfig.Logging.unwrap().Prefix
+            restxml.rest_xml_scalar(n8, "Prefix", t11)
+        auto n12 = restxml.rest_xml_struct(root, "TrustedSigners")
+        auto t13 = cloudfront_xml_bool(input.StreamingDistributionConfig.TrustedSigners.Enabled)
+        restxml.rest_xml_scalar(n12, "Enabled", t13)
+        auto t14 = str(input.StreamingDistributionConfig.TrustedSigners.Quantity)
+        restxml.rest_xml_scalar(n12, "Quantity", t14)
+        if input.StreamingDistributionConfig.TrustedSigners.Items.is_some():
+            auto t15 = input.StreamingDistributionConfig.TrustedSigners.Items.unwrap()
+            restxml.rest_xml_wrapped_list(n12, "Items", "AwsAccountNumber", t15)
+        if input.StreamingDistributionConfig.PriceClass.is_some():
+            auto t16 = input.StreamingDistributionConfig.PriceClass.unwrap()
+            restxml.rest_xml_scalar(root, "PriceClass", t16)
+        auto t17 = cloudfront_xml_bool(input.StreamingDistributionConfig.Enabled)
+        restxml.rest_xml_scalar(root, "Enabled", t17)
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, cloudfront_service(), self.region, host)

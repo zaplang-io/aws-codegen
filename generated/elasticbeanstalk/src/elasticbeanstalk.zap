@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 47 operations — 34 with a generated method,
-#   13 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 47 operations — 47 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   149 structs (plain carriers), 21 enums, 19 error variants.
 #   0 paginators generated (5 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -1139,22 +1139,6 @@ def elasticbeanstalk_error_from_code(str code) -> Elastic_BeanstalkError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   CreateApplication (member `ResourceLifecycleConfig` is a nested structure (query nesting is a v0 follow-up))
-#   CreateApplicationVersion (member `SourceBuildInformation` is a nested structure (query nesting is a v0 follow-up))
-#   CreateConfigurationTemplate (member `SourceConfiguration` is a nested structure (query nesting is a v0 follow-up))
-#   CreateEnvironment (member `Tier` is a nested structure (query nesting is a v0 follow-up))
-#   CreatePlatformVersion (member `PlatformDefinitionBundle` is a nested structure (query nesting is a v0 follow-up))
-#   DescribeConfigurationOptions (member `Options` is a list of OptionSpecification (only scalar lists in v0))
-#   ListPlatformBranches (member `Filters` is a list of SearchFilter (only scalar lists in v0))
-#   ListPlatformVersions (member `Filters` is a list of PlatformFilter (only scalar lists in v0))
-#   UpdateApplicationResourceLifecycle (member `ResourceLifecycleConfig` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateConfigurationTemplate (member `OptionSettings` is a list of ConfigurationOptionSetting (only scalar lists in v0))
-#   UpdateEnvironment (member `Tier` is a nested structure (query nesting is a v0 follow-up))
-#   UpdateTagsForResource (member `TagsToAdd` is a list of Tag (only scalar lists in v0))
-#   ValidateConfigurationSettings (member `OptionSettings` is a list of ConfigurationOptionSetting (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeApplicationVersions
@@ -1162,6 +1146,207 @@ def elasticbeanstalk_error_from_code(str code) -> Elastic_BeanstalkError:
 #   DescribeEnvironments
 #   DescribeEvents
 #   ListPlatformVersions
+
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize ApplicationResourceLifecycleConfig into the query form parameters under `prefix`.
+def application_resource_lifecycle_config_to_query(list[query.QueryPair] p, str prefix, ApplicationResourceLifecycleConfig v) -> list[query.QueryPair]:
+    if v.ServiceRole.is_some():
+        auto t0 = v.ServiceRole.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ServiceRole"), t0)
+    if v.VersionLifecycleConfig.is_some():
+        auto t1 = v.VersionLifecycleConfig.unwrap()
+        p = application_version_lifecycle_config_to_query(p, query.query_key(prefix, "VersionLifecycleConfig"), t1)
+    return p
+
+# Serialize ApplicationVersionLifecycleConfig into the query form parameters under `prefix`.
+def application_version_lifecycle_config_to_query(list[query.QueryPair] p, str prefix, ApplicationVersionLifecycleConfig v) -> list[query.QueryPair]:
+    if v.MaxCountRule.is_some():
+        auto t0 = v.MaxCountRule.unwrap()
+        p = max_count_rule_to_query(p, query.query_key(prefix, "MaxCountRule"), t0)
+    if v.MaxAgeRule.is_some():
+        auto t1 = v.MaxAgeRule.unwrap()
+        p = max_age_rule_to_query(p, query.query_key(prefix, "MaxAgeRule"), t1)
+    return p
+
+# Serialize BuildConfiguration into the query form parameters under `prefix`.
+def build_configuration_to_query(list[query.QueryPair] p, str prefix, BuildConfiguration v) -> list[query.QueryPair]:
+    if v.ArtifactName.is_some():
+        auto t0 = v.ArtifactName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ArtifactName"), t0)
+    auto t1 = v.CodeBuildServiceRole
+    p = query.query_scalar(p, query.query_key(prefix, "CodeBuildServiceRole"), t1)
+    if v.ComputeType.is_some():
+        auto t2 = v.ComputeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ComputeType"), t2)
+    p = query.query_scalar(p, query.query_key(prefix, "Image"), v.Image)
+    if v.TimeoutInMinutes.is_some():
+        auto t3 = str(v.TimeoutInMinutes.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TimeoutInMinutes"), t3)
+    return p
+
+# Serialize ConfigurationOptionSetting into the query form parameters under `prefix`.
+def configuration_option_setting_to_query(list[query.QueryPair] p, str prefix, ConfigurationOptionSetting v) -> list[query.QueryPair]:
+    if v.ResourceName.is_some():
+        auto t0 = v.ResourceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceName"), t0)
+    if v.Namespace.is_some():
+        auto t1 = v.Namespace.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Namespace"), t1)
+    if v.OptionName.is_some():
+        auto t2 = v.OptionName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OptionName"), t2)
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize EnvironmentTier into the query form parameters under `prefix`.
+def environment_tier_to_query(list[query.QueryPair] p, str prefix, EnvironmentTier v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    if v.Version.is_some():
+        auto t0 = v.Version.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Version"), t0)
+    return p
+
+# Serialize ImageBuildConfiguration into the query form parameters under `prefix`.
+def image_build_configuration_to_query(list[query.QueryPair] p, str prefix, ImageBuildConfiguration v) -> list[query.QueryPair]:
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    if v.DockerfileLocation.is_some():
+        auto t0 = v.DockerfileLocation.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "DockerfileLocation"), t0)
+    if v.Buildpack.is_some():
+        auto t1 = v.Buildpack.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Buildpack"), t1)
+    if v.Architecture.is_some():
+        auto t2 = v.Architecture.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Architecture"), t2)
+    if v.CodeBuildServiceRole.is_some():
+        auto t3 = v.CodeBuildServiceRole.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "CodeBuildServiceRole"), t3)
+    if v.ComputeType.is_some():
+        auto t4 = v.ComputeType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ComputeType"), t4)
+    if v.TimeoutInMinutes.is_some():
+        auto t5 = str(v.TimeoutInMinutes.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "TimeoutInMinutes"), t5)
+    return p
+
+# Serialize ImageConfiguration into the query form parameters under `prefix`.
+def image_configuration_to_query(list[query.QueryPair] p, str prefix, ImageConfiguration v) -> list[query.QueryPair]:
+    if v.Source.is_some():
+        auto t0 = v.Source.unwrap()
+        p = image_source_to_query(p, query.query_key(prefix, "Source"), t0)
+    if v.Build.is_some():
+        auto t1 = v.Build.unwrap()
+        p = image_build_configuration_to_query(p, query.query_key(prefix, "Build"), t1)
+    return p
+
+# Serialize ImageSource into the query form parameters under `prefix`.
+def image_source_to_query(list[query.QueryPair] p, str prefix, ImageSource v) -> list[query.QueryPair]:
+    if v.Uri.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Uri"), v.Uri.unwrap())
+    return p
+
+# Serialize MaxAgeRule into the query form parameters under `prefix`.
+def max_age_rule_to_query(list[query.QueryPair] p, str prefix, MaxAgeRule v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.MaxAgeInDays.is_some():
+        auto t1 = str(v.MaxAgeInDays.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxAgeInDays"), t1)
+    if v.DeleteSourceFromS3.is_some():
+        auto t2 = query.query_bool(v.DeleteSourceFromS3.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteSourceFromS3"), t2)
+    return p
+
+# Serialize MaxCountRule into the query form parameters under `prefix`.
+def max_count_rule_to_query(list[query.QueryPair] p, str prefix, MaxCountRule v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.MaxCount.is_some():
+        auto t1 = str(v.MaxCount.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "MaxCount"), t1)
+    if v.DeleteSourceFromS3.is_some():
+        auto t2 = query.query_bool(v.DeleteSourceFromS3.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "DeleteSourceFromS3"), t2)
+    return p
+
+# Serialize OptionSpecification into the query form parameters under `prefix`.
+def option_specification_to_query(list[query.QueryPair] p, str prefix, OptionSpecification v) -> list[query.QueryPair]:
+    if v.ResourceName.is_some():
+        auto t0 = v.ResourceName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ResourceName"), t0)
+    if v.Namespace.is_some():
+        auto t1 = v.Namespace.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Namespace"), t1)
+    if v.OptionName.is_some():
+        auto t2 = v.OptionName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "OptionName"), t2)
+    return p
+
+# Serialize PlatformFilter into the query form parameters under `prefix`.
+def platform_filter_to_query(list[query.QueryPair] p, str prefix, PlatformFilter v) -> list[query.QueryPair]:
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    if v.Operator.is_some():
+        auto t0 = v.Operator.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Operator"), t0)
+    auto t1 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t1)
+    return p
+
+# Serialize S3Location into the query form parameters under `prefix`.
+def s3_location_to_query(list[query.QueryPair] p, str prefix, S3Location v) -> list[query.QueryPair]:
+    if v.S3Bucket.is_some():
+        auto t0 = v.S3Bucket.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3Bucket"), t0)
+    if v.S3Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "S3Key"), v.S3Key.unwrap())
+    return p
+
+# Serialize SearchFilter into the query form parameters under `prefix`.
+def search_filter_to_query(list[query.QueryPair] p, str prefix, SearchFilter v) -> list[query.QueryPair]:
+    if v.Attribute.is_some():
+        auto t0 = v.Attribute.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Attribute"), t0)
+    if v.Operator.is_some():
+        auto t1 = v.Operator.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "Operator"), t1)
+    auto t2 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t2)
+    return p
+
+# Serialize SourceBuildInformation into the query form parameters under `prefix`.
+def source_build_information_to_query(list[query.QueryPair] p, str prefix, SourceBuildInformation v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "SourceType"), v.SourceType)
+    auto t0 = v.SourceRepository
+    p = query.query_scalar(p, query.query_key(prefix, "SourceRepository"), t0)
+    auto t1 = v.SourceLocation
+    p = query.query_scalar(p, query.query_key(prefix, "SourceLocation"), t1)
+    return p
+
+# Serialize SourceConfiguration into the query form parameters under `prefix`.
+def source_configuration_to_query(list[query.QueryPair] p, str prefix, SourceConfiguration v) -> list[query.QueryPair]:
+    if v.ApplicationName.is_some():
+        auto t0 = v.ApplicationName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ApplicationName"), t0)
+    if v.TemplateName.is_some():
+        auto t1 = v.TemplateName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "TemplateName"), t1)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
 
 # A bound Elastic_Beanstalk client: credentials + region, threaded into every operation.
 struct Elastic_BeanstalkClient:
@@ -1213,6 +1398,145 @@ struct Elastic_BeanstalkClient:
             p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
         auto t0 = input.VersionLabels.unwrap_or([])
         p = query.query_list(p, "VersionLabels", "member", t0)
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # CreateApplication
+    # errors: TooManyApplicationsException
+    def create_application(self, CreateApplicationMessage input) -> str:
+        auto p = query.query_params("CreateApplication", "2010-12-01")
+        p = query.query_scalar(p, "ApplicationName", input.ApplicationName)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.ResourceLifecycleConfig.is_some():
+            auto t0 = input.ResourceLifecycleConfig.unwrap()
+            p = application_resource_lifecycle_config_to_query(p, "ResourceLifecycleConfig", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # CreateApplicationVersion
+    # errors: CodeBuildNotInServiceRegionException, InsufficientPrivilegesException, S3LocationNotInServiceRegionException, TooManyApplicationVersionsException, TooManyApplicationsException
+    def create_application_version(self, CreateApplicationVersionMessage input) -> str:
+        auto p = query.query_params("CreateApplicationVersion", "2010-12-01")
+        p = query.query_scalar(p, "ApplicationName", input.ApplicationName)
+        p = query.query_scalar(p, "VersionLabel", input.VersionLabel)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.SourceBuildInformation.is_some():
+            auto t0 = input.SourceBuildInformation.unwrap()
+            p = source_build_information_to_query(p, "SourceBuildInformation", t0)
+        if input.SourceBundle.is_some():
+            p = s3_location_to_query(p, "SourceBundle", input.SourceBundle.unwrap())
+        if input.BuildConfiguration.is_some():
+            auto t1 = input.BuildConfiguration.unwrap()
+            p = build_configuration_to_query(p, "BuildConfiguration", t1)
+        if input.AutoCreateApplication.is_some():
+            auto t2 = query.query_bool(input.AutoCreateApplication.unwrap())
+            p = query.query_scalar(p, "AutoCreateApplication", t2)
+        if input.Process.is_some():
+            auto t3 = query.query_bool(input.Process.unwrap())
+            p = query.query_scalar(p, "Process", t3)
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        if input.ImageConfiguration.is_some():
+            auto t6 = input.ImageConfiguration.unwrap()
+            p = image_configuration_to_query(p, "ImageConfiguration", t6)
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # CreateConfigurationTemplate
+    # errors: InsufficientPrivilegesException, TooManyBucketsException, TooManyConfigurationTemplatesException
+    def create_configuration_template(self, CreateConfigurationTemplateMessage input) -> str:
+        auto p = query.query_params("CreateConfigurationTemplate", "2010-12-01")
+        p = query.query_scalar(p, "ApplicationName", input.ApplicationName)
+        p = query.query_scalar(p, "TemplateName", input.TemplateName)
+        if input.SolutionStackName.is_some():
+            auto t0 = input.SolutionStackName.unwrap()
+            p = query.query_scalar(p, "SolutionStackName", t0)
+        if input.PlatformArn.is_some():
+            p = query.query_scalar(p, "PlatformArn", input.PlatformArn.unwrap())
+        if input.SourceConfiguration.is_some():
+            auto t1 = input.SourceConfiguration.unwrap()
+            p = source_configuration_to_query(p, "SourceConfiguration", t1)
+        if input.EnvironmentId.is_some():
+            p = query.query_scalar(p, "EnvironmentId", input.EnvironmentId.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi2 = 1
+        for qe3 in input.OptionSettings.unwrap_or([]):
+            auto t4 = qe3
+            p = configuration_option_setting_to_query(p, "OptionSettings.member." + str(qi2), t4)
+            qi2 = qi2 + 1
+        auto qi5 = 1
+        for qe6 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # CreateEnvironment
+    # errors: InsufficientPrivilegesException, TooManyEnvironmentsException
+    def create_environment(self, CreateEnvironmentMessage input) -> str:
+        auto p = query.query_params("CreateEnvironment", "2010-12-01")
+        p = query.query_scalar(p, "ApplicationName", input.ApplicationName)
+        if input.EnvironmentName.is_some():
+            p = query.query_scalar(p, "EnvironmentName", input.EnvironmentName.unwrap())
+        if input.GroupName.is_some():
+            p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.CNAMEPrefix.is_some():
+            p = query.query_scalar(p, "CNAMEPrefix", input.CNAMEPrefix.unwrap())
+        if input.Tier.is_some():
+            p = environment_tier_to_query(p, "Tier", input.Tier.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.VersionLabel.is_some():
+            p = query.query_scalar(p, "VersionLabel", input.VersionLabel.unwrap())
+        if input.TemplateName.is_some():
+            p = query.query_scalar(p, "TemplateName", input.TemplateName.unwrap())
+        if input.SolutionStackName.is_some():
+            auto t2 = input.SolutionStackName.unwrap()
+            p = query.query_scalar(p, "SolutionStackName", t2)
+        if input.PlatformArn.is_some():
+            p = query.query_scalar(p, "PlatformArn", input.PlatformArn.unwrap())
+        auto qi3 = 1
+        for qe4 in input.OptionSettings.unwrap_or([]):
+            auto t5 = qe4
+            p = configuration_option_setting_to_query(p, "OptionSettings.member." + str(qi3), t5)
+            qi3 = qi3 + 1
+        auto qi6 = 1
+        for qe7 in input.OptionsToRemove.unwrap_or([]):
+            auto t8 = qe7
+            p = option_specification_to_query(p, "OptionsToRemove.member." + str(qi6), t8)
+            qi6 = qi6 + 1
+        if input.OperationsRole.is_some():
+            p = query.query_scalar(p, "OperationsRole", input.OperationsRole.unwrap())
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # CreatePlatformVersion
+    # errors: ElasticBeanstalkServiceException, InsufficientPrivilegesException, TooManyPlatformsException
+    def create_platform_version(self, CreatePlatformVersionRequest input) -> str:
+        auto p = query.query_params("CreatePlatformVersion", "2010-12-01")
+        p = query.query_scalar(p, "PlatformName", input.PlatformName)
+        p = query.query_scalar(p, "PlatformVersion", input.PlatformVersion)
+        auto t0 = input.PlatformDefinitionBundle
+        p = s3_location_to_query(p, "PlatformDefinitionBundle", t0)
+        if input.EnvironmentName.is_some():
+            p = query.query_scalar(p, "EnvironmentName", input.EnvironmentName.unwrap())
+        auto qi1 = 1
+        for qe2 in input.OptionSettings.unwrap_or([]):
+            auto t3 = qe2
+            p = configuration_option_setting_to_query(p, "OptionSettings.member." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
         return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
 
     # CreateStorageLocation
@@ -1289,6 +1613,27 @@ struct Elastic_BeanstalkClient:
         auto p = query.query_params("DescribeApplications", "2010-12-01")
         auto t0 = input.ApplicationNames.unwrap_or([])
         p = query.query_list(p, "ApplicationNames", "member", t0)
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # DescribeConfigurationOptions
+    # errors: TooManyBucketsException
+    def describe_configuration_options(self, DescribeConfigurationOptionsMessage input) -> str:
+        auto p = query.query_params("DescribeConfigurationOptions", "2010-12-01")
+        if input.ApplicationName.is_some():
+            p = query.query_scalar(p, "ApplicationName", input.ApplicationName.unwrap())
+        if input.TemplateName.is_some():
+            p = query.query_scalar(p, "TemplateName", input.TemplateName.unwrap())
+        if input.EnvironmentName.is_some():
+            p = query.query_scalar(p, "EnvironmentName", input.EnvironmentName.unwrap())
+        if input.SolutionStackName.is_some():
+            auto t0 = input.SolutionStackName.unwrap()
+            p = query.query_scalar(p, "SolutionStackName", t0)
+        if input.PlatformArn.is_some():
+            p = query.query_scalar(p, "PlatformArn", input.PlatformArn.unwrap())
+        auto qi1 = 1
+        for qe2 in input.Options.unwrap_or([]):
+            p = option_specification_to_query(p, "Options.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
 
     # DescribeConfigurationSettings
@@ -1438,6 +1783,33 @@ struct Elastic_BeanstalkClient:
         auto p = query.query_params("ListAvailableSolutionStacks", "2010-12-01")
         return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
 
+    # ListPlatformBranches
+    def list_platform_branches(self, ListPlatformBranchesRequest input) -> str:
+        auto p = query.query_params("ListPlatformBranches", "2010-12-01")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = search_filter_to_query(p, "Filters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # ListPlatformVersions
+    # errors: ElasticBeanstalkServiceException, InsufficientPrivilegesException
+    def list_platform_versions(self, ListPlatformVersionsRequest input) -> str:
+        auto p = query.query_params("ListPlatformVersions", "2010-12-01")
+        auto qi0 = 1
+        for qe1 in input.Filters.unwrap_or([]):
+            p = platform_filter_to_query(p, "Filters.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.MaxRecords.is_some():
+            p = query.query_scalar(p, "MaxRecords", str(input.MaxRecords.unwrap()))
+        if input.NextToken.is_some():
+            p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
     # ListTagsForResource
     # errors: InsufficientPrivilegesException, ResourceNotFoundException, ResourceTypeNotSupportedException
     def list_tags_for_resource(self, ListTagsForResourceMessage input) -> str:
@@ -1525,6 +1897,15 @@ struct Elastic_BeanstalkClient:
             p = query.query_scalar(p, "Description", input.Description.unwrap())
         return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
 
+    # UpdateApplicationResourceLifecycle
+    # errors: InsufficientPrivilegesException
+    def update_application_resource_lifecycle(self, UpdateApplicationResourceLifecycleMessage input) -> str:
+        auto p = query.query_params("UpdateApplicationResourceLifecycle", "2010-12-01")
+        p = query.query_scalar(p, "ApplicationName", input.ApplicationName)
+        auto t0 = input.ResourceLifecycleConfig
+        p = application_resource_lifecycle_config_to_query(p, "ResourceLifecycleConfig", t0)
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
     # UpdateApplicationVersion
     def update_application_version(self, UpdateApplicationVersionMessage input) -> str:
         auto p = query.query_params("UpdateApplicationVersion", "2010-12-01")
@@ -1532,6 +1913,92 @@ struct Elastic_BeanstalkClient:
         p = query.query_scalar(p, "VersionLabel", input.VersionLabel)
         if input.Description.is_some():
             p = query.query_scalar(p, "Description", input.Description.unwrap())
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # UpdateConfigurationTemplate
+    # errors: InsufficientPrivilegesException, TooManyBucketsException
+    def update_configuration_template(self, UpdateConfigurationTemplateMessage input) -> str:
+        auto p = query.query_params("UpdateConfigurationTemplate", "2010-12-01")
+        p = query.query_scalar(p, "ApplicationName", input.ApplicationName)
+        p = query.query_scalar(p, "TemplateName", input.TemplateName)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.OptionSettings.unwrap_or([]):
+            auto t2 = qe1
+            p = configuration_option_setting_to_query(p, "OptionSettings.member." + str(qi0), t2)
+            qi0 = qi0 + 1
+        auto qi3 = 1
+        for qe4 in input.OptionsToRemove.unwrap_or([]):
+            auto t5 = qe4
+            p = option_specification_to_query(p, "OptionsToRemove.member." + str(qi3), t5)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # UpdateEnvironment
+    # errors: InsufficientPrivilegesException, TooManyBucketsException
+    def update_environment(self, UpdateEnvironmentMessage input) -> str:
+        auto p = query.query_params("UpdateEnvironment", "2010-12-01")
+        if input.ApplicationName.is_some():
+            p = query.query_scalar(p, "ApplicationName", input.ApplicationName.unwrap())
+        if input.EnvironmentId.is_some():
+            p = query.query_scalar(p, "EnvironmentId", input.EnvironmentId.unwrap())
+        if input.EnvironmentName.is_some():
+            p = query.query_scalar(p, "EnvironmentName", input.EnvironmentName.unwrap())
+        if input.GroupName.is_some():
+            p = query.query_scalar(p, "GroupName", input.GroupName.unwrap())
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.Tier.is_some():
+            p = environment_tier_to_query(p, "Tier", input.Tier.unwrap())
+        if input.VersionLabel.is_some():
+            p = query.query_scalar(p, "VersionLabel", input.VersionLabel.unwrap())
+        if input.TemplateName.is_some():
+            p = query.query_scalar(p, "TemplateName", input.TemplateName.unwrap())
+        if input.SolutionStackName.is_some():
+            auto t0 = input.SolutionStackName.unwrap()
+            p = query.query_scalar(p, "SolutionStackName", t0)
+        if input.PlatformArn.is_some():
+            p = query.query_scalar(p, "PlatformArn", input.PlatformArn.unwrap())
+        auto qi1 = 1
+        for qe2 in input.OptionSettings.unwrap_or([]):
+            auto t3 = qe2
+            p = configuration_option_setting_to_query(p, "OptionSettings.member." + str(qi1), t3)
+            qi1 = qi1 + 1
+        auto qi4 = 1
+        for qe5 in input.OptionsToRemove.unwrap_or([]):
+            auto t6 = qe5
+            p = option_specification_to_query(p, "OptionsToRemove.member." + str(qi4), t6)
+            qi4 = qi4 + 1
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # UpdateTagsForResource
+    # errors: InsufficientPrivilegesException, OperationInProgressException, ResourceNotFoundException, ResourceTypeNotSupportedException, TooManyTagsException
+    def update_tags_for_resource(self, UpdateTagsForResourceMessage input) -> str:
+        auto p = query.query_params("UpdateTagsForResource", "2010-12-01")
+        p = query.query_scalar(p, "ResourceArn", input.ResourceArn)
+        auto qi0 = 1
+        for qe1 in input.TagsToAdd.unwrap_or([]):
+            p = tag_to_query(p, "TagsToAdd.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.TagsToRemove.unwrap_or([])
+        p = query.query_list(p, "TagsToRemove", "member", t2)
+        return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
+
+    # ValidateConfigurationSettings
+    # errors: InsufficientPrivilegesException, TooManyBucketsException
+    def validate_configuration_settings(self, ValidateConfigurationSettingsMessage input) -> str:
+        auto p = query.query_params("ValidateConfigurationSettings", "2010-12-01")
+        p = query.query_scalar(p, "ApplicationName", input.ApplicationName)
+        if input.TemplateName.is_some():
+            p = query.query_scalar(p, "TemplateName", input.TemplateName.unwrap())
+        if input.EnvironmentName.is_some():
+            p = query.query_scalar(p, "EnvironmentName", input.EnvironmentName.unwrap())
+        auto qi0 = 1
+        for qe1 in input.OptionSettings:
+            auto t2 = qe1
+            p = configuration_option_setting_to_query(p, "OptionSettings.member." + str(qi0), t2)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, elasticbeanstalk_service(), self.region, p)
 
 # Construct a Elastic_BeanstalkClient bound to credentials + region.

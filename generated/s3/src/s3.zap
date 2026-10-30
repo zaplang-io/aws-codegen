@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 116 operations — 73 with a generated method,
-#   43 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 116 operations — 88 with a generated method,
+#   28 skipped (a body member is not yet serializable by the XML emitter).
 #   377 structs (plain carriers), 63 enums, 20 error variants.
 #   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -3228,9 +3228,10 @@ def s3_error_from_code(str code) -> S3Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a body member is not yet serializable by the XML
-# emitter — a bool, a map, a list/map of non-scalars, or an XML document body
-# with no httpPayload):
+# Operations skipped (a bound uri/query/header member of an unsupported type
+# (bool/timestamp/list, #425), an optional or non-derivable httpPayload (#427),
+# or a residual XML-body limit — a scalar carrying its own xmlNamespace, a
+# list/map of lists/maps, or a recursive shape graph):
 #   AbortMultipartUpload (httpHeader `IfMatchInitiatedTime` has unsupported type DateTime)
 #   CompleteMultipartUpload (httpPayload structure `MultipartUpload` is optional (v0 needs a required body))
 #   CopyObject (httpHeader `CopySourceIfModifiedSince` has unsupported type DateTime)
@@ -3238,7 +3239,7 @@ def s3_error_from_code(str code) -> S3Error:
 #   CreateMultipartUpload (httpHeader `BucketKeyEnabled` has unsupported type bool)
 #   CreateSession (httpHeader `BucketKeyEnabled` has unsupported type bool)
 #   DeleteObject (httpHeader `BypassGovernanceRetention` has unsupported type bool)
-#   DeleteObjects (member `Objects` is a list of ObjectIdentifier (only string lists in v0))
+#   DeleteObjects (httpHeader `BypassGovernanceRetention` has unsupported type bool)
 #   GetObject (httpHeader `IfModifiedSince` has unsupported type DateTime)
 #   GetObjectAttributes (httpHeader `ObjectAttributes` has unsupported type list[ObjectAttributes])
 #   HeadObject (httpHeader `IfModifiedSince` has unsupported type DateTime)
@@ -3246,32 +3247,17 @@ def s3_error_from_code(str code) -> S3Error:
 #   ListObjects (httpHeader `OptionalObjectAttributes` has unsupported type list[str])
 #   ListObjectsV2 (httpQuery `FetchOwner` has unsupported type bool)
 #   PutBucketAcl (httpPayload structure `AccessControlPolicy` is optional (v0 needs a required body))
-#   PutBucketAnalyticsConfiguration (member `Tags` is a list of Tag (only string lists in v0))
-#   PutBucketCors (member `CORSRules` is a list of CORSRule (only string lists in v0))
-#   PutBucketEncryption (member `Rules` is a list of ServerSideEncryptionRule (only string lists in v0))
-#   PutBucketIntelligentTieringConfiguration (member `Tags` is a list of Tag (only string lists in v0))
-#   PutBucketInventoryConfiguration (member `IsEnabled` is a bool (the codec has no xml_bool yet))
 #   PutBucketLifecycle (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
 #   PutBucketLifecycleConfiguration (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
-#   PutBucketLogging (member `TargetGrants` is a list of TargetGrant (only string lists in v0))
-#   PutBucketMetricsConfiguration (member `Tags` is a list of Tag (only string lists in v0))
-#   PutBucketNotificationConfiguration (member `TopicConfigurations` is a list of TopicConfiguration (only string lists in v0))
-#   PutBucketOwnershipControls (member `Rules` is a list of OwnershipControlsRule (only string lists in v0))
+#   PutBucketNotificationConfiguration (httpHeader `SkipDestinationValidation` has unsupported type bool)
 #   PutBucketPolicy (httpHeader `ConfirmRemoveSelfBucketAccess` has unsupported type bool)
-#   PutBucketReplication (member `Rules` is a list of ReplicationRule (only string lists in v0))
-#   PutBucketTagging (member `TagSet` is a list of Tag (only string lists in v0))
-#   PutBucketWebsite (member `RoutingRules` is a list of RoutingRule (only string lists in v0))
 #   PutObject (httpHeader `BucketKeyEnabled` has unsupported type bool)
 #   PutObjectAcl (httpPayload structure `AccessControlPolicy` is optional (v0 needs a required body))
 #   PutObjectLegalHold (httpPayload structure `LegalHold` is optional (v0 needs a required body))
 #   PutObjectLockConfiguration (httpPayload structure `ObjectLockConfiguration` is optional (v0 needs a required body))
 #   PutObjectRetention (httpPayload structure `Retention` is optional (v0 needs a required body))
-#   PutObjectTagging (member `TagSet` is a list of Tag (only string lists in v0))
-#   PutPublicAccessBlock (member `BlockPublicAcls` is a bool (the codec has no xml_bool yet))
 #   RenameObject (httpHeader `DestinationIfModifiedSince` has unsupported type DateTime)
 #   RestoreObject (httpPayload structure `RestoreRequest` is optional (v0 needs a required body))
-#   SelectObjectContent (rest-xml document body without httpPayload (members Expression, ExpressionType, RequestProgress, InputSerialization, OutputSerialization, ScanRange) is a v0 follow-up)
-#   UpdateObjectEncryption (member `BucketKeyEnabled` is a bool (the codec has no xml_bool yet))
 #   UploadPartCopy (httpHeader `CopySourceIfModifiedSince` has unsupported type DateTime)
 #   WriteGetObjectResponse (httpHeader `DeleteMarker` has unsupported type bool)
 
@@ -3285,6 +3271,12 @@ def s3_error_from_code(str code) -> S3Error:
 #   ListObjects
 #   ListObjectsV2
 #   ListParts
+
+# Render a boolean as its XML text (the rest-xml codec has no bool helper).
+def s3_xml_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound S3 client: credentials + region, threaded into every operation.
 struct S3Client:
@@ -4221,6 +4213,326 @@ struct S3Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # PutBucketAnalyticsConfiguration  PUT /{Bucket}?analytics
+    def put_bucket_analytics_configuration(self, PutBucketAnalyticsConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] query = {}
+        query["id"] = input.Id
+        dict[str, str] headers = {}
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?analytics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("AnalyticsConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        restxml.rest_xml_scalar(root, "Id", input.AnalyticsConfiguration.Id)
+        if input.AnalyticsConfiguration.Filter.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "Filter")
+            if input.AnalyticsConfiguration.Filter.unwrap().Prefix.is_some():
+                auto t1 = input.AnalyticsConfiguration.Filter.unwrap().Prefix.unwrap()
+                restxml.rest_xml_scalar(n0, "Prefix", t1)
+            if input.AnalyticsConfiguration.Filter.unwrap().Tag.is_some():
+                auto n2 = restxml.rest_xml_struct(n0, "Tag")
+                auto t3 = input.AnalyticsConfiguration.Filter.unwrap().Tag.unwrap().Key
+                restxml.rest_xml_scalar(n2, "Key", t3)
+                auto t4 = input.AnalyticsConfiguration.Filter.unwrap().Tag.unwrap().Value
+                restxml.rest_xml_scalar(n2, "Value", t4)
+            if input.AnalyticsConfiguration.Filter.unwrap().And.is_some():
+                auto n5 = restxml.rest_xml_struct(n0, "And")
+                if input.AnalyticsConfiguration.Filter.unwrap().And.unwrap().Prefix.is_some():
+                    auto t6 = input.AnalyticsConfiguration.Filter.unwrap().And.unwrap().Prefix.unwrap()
+                    restxml.rest_xml_scalar(n5, "Prefix", t6)
+                if input.AnalyticsConfiguration.Filter.unwrap().And.unwrap().Tags.is_some():
+                    auto t7 = input.AnalyticsConfiguration.Filter.unwrap().And.unwrap().Tags.unwrap()
+                    for t8 in t7:
+                        auto n9 = restxml.rest_xml_struct(n5, "Tag")
+                        restxml.rest_xml_scalar(n9, "Key", t8.Key)
+                        restxml.rest_xml_scalar(n9, "Value", t8.Value)
+        auto n10 = restxml.rest_xml_struct(root, "StorageClassAnalysis")
+        if input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.is_some():
+            auto n11 = restxml.rest_xml_struct(n10, "DataExport")
+            auto t12 = input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.unwrap().OutputSchemaVersion
+            restxml.rest_xml_scalar(n11, "OutputSchemaVersion", t12)
+            auto n13 = restxml.rest_xml_struct(n11, "Destination")
+            auto n14 = restxml.rest_xml_struct(n13, "S3BucketDestination")
+            auto t15 = input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.unwrap().Destination.S3BucketDestination.Format
+            restxml.rest_xml_scalar(n14, "Format", t15)
+            if input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.unwrap().Destination.S3BucketDestination.BucketAccountId.is_some():
+                auto t16 = input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.unwrap().Destination.S3BucketDestination.BucketAccountId.unwrap()
+                restxml.rest_xml_scalar(n14, "BucketAccountId", t16)
+            auto t17 = input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.unwrap().Destination.S3BucketDestination.Bucket
+            restxml.rest_xml_scalar(n14, "Bucket", t17)
+            if input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.unwrap().Destination.S3BucketDestination.Prefix.is_some():
+                auto t18 = input.AnalyticsConfiguration.StorageClassAnalysis.DataExport.unwrap().Destination.S3BucketDestination.Prefix.unwrap()
+                restxml.rest_xml_scalar(n14, "Prefix", t18)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketCors  PUT /{Bucket}?cors
+    def put_bucket_cors(self, PutBucketCorsRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?cors", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CORSConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        for t0 in input.CORSConfiguration.CORSRules:
+            auto n1 = restxml.rest_xml_struct(root, "CORSRule")
+            if t0.ID.is_some():
+                restxml.rest_xml_scalar(n1, "ID", t0.ID.unwrap())
+            auto t2 = t0.AllowedHeaders.unwrap_or([])
+            restxml.rest_xml_flat_list(n1, "AllowedHeader", t2)
+            restxml.rest_xml_flat_list(n1, "AllowedMethod", t0.AllowedMethods)
+            restxml.rest_xml_flat_list(n1, "AllowedOrigin", t0.AllowedOrigins)
+            auto t3 = t0.ExposeHeaders.unwrap_or([])
+            restxml.rest_xml_flat_list(n1, "ExposeHeader", t3)
+            if t0.MaxAgeSeconds.is_some():
+                auto t4 = str(t0.MaxAgeSeconds.unwrap())
+                restxml.rest_xml_scalar(n1, "MaxAgeSeconds", t4)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketEncryption  PUT /{Bucket}?encryption
+    def put_bucket_encryption(self, PutBucketEncryptionRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?encryption", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ServerSideEncryptionConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        for t0 in input.ServerSideEncryptionConfiguration.Rules:
+            auto n1 = restxml.rest_xml_struct(root, "Rule")
+            if t0.ApplyServerSideEncryptionByDefault.is_some():
+                auto n2 = restxml.rest_xml_struct(n1, "ApplyServerSideEncryptionByDefault")
+                auto t3 = t0.ApplyServerSideEncryptionByDefault.unwrap().SSEAlgorithm
+                restxml.rest_xml_scalar(n2, "SSEAlgorithm", t3)
+                if t0.ApplyServerSideEncryptionByDefault.unwrap().KMSMasterKeyID.is_some():
+                    auto t4 = t0.ApplyServerSideEncryptionByDefault.unwrap().KMSMasterKeyID.unwrap()
+                    restxml.rest_xml_scalar(n2, "KMSMasterKeyID", t4)
+            if t0.BucketKeyEnabled.is_some():
+                auto t5 = s3_xml_bool(t0.BucketKeyEnabled.unwrap())
+                restxml.rest_xml_scalar(n1, "BucketKeyEnabled", t5)
+            if t0.BlockedEncryptionTypes.is_some():
+                auto n6 = restxml.rest_xml_struct(n1, "BlockedEncryptionTypes")
+                auto t7 = t0.BlockedEncryptionTypes.unwrap().EncryptionType.unwrap_or([])
+                restxml.rest_xml_flat_list(n6, "EncryptionType", t7)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketIntelligentTieringConfiguration  PUT /{Bucket}?intelligent-tiering
+    def put_bucket_intelligent_tiering_configuration(self, PutBucketIntelligentTieringConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] query = {}
+        query["id"] = input.Id
+        dict[str, str] headers = {}
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?intelligent-tiering", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("IntelligentTieringConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        restxml.rest_xml_scalar(root, "Id", input.IntelligentTieringConfiguration.Id)
+        if input.IntelligentTieringConfiguration.Filter.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "Filter")
+            if input.IntelligentTieringConfiguration.Filter.unwrap().Prefix.is_some():
+                auto t1 = input.IntelligentTieringConfiguration.Filter.unwrap().Prefix.unwrap()
+                restxml.rest_xml_scalar(n0, "Prefix", t1)
+            if input.IntelligentTieringConfiguration.Filter.unwrap().Tag.is_some():
+                auto n2 = restxml.rest_xml_struct(n0, "Tag")
+                auto t3 = input.IntelligentTieringConfiguration.Filter.unwrap().Tag.unwrap().Key
+                restxml.rest_xml_scalar(n2, "Key", t3)
+                auto t4 = input.IntelligentTieringConfiguration.Filter.unwrap().Tag.unwrap().Value
+                restxml.rest_xml_scalar(n2, "Value", t4)
+            if input.IntelligentTieringConfiguration.Filter.unwrap().And.is_some():
+                auto n5 = restxml.rest_xml_struct(n0, "And")
+                if input.IntelligentTieringConfiguration.Filter.unwrap().And.unwrap().Prefix.is_some():
+                    auto t6 = input.IntelligentTieringConfiguration.Filter.unwrap().And.unwrap().Prefix.unwrap()
+                    restxml.rest_xml_scalar(n5, "Prefix", t6)
+                if input.IntelligentTieringConfiguration.Filter.unwrap().And.unwrap().Tags.is_some():
+                    auto t7 = input.IntelligentTieringConfiguration.Filter.unwrap().And.unwrap().Tags.unwrap()
+                    for t8 in t7:
+                        auto n9 = restxml.rest_xml_struct(n5, "Tag")
+                        restxml.rest_xml_scalar(n9, "Key", t8.Key)
+                        restxml.rest_xml_scalar(n9, "Value", t8.Value)
+        auto t10 = input.IntelligentTieringConfiguration.Status
+        restxml.rest_xml_scalar(root, "Status", t10)
+        for t11 in input.IntelligentTieringConfiguration.Tierings:
+            auto n12 = restxml.rest_xml_struct(root, "Tiering")
+            restxml.rest_xml_scalar(n12, "Days", str(t11.Days))
+            restxml.rest_xml_scalar(n12, "AccessTier", t11.AccessTier)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketInventoryConfiguration  PUT /{Bucket}?inventory
+    def put_bucket_inventory_configuration(self, PutBucketInventoryConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] query = {}
+        query["id"] = input.Id
+        dict[str, str] headers = {}
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?inventory", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("InventoryConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        auto n0 = restxml.rest_xml_struct(root, "Destination")
+        auto n1 = restxml.rest_xml_struct(n0, "S3BucketDestination")
+        if input.InventoryConfiguration.Destination.S3BucketDestination.AccountId.is_some():
+            auto t2 = input.InventoryConfiguration.Destination.S3BucketDestination.AccountId.unwrap()
+            restxml.rest_xml_scalar(n1, "AccountId", t2)
+        auto t3 = input.InventoryConfiguration.Destination.S3BucketDestination.Bucket
+        restxml.rest_xml_scalar(n1, "Bucket", t3)
+        auto t4 = input.InventoryConfiguration.Destination.S3BucketDestination.Format
+        restxml.rest_xml_scalar(n1, "Format", t4)
+        if input.InventoryConfiguration.Destination.S3BucketDestination.Prefix.is_some():
+            auto t5 = input.InventoryConfiguration.Destination.S3BucketDestination.Prefix.unwrap()
+            restxml.rest_xml_scalar(n1, "Prefix", t5)
+        if input.InventoryConfiguration.Destination.S3BucketDestination.Encryption.is_some():
+            auto n6 = restxml.rest_xml_struct(n1, "Encryption")
+            if input.InventoryConfiguration.Destination.S3BucketDestination.Encryption.unwrap().SSES3.is_some():
+                auto n7 = restxml.rest_xml_struct(n6, "SSE-S3")
+            if input.InventoryConfiguration.Destination.S3BucketDestination.Encryption.unwrap().SSEKMS.is_some():
+                auto n8 = restxml.rest_xml_struct(n6, "SSE-KMS")
+                auto t9 = input.InventoryConfiguration.Destination.S3BucketDestination.Encryption.unwrap().SSEKMS.unwrap().KeyId
+                restxml.rest_xml_scalar(n8, "KeyId", t9)
+        auto t10 = s3_xml_bool(input.InventoryConfiguration.IsEnabled)
+        restxml.rest_xml_scalar(root, "IsEnabled", t10)
+        if input.InventoryConfiguration.Filter.is_some():
+            auto n11 = restxml.rest_xml_struct(root, "Filter")
+            auto t12 = input.InventoryConfiguration.Filter.unwrap().Prefix
+            restxml.rest_xml_scalar(n11, "Prefix", t12)
+        restxml.rest_xml_scalar(root, "Id", input.InventoryConfiguration.Id)
+        auto t13 = input.InventoryConfiguration.IncludedObjectVersions
+        restxml.rest_xml_scalar(root, "IncludedObjectVersions", t13)
+        if input.InventoryConfiguration.OptionalFields.is_some():
+            auto t14 = input.InventoryConfiguration.OptionalFields.unwrap()
+            restxml.rest_xml_wrapped_list(root, "OptionalFields", "Field", t14)
+        auto n15 = restxml.rest_xml_struct(root, "Schedule")
+        auto t16 = input.InventoryConfiguration.Schedule.Frequency
+        restxml.rest_xml_scalar(n15, "Frequency", t16)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketLogging  PUT /{Bucket}?logging
+    def put_bucket_logging(self, PutBucketLoggingRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?logging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("BucketLoggingStatus", "http://s3.amazonaws.com/doc/2006-03-01/")
+        if input.BucketLoggingStatus.LoggingEnabled.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "LoggingEnabled")
+            auto t1 = input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetBucket
+            restxml.rest_xml_scalar(n0, "TargetBucket", t1)
+            if input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetGrants.is_some():
+                auto t2 = input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetGrants.unwrap()
+                auto n3 = restxml.rest_xml_struct(n0, "TargetGrants")
+                for t4 in t2:
+                    auto n5 = restxml.rest_xml_struct(n3, "Grant")
+                    if t4.Grantee.is_some():
+                        auto n6 = restxml.rest_xml_struct(n5, "Grantee")
+                        rest_xml_attribute(n6, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+                        if t4.Grantee.unwrap().DisplayName.is_some():
+                            auto t7 = t4.Grantee.unwrap().DisplayName.unwrap()
+                            restxml.rest_xml_scalar(n6, "DisplayName", t7)
+                        if t4.Grantee.unwrap().EmailAddress.is_some():
+                            auto t8 = t4.Grantee.unwrap().EmailAddress.unwrap()
+                            restxml.rest_xml_scalar(n6, "EmailAddress", t8)
+                        if t4.Grantee.unwrap().ID.is_some():
+                            auto t9 = t4.Grantee.unwrap().ID.unwrap()
+                            restxml.rest_xml_scalar(n6, "ID", t9)
+                        auto t10 = t4.Grantee.unwrap().Type
+                        restxml.rest_xml_attribute(n6, "xsi:type", t10)
+                        if t4.Grantee.unwrap().URI.is_some():
+                            auto t11 = t4.Grantee.unwrap().URI.unwrap()
+                            restxml.rest_xml_scalar(n6, "URI", t11)
+                    if t4.Permission.is_some():
+                        auto t12 = t4.Permission.unwrap()
+                        restxml.rest_xml_scalar(n5, "Permission", t12)
+            auto t13 = input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetPrefix
+            restxml.rest_xml_scalar(n0, "TargetPrefix", t13)
+            if input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetObjectKeyFormat.is_some():
+                auto n14 = restxml.rest_xml_struct(n0, "TargetObjectKeyFormat")
+                if input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetObjectKeyFormat.unwrap().SimplePrefix.is_some():
+                    auto n15 = restxml.rest_xml_struct(n14, "SimplePrefix")
+                if input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetObjectKeyFormat.unwrap().PartitionedPrefix.is_some():
+                    auto n16 = restxml.rest_xml_struct(n14, "PartitionedPrefix")
+                    if input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetObjectKeyFormat.unwrap().PartitionedPrefix.unwrap().PartitionDateSource.is_some():
+                        auto t17 = input.BucketLoggingStatus.LoggingEnabled.unwrap().TargetObjectKeyFormat.unwrap().PartitionedPrefix.unwrap().PartitionDateSource.unwrap()
+                        restxml.rest_xml_scalar(n16, "PartitionDateSource", t17)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketMetricsConfiguration  PUT /{Bucket}?metrics
+    def put_bucket_metrics_configuration(self, PutBucketMetricsConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] query = {}
+        query["id"] = input.Id
+        dict[str, str] headers = {}
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?metrics", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("MetricsConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        restxml.rest_xml_scalar(root, "Id", input.MetricsConfiguration.Id)
+        if input.MetricsConfiguration.Filter.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "Filter")
+            if input.MetricsConfiguration.Filter.unwrap().Prefix.is_some():
+                auto t1 = input.MetricsConfiguration.Filter.unwrap().Prefix.unwrap()
+                restxml.rest_xml_scalar(n0, "Prefix", t1)
+            if input.MetricsConfiguration.Filter.unwrap().Tag.is_some():
+                auto n2 = restxml.rest_xml_struct(n0, "Tag")
+                auto t3 = input.MetricsConfiguration.Filter.unwrap().Tag.unwrap().Key
+                restxml.rest_xml_scalar(n2, "Key", t3)
+                auto t4 = input.MetricsConfiguration.Filter.unwrap().Tag.unwrap().Value
+                restxml.rest_xml_scalar(n2, "Value", t4)
+            if input.MetricsConfiguration.Filter.unwrap().AccessPointArn.is_some():
+                auto t5 = input.MetricsConfiguration.Filter.unwrap().AccessPointArn.unwrap()
+                restxml.rest_xml_scalar(n0, "AccessPointArn", t5)
+            if input.MetricsConfiguration.Filter.unwrap().And.is_some():
+                auto n6 = restxml.rest_xml_struct(n0, "And")
+                if input.MetricsConfiguration.Filter.unwrap().And.unwrap().Prefix.is_some():
+                    auto t7 = input.MetricsConfiguration.Filter.unwrap().And.unwrap().Prefix.unwrap()
+                    restxml.rest_xml_scalar(n6, "Prefix", t7)
+                if input.MetricsConfiguration.Filter.unwrap().And.unwrap().Tags.is_some():
+                    auto t8 = input.MetricsConfiguration.Filter.unwrap().And.unwrap().Tags.unwrap()
+                    for t9 in t8:
+                        auto n10 = restxml.rest_xml_struct(n6, "Tag")
+                        restxml.rest_xml_scalar(n10, "Key", t9.Key)
+                        restxml.rest_xml_scalar(n10, "Value", t9.Value)
+                if input.MetricsConfiguration.Filter.unwrap().And.unwrap().AccessPointArn.is_some():
+                    auto t11 = input.MetricsConfiguration.Filter.unwrap().And.unwrap().AccessPointArn.unwrap()
+                    restxml.rest_xml_scalar(n6, "AccessPointArn", t11)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
     # PutBucketNotification  PUT /{Bucket}?notification
     def put_bucket_notification(self, PutBucketNotificationRequest input) -> str:
         auto host = endpoints.regional_host(s3_service(), self.region)
@@ -4281,6 +4593,131 @@ struct S3Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # PutBucketOwnershipControls  PUT /{Bucket}?ownershipControls
+    def put_bucket_ownership_controls(self, PutBucketOwnershipControlsRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?ownershipControls", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("OwnershipControls", "http://s3.amazonaws.com/doc/2006-03-01/")
+        for t0 in input.OwnershipControls.Rules:
+            auto n1 = restxml.rest_xml_struct(root, "Rule")
+            restxml.rest_xml_scalar(n1, "ObjectOwnership", t0.ObjectOwnership)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketReplication  PUT /{Bucket}?replication
+    def put_bucket_replication(self, PutBucketReplicationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.Token.is_some():
+            headers["x-amz-bucket-object-lock-token"] = input.Token.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ReplicationConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        restxml.rest_xml_scalar(root, "Role", input.ReplicationConfiguration.Role)
+        for t0 in input.ReplicationConfiguration.Rules:
+            auto n1 = restxml.rest_xml_struct(root, "Rule")
+            if t0.ID.is_some():
+                restxml.rest_xml_scalar(n1, "ID", t0.ID.unwrap())
+            if t0.Priority.is_some():
+                restxml.rest_xml_scalar(n1, "Priority", str(t0.Priority.unwrap()))
+            if t0.Prefix.is_some():
+                restxml.rest_xml_scalar(n1, "Prefix", t0.Prefix.unwrap())
+            if t0.Filter.is_some():
+                auto n2 = restxml.rest_xml_struct(n1, "Filter")
+                if t0.Filter.unwrap().Prefix.is_some():
+                    auto t3 = t0.Filter.unwrap().Prefix.unwrap()
+                    restxml.rest_xml_scalar(n2, "Prefix", t3)
+                if t0.Filter.unwrap().Tag.is_some():
+                    auto n4 = restxml.rest_xml_struct(n2, "Tag")
+                    auto t5 = t0.Filter.unwrap().Tag.unwrap().Key
+                    restxml.rest_xml_scalar(n4, "Key", t5)
+                    auto t6 = t0.Filter.unwrap().Tag.unwrap().Value
+                    restxml.rest_xml_scalar(n4, "Value", t6)
+                if t0.Filter.unwrap().And.is_some():
+                    auto n7 = restxml.rest_xml_struct(n2, "And")
+                    if t0.Filter.unwrap().And.unwrap().Prefix.is_some():
+                        auto t8 = t0.Filter.unwrap().And.unwrap().Prefix.unwrap()
+                        restxml.rest_xml_scalar(n7, "Prefix", t8)
+                    if t0.Filter.unwrap().And.unwrap().Tags.is_some():
+                        auto t9 = t0.Filter.unwrap().And.unwrap().Tags.unwrap()
+                        for t10 in t9:
+                            auto n11 = restxml.rest_xml_struct(n7, "Tag")
+                            restxml.rest_xml_scalar(n11, "Key", t10.Key)
+                            restxml.rest_xml_scalar(n11, "Value", t10.Value)
+            restxml.rest_xml_scalar(n1, "Status", t0.Status)
+            if t0.SourceSelectionCriteria.is_some():
+                auto n12 = restxml.rest_xml_struct(n1, "SourceSelectionCriteria")
+                if t0.SourceSelectionCriteria.unwrap().SseKmsEncryptedObjects.is_some():
+                    auto n13 = restxml.rest_xml_struct(n12, "SseKmsEncryptedObjects")
+                    auto t14 = t0.SourceSelectionCriteria.unwrap().SseKmsEncryptedObjects.unwrap().Status
+                    restxml.rest_xml_scalar(n13, "Status", t14)
+                if t0.SourceSelectionCriteria.unwrap().ReplicaModifications.is_some():
+                    auto n15 = restxml.rest_xml_struct(n12, "ReplicaModifications")
+                    auto t16 = t0.SourceSelectionCriteria.unwrap().ReplicaModifications.unwrap().Status
+                    restxml.rest_xml_scalar(n15, "Status", t16)
+            if t0.ExistingObjectReplication.is_some():
+                auto n17 = restxml.rest_xml_struct(n1, "ExistingObjectReplication")
+                auto t18 = t0.ExistingObjectReplication.unwrap().Status
+                restxml.rest_xml_scalar(n17, "Status", t18)
+            auto n19 = restxml.rest_xml_struct(n1, "Destination")
+            restxml.rest_xml_scalar(n19, "Bucket", t0.Destination.Bucket)
+            if t0.Destination.Account.is_some():
+                restxml.rest_xml_scalar(n19, "Account", t0.Destination.Account.unwrap())
+            if t0.Destination.StorageClass.is_some():
+                auto t20 = t0.Destination.StorageClass.unwrap()
+                restxml.rest_xml_scalar(n19, "StorageClass", t20)
+            if t0.Destination.AccessControlTranslation.is_some():
+                auto n21 = restxml.rest_xml_struct(n19, "AccessControlTranslation")
+                auto t22 = t0.Destination.AccessControlTranslation.unwrap().Owner
+                restxml.rest_xml_scalar(n21, "Owner", t22)
+            if t0.Destination.EncryptionConfiguration.is_some():
+                auto n23 = restxml.rest_xml_struct(n19, "EncryptionConfiguration")
+                if t0.Destination.EncryptionConfiguration.unwrap().ReplicaKmsKeyID.is_some():
+                    auto t24 = t0.Destination.EncryptionConfiguration.unwrap().ReplicaKmsKeyID.unwrap()
+                    restxml.rest_xml_scalar(n23, "ReplicaKmsKeyID", t24)
+            if t0.Destination.ReplicationTime.is_some():
+                auto n25 = restxml.rest_xml_struct(n19, "ReplicationTime")
+                auto t26 = t0.Destination.ReplicationTime.unwrap().Status
+                restxml.rest_xml_scalar(n25, "Status", t26)
+                auto n27 = restxml.rest_xml_struct(n25, "Time")
+                if t0.Destination.ReplicationTime.unwrap().Time.Minutes.is_some():
+                    auto t28 = str(t0.Destination.ReplicationTime.unwrap().Time.Minutes.unwrap())
+                    restxml.rest_xml_scalar(n27, "Minutes", t28)
+            if t0.Destination.Metrics.is_some():
+                auto n29 = restxml.rest_xml_struct(n19, "Metrics")
+                auto t30 = t0.Destination.Metrics.unwrap().Status
+                restxml.rest_xml_scalar(n29, "Status", t30)
+                if t0.Destination.Metrics.unwrap().EventThreshold.is_some():
+                    auto n31 = restxml.rest_xml_struct(n29, "EventThreshold")
+                    if t0.Destination.Metrics.unwrap().EventThreshold.unwrap().Minutes.is_some():
+                        auto t32 = str(t0.Destination.Metrics.unwrap().EventThreshold.unwrap().Minutes.unwrap())
+                        restxml.rest_xml_scalar(n31, "Minutes", t32)
+            if t0.DeleteMarkerReplication.is_some():
+                auto n33 = restxml.rest_xml_struct(n1, "DeleteMarkerReplication")
+                if t0.DeleteMarkerReplication.unwrap().Status.is_some():
+                    auto t34 = t0.DeleteMarkerReplication.unwrap().Status.unwrap()
+                    restxml.rest_xml_scalar(n33, "Status", t34)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
     # PutBucketRequestPayment  PUT /{Bucket}?requestPayment
     def put_bucket_request_payment(self, PutBucketRequestPaymentRequest input) -> str:
         auto host = endpoints.regional_host(s3_service(), self.region)
@@ -4296,6 +4733,29 @@ struct S3Client:
         auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?requestPayment", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto root = restxml.rest_xml_root_ns("RequestPaymentConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
         restxml.rest_xml_scalar(root, "Payer", input.RequestPaymentConfiguration.Payer)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketTagging  PUT /{Bucket}?tagging
+    def put_bucket_tagging(self, PutBucketTaggingRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("Tagging", "http://s3.amazonaws.com/doc/2006-03-01/")
+        auto n0 = restxml.rest_xml_struct(root, "TagSet")
+        for t1 in input.Tagging.TagSet:
+            auto n2 = restxml.rest_xml_struct(n0, "Tag")
+            restxml.rest_xml_scalar(n2, "Key", t1.Key)
+            restxml.rest_xml_scalar(n2, "Value", t1.Value)
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
@@ -4322,6 +4782,68 @@ struct S3Client:
         if input.VersioningConfiguration.Status.is_some():
             auto t1 = input.VersioningConfiguration.Status.unwrap()
             restxml.rest_xml_scalar(root, "Status", t1)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketWebsite  PUT /{Bucket}?website
+    def put_bucket_website(self, PutBucketWebsiteRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?website", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("WebsiteConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        if input.WebsiteConfiguration.ErrorDocument.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "ErrorDocument")
+            auto t1 = input.WebsiteConfiguration.ErrorDocument.unwrap().Key
+            restxml.rest_xml_scalar(n0, "Key", t1)
+        if input.WebsiteConfiguration.IndexDocument.is_some():
+            auto n2 = restxml.rest_xml_struct(root, "IndexDocument")
+            auto t3 = input.WebsiteConfiguration.IndexDocument.unwrap().Suffix
+            restxml.rest_xml_scalar(n2, "Suffix", t3)
+        if input.WebsiteConfiguration.RedirectAllRequestsTo.is_some():
+            auto n4 = restxml.rest_xml_struct(root, "RedirectAllRequestsTo")
+            auto t5 = input.WebsiteConfiguration.RedirectAllRequestsTo.unwrap().HostName
+            restxml.rest_xml_scalar(n4, "HostName", t5)
+            if input.WebsiteConfiguration.RedirectAllRequestsTo.unwrap().Protocol.is_some():
+                auto t6 = input.WebsiteConfiguration.RedirectAllRequestsTo.unwrap().Protocol.unwrap()
+                restxml.rest_xml_scalar(n4, "Protocol", t6)
+        if input.WebsiteConfiguration.RoutingRules.is_some():
+            auto t7 = input.WebsiteConfiguration.RoutingRules.unwrap()
+            auto n8 = restxml.rest_xml_struct(root, "RoutingRules")
+            for t9 in t7:
+                auto n10 = restxml.rest_xml_struct(n8, "RoutingRule")
+                if t9.Condition.is_some():
+                    auto n11 = restxml.rest_xml_struct(n10, "Condition")
+                    if t9.Condition.unwrap().HttpErrorCodeReturnedEquals.is_some():
+                        auto t12 = t9.Condition.unwrap().HttpErrorCodeReturnedEquals.unwrap()
+                        restxml.rest_xml_scalar(n11, "HttpErrorCodeReturnedEquals", t12)
+                    if t9.Condition.unwrap().KeyPrefixEquals.is_some():
+                        auto t13 = t9.Condition.unwrap().KeyPrefixEquals.unwrap()
+                        restxml.rest_xml_scalar(n11, "KeyPrefixEquals", t13)
+                auto n14 = restxml.rest_xml_struct(n10, "Redirect")
+                if t9.Redirect.HostName.is_some():
+                    auto t15 = t9.Redirect.HostName.unwrap()
+                    restxml.rest_xml_scalar(n14, "HostName", t15)
+                if t9.Redirect.HttpRedirectCode.is_some():
+                    auto t16 = t9.Redirect.HttpRedirectCode.unwrap()
+                    restxml.rest_xml_scalar(n14, "HttpRedirectCode", t16)
+                if t9.Redirect.Protocol.is_some():
+                    auto t17 = t9.Redirect.Protocol.unwrap()
+                    restxml.rest_xml_scalar(n14, "Protocol", t17)
+                if t9.Redirect.ReplaceKeyPrefixWith.is_some():
+                    auto t18 = t9.Redirect.ReplaceKeyPrefixWith.unwrap()
+                    restxml.rest_xml_scalar(n14, "ReplaceKeyPrefixWith", t18)
+                if t9.Redirect.ReplaceKeyWith.is_some():
+                    auto t19 = t9.Redirect.ReplaceKeyWith.unwrap()
+                    restxml.rest_xml_scalar(n14, "ReplaceKeyWith", t19)
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
@@ -4371,6 +4893,160 @@ struct S3Client:
             headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
         auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restxml.rest_xml_raw_payload(b, str(input.AnnotationPayload), "application/octet-stream")
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutObjectTagging  PUT /{Bucket}/{Key+}?tagging
+    def put_object_tagging(self, PutObjectTaggingRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?tagging", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("Tagging", "http://s3.amazonaws.com/doc/2006-03-01/")
+        auto n0 = restxml.rest_xml_struct(root, "TagSet")
+        for t1 in input.Tagging.TagSet:
+            auto n2 = restxml.rest_xml_struct(n0, "Tag")
+            restxml.rest_xml_scalar(n2, "Key", t1.Key)
+            restxml.rest_xml_scalar(n2, "Value", t1.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutPublicAccessBlock  PUT /{Bucket}?publicAccessBlock
+    def put_public_access_block(self, PutPublicAccessBlockRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?publicAccessBlock", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PublicAccessBlockConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+        if input.PublicAccessBlockConfiguration.BlockPublicAcls.is_some():
+            auto t0 = s3_xml_bool(input.PublicAccessBlockConfiguration.BlockPublicAcls.unwrap())
+            restxml.rest_xml_scalar(root, "BlockPublicAcls", t0)
+        if input.PublicAccessBlockConfiguration.IgnorePublicAcls.is_some():
+            auto t1 = s3_xml_bool(input.PublicAccessBlockConfiguration.IgnorePublicAcls.unwrap())
+            restxml.rest_xml_scalar(root, "IgnorePublicAcls", t1)
+        if input.PublicAccessBlockConfiguration.BlockPublicPolicy.is_some():
+            auto t2 = s3_xml_bool(input.PublicAccessBlockConfiguration.BlockPublicPolicy.unwrap())
+            restxml.rest_xml_scalar(root, "BlockPublicPolicy", t2)
+        if input.PublicAccessBlockConfiguration.RestrictPublicBuckets.is_some():
+            auto t3 = s3_xml_bool(input.PublicAccessBlockConfiguration.RestrictPublicBuckets.unwrap())
+            restxml.rest_xml_scalar(root, "RestrictPublicBuckets", t3)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # SelectObjectContent  POST /{Bucket}/{Key+}?select&select-type=2
+    def select_object_content(self, SelectObjectContentRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] headers = {}
+        if input.SSECustomerAlgorithm.is_some():
+            headers["x-amz-server-side-encryption-customer-algorithm"] = input.SSECustomerAlgorithm.unwrap_or("")
+        if input.SSECustomerKey.is_some():
+            headers["x-amz-server-side-encryption-customer-key"] = input.SSECustomerKey.unwrap_or("")
+        if input.SSECustomerKeyMD5.is_some():
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = input.SSECustomerKeyMD5.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}/{Key+}?select&select-type=2", labels=labels, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("SelectObjectContentRequest", "http://s3.amazonaws.com/doc/2006-03-01/")
+        restxml.rest_xml_scalar(root, "Expression", input.Expression)
+        restxml.rest_xml_scalar(root, "ExpressionType", input.ExpressionType)
+        if input.RequestProgress.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "RequestProgress")
+            if input.RequestProgress.unwrap().Enabled.is_some():
+                auto t1 = s3_xml_bool(input.RequestProgress.unwrap().Enabled.unwrap())
+                restxml.rest_xml_scalar(n0, "Enabled", t1)
+        auto n2 = restxml.rest_xml_struct(root, "InputSerialization")
+        if input.InputSerialization.CSV.is_some():
+            auto n3 = restxml.rest_xml_struct(n2, "CSV")
+            if input.InputSerialization.CSV.unwrap().FileHeaderInfo.is_some():
+                auto t4 = input.InputSerialization.CSV.unwrap().FileHeaderInfo.unwrap()
+                restxml.rest_xml_scalar(n3, "FileHeaderInfo", t4)
+            if input.InputSerialization.CSV.unwrap().Comments.is_some():
+                auto t5 = input.InputSerialization.CSV.unwrap().Comments.unwrap()
+                restxml.rest_xml_scalar(n3, "Comments", t5)
+            if input.InputSerialization.CSV.unwrap().QuoteEscapeCharacter.is_some():
+                auto t6 = input.InputSerialization.CSV.unwrap().QuoteEscapeCharacter.unwrap()
+                restxml.rest_xml_scalar(n3, "QuoteEscapeCharacter", t6)
+            if input.InputSerialization.CSV.unwrap().RecordDelimiter.is_some():
+                auto t7 = input.InputSerialization.CSV.unwrap().RecordDelimiter.unwrap()
+                restxml.rest_xml_scalar(n3, "RecordDelimiter", t7)
+            if input.InputSerialization.CSV.unwrap().FieldDelimiter.is_some():
+                auto t8 = input.InputSerialization.CSV.unwrap().FieldDelimiter.unwrap()
+                restxml.rest_xml_scalar(n3, "FieldDelimiter", t8)
+            if input.InputSerialization.CSV.unwrap().QuoteCharacter.is_some():
+                auto t9 = input.InputSerialization.CSV.unwrap().QuoteCharacter.unwrap()
+                restxml.rest_xml_scalar(n3, "QuoteCharacter", t9)
+            if input.InputSerialization.CSV.unwrap().AllowQuotedRecordDelimiter.is_some():
+                auto t10 = s3_xml_bool(input.InputSerialization.CSV.unwrap().AllowQuotedRecordDelimiter.unwrap())
+                restxml.rest_xml_scalar(n3, "AllowQuotedRecordDelimiter", t10)
+        if input.InputSerialization.CompressionType.is_some():
+            auto t11 = input.InputSerialization.CompressionType.unwrap()
+            restxml.rest_xml_scalar(n2, "CompressionType", t11)
+        if input.InputSerialization.JSON.is_some():
+            auto n12 = restxml.rest_xml_struct(n2, "JSON")
+            if input.InputSerialization.JSON.unwrap().Type.is_some():
+                auto t13 = input.InputSerialization.JSON.unwrap().Type.unwrap()
+                restxml.rest_xml_scalar(n12, "Type", t13)
+        if input.InputSerialization.Parquet.is_some():
+            auto n14 = restxml.rest_xml_struct(n2, "Parquet")
+        auto n15 = restxml.rest_xml_struct(root, "OutputSerialization")
+        if input.OutputSerialization.CSV.is_some():
+            auto n16 = restxml.rest_xml_struct(n15, "CSV")
+            if input.OutputSerialization.CSV.unwrap().QuoteFields.is_some():
+                auto t17 = input.OutputSerialization.CSV.unwrap().QuoteFields.unwrap()
+                restxml.rest_xml_scalar(n16, "QuoteFields", t17)
+            if input.OutputSerialization.CSV.unwrap().QuoteEscapeCharacter.is_some():
+                auto t18 = input.OutputSerialization.CSV.unwrap().QuoteEscapeCharacter.unwrap()
+                restxml.rest_xml_scalar(n16, "QuoteEscapeCharacter", t18)
+            if input.OutputSerialization.CSV.unwrap().RecordDelimiter.is_some():
+                auto t19 = input.OutputSerialization.CSV.unwrap().RecordDelimiter.unwrap()
+                restxml.rest_xml_scalar(n16, "RecordDelimiter", t19)
+            if input.OutputSerialization.CSV.unwrap().FieldDelimiter.is_some():
+                auto t20 = input.OutputSerialization.CSV.unwrap().FieldDelimiter.unwrap()
+                restxml.rest_xml_scalar(n16, "FieldDelimiter", t20)
+            if input.OutputSerialization.CSV.unwrap().QuoteCharacter.is_some():
+                auto t21 = input.OutputSerialization.CSV.unwrap().QuoteCharacter.unwrap()
+                restxml.rest_xml_scalar(n16, "QuoteCharacter", t21)
+        if input.OutputSerialization.JSON.is_some():
+            auto n22 = restxml.rest_xml_struct(n15, "JSON")
+            if input.OutputSerialization.JSON.unwrap().RecordDelimiter.is_some():
+                auto t23 = input.OutputSerialization.JSON.unwrap().RecordDelimiter.unwrap()
+                restxml.rest_xml_scalar(n22, "RecordDelimiter", t23)
+        if input.ScanRange.is_some():
+            auto n24 = restxml.rest_xml_struct(root, "ScanRange")
+            if input.ScanRange.unwrap().Start.is_some():
+                auto t25 = str(input.ScanRange.unwrap().Start.unwrap())
+                restxml.rest_xml_scalar(n24, "Start", t25)
+            if input.ScanRange.unwrap().End.is_some():
+                auto t26 = str(input.ScanRange.unwrap().End.unwrap())
+                restxml.rest_xml_scalar(n24, "End", t26)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
     # UpdateBucketMetadataAnnotationTableConfiguration  PUT /{Bucket}?metadataAnnotationTable
@@ -4450,6 +5126,39 @@ struct S3Client:
         if input.JournalTableConfiguration.RecordExpiration.Days.is_some():
             auto t2 = str(input.JournalTableConfiguration.RecordExpiration.Days.unwrap())
             restxml.rest_xml_scalar(n0, "Days", t2)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # UpdateObjectEncryption  PUT /{Bucket}/{Key+}?encryption
+    # errors: AccessDenied, InvalidRequest, NoSuchKey
+    def update_object_encryption(self, UpdateObjectEncryptionRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            headers["x-amz-expected-bucket-owner"] = input.ExpectedBucketOwner.unwrap_or("")
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            headers["x-amz-sdk-checksum-algorithm"] = input.ChecksumAlgorithm.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?encryption", labels=labels, greedy_labels=greedy_labels, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ObjectEncryption", "http://s3.amazonaws.com/doc/2006-03-01/")
+        if input.ObjectEncryption.SSEKMS.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "SSE-KMS")
+            auto t1 = input.ObjectEncryption.SSEKMS.unwrap().KMSKeyArn
+            restxml.rest_xml_scalar(n0, "KMSKeyArn", t1)
+            if input.ObjectEncryption.SSEKMS.unwrap().BucketKeyEnabled.is_some():
+                auto t2 = s3_xml_bool(input.ObjectEncryption.SSEKMS.unwrap().BucketKeyEnabled.unwrap())
+                restxml.rest_xml_scalar(n0, "BucketKeyEnabled", t2)
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)

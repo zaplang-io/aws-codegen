@@ -10,9 +10,9 @@ use crate::binding::{plan_operation, OpBinding, PayloadBody, ScalarBind};
 use crate::jsonbody::{compute_json_serializable, plan_enc, JsonSer};
 use crate::model::{Model, Paginators, Shape};
 use crate::naming::{escape_ident, snake_case};
-use crate::query::{plan_query, QueryFlavor, QueryMember, QueryOp, ScalarText};
+use crate::query::{compute_query_serializable, plan_query, QueryFlavor, QueryOp, QuerySer};
 use crate::types::{compute_derivable, resolve, ZapType};
-use crate::xml::{plan_rest_xml, RawKind, RestXmlOp, XmlBody, XmlMember, XmlText};
+use crate::xml::{plan_rest_xml, RawKind, RestXmlOp, XmlBody, XmlMember, XmlText, XmlValue};
 use std::cell::Cell;
 use std::collections::{HashMap, HashSet};
 
@@ -122,6 +122,9 @@ struct Generator<'a> {
     /// `&self` before `imports`.
     json_needs_base64: Cell<bool>,
     json_needs_datetime: Cell<bool>,
+    /// Set while emitting rest-xml bodies (#426): whether some member is a bool,
+    /// so `xml_client_section` emits the per-file `_xml_bool` helper.
+    xml_needs_bool: Cell<bool>,
 }
 
 impl<'a> Generator<'a> {
@@ -170,6 +173,7 @@ impl<'a> Generator<'a> {
             rest_input_shapes,
             json_needs_base64: Cell::new(false),
             json_needs_datetime: Cell::new(false),
+            xml_needs_bool: Cell::new(false),
         }
     }
 
@@ -1349,7 +1353,7 @@ impl<'a> Generator<'a> {
         let mut out = String::new();
         if !skipped.is_empty() {
             out.push_str(
-                "# Operations skipped in v0 (a body member is not yet serializable by the XML\n# emitter — a bool, a map, a list/map of non-scalars, or an XML document body\n# with no httpPayload):\n",
+                "# Operations skipped (a bound uri/query/header member of an unsupported type\n# (bool/timestamp/list, #425), an optional or non-derivable httpPayload (#427),\n# or a residual XML-body limit — a scalar carrying its own xmlNamespace, a\n# list/map of lists/maps, or a recursive shape graph):\n",
             );
             for s in &skipped {
                 out.push_str(&format!("#   {s}\n"));
@@ -1357,6 +1361,16 @@ impl<'a> Generator<'a> {
             out.push('\n');
         }
         self.paginators_not_surfaced_note(&mut out, cov);
+
+        if self.xml_needs_bool.get() {
+            out.push_str(
+                "# Render a boolean as its XML text (the rest-xml codec has no bool helper).\n",
+            );
+            out.push_str(&format!(
+                "def {}_xml_bool(bool b) -> str:\n{IND}if b:\n{IND}{IND}return \"true\"\n{IND}return \"false\"\n\n",
+                self.fn_prefix
+            ));
+        }
 
         out.push_str(&format!(
             "# A bound {} client: credentials + region, threaded into every operation.\n",
@@ -1485,6 +1499,23 @@ impl<'a> Generator<'a> {
                 ));
                 "bp"
             }
+            XmlBody::Document { plan } => {
+                // An implicit document body: members read straight off `input`,
+                // rooted at the operation input ref's name + namespace.
+                let mut counter: u32 = 0;
+                b.push_str(&format!(
+                    "{i2}auto root = {}\n",
+                    xml_root_ctor(&plan.root_name, &plan.namespace)
+                ));
+                self.emit_xml_members(&mut b, &i2, "root", &plan.members, "input", &mut counter);
+                b.push_str(&format!(
+                    "{i2}auto body = restxml.rest_xml_serialize(root)\n"
+                ));
+                b.push_str(&format!(
+                    "{i2}auto bp = restxml.rest_xml_document(b, body)\n"
+                ));
+                "bp"
+            }
         };
 
         b.push_str(&format!(
@@ -1599,7 +1630,183 @@ impl<'a> Generator<'a> {
                         self.emit_xml_members(out, indent, &child, &plan.members, &access, counter);
                     }
                 }
+                XmlMember::List {
+                    field,
+                    optional,
+                    wrapper,
+                    item_elem,
+                    value,
+                } => {
+                    let access = format!("{access_prefix}.{field}");
+                    if *optional {
+                        out.push_str(&format!("{indent}if {access}.is_some():\n"));
+                        let inner = format!("{indent}{IND}");
+                        let tmp = next_tmp(counter);
+                        out.push_str(&format!("{inner}auto {tmp} = {access}.unwrap()\n"));
+                        self.emit_xml_list(
+                            out, &inner, node_var, wrapper, item_elem, value, &tmp, counter,
+                        );
+                    } else {
+                        self.emit_xml_list(
+                            out, indent, node_var, wrapper, item_elem, value, &access, counter,
+                        );
+                    }
+                }
+                XmlMember::Map {
+                    field,
+                    optional,
+                    flattened,
+                    name,
+                    key_name,
+                    value_name,
+                    value,
+                } => {
+                    let access = format!("{access_prefix}.{field}");
+                    if *optional {
+                        out.push_str(&format!("{indent}if {access}.is_some():\n"));
+                        let inner = format!("{indent}{IND}");
+                        let tmp = next_tmp(counter);
+                        out.push_str(&format!("{inner}auto {tmp} = {access}.unwrap()\n"));
+                        self.emit_xml_map(
+                            out, &inner, node_var, *flattened, name, key_name, value_name, value,
+                            &tmp, counter,
+                        );
+                    } else {
+                        self.emit_xml_map(
+                            out, indent, node_var, *flattened, name, key_name, value_name, value,
+                            &access, counter,
+                        );
+                    }
+                }
             }
+        }
+    }
+
+    /// Emit a list of non-string elements (a non-string scalar or a structure)
+    /// into `node_var`: a wrapped list creates the wrapper element and nests
+    /// items under it, a flattened list repeats the item element on `node_var`.
+    #[allow(clippy::too_many_arguments)]
+    fn emit_xml_list(
+        &self,
+        out: &mut String,
+        indent: &str,
+        node_var: &str,
+        wrapper: &Option<String>,
+        item_elem: &str,
+        value: &XmlValue,
+        access: &str,
+        counter: &mut u32,
+    ) {
+        // The container the items go under: the wrapper element (wrapped) or the
+        // parent node (flattened).
+        let container = match wrapper {
+            Some(w) => {
+                let wnode = next_node(counter);
+                out.push_str(&format!(
+                    "{indent}auto {wnode} = restxml.rest_xml_struct({node_var}, \"{w}\")\n"
+                ));
+                wnode
+            }
+            None => node_var.to_string(),
+        };
+        let item = next_tmp(counter);
+        out.push_str(&format!("{indent}for {item} in {access}:\n"));
+        let inner = format!("{indent}{IND}");
+        self.emit_xml_value(out, &inner, &container, item_elem, value, &item, counter);
+    }
+
+    /// Emit a map into `node_var`: a wrapped map nests `<entry>` elements under a
+    /// `<name>` element; a flattened map repeats `<name>` with the key/value
+    /// inside. Keys are emitted sorted for a deterministic body.
+    #[allow(clippy::too_many_arguments)]
+    fn emit_xml_map(
+        &self,
+        out: &mut String,
+        indent: &str,
+        node_var: &str,
+        flattened: bool,
+        name: &str,
+        key_name: &str,
+        value_name: &str,
+        value: &XmlValue,
+        access: &str,
+        counter: &mut u32,
+    ) {
+        let map_node = if flattened {
+            None
+        } else {
+            let mnode = next_node(counter);
+            out.push_str(&format!(
+                "{indent}auto {mnode} = restxml.rest_xml_struct({node_var}, \"{name}\")\n"
+            ));
+            Some(mnode)
+        };
+        let key = next_tmp(counter);
+        out.push_str(&format!("{indent}for {key} in sorted({access}.keys()):\n"));
+        let inner = format!("{indent}{IND}");
+        let entry = next_node(counter);
+        match &map_node {
+            // Wrapped: `<entry>` under the `<name>` node.
+            Some(mnode) => out.push_str(&format!(
+                "{inner}auto {entry} = restxml.rest_xml_struct({mnode}, \"entry\")\n"
+            )),
+            // Flattened: a repeated `<name>` on the parent holds key/value.
+            None => out.push_str(&format!(
+                "{inner}auto {entry} = restxml.rest_xml_struct({node_var}, \"{name}\")\n"
+            )),
+        }
+        out.push_str(&format!(
+            "{inner}restxml.rest_xml_scalar({entry}, \"{key_name}\", {key})\n"
+        ));
+        let val_access = format!("{access}[{key}]");
+        self.emit_xml_value(out, &inner, &entry, value_name, value, &val_access, counter);
+    }
+
+    /// Emit one value position (a list element or a map value) named `elem`
+    /// under `node_var`: a scalar becomes `<elem>text</elem>`, a structure a
+    /// nested `<elem>…</elem>`.
+    #[allow(clippy::too_many_arguments)]
+    fn emit_xml_value(
+        &self,
+        out: &mut String,
+        indent: &str,
+        node_var: &str,
+        elem: &str,
+        value: &XmlValue,
+        access: &str,
+        counter: &mut u32,
+    ) {
+        match value {
+            XmlValue::Scalar(text) => {
+                let prefix = format!("restxml.rest_xml_scalar({node_var}, \"{elem}\", ");
+                let v = self.xml_value_text(text, access);
+                self.emit_hoisted(out, indent, &prefix, &v, ")", counter);
+            }
+            XmlValue::Struct(plan) => {
+                let child = next_node(counter);
+                out.push_str(&format!(
+                    "{indent}auto {child} = restxml.rest_xml_struct({node_var}, \"{elem}\")\n"
+                ));
+                emit_nested_ns(out, indent, &child, &plan.namespace);
+                self.emit_xml_members(out, indent, &child, &plan.members, access, counter);
+            }
+        }
+    }
+
+    /// The scalar text expression for an XML member value (element or
+    /// attribute). A bool goes through the per-file `_xml_bool` helper, which
+    /// `xml_client_section` emits when `xml_needs_bool` is set.
+    fn xml_value_text(&self, text: &XmlText, access: &str) -> String {
+        match text {
+            XmlText::Str => access.to_string(),
+            XmlText::Int | XmlText::Float => format!("str({access})"),
+            XmlText::Bool => {
+                self.xml_needs_bool.set(true);
+                format!("{}_xml_bool({access})", self.fn_prefix)
+            }
+            XmlText::Blob => format!("restxml.xml_blob({access})"),
+            XmlText::TimestampIso => format!("restxml.xml_timestamp_iso8601({access})"),
+            XmlText::TimestampEpoch => format!("restxml.xml_timestamp_epoch({access})"),
         }
     }
 
@@ -1619,10 +1826,10 @@ impl<'a> Generator<'a> {
         if optional {
             out.push_str(&format!("{indent}if {access}.is_some():\n"));
             let inner = format!("{indent}{IND}");
-            let value = xml_text_expr(text, &format!("{access}.unwrap()"));
+            let value = self.xml_value_text(text, &format!("{access}.unwrap()"));
             self.emit_hoisted(out, &inner, prefix, &value, ")", counter);
         } else {
-            let value = xml_text_expr(text, access);
+            let value = self.xml_value_text(text, access);
             self.emit_hoisted(out, indent, prefix, &value, ")", counter);
         }
     }
@@ -1663,15 +1870,26 @@ impl<'a> Generator<'a> {
         } else {
             QueryFlavor::Query
         };
+        let serializable = compute_query_serializable(self.model, flavor);
+        let mut ser = QuerySer::new(self.model, flavor, &serializable);
+        // Plan the serializer functions reachable from every operation's input.
+        let roots: Vec<String> = self
+            .model
+            .operations
+            .values()
+            .filter_map(|op| op.input.as_ref().map(|r| r.shape.clone()))
+            .collect();
+        ser.plan_roots(&roots);
+
         let mut methods = String::new();
         let mut skipped: Vec<String> = Vec::new();
 
         for op_name in self.model.sorted_operation_names() {
             cov.operations_total += 1;
             let op = &self.model.operations[op_name];
-            match plan_query(self.model, op, flavor) {
+            match plan_query(self.model, op, flavor, &serializable) {
                 Ok(plan) => {
-                    methods.push_str(&self.query_method(op_name, op, &plan));
+                    methods.push_str(&self.query_method(op_name, op, &plan, &ser));
                     methods.push('\n');
                     cov.operations_methods += 1;
                 }
@@ -1682,10 +1900,12 @@ impl<'a> Generator<'a> {
             }
         }
 
+        let serializers = ser.emit_serializers();
+
         let mut out = String::new();
         if !skipped.is_empty() {
             out.push_str(
-                "# Operations skipped in v0 (a member type is not yet serializable by the query\n# emitter — a nested structure, a map, or a list of non-scalars):\n",
+                "# Operations skipped in v0 (a member type is not yet serializable by the query\n# emitter — a map with a non-string key, or a list/map of lists/maps):\n",
             );
             for s in &skipped {
                 out.push_str(&format!("#   {s}\n"));
@@ -1693,6 +1913,13 @@ impl<'a> Generator<'a> {
             out.push('\n');
         }
         self.paginators_not_surfaced_note(&mut out, cov);
+
+        if !serializers.is_empty() {
+            out.push_str(
+                "# Serializers for nested structures reached from a request body (#426): each\n# appends its members to the form parameter list under the caller's key prefix.\n\n",
+            );
+            out.push_str(&serializers);
+        }
 
         out.push_str(&format!(
             "# A bound {} client: credentials + region, threaded into every operation.\n",
@@ -1716,7 +1943,13 @@ impl<'a> Generator<'a> {
     }
 
     /// Emit one query/ec2 operation method: build the parameter list and sign.
-    fn query_method(&self, op_name: &str, op: &crate::model::Operation, plan: &QueryOp) -> String {
+    fn query_method(
+        &self,
+        op_name: &str,
+        op: &crate::model::Operation,
+        plan: &QueryOp,
+        ser: &QuerySer,
+    ) -> String {
         let i2 = format!("{IND}{IND}");
         let svc = &self.fn_prefix;
         let method = snake_case(op_name);
@@ -1741,52 +1974,7 @@ impl<'a> Generator<'a> {
 
         let mut counter: u32 = 0;
         for m in &plan.members {
-            match m {
-                QueryMember::Scalar {
-                    key,
-                    field,
-                    text,
-                    optional,
-                } => {
-                    let prefix = format!("p = query.query_scalar(p, \"{key}\", ");
-                    if *optional {
-                        b.push_str(&format!("{i2}if input.{field}.is_some():\n"));
-                        let inner = format!("{i2}{IND}");
-                        let value = query_value_text(text, &format!("input.{field}.unwrap()"));
-                        self.emit_hoisted(&mut b, &inner, &prefix, &value, ")", &mut counter);
-                    } else {
-                        let value = query_value_text(text, &format!("input.{field}"));
-                        self.emit_hoisted(&mut b, &i2, &prefix, &value, ")", &mut counter);
-                    }
-                }
-                QueryMember::FlatList {
-                    name,
-                    field,
-                    optional,
-                } => {
-                    let value = if *optional {
-                        format!("input.{field}.unwrap_or([])")
-                    } else {
-                        format!("input.{field}")
-                    };
-                    let prefix = format!("p = query.query_flat_list(p, \"{name}\", ");
-                    self.emit_hoisted(&mut b, &i2, &prefix, &value, ")", &mut counter);
-                }
-                QueryMember::WrappedList {
-                    name,
-                    member,
-                    field,
-                    optional,
-                } => {
-                    let value = if *optional {
-                        format!("input.{field}.unwrap_or([])")
-                    } else {
-                        format!("input.{field}")
-                    };
-                    let prefix = format!("p = query.query_list(p, \"{name}\", \"{member}\", ");
-                    self.emit_hoisted(&mut b, &i2, &prefix, &value, ")", &mut counter);
-                }
-            }
+            ser.emit_top_member(&mut b, &i2, m, &mut counter);
         }
 
         b.push_str(&format!(
@@ -2190,29 +2378,6 @@ fn emit_nested_ns(
             "{indent}rest_xml_attribute({node_var}, \"{attr}\", \"{}\")\n",
             ns.uri
         ));
-    }
-}
-
-/// The scalar text expression for an XML member value (element or attribute).
-fn xml_text_expr(text: &XmlText, access: &str) -> String {
-    match text {
-        XmlText::Str => access.to_string(),
-        XmlText::Int | XmlText::Float => format!("str({access})"),
-        XmlText::Blob => format!("restxml.xml_blob({access})"),
-        XmlText::TimestampIso => format!("restxml.xml_timestamp_iso8601({access})"),
-        XmlText::TimestampEpoch => format!("restxml.xml_timestamp_epoch({access})"),
-    }
-}
-
-/// The scalar text expression for a query form-parameter value.
-fn query_value_text(text: &ScalarText, access: &str) -> String {
-    match text {
-        ScalarText::Str => access.to_string(),
-        ScalarText::Int | ScalarText::Float => format!("str({access})"),
-        ScalarText::Bool => format!("query.query_bool({access})"),
-        ScalarText::Blob => format!("query.query_blob({access})"),
-        ScalarText::TimestampIso => format!("query.query_timestamp_iso8601({access})"),
-        ScalarText::TimestampEpoch => format!("query.query_timestamp_epoch({access})"),
     }
 }
 

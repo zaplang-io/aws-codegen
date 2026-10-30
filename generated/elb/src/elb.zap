@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 29 operations — 18 with a generated method,
-#   11 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 29 operations — 29 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   106 structs (plain carriers), 0 enums, 22 error variants.
 #   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -564,29 +564,150 @@ def elasticloadbalancing_error_from_code(str code) -> Elastic_Load_BalancingErro
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AddTags (member `Tags` is a list of Tag (only scalar lists in v0))
-#   ConfigureHealthCheck (member `HealthCheck` is a nested structure (query nesting is a v0 follow-up))
-#   CreateLoadBalancer (member `Listeners` is a list of Listener (only scalar lists in v0))
-#   CreateLoadBalancerListeners (member `Listeners` is a list of Listener (only scalar lists in v0))
-#   CreateLoadBalancerPolicy (member `PolicyAttributes` is a list of PolicyAttribute (only scalar lists in v0))
-#   DeleteLoadBalancerListeners (member `LoadBalancerPorts` is a list of int64 (only scalar lists in v0))
-#   DeregisterInstancesFromLoadBalancer (member `Instances` is a list of Instance (only scalar lists in v0))
-#   DescribeInstanceHealth (member `Instances` is a list of Instance (only scalar lists in v0))
-#   ModifyLoadBalancerAttributes (member `LoadBalancerAttributes` is a nested structure (query nesting is a v0 follow-up))
-#   RegisterInstancesWithLoadBalancer (member `Instances` is a list of Instance (only scalar lists in v0))
-#   RemoveTags (member `Tags` is a list of TagKeyOnly (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   DescribeAccountLimits
 #   DescribeLoadBalancers
 
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize AccessLog into the query form parameters under `prefix`.
+def access_log_to_query(list[query.QueryPair] p, str prefix, AccessLog v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.S3BucketName.is_some():
+        auto t1 = v.S3BucketName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3BucketName"), t1)
+    if v.EmitInterval.is_some():
+        auto t2 = str(v.EmitInterval.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "EmitInterval"), t2)
+    if v.S3BucketPrefix.is_some():
+        auto t3 = v.S3BucketPrefix.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "S3BucketPrefix"), t3)
+    return p
+
+# Serialize AdditionalAttribute into the query form parameters under `prefix`.
+def additional_attribute_to_query(list[query.QueryPair] p, str prefix, AdditionalAttribute v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize ConnectionDraining into the query form parameters under `prefix`.
+def connection_draining_to_query(list[query.QueryPair] p, str prefix, ConnectionDraining v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    if v.Timeout.is_some():
+        auto t1 = str(v.Timeout.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Timeout"), t1)
+    return p
+
+# Serialize ConnectionSettings into the query form parameters under `prefix`.
+def connection_settings_to_query(list[query.QueryPair] p, str prefix, ConnectionSettings v) -> list[query.QueryPair]:
+    auto t0 = str(v.IdleTimeout)
+    p = query.query_scalar(p, query.query_key(prefix, "IdleTimeout"), t0)
+    return p
+
+# Serialize CrossZoneLoadBalancing into the query form parameters under `prefix`.
+def cross_zone_load_balancing_to_query(list[query.QueryPair] p, str prefix, CrossZoneLoadBalancing v) -> list[query.QueryPair]:
+    auto t0 = query.query_bool(v.Enabled)
+    p = query.query_scalar(p, query.query_key(prefix, "Enabled"), t0)
+    return p
+
+# Serialize HealthCheck into the query form parameters under `prefix`.
+def health_check_to_query(list[query.QueryPair] p, str prefix, HealthCheck v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Target"), v.Target)
+    p = query.query_scalar(p, query.query_key(prefix, "Interval"), str(v.Interval))
+    p = query.query_scalar(p, query.query_key(prefix, "Timeout"), str(v.Timeout))
+    auto t0 = str(v.UnhealthyThreshold)
+    p = query.query_scalar(p, query.query_key(prefix, "UnhealthyThreshold"), t0)
+    auto t1 = str(v.HealthyThreshold)
+    p = query.query_scalar(p, query.query_key(prefix, "HealthyThreshold"), t1)
+    return p
+
+# Serialize Instance into the query form parameters under `prefix`.
+def instance_to_query(list[query.QueryPair] p, str prefix, Instance v) -> list[query.QueryPair]:
+    if v.InstanceId.is_some():
+        auto t0 = v.InstanceId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceId"), t0)
+    return p
+
+# Serialize Listener into the query form parameters under `prefix`.
+def listener_to_query(list[query.QueryPair] p, str prefix, Listener v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Protocol"), v.Protocol)
+    auto t0 = str(v.LoadBalancerPort)
+    p = query.query_scalar(p, query.query_key(prefix, "LoadBalancerPort"), t0)
+    if v.InstanceProtocol.is_some():
+        auto t1 = v.InstanceProtocol.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "InstanceProtocol"), t1)
+    auto t2 = str(v.InstancePort)
+    p = query.query_scalar(p, query.query_key(prefix, "InstancePort"), t2)
+    if v.SSLCertificateId.is_some():
+        auto t3 = v.SSLCertificateId.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "SSLCertificateId"), t3)
+    return p
+
+# Serialize LoadBalancerAttributes into the query form parameters under `prefix`.
+def load_balancer_attributes_to_query(list[query.QueryPair] p, str prefix, LoadBalancerAttributes v) -> list[query.QueryPair]:
+    if v.CrossZoneLoadBalancing.is_some():
+        auto t0 = v.CrossZoneLoadBalancing.unwrap()
+        p = cross_zone_load_balancing_to_query(p, query.query_key(prefix, "CrossZoneLoadBalancing"), t0)
+    if v.AccessLog.is_some():
+        auto t1 = v.AccessLog.unwrap()
+        p = access_log_to_query(p, query.query_key(prefix, "AccessLog"), t1)
+    if v.ConnectionDraining.is_some():
+        auto t2 = v.ConnectionDraining.unwrap()
+        p = connection_draining_to_query(p, query.query_key(prefix, "ConnectionDraining"), t2)
+    if v.ConnectionSettings.is_some():
+        auto t3 = v.ConnectionSettings.unwrap()
+        p = connection_settings_to_query(p, query.query_key(prefix, "ConnectionSettings"), t3)
+    auto qi4 = 1
+    for qe5 in v.AdditionalAttributes.unwrap_or([]):
+        auto t6 = qe5
+        p = additional_attribute_to_query(p, query.query_key(prefix, "AdditionalAttributes") + ".member" + "." + str(qi4), t6)
+        qi4 = qi4 + 1
+    return p
+
+# Serialize PolicyAttribute into the query form parameters under `prefix`.
+def policy_attribute_to_query(list[query.QueryPair] p, str prefix, PolicyAttribute v) -> list[query.QueryPair]:
+    if v.AttributeName.is_some():
+        auto t0 = v.AttributeName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AttributeName"), t0)
+    if v.AttributeValue.is_some():
+        auto t1 = v.AttributeValue.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AttributeValue"), t1)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key)
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    return p
+
+# Serialize TagKeyOnly into the query form parameters under `prefix`.
+def tag_key_only_to_query(list[query.QueryPair] p, str prefix, TagKeyOnly v) -> list[query.QueryPair]:
+    if v.Key.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key.unwrap())
+    return p
+
 # A bound Elastic_Load_Balancing client: credentials + region, threaded into every operation.
 struct Elastic_Load_BalancingClient:
     core.Credentials creds
     str region
+
+    # AddTags
+    # errors: AccessPointNotFoundException, DuplicateTagKeysException, TooManyTagsException
+    def add_tags(self, AddTagsInput input) -> str:
+        auto p = query.query_params("AddTags", "2012-06-01")
+        p = query.query_list(p, "LoadBalancerNames", "member", input.LoadBalancerNames)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # ApplySecurityGroupsToLoadBalancer
     # errors: AccessPointNotFoundException, InvalidConfigurationRequestException, InvalidSecurityGroupException
@@ -602,6 +723,14 @@ struct Elastic_Load_BalancingClient:
         auto p = query.query_params("AttachLoadBalancerToSubnets", "2012-06-01")
         p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
         p = query.query_list(p, "Subnets", "member", input.Subnets)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ConfigureHealthCheck
+    # errors: AccessPointNotFoundException
+    def configure_health_check(self, ConfigureHealthCheckInput input) -> str:
+        auto p = query.query_params("ConfigureHealthCheck", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        p = health_check_to_query(p, "HealthCheck", input.HealthCheck)
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # CreateAppCookieStickinessPolicy
@@ -624,10 +753,67 @@ struct Elastic_Load_BalancingClient:
             p = query.query_scalar(p, "CookieExpirationPeriod", t0)
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
+    # CreateLoadBalancer
+    # errors: CertificateNotFoundException, DuplicateAccessPointNameException, DuplicateTagKeysException, InvalidConfigurationRequestException, InvalidSchemeException, InvalidSecurityGroupException, InvalidSubnetException, OperationNotPermittedException, SubnetNotFoundException, TooManyAccessPointsException, TooManyTagsException, UnsupportedProtocolException
+    def create_load_balancer(self, CreateAccessPointInput input) -> str:
+        auto p = query.query_params("CreateLoadBalancer", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        auto qi0 = 1
+        for qe1 in input.Listeners:
+            p = listener_to_query(p, "Listeners.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        auto t2 = input.AvailabilityZones.unwrap_or([])
+        p = query.query_list(p, "AvailabilityZones", "member", t2)
+        p = query.query_list(p, "Subnets", "member", input.Subnets.unwrap_or([]))
+        auto t3 = input.SecurityGroups.unwrap_or([])
+        p = query.query_list(p, "SecurityGroups", "member", t3)
+        if input.Scheme.is_some():
+            p = query.query_scalar(p, "Scheme", input.Scheme.unwrap())
+        auto qi4 = 1
+        for qe5 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi4), qe5)
+            qi4 = qi4 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # CreateLoadBalancerListeners
+    # errors: AccessPointNotFoundException, CertificateNotFoundException, DuplicateListenerException, InvalidConfigurationRequestException, UnsupportedProtocolException
+    def create_load_balancer_listeners(self, CreateLoadBalancerListenerInput input) -> str:
+        auto p = query.query_params("CreateLoadBalancerListeners", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        auto qi0 = 1
+        for qe1 in input.Listeners:
+            p = listener_to_query(p, "Listeners.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # CreateLoadBalancerPolicy
+    # errors: AccessPointNotFoundException, DuplicatePolicyNameException, InvalidConfigurationRequestException, PolicyTypeNotFoundException, TooManyPoliciesException
+    def create_load_balancer_policy(self, CreateLoadBalancerPolicyInput input) -> str:
+        auto p = query.query_params("CreateLoadBalancerPolicy", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        p = query.query_scalar(p, "PolicyName", input.PolicyName)
+        p = query.query_scalar(p, "PolicyTypeName", input.PolicyTypeName)
+        auto qi0 = 1
+        for qe1 in input.PolicyAttributes.unwrap_or([]):
+            p = policy_attribute_to_query(p, "PolicyAttributes.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
     # DeleteLoadBalancer
     def delete_load_balancer(self, DeleteAccessPointInput input) -> str:
         auto p = query.query_params("DeleteLoadBalancer", "2012-06-01")
         p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # DeleteLoadBalancerListeners
+    # errors: AccessPointNotFoundException
+    def delete_load_balancer_listeners(self, DeleteLoadBalancerListenerInput input) -> str:
+        auto p = query.query_params("DeleteLoadBalancerListeners", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        auto qi0 = 1
+        for qe1 in input.LoadBalancerPorts:
+            p = query.query_scalar(p, "LoadBalancerPorts.member." + str(qi0), str(qe1))
+            qi0 = qi0 + 1
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # DeleteLoadBalancerPolicy
@@ -638,6 +824,17 @@ struct Elastic_Load_BalancingClient:
         p = query.query_scalar(p, "PolicyName", input.PolicyName)
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
+    # DeregisterInstancesFromLoadBalancer
+    # errors: AccessPointNotFoundException, InvalidEndPointException
+    def deregister_instances_from_load_balancer(self, DeregisterEndPointsInput input) -> str:
+        auto p = query.query_params("DeregisterInstancesFromLoadBalancer", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        auto qi0 = 1
+        for qe1 in input.Instances:
+            p = instance_to_query(p, "Instances.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
     # DescribeAccountLimits
     def describe_account_limits(self, DescribeAccountLimitsInput input) -> str:
         auto p = query.query_params("DescribeAccountLimits", "2012-06-01")
@@ -645,6 +842,17 @@ struct Elastic_Load_BalancingClient:
             p = query.query_scalar(p, "Marker", input.Marker.unwrap())
         if input.PageSize.is_some():
             p = query.query_scalar(p, "PageSize", str(input.PageSize.unwrap()))
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # DescribeInstanceHealth
+    # errors: AccessPointNotFoundException, InvalidEndPointException
+    def describe_instance_health(self, DescribeEndPointStateInput input) -> str:
+        auto p = query.query_params("DescribeInstanceHealth", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        auto qi0 = 1
+        for qe1 in input.Instances.unwrap_or([]):
+            p = instance_to_query(p, "Instances.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # DescribeLoadBalancerAttributes
@@ -714,6 +922,37 @@ struct Elastic_Load_BalancingClient:
         auto p = query.query_params("EnableAvailabilityZonesForLoadBalancer", "2012-06-01")
         p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
         p = query.query_list(p, "AvailabilityZones", "member", input.AvailabilityZones)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # ModifyLoadBalancerAttributes
+    # errors: AccessPointNotFoundException, InvalidConfigurationRequestException, LoadBalancerAttributeNotFoundException
+    def modify_load_balancer_attributes(self, ModifyLoadBalancerAttributesInput input) -> str:
+        auto p = query.query_params("ModifyLoadBalancerAttributes", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        auto t0 = input.LoadBalancerAttributes
+        p = load_balancer_attributes_to_query(p, "LoadBalancerAttributes", t0)
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # RegisterInstancesWithLoadBalancer
+    # errors: AccessPointNotFoundException, InvalidEndPointException
+    def register_instances_with_load_balancer(self, RegisterEndPointsInput input) -> str:
+        auto p = query.query_params("RegisterInstancesWithLoadBalancer", "2012-06-01")
+        p = query.query_scalar(p, "LoadBalancerName", input.LoadBalancerName)
+        auto qi0 = 1
+        for qe1 in input.Instances:
+            p = instance_to_query(p, "Instances.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
+
+    # RemoveTags
+    # errors: AccessPointNotFoundException
+    def remove_tags(self, RemoveTagsInput input) -> str:
+        auto p = query.query_params("RemoveTags", "2012-06-01")
+        p = query.query_list(p, "LoadBalancerNames", "member", input.LoadBalancerNames)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_key_only_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, elasticloadbalancing_service(), self.region, p)
 
     # SetLoadBalancerListenerSSLCertificate

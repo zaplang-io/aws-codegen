@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 180 operations — 159 with a generated method,
-#   21 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 180 operations — 180 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   373 structs (plain carriers), 28 enums, 38 error variants.
 #   0 paginators generated (34 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -2231,30 +2231,6 @@ def iam_error_from_code(str code) -> IAMError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   AcquireRole (member `ReplacementValues` is a map (query maps are a v0 follow-up))
-#   CreateDelegationRequest (member `Permissions` is a nested structure (query nesting is a v0 follow-up))
-#   CreateInstanceProfile (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateOpenIDConnectProvider (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreatePolicy (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateRole (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateSAMLProvider (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateUser (member `Tags` is a list of Tag (only scalar lists in v0))
-#   CreateVirtualMFADevice (member `Tags` is a list of Tag (only scalar lists in v0))
-#   PutAccountProperties (member `Properties` is a map (query maps are a v0 follow-up))
-#   SimulateCustomPolicy (member `OrderedOrganizationPolicyInputList` is a list of OrderedOrganizationPolicyType (only scalar lists in v0))
-#   SimulatePrincipalPolicy (member `PolicyExclusionList` is a list of PolicyIdentifier (only scalar lists in v0))
-#   TagInstanceProfile (member `Tags` is a list of Tag (only scalar lists in v0))
-#   TagMFADevice (member `Tags` is a list of Tag (only scalar lists in v0))
-#   TagOpenIDConnectProvider (member `Tags` is a list of Tag (only scalar lists in v0))
-#   TagPolicy (member `Tags` is a list of Tag (only scalar lists in v0))
-#   TagRole (member `Tags` is a list of Tag (only scalar lists in v0))
-#   TagSAMLProvider (member `Tags` is a list of Tag (only scalar lists in v0))
-#   TagServerCertificate (member `Tags` is a list of Tag (only scalar lists in v0))
-#   TagUser (member `Tags` is a list of Tag (only scalar lists in v0))
-#   UploadServerCertificate (member `Tags` is a list of Tag (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   GetAccountAuthorizationDetails
@@ -2292,6 +2268,82 @@ def iam_error_from_code(str code) -> IAMError:
 #   SimulateCustomPolicy
 #   SimulatePrincipalPolicy
 
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize ContextEntry into the query form parameters under `prefix`.
+def context_entry_to_query(list[query.QueryPair] p, str prefix, ContextEntry v) -> list[query.QueryPair]:
+    if v.ContextKeyName.is_some():
+        auto t0 = v.ContextKeyName.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ContextKeyName"), t0)
+    auto t1 = v.ContextKeyValues.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "ContextKeyValues"), "member", t1)
+    if v.ContextKeyType.is_some():
+        auto t2 = v.ContextKeyType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "ContextKeyType"), t2)
+    return p
+
+# Serialize DelegationPermission into the query form parameters under `prefix`.
+def delegation_permission_to_query(list[query.QueryPair] p, str prefix, DelegationPermission v) -> list[query.QueryPair]:
+    if v.PolicyTemplateArn.is_some():
+        auto t0 = v.PolicyTemplateArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PolicyTemplateArn"), t0)
+    auto qi1 = 1
+    for qe2 in v.Parameters.unwrap_or([]):
+        auto t3 = qe2
+        p = policy_parameter_to_query(p, query.query_key(prefix, "Parameters") + ".member" + "." + str(qi1), t3)
+        qi1 = qi1 + 1
+    return p
+
+# Serialize InlinePolicyIdentifierType into the query form parameters under `prefix`.
+def inline_policy_identifier_type_to_query(list[query.QueryPair] p, str prefix, InlinePolicyIdentifierType v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "PolicyName"), v.PolicyName)
+    auto t0 = v.AttachmentType
+    p = query.query_scalar(p, query.query_key(prefix, "AttachmentType"), t0)
+    auto t1 = v.AttachmentName
+    p = query.query_scalar(p, query.query_key(prefix, "AttachmentName"), t1)
+    return p
+
+# Serialize OrderedOrganizationPolicyType into the query form parameters under `prefix`.
+def ordered_organization_policy_type_to_query(list[query.QueryPair] p, str prefix, OrderedOrganizationPolicyType v) -> list[query.QueryPair]:
+    auto t0 = v.ServiceControlPolicyInputList.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "ServiceControlPolicyInputList"), "member", t0)
+    return p
+
+# Serialize PolicyIdentifier into the query form parameters under `prefix`.
+def policy_identifier_to_query(list[query.QueryPair] p, str prefix, PolicyIdentifier v) -> list[query.QueryPair]:
+    if v.PolicyType.is_some():
+        auto t0 = v.PolicyType.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PolicyType"), t0)
+    if v.PolicyArn.is_some():
+        auto t1 = v.PolicyArn.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "PolicyArn"), t1)
+    if v.InlinePolicyIdentifier.is_some():
+        auto t2 = v.InlinePolicyIdentifier.unwrap()
+        p = inline_policy_identifier_type_to_query(p, query.query_key(prefix, "InlinePolicyIdentifier"), t2)
+    return p
+
+# Serialize PolicyParameter into the query form parameters under `prefix`.
+def policy_parameter_to_query(list[query.QueryPair] p, str prefix, PolicyParameter v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    auto t0 = v.Values.unwrap_or([])
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", t0)
+    if v.Type.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Type"), v.Type.unwrap())
+    return p
+
+# Serialize ReplacementValueEntry into the query form parameters under `prefix`.
+def replacement_value_entry_to_query(list[query.QueryPair] p, str prefix, ReplacementValueEntry v) -> list[query.QueryPair]:
+    p = query.query_list(p, query.query_key(prefix, "Values"), "member", v.Values)
+    return p
+
+# Serialize Tag into the query form parameters under `prefix`.
+def tag_to_query(list[query.QueryPair] p, str prefix, Tag v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Key"), v.Key)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    return p
+
 # A bound IAM client: credentials + region, threaded into every operation.
 struct IAMClient:
     core.Credentials creds
@@ -2302,6 +2354,23 @@ struct IAMClient:
     def accept_delegation_request(self, AcceptDelegationRequestRequest input) -> str:
         auto p = query.query_params("AcceptDelegationRequest", "2010-05-08")
         p = query.query_scalar(p, "DelegationRequestId", input.DelegationRequestId)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # AcquireRole
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, MalformedPolicyDocumentException, NameConflictException, NoSuchEntityException, RoleModifiedException, RoleTemplateDisabledException, ServiceFailureException
+    def acquire_role(self, AcquireRoleRequest input) -> str:
+        auto p = query.query_params("AcquireRole", "2010-05-08")
+        p = query.query_scalar(p, "TemplateArn", input.TemplateArn)
+        if input.TemplateMinorVersion.is_some():
+            auto t0 = str(input.TemplateMinorVersion.unwrap())
+            p = query.query_scalar(p, "TemplateMinorVersion", t0)
+        auto qi1 = 1
+        for qk2 in sorted(input.ReplacementValues.unwrap_or({}).keys()):
+            auto t3 = qk2
+            p = query.query_scalar(p, "ReplacementValues.entry." + str(qi1) + ".key", t3)
+            auto t4 = input.ReplacementValues.unwrap_or({})[qk2]
+            p = replacement_value_entry_to_query(p, "ReplacementValues.entry." + str(qi1) + ".value", t4)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, iam_service(), self.region, p)
 
     # AddClientIDToOpenIDConnectProvider
@@ -2383,6 +2452,26 @@ struct IAMClient:
         p = query.query_scalar(p, "AccountAlias", input.AccountAlias)
         return query.query_request(self.creds, iam_service(), self.region, p)
 
+    # CreateDelegationRequest
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, ServiceFailureException
+    def create_delegation_request(self, CreateDelegationRequestRequest input) -> str:
+        auto p = query.query_params("CreateDelegationRequest", "2010-05-08")
+        if input.OwnerAccountId.is_some():
+            p = query.query_scalar(p, "OwnerAccountId", input.OwnerAccountId.unwrap())
+        p = query.query_scalar(p, "Description", input.Description)
+        p = delegation_permission_to_query(p, "Permissions", input.Permissions)
+        if input.RequestMessage.is_some():
+            p = query.query_scalar(p, "RequestMessage", input.RequestMessage.unwrap())
+        p = query.query_scalar(p, "RequestorWorkflowId", input.RequestorWorkflowId)
+        if input.RedirectUrl.is_some():
+            p = query.query_scalar(p, "RedirectUrl", input.RedirectUrl.unwrap())
+        p = query.query_scalar(p, "NotificationChannel", input.NotificationChannel)
+        p = query.query_scalar(p, "SessionDuration", str(input.SessionDuration))
+        if input.OnlySendByOwner.is_some():
+            auto t0 = query.query_bool(input.OnlySendByOwner.unwrap())
+            p = query.query_scalar(p, "OnlySendByOwner", t0)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
     # CreateGroup
     # errors: EntityAlreadyExistsException, LimitExceededException, NoSuchEntityException, ServiceFailureException
     def create_group(self, CreateGroupRequest input) -> str:
@@ -2390,6 +2479,19 @@ struct IAMClient:
         if input.Path.is_some():
             p = query.query_scalar(p, "Path", input.Path.unwrap())
         p = query.query_scalar(p, "GroupName", input.GroupName)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # CreateInstanceProfile
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, ServiceFailureException
+    def create_instance_profile(self, CreateInstanceProfileRequest input) -> str:
+        auto p = query.query_params("CreateInstanceProfile", "2010-05-08")
+        p = query.query_scalar(p, "InstanceProfileName", input.InstanceProfileName)
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, iam_service(), self.region, p)
 
     # CreateLoginProfile
@@ -2405,6 +2507,37 @@ struct IAMClient:
             p = query.query_scalar(p, "PasswordResetRequired", t0)
         return query.query_request(self.creds, iam_service(), self.region, p)
 
+    # CreateOpenIDConnectProvider
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, OpenIdIdpCommunicationErrorException, ServiceFailureException
+    def create_open_id_connect_provider(self, CreateOpenIDConnectProviderRequest input) -> str:
+        auto p = query.query_params("CreateOpenIDConnectProvider", "2010-05-08")
+        p = query.query_scalar(p, "Url", input.Url)
+        auto t0 = input.ClientIDList.unwrap_or([])
+        p = query.query_list(p, "ClientIDList", "member", t0)
+        auto t1 = input.ThumbprintList.unwrap_or([])
+        p = query.query_list(p, "ThumbprintList", "member", t1)
+        auto qi2 = 1
+        for qe3 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi2), qe3)
+            qi2 = qi2 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # CreatePolicy
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, MalformedPolicyDocumentException, ServiceFailureException
+    def create_policy(self, CreatePolicyRequest input) -> str:
+        auto p = query.query_params("CreatePolicy", "2010-05-08")
+        p = query.query_scalar(p, "PolicyName", input.PolicyName)
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        p = query.query_scalar(p, "PolicyDocument", input.PolicyDocument)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
     # CreatePolicyVersion
     # errors: InvalidInputException, LimitExceededException, MalformedPolicyDocumentException, NoSuchEntityException, ServiceFailureException
     def create_policy_version(self, CreatePolicyVersionRequest input) -> str:
@@ -2414,6 +2547,46 @@ struct IAMClient:
         if input.SetAsDefault.is_some():
             auto t0 = query.query_bool(input.SetAsDefault.unwrap())
             p = query.query_scalar(p, "SetAsDefault", t0)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # CreateRole
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, MalformedPolicyDocumentException, ServiceFailureException
+    def create_role(self, CreateRoleRequest input) -> str:
+        auto p = query.query_params("CreateRole", "2010-05-08")
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        p = query.query_scalar(p, "RoleName", input.RoleName)
+        auto t0 = input.AssumeRolePolicyDocument
+        p = query.query_scalar(p, "AssumeRolePolicyDocument", t0)
+        if input.Description.is_some():
+            p = query.query_scalar(p, "Description", input.Description.unwrap())
+        if input.MaxSessionDuration.is_some():
+            auto t1 = str(input.MaxSessionDuration.unwrap())
+            p = query.query_scalar(p, "MaxSessionDuration", t1)
+        if input.PermissionsBoundary.is_some():
+            auto t2 = input.PermissionsBoundary.unwrap()
+            p = query.query_scalar(p, "PermissionsBoundary", t2)
+        auto qi3 = 1
+        for qe4 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi3), qe4)
+            qi3 = qi3 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # CreateSAMLProvider
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, ServiceFailureException
+    def create_saml_provider(self, CreateSAMLProviderRequest input) -> str:
+        auto p = query.query_params("CreateSAMLProvider", "2010-05-08")
+        p = query.query_scalar(p, "SAMLMetadataDocument", input.SAMLMetadataDocument)
+        p = query.query_scalar(p, "Name", input.Name)
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.AssertionEncryptionMode.is_some():
+            auto t2 = input.AssertionEncryptionMode.unwrap()
+            p = query.query_scalar(p, "AssertionEncryptionMode", t2)
+        if input.AddPrivateKey.is_some():
+            p = query.query_scalar(p, "AddPrivateKey", input.AddPrivateKey.unwrap())
         return query.query_request(self.creds, iam_service(), self.region, p)
 
     # CreateServiceLinkedRole
@@ -2436,6 +2609,35 @@ struct IAMClient:
         if input.CredentialAgeDays.is_some():
             auto t0 = str(input.CredentialAgeDays.unwrap())
             p = query.query_scalar(p, "CredentialAgeDays", t0)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # CreateUser
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def create_user(self, CreateUserRequest input) -> str:
+        auto p = query.query_params("CreateUser", "2010-05-08")
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        p = query.query_scalar(p, "UserName", input.UserName)
+        if input.PermissionsBoundary.is_some():
+            auto t0 = input.PermissionsBoundary.unwrap()
+            p = query.query_scalar(p, "PermissionsBoundary", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # CreateVirtualMFADevice
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, LimitExceededException, ServiceFailureException
+    def create_virtual_mfa_device(self, CreateVirtualMFADeviceRequest input) -> str:
+        auto p = query.query_params("CreateVirtualMFADevice", "2010-05-08")
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        p = query.query_scalar(p, "VirtualMFADeviceName", input.VirtualMFADeviceName)
+        auto qi0 = 1
+        for qe1 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, iam_service(), self.region, p)
 
     # DeactivateMFADevice
@@ -3389,6 +3591,18 @@ struct IAMClient:
             p = query.query_scalar(p, "MaxItems", str(input.MaxItems.unwrap()))
         return query.query_request(self.creds, iam_service(), self.region, p)
 
+    # PutAccountProperties
+    # errors: ConcurrentModificationException, InvalidInputException, ServiceFailureException
+    def put_account_properties(self, PutAccountPropertiesRequest input) -> str:
+        auto p = query.query_params("PutAccountProperties", "2010-05-08")
+        list[str] qks1 = []
+        list[str] qvs2 = []
+        for qk0 in sorted(input.Properties.keys()):
+            qks1.append(qk0)
+            qvs2.append(input.Properties[qk0])
+        p = query.query_map(p, "Properties", "key", "value", qks1, qvs2)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
     # PutGroupPolicy
     # errors: LimitExceededException, MalformedPolicyDocumentException, NoSuchEntityException, ServiceFailureException
     def put_group_policy(self, PutGroupPolicyRequest input) -> str:
@@ -3507,6 +3721,165 @@ struct IAMClient:
         auto p = query.query_params("SetSecurityTokenServicePreferences", "2010-05-08")
         auto t0 = input.GlobalEndpointTokenVersion
         p = query.query_scalar(p, "GlobalEndpointTokenVersion", t0)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # SimulateCustomPolicy
+    # errors: InvalidInputException, PolicyEvaluationException
+    def simulate_custom_policy(self, SimulateCustomPolicyRequest input) -> str:
+        auto p = query.query_params("SimulateCustomPolicy", "2010-05-08")
+        p = query.query_list(p, "PolicyInputList", "member", input.PolicyInputList)
+        auto t0 = input.PermissionsBoundaryPolicyInputList.unwrap_or([])
+        p = query.query_list(p, "PermissionsBoundaryPolicyInputList", "member", t0)
+        auto qi1 = 1
+        for qe2 in input.OrderedOrganizationPolicyInputList.unwrap_or([]):
+            auto t3 = qe2
+            p = ordered_organization_policy_type_to_query(p, "OrderedOrganizationPolicyInputList.member." + str(qi1), t3)
+            qi1 = qi1 + 1
+        p = query.query_list(p, "ActionNames", "member", input.ActionNames)
+        auto t4 = input.ResourceArns.unwrap_or([])
+        p = query.query_list(p, "ResourceArns", "member", t4)
+        if input.ResourcePolicy.is_some():
+            p = query.query_scalar(p, "ResourcePolicy", input.ResourcePolicy.unwrap())
+        if input.ResourceOwner.is_some():
+            p = query.query_scalar(p, "ResourceOwner", input.ResourceOwner.unwrap())
+        if input.CallerArn.is_some():
+            p = query.query_scalar(p, "CallerArn", input.CallerArn.unwrap())
+        auto qi5 = 1
+        for qe6 in input.ContextEntries.unwrap_or([]):
+            p = context_entry_to_query(p, "ContextEntries.member." + str(qi5), qe6)
+            qi5 = qi5 + 1
+        if input.ResourceHandlingOption.is_some():
+            auto t7 = input.ResourceHandlingOption.unwrap()
+            p = query.query_scalar(p, "ResourceHandlingOption", t7)
+        if input.MaxItems.is_some():
+            p = query.query_scalar(p, "MaxItems", str(input.MaxItems.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # SimulatePrincipalPolicy
+    # errors: InvalidInputException, NoSuchEntityException, PolicyEvaluationException
+    def simulate_principal_policy(self, SimulatePrincipalPolicyRequest input) -> str:
+        auto p = query.query_params("SimulatePrincipalPolicy", "2010-05-08")
+        p = query.query_scalar(p, "PolicySourceArn", input.PolicySourceArn)
+        auto t0 = input.PolicyInputList.unwrap_or([])
+        p = query.query_list(p, "PolicyInputList", "member", t0)
+        auto t1 = input.PermissionsBoundaryPolicyInputList.unwrap_or([])
+        p = query.query_list(p, "PermissionsBoundaryPolicyInputList", "member", t1)
+        auto qi2 = 1
+        for qe3 in input.PolicyExclusionList.unwrap_or([]):
+            auto t4 = qe3
+            p = policy_identifier_to_query(p, "PolicyExclusionList.member." + str(qi2), t4)
+            qi2 = qi2 + 1
+        p = query.query_list(p, "ActionNames", "member", input.ActionNames)
+        auto t5 = input.ResourceArns.unwrap_or([])
+        p = query.query_list(p, "ResourceArns", "member", t5)
+        if input.ResourcePolicy.is_some():
+            p = query.query_scalar(p, "ResourcePolicy", input.ResourcePolicy.unwrap())
+        if input.ResourceOwner.is_some():
+            p = query.query_scalar(p, "ResourceOwner", input.ResourceOwner.unwrap())
+        if input.CallerArn.is_some():
+            p = query.query_scalar(p, "CallerArn", input.CallerArn.unwrap())
+        auto qi6 = 1
+        for qe7 in input.ContextEntries.unwrap_or([]):
+            p = context_entry_to_query(p, "ContextEntries.member." + str(qi6), qe7)
+            qi6 = qi6 + 1
+        if input.ResourceHandlingOption.is_some():
+            auto t8 = input.ResourceHandlingOption.unwrap()
+            p = query.query_scalar(p, "ResourceHandlingOption", t8)
+        if input.MaxItems.is_some():
+            p = query.query_scalar(p, "MaxItems", str(input.MaxItems.unwrap()))
+        if input.Marker.is_some():
+            p = query.query_scalar(p, "Marker", input.Marker.unwrap())
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagInstanceProfile
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_instance_profile(self, TagInstanceProfileRequest input) -> str:
+        auto p = query.query_params("TagInstanceProfile", "2010-05-08")
+        p = query.query_scalar(p, "InstanceProfileName", input.InstanceProfileName)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagMFADevice
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_mfa_device(self, TagMFADeviceRequest input) -> str:
+        auto p = query.query_params("TagMFADevice", "2010-05-08")
+        p = query.query_scalar(p, "SerialNumber", input.SerialNumber)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagOpenIDConnectProvider
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_open_id_connect_provider(self, TagOpenIDConnectProviderRequest input) -> str:
+        auto p = query.query_params("TagOpenIDConnectProvider", "2010-05-08")
+        auto t0 = input.OpenIDConnectProviderArn
+        p = query.query_scalar(p, "OpenIDConnectProviderArn", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagPolicy
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_policy(self, TagPolicyRequest input) -> str:
+        auto p = query.query_params("TagPolicy", "2010-05-08")
+        p = query.query_scalar(p, "PolicyArn", input.PolicyArn)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagRole
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_role(self, TagRoleRequest input) -> str:
+        auto p = query.query_params("TagRole", "2010-05-08")
+        p = query.query_scalar(p, "RoleName", input.RoleName)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagSAMLProvider
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_saml_provider(self, TagSAMLProviderRequest input) -> str:
+        auto p = query.query_params("TagSAMLProvider", "2010-05-08")
+        p = query.query_scalar(p, "SAMLProviderArn", input.SAMLProviderArn)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagServerCertificate
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_server_certificate(self, TagServerCertificateRequest input) -> str:
+        auto p = query.query_params("TagServerCertificate", "2010-05-08")
+        p = query.query_scalar(p, "ServerCertificateName", input.ServerCertificateName)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # TagUser
+    # errors: ConcurrentModificationException, InvalidInputException, LimitExceededException, NoSuchEntityException, ServiceFailureException
+    def tag_user(self, TagUserRequest input) -> str:
+        auto p = query.query_params("TagUser", "2010-05-08")
+        p = query.query_scalar(p, "UserName", input.UserName)
+        auto qi0 = 1
+        for qe1 in input.Tags:
+            p = tag_to_query(p, "Tags.member." + str(qi0), qe1)
+            qi0 = qi0 + 1
         return query.query_request(self.creds, iam_service(), self.region, p)
 
     # UntagInstanceProfile
@@ -3763,6 +4136,24 @@ struct IAMClient:
         auto p = query.query_params("UploadSSHPublicKey", "2010-05-08")
         p = query.query_scalar(p, "UserName", input.UserName)
         p = query.query_scalar(p, "SSHPublicKeyBody", input.SSHPublicKeyBody)
+        return query.query_request(self.creds, iam_service(), self.region, p)
+
+    # UploadServerCertificate
+    # errors: ConcurrentModificationException, EntityAlreadyExistsException, InvalidInputException, KeyPairMismatchException, LimitExceededException, MalformedCertificateException, ServiceFailureException
+    def upload_server_certificate(self, UploadServerCertificateRequest input) -> str:
+        auto p = query.query_params("UploadServerCertificate", "2010-05-08")
+        if input.Path.is_some():
+            p = query.query_scalar(p, "Path", input.Path.unwrap())
+        p = query.query_scalar(p, "ServerCertificateName", input.ServerCertificateName)
+        p = query.query_scalar(p, "CertificateBody", input.CertificateBody)
+        p = query.query_scalar(p, "PrivateKey", input.PrivateKey)
+        if input.CertificateChain.is_some():
+            auto t0 = input.CertificateChain.unwrap()
+            p = query.query_scalar(p, "CertificateChain", t0)
+        auto qi1 = 1
+        for qe2 in input.Tags.unwrap_or([]):
+            p = tag_to_query(p, "Tags.member." + str(qi1), qe2)
+            qi1 = qi1 + 1
         return query.query_request(self.creds, iam_service(), self.region, p)
 
     # UploadSigningCertificate

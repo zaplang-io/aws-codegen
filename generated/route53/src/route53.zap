@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 71 operations — 49 with a generated method,
-#   22 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 71 operations — 71 with a generated method,
+#   0 skipped (a body member is not yet serializable by the XML emitter).
 #   254 structs (plain carriers), 18 enums, 69 error variants.
 #   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -1660,32 +1660,6 @@ def route53_error_from_code(str code) -> Route_53Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a body member is not yet serializable by the XML
-# emitter — a bool, a map, a list/map of non-scalars, or an XML document body
-# with no httpPayload):
-#   AssociateVPCWithHostedZone (rest-xml document body without httpPayload (members VPC, Comment) is a v0 follow-up)
-#   ChangeCidrCollection (rest-xml document body without httpPayload (members CollectionVersion, Changes) is a v0 follow-up)
-#   ChangeResourceRecordSets (rest-xml document body without httpPayload (members ChangeBatch) is a v0 follow-up)
-#   ChangeTagsForResource (rest-xml document body without httpPayload (members AddTags, RemoveTagKeys) is a v0 follow-up)
-#   CreateCidrCollection (rest-xml document body without httpPayload (members Name, CallerReference) is a v0 follow-up)
-#   CreateHealthCheck (rest-xml document body without httpPayload (members CallerReference, HealthCheckConfig) is a v0 follow-up)
-#   CreateHostedZone (rest-xml document body without httpPayload (members Name, VPC, CallerReference, HostedZoneConfig, DelegationSetId) is a v0 follow-up)
-#   CreateKeySigningKey (rest-xml document body without httpPayload (members CallerReference, HostedZoneId, KeyManagementServiceArn, Name, Status) is a v0 follow-up)
-#   CreateQueryLoggingConfig (rest-xml document body without httpPayload (members HostedZoneId, CloudWatchLogsLogGroupArn) is a v0 follow-up)
-#   CreateReusableDelegationSet (rest-xml document body without httpPayload (members CallerReference, HostedZoneId) is a v0 follow-up)
-#   CreateTrafficPolicy (rest-xml document body without httpPayload (members Name, Document, Comment) is a v0 follow-up)
-#   CreateTrafficPolicyInstance (rest-xml document body without httpPayload (members HostedZoneId, Name, TTL, TrafficPolicyId, TrafficPolicyVersion) is a v0 follow-up)
-#   CreateTrafficPolicyVersion (rest-xml document body without httpPayload (members Document, Comment) is a v0 follow-up)
-#   CreateVPCAssociationAuthorization (rest-xml document body without httpPayload (members VPC) is a v0 follow-up)
-#   DeleteVPCAssociationAuthorization (rest-xml document body without httpPayload (members VPC) is a v0 follow-up)
-#   DisassociateVPCFromHostedZone (rest-xml document body without httpPayload (members VPC, Comment) is a v0 follow-up)
-#   ListTagsForResources (rest-xml document body without httpPayload (members ResourceIds) is a v0 follow-up)
-#   UpdateHealthCheck (rest-xml document body without httpPayload (members HealthCheckVersion, IPAddress, Port, ResourcePath, FullyQualifiedDomainName, SearchString, FailureThreshold, Inverted, Disabled, HealthThreshold, ChildHealthChecks, EnableSNI, Regions, AlarmIdentifier, InsufficientDataHealthStatus, ResetElements) is a v0 follow-up)
-#   UpdateHostedZoneComment (rest-xml document body without httpPayload (members Comment) is a v0 follow-up)
-#   UpdateHostedZoneFeatures (rest-xml document body without httpPayload (members EnableAcceleratedRecovery) is a v0 follow-up)
-#   UpdateTrafficPolicyComment (rest-xml document body without httpPayload (members Comment) is a v0 follow-up)
-#   UpdateTrafficPolicyInstance (rest-xml document body without httpPayload (members TTL, TrafficPolicyId, TrafficPolicyVersion) is a v0 follow-up)
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   ListCidrBlocks
@@ -1696,6 +1670,12 @@ def route53_error_from_code(str code) -> Route_53Error:
 #   ListQueryLoggingConfigs
 #   ListResourceRecordSets
 #   ListVPCAssociationAuthorizations
+
+# Render a boolean as its XML text (the rest-xml codec has no bool helper).
+def route53_xml_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound Route_53 client: credentials + region, threaded into every operation.
 struct Route_53Client:
@@ -1711,6 +1691,379 @@ struct Route_53Client:
         labels["Name"] = input.Name
         auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey/{HostedZoneId}/{Name}/activate", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
+
+    # AssociateVPCWithHostedZone  POST /2013-04-01/hostedzone/{Id}/associatevpc
+    # errors: ConflictingDomainExists, InvalidInput, InvalidVPCId, LimitsExceeded, NoSuchHostedZone, NotAuthorizedException, PriorRequestNotComplete, PublicZoneVPCAssociation
+    def associate_vpc_with_hosted_zone(self, AssociateVPCWithHostedZoneRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/associatevpc", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("AssociateVPCWithHostedZoneRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto n0 = restxml.rest_xml_struct(root, "VPC")
+        if input.VPC.VPCRegion.is_some():
+            restxml.rest_xml_scalar(n0, "VPCRegion", input.VPC.VPCRegion.unwrap())
+        if input.VPC.VPCId.is_some():
+            restxml.rest_xml_scalar(n0, "VPCId", input.VPC.VPCId.unwrap())
+        if input.Comment.is_some():
+            restxml.rest_xml_scalar(root, "Comment", input.Comment.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # ChangeCidrCollection  POST /2013-04-01/cidrcollection/{CidrCollectionId}
+    # errors: CidrBlockInUseException, CidrCollectionVersionMismatchException, ConcurrentModification, InvalidInput, LimitsExceeded, NoSuchCidrCollectionException
+    def change_cidr_collection(self, ChangeCidrCollectionRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["CidrCollectionId"] = input.Id
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/cidrcollection/{CidrCollectionId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ChangeCidrCollectionRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        if input.CollectionVersion.is_some():
+            auto t0 = str(input.CollectionVersion.unwrap())
+            restxml.rest_xml_scalar(root, "CollectionVersion", t0)
+        auto n1 = restxml.rest_xml_struct(root, "Changes")
+        for t2 in input.Changes:
+            auto n3 = restxml.rest_xml_struct(n1, "member")
+            restxml.rest_xml_scalar(n3, "LocationName", t2.LocationName)
+            restxml.rest_xml_scalar(n3, "Action", t2.Action)
+            restxml.rest_xml_wrapped_list(n3, "CidrList", "Cidr", t2.CidrList)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # ChangeResourceRecordSets  POST /2013-04-01/hostedzone/{Id}/rrset/
+    # errors: InvalidChangeBatch, InvalidInput, NoSuchHealthCheck, NoSuchHostedZone, PriorRequestNotComplete
+    def change_resource_record_sets(self, ChangeResourceRecordSetsRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/rrset/", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ChangeResourceRecordSetsRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto n0 = restxml.rest_xml_struct(root, "ChangeBatch")
+        if input.ChangeBatch.Comment.is_some():
+            restxml.rest_xml_scalar(n0, "Comment", input.ChangeBatch.Comment.unwrap())
+        auto n1 = restxml.rest_xml_struct(n0, "Changes")
+        for t2 in input.ChangeBatch.Changes:
+            auto n3 = restxml.rest_xml_struct(n1, "Change")
+            restxml.rest_xml_scalar(n3, "Action", t2.Action)
+            auto n4 = restxml.rest_xml_struct(n3, "ResourceRecordSet")
+            restxml.rest_xml_scalar(n4, "Name", t2.ResourceRecordSet.Name)
+            restxml.rest_xml_scalar(n4, "Type", t2.ResourceRecordSet.Type)
+            if t2.ResourceRecordSet.SetIdentifier.is_some():
+                auto t5 = t2.ResourceRecordSet.SetIdentifier.unwrap()
+                restxml.rest_xml_scalar(n4, "SetIdentifier", t5)
+            if t2.ResourceRecordSet.Weight.is_some():
+                auto t6 = str(t2.ResourceRecordSet.Weight.unwrap())
+                restxml.rest_xml_scalar(n4, "Weight", t6)
+            if t2.ResourceRecordSet.Region.is_some():
+                auto t7 = t2.ResourceRecordSet.Region.unwrap()
+                restxml.rest_xml_scalar(n4, "Region", t7)
+            if t2.ResourceRecordSet.GeoLocation.is_some():
+                auto n8 = restxml.rest_xml_struct(n4, "GeoLocation")
+                if t2.ResourceRecordSet.GeoLocation.unwrap().ContinentCode.is_some():
+                    auto t9 = t2.ResourceRecordSet.GeoLocation.unwrap().ContinentCode.unwrap()
+                    restxml.rest_xml_scalar(n8, "ContinentCode", t9)
+                if t2.ResourceRecordSet.GeoLocation.unwrap().CountryCode.is_some():
+                    auto t10 = t2.ResourceRecordSet.GeoLocation.unwrap().CountryCode.unwrap()
+                    restxml.rest_xml_scalar(n8, "CountryCode", t10)
+                if t2.ResourceRecordSet.GeoLocation.unwrap().SubdivisionCode.is_some():
+                    auto t11 = t2.ResourceRecordSet.GeoLocation.unwrap().SubdivisionCode.unwrap()
+                    restxml.rest_xml_scalar(n8, "SubdivisionCode", t11)
+            if t2.ResourceRecordSet.Failover.is_some():
+                auto t12 = t2.ResourceRecordSet.Failover.unwrap()
+                restxml.rest_xml_scalar(n4, "Failover", t12)
+            if t2.ResourceRecordSet.MultiValueAnswer.is_some():
+                auto t13 = route53_xml_bool(t2.ResourceRecordSet.MultiValueAnswer.unwrap())
+                restxml.rest_xml_scalar(n4, "MultiValueAnswer", t13)
+            if t2.ResourceRecordSet.TTL.is_some():
+                auto t14 = str(t2.ResourceRecordSet.TTL.unwrap())
+                restxml.rest_xml_scalar(n4, "TTL", t14)
+            if t2.ResourceRecordSet.ResourceRecords.is_some():
+                auto t15 = t2.ResourceRecordSet.ResourceRecords.unwrap()
+                auto n16 = restxml.rest_xml_struct(n4, "ResourceRecords")
+                for t17 in t15:
+                    auto n18 = restxml.rest_xml_struct(n16, "ResourceRecord")
+                    restxml.rest_xml_scalar(n18, "Value", t17.Value)
+            if t2.ResourceRecordSet.AliasTarget.is_some():
+                auto n19 = restxml.rest_xml_struct(n4, "AliasTarget")
+                auto t20 = t2.ResourceRecordSet.AliasTarget.unwrap().HostedZoneId
+                restxml.rest_xml_scalar(n19, "HostedZoneId", t20)
+                auto t21 = t2.ResourceRecordSet.AliasTarget.unwrap().DNSName
+                restxml.rest_xml_scalar(n19, "DNSName", t21)
+                auto t22 = route53_xml_bool(t2.ResourceRecordSet.AliasTarget.unwrap().EvaluateTargetHealth)
+                restxml.rest_xml_scalar(n19, "EvaluateTargetHealth", t22)
+            if t2.ResourceRecordSet.HealthCheckId.is_some():
+                auto t23 = t2.ResourceRecordSet.HealthCheckId.unwrap()
+                restxml.rest_xml_scalar(n4, "HealthCheckId", t23)
+            if t2.ResourceRecordSet.TrafficPolicyInstanceId.is_some():
+                auto t24 = t2.ResourceRecordSet.TrafficPolicyInstanceId.unwrap()
+                restxml.rest_xml_scalar(n4, "TrafficPolicyInstanceId", t24)
+            if t2.ResourceRecordSet.CidrRoutingConfig.is_some():
+                auto n25 = restxml.rest_xml_struct(n4, "CidrRoutingConfig")
+                auto t26 = t2.ResourceRecordSet.CidrRoutingConfig.unwrap().CollectionId
+                restxml.rest_xml_scalar(n25, "CollectionId", t26)
+                auto t27 = t2.ResourceRecordSet.CidrRoutingConfig.unwrap().LocationName
+                restxml.rest_xml_scalar(n25, "LocationName", t27)
+            if t2.ResourceRecordSet.GeoProximityLocation.is_some():
+                auto n28 = restxml.rest_xml_struct(n4, "GeoProximityLocation")
+                if t2.ResourceRecordSet.GeoProximityLocation.unwrap().AWSRegion.is_some():
+                    auto t29 = t2.ResourceRecordSet.GeoProximityLocation.unwrap().AWSRegion.unwrap()
+                    restxml.rest_xml_scalar(n28, "AWSRegion", t29)
+                if t2.ResourceRecordSet.GeoProximityLocation.unwrap().LocalZoneGroup.is_some():
+                    auto t30 = t2.ResourceRecordSet.GeoProximityLocation.unwrap().LocalZoneGroup.unwrap()
+                    restxml.rest_xml_scalar(n28, "LocalZoneGroup", t30)
+                if t2.ResourceRecordSet.GeoProximityLocation.unwrap().Coordinates.is_some():
+                    auto n31 = restxml.rest_xml_struct(n28, "Coordinates")
+                    auto t32 = t2.ResourceRecordSet.GeoProximityLocation.unwrap().Coordinates.unwrap().Latitude
+                    restxml.rest_xml_scalar(n31, "Latitude", t32)
+                    auto t33 = t2.ResourceRecordSet.GeoProximityLocation.unwrap().Coordinates.unwrap().Longitude
+                    restxml.rest_xml_scalar(n31, "Longitude", t33)
+                if t2.ResourceRecordSet.GeoProximityLocation.unwrap().Bias.is_some():
+                    auto t34 = str(t2.ResourceRecordSet.GeoProximityLocation.unwrap().Bias.unwrap())
+                    restxml.rest_xml_scalar(n28, "Bias", t34)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # ChangeTagsForResource  POST /2013-04-01/tags/{ResourceType}/{ResourceId}
+    # errors: InvalidInput, NoSuchHealthCheck, NoSuchHostedZone, PriorRequestNotComplete, ThrottlingException
+    def change_tags_for_resource(self, ChangeTagsForResourceRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceType"] = input.ResourceType
+        labels["ResourceId"] = input.ResourceId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/tags/{ResourceType}/{ResourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ChangeTagsForResourceRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        if input.AddTags.is_some():
+            auto t0 = input.AddTags.unwrap()
+            auto n1 = restxml.rest_xml_struct(root, "AddTags")
+            for t2 in t0:
+                auto n3 = restxml.rest_xml_struct(n1, "Tag")
+                if t2.Key.is_some():
+                    restxml.rest_xml_scalar(n3, "Key", t2.Key.unwrap())
+                if t2.Value.is_some():
+                    restxml.rest_xml_scalar(n3, "Value", t2.Value.unwrap())
+        if input.RemoveTagKeys.is_some():
+            auto t4 = input.RemoveTagKeys.unwrap()
+            restxml.rest_xml_wrapped_list(root, "RemoveTagKeys", "Key", t4)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateCidrCollection  POST /2013-04-01/cidrcollection
+    # errors: CidrCollectionAlreadyExistsException, ConcurrentModification, InvalidInput, LimitsExceeded
+    def create_cidr_collection(self, CreateCidrCollectionRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/cidrcollection", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateCidrCollectionRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "Name", input.Name)
+        restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateHealthCheck  POST /2013-04-01/healthcheck
+    # errors: HealthCheckAlreadyExists, InvalidInput, TooManyHealthChecks
+    def create_health_check(self, CreateHealthCheckRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/healthcheck", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateHealthCheckRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
+        auto n0 = restxml.rest_xml_struct(root, "HealthCheckConfig")
+        if input.HealthCheckConfig.IPAddress.is_some():
+            auto t1 = input.HealthCheckConfig.IPAddress.unwrap()
+            restxml.rest_xml_scalar(n0, "IPAddress", t1)
+        if input.HealthCheckConfig.Port.is_some():
+            auto t2 = str(input.HealthCheckConfig.Port.unwrap())
+            restxml.rest_xml_scalar(n0, "Port", t2)
+        restxml.rest_xml_scalar(n0, "Type", input.HealthCheckConfig.Type)
+        if input.HealthCheckConfig.ResourcePath.is_some():
+            auto t3 = input.HealthCheckConfig.ResourcePath.unwrap()
+            restxml.rest_xml_scalar(n0, "ResourcePath", t3)
+        if input.HealthCheckConfig.FullyQualifiedDomainName.is_some():
+            auto t4 = input.HealthCheckConfig.FullyQualifiedDomainName.unwrap()
+            restxml.rest_xml_scalar(n0, "FullyQualifiedDomainName", t4)
+        if input.HealthCheckConfig.SearchString.is_some():
+            auto t5 = input.HealthCheckConfig.SearchString.unwrap()
+            restxml.rest_xml_scalar(n0, "SearchString", t5)
+        if input.HealthCheckConfig.RequestInterval.is_some():
+            auto t6 = str(input.HealthCheckConfig.RequestInterval.unwrap())
+            restxml.rest_xml_scalar(n0, "RequestInterval", t6)
+        if input.HealthCheckConfig.FailureThreshold.is_some():
+            auto t7 = str(input.HealthCheckConfig.FailureThreshold.unwrap())
+            restxml.rest_xml_scalar(n0, "FailureThreshold", t7)
+        if input.HealthCheckConfig.MeasureLatency.is_some():
+            auto t8 = route53_xml_bool(input.HealthCheckConfig.MeasureLatency.unwrap())
+            restxml.rest_xml_scalar(n0, "MeasureLatency", t8)
+        if input.HealthCheckConfig.Inverted.is_some():
+            auto t9 = route53_xml_bool(input.HealthCheckConfig.Inverted.unwrap())
+            restxml.rest_xml_scalar(n0, "Inverted", t9)
+        if input.HealthCheckConfig.Disabled.is_some():
+            auto t10 = route53_xml_bool(input.HealthCheckConfig.Disabled.unwrap())
+            restxml.rest_xml_scalar(n0, "Disabled", t10)
+        if input.HealthCheckConfig.HealthThreshold.is_some():
+            auto t11 = str(input.HealthCheckConfig.HealthThreshold.unwrap())
+            restxml.rest_xml_scalar(n0, "HealthThreshold", t11)
+        if input.HealthCheckConfig.ChildHealthChecks.is_some():
+            auto t12 = input.HealthCheckConfig.ChildHealthChecks.unwrap()
+            auto t13 = t12
+            restxml.rest_xml_wrapped_list(n0, "ChildHealthChecks", "ChildHealthCheck", t13)
+        if input.HealthCheckConfig.EnableSNI.is_some():
+            auto t14 = route53_xml_bool(input.HealthCheckConfig.EnableSNI.unwrap())
+            restxml.rest_xml_scalar(n0, "EnableSNI", t14)
+        if input.HealthCheckConfig.Regions.is_some():
+            auto t15 = input.HealthCheckConfig.Regions.unwrap()
+            restxml.rest_xml_wrapped_list(n0, "Regions", "Region", t15)
+        if input.HealthCheckConfig.AlarmIdentifier.is_some():
+            auto n16 = restxml.rest_xml_struct(n0, "AlarmIdentifier")
+            auto t17 = input.HealthCheckConfig.AlarmIdentifier.unwrap().Region
+            restxml.rest_xml_scalar(n16, "Region", t17)
+            auto t18 = input.HealthCheckConfig.AlarmIdentifier.unwrap().Name
+            restxml.rest_xml_scalar(n16, "Name", t18)
+        if input.HealthCheckConfig.InsufficientDataHealthStatus.is_some():
+            auto t19 = input.HealthCheckConfig.InsufficientDataHealthStatus.unwrap()
+            restxml.rest_xml_scalar(n0, "InsufficientDataHealthStatus", t19)
+        if input.HealthCheckConfig.RoutingControlArn.is_some():
+            auto t20 = input.HealthCheckConfig.RoutingControlArn.unwrap()
+            restxml.rest_xml_scalar(n0, "RoutingControlArn", t20)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateHostedZone  POST /2013-04-01/hostedzone
+    # errors: ConflictingDomainExists, DelegationSetNotAvailable, DelegationSetNotReusable, HostedZoneAlreadyExists, InvalidDomainName, InvalidInput, InvalidVPCId, NoSuchDelegationSet, TooManyHostedZones
+    def create_hosted_zone(self, CreateHostedZoneRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateHostedZoneRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "Name", input.Name)
+        if input.VPC.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "VPC")
+            if input.VPC.unwrap().VPCRegion.is_some():
+                auto t1 = input.VPC.unwrap().VPCRegion.unwrap()
+                restxml.rest_xml_scalar(n0, "VPCRegion", t1)
+            if input.VPC.unwrap().VPCId.is_some():
+                restxml.rest_xml_scalar(n0, "VPCId", input.VPC.unwrap().VPCId.unwrap())
+        restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
+        if input.HostedZoneConfig.is_some():
+            auto n2 = restxml.rest_xml_struct(root, "HostedZoneConfig")
+            if input.HostedZoneConfig.unwrap().Comment.is_some():
+                auto t3 = input.HostedZoneConfig.unwrap().Comment.unwrap()
+                restxml.rest_xml_scalar(n2, "Comment", t3)
+            if input.HostedZoneConfig.unwrap().PrivateZone.is_some():
+                auto t4 = route53_xml_bool(input.HostedZoneConfig.unwrap().PrivateZone.unwrap())
+                restxml.rest_xml_scalar(n2, "PrivateZone", t4)
+        if input.DelegationSetId.is_some():
+            auto t5 = input.DelegationSetId.unwrap()
+            restxml.rest_xml_scalar(root, "DelegationSetId", t5)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateKeySigningKey  POST /2013-04-01/keysigningkey
+    # errors: ConcurrentModification, InvalidArgument, InvalidInput, InvalidKMSArn, InvalidKeySigningKeyName, InvalidKeySigningKeyStatus, InvalidSigningStatus, KeySigningKeyAlreadyExists, NoSuchHostedZone, TooManyKeySigningKeys
+    def create_key_signing_key(self, CreateKeySigningKeyRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/keysigningkey", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateKeySigningKeyRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
+        restxml.rest_xml_scalar(root, "HostedZoneId", input.HostedZoneId)
+        auto t0 = input.KeyManagementServiceArn
+        restxml.rest_xml_scalar(root, "KeyManagementServiceArn", t0)
+        restxml.rest_xml_scalar(root, "Name", input.Name)
+        restxml.rest_xml_scalar(root, "Status", input.Status)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateQueryLoggingConfig  POST /2013-04-01/queryloggingconfig
+    # errors: ConcurrentModification, InsufficientCloudWatchLogsResourcePolicy, InvalidInput, NoSuchCloudWatchLogsLogGroup, NoSuchHostedZone, QueryLoggingConfigAlreadyExists
+    def create_query_logging_config(self, CreateQueryLoggingConfigRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/queryloggingconfig", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateQueryLoggingConfigRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "HostedZoneId", input.HostedZoneId)
+        auto t0 = input.CloudWatchLogsLogGroupArn
+        restxml.rest_xml_scalar(root, "CloudWatchLogsLogGroupArn", t0)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateReusableDelegationSet  POST /2013-04-01/delegationset
+    # errors: DelegationSetAlreadyCreated, DelegationSetAlreadyReusable, DelegationSetNotAvailable, HostedZoneNotFound, InvalidArgument, InvalidInput, LimitsExceeded
+    def create_reusable_delegation_set(self, CreateReusableDelegationSetRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/delegationset", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateReusableDelegationSetRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "CallerReference", input.CallerReference)
+        if input.HostedZoneId.is_some():
+            restxml.rest_xml_scalar(root, "HostedZoneId", input.HostedZoneId.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateTrafficPolicy  POST /2013-04-01/trafficpolicy
+    # errors: InvalidInput, InvalidTrafficPolicyDocument, TooManyTrafficPolicies, TrafficPolicyAlreadyExists
+    def create_traffic_policy(self, CreateTrafficPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateTrafficPolicyRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "Name", input.Name)
+        restxml.rest_xml_scalar(root, "Document", input.Document)
+        if input.Comment.is_some():
+            restxml.rest_xml_scalar(root, "Comment", input.Comment.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateTrafficPolicyInstance  POST /2013-04-01/trafficpolicyinstance
+    # errors: InvalidInput, NoSuchHostedZone, NoSuchTrafficPolicy, TooManyTrafficPolicyInstances, TrafficPolicyInstanceAlreadyExists
+    def create_traffic_policy_instance(self, CreateTrafficPolicyInstanceRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicyinstance", labels={}, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateTrafficPolicyInstanceRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "HostedZoneId", input.HostedZoneId)
+        restxml.rest_xml_scalar(root, "Name", input.Name)
+        restxml.rest_xml_scalar(root, "TTL", str(input.TTL))
+        restxml.rest_xml_scalar(root, "TrafficPolicyId", input.TrafficPolicyId)
+        auto t0 = str(input.TrafficPolicyVersion)
+        restxml.rest_xml_scalar(root, "TrafficPolicyVersion", t0)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateTrafficPolicyVersion  POST /2013-04-01/trafficpolicy/{Id}
+    # errors: ConcurrentModification, InvalidInput, InvalidTrafficPolicyDocument, NoSuchTrafficPolicy, TooManyTrafficPolicyVersionsForCurrentPolicy
+    def create_traffic_policy_version(self, CreateTrafficPolicyVersionRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateTrafficPolicyVersionRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "Document", input.Document)
+        if input.Comment.is_some():
+            restxml.rest_xml_scalar(root, "Comment", input.Comment.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # CreateVPCAssociationAuthorization  POST /2013-04-01/hostedzone/{Id}/authorizevpcassociation
+    # errors: ConcurrentModification, InvalidInput, InvalidVPCId, NoSuchHostedZone, TooManyVPCAssociationAuthorizations
+    def create_vpc_association_authorization(self, CreateVPCAssociationAuthorizationRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/authorizevpcassociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateVPCAssociationAuthorizationRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto n0 = restxml.rest_xml_struct(root, "VPC")
+        if input.VPC.VPCRegion.is_some():
+            restxml.rest_xml_scalar(n0, "VPCRegion", input.VPC.VPCRegion.unwrap())
+        if input.VPC.VPCId.is_some():
+            restxml.rest_xml_scalar(n0, "VPCId", input.VPC.VPCId.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
 
     # DeactivateKeySigningKey  POST /2013-04-01/keysigningkey/{HostedZoneId}/{Name}/deactivate
     # errors: ConcurrentModification, InvalidInput, InvalidKeySigningKeyStatus, InvalidSigningStatus, KeySigningKeyInParentDSRecord, KeySigningKeyInUse, NoSuchKeySigningKey
@@ -1796,6 +2149,23 @@ struct Route_53Client:
         auto b = binding.HttpBinding(method="DELETE", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
+    # DeleteVPCAssociationAuthorization  POST /2013-04-01/hostedzone/{Id}/deauthorizevpcassociation
+    # errors: ConcurrentModification, InvalidInput, InvalidVPCId, NoSuchHostedZone, VPCAssociationAuthorizationNotFound
+    def delete_vpc_association_authorization(self, DeleteVPCAssociationAuthorizationRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/deauthorizevpcassociation", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("DeleteVPCAssociationAuthorizationRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto n0 = restxml.rest_xml_struct(root, "VPC")
+        if input.VPC.VPCRegion.is_some():
+            restxml.rest_xml_scalar(n0, "VPCRegion", input.VPC.VPCRegion.unwrap())
+        if input.VPC.VPCId.is_some():
+            restxml.rest_xml_scalar(n0, "VPCId", input.VPC.VPCId.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
     # DisableHostedZoneDNSSEC  POST /2013-04-01/hostedzone/{Id}/disable-dnssec
     # errors: ConcurrentModification, DNSSECNotFound, InvalidArgument, InvalidInput, InvalidKMSArn, InvalidKeySigningKeyStatus, KeySigningKeyInParentDSRecord, NoSuchHostedZone
     def disable_hosted_zone_dnssec(self, DisableHostedZoneDNSSECRequest input) -> str:
@@ -1804,6 +2174,25 @@ struct Route_53Client:
         labels["Id"] = input.HostedZoneId
         auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/disable-dnssec", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
+
+    # DisassociateVPCFromHostedZone  POST /2013-04-01/hostedzone/{Id}/disassociatevpc
+    # errors: InvalidInput, InvalidVPCId, LastVPCAssociation, NoSuchHostedZone, VPCAssociationNotFound
+    def disassociate_vpc_from_hosted_zone(self, DisassociateVPCFromHostedZoneRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/disassociatevpc", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("DisassociateVPCFromHostedZoneRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto n0 = restxml.rest_xml_struct(root, "VPC")
+        if input.VPC.VPCRegion.is_some():
+            restxml.rest_xml_scalar(n0, "VPCRegion", input.VPC.VPCRegion.unwrap())
+        if input.VPC.VPCId.is_some():
+            restxml.rest_xml_scalar(n0, "VPCId", input.VPC.VPCId.unwrap())
+        if input.Comment.is_some():
+            restxml.rest_xml_scalar(root, "Comment", input.Comment.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
 
     # EnableHostedZoneDNSSEC  POST /2013-04-01/hostedzone/{Id}/enable-dnssec
     # errors: ConcurrentModification, DNSSECNotFound, HostedZonePartiallyDelegated, InvalidArgument, InvalidInput, InvalidKMSArn, InvalidKeySigningKeyStatus, KeySigningKeyWithActiveStatusNotFound, NoSuchHostedZone
@@ -2141,6 +2530,20 @@ struct Route_53Client:
         auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/tags/{ResourceType}/{ResourceId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
 
+    # ListTagsForResources  POST /2013-04-01/tags/{ResourceType}
+    # errors: InvalidInput, NoSuchHealthCheck, NoSuchHostedZone, PriorRequestNotComplete, ThrottlingException
+    def list_tags_for_resources(self, ListTagsForResourcesRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["ResourceType"] = input.ResourceType
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/tags/{ResourceType}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ListTagsForResourcesRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        auto t0 = input.ResourceIds
+        restxml.rest_xml_wrapped_list(root, "ResourceIds", "ResourceId", t0)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
     # ListTrafficPolicies  GET /2013-04-01/trafficpolicies
     # errors: InvalidInput
     def list_traffic_policies(self, ListTrafficPoliciesRequest input) -> str:
@@ -2246,6 +2649,125 @@ struct Route_53Client:
             query["edns0clientsubnetmask"] = input.EDNS0ClientSubnetMask.unwrap_or("")
         auto b = binding.HttpBinding(method="GET", path_template="/2013-04-01/testdnsanswer", labels={}, greedy_labels={}, query=query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, route53_service(), self.region, host)
+
+    # UpdateHealthCheck  POST /2013-04-01/healthcheck/{HealthCheckId}
+    # errors: HealthCheckVersionMismatch, InvalidInput, NoSuchHealthCheck
+    def update_health_check(self, UpdateHealthCheckRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["HealthCheckId"] = input.HealthCheckId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/healthcheck/{HealthCheckId}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("UpdateHealthCheckRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        if input.HealthCheckVersion.is_some():
+            auto t0 = str(input.HealthCheckVersion.unwrap())
+            restxml.rest_xml_scalar(root, "HealthCheckVersion", t0)
+        if input.IPAddress.is_some():
+            restxml.rest_xml_scalar(root, "IPAddress", input.IPAddress.unwrap())
+        if input.Port.is_some():
+            restxml.rest_xml_scalar(root, "Port", str(input.Port.unwrap()))
+        if input.ResourcePath.is_some():
+            restxml.rest_xml_scalar(root, "ResourcePath", input.ResourcePath.unwrap())
+        if input.FullyQualifiedDomainName.is_some():
+            auto t1 = input.FullyQualifiedDomainName.unwrap()
+            restxml.rest_xml_scalar(root, "FullyQualifiedDomainName", t1)
+        if input.SearchString.is_some():
+            restxml.rest_xml_scalar(root, "SearchString", input.SearchString.unwrap())
+        if input.FailureThreshold.is_some():
+            auto t2 = str(input.FailureThreshold.unwrap())
+            restxml.rest_xml_scalar(root, "FailureThreshold", t2)
+        if input.Inverted.is_some():
+            auto t3 = route53_xml_bool(input.Inverted.unwrap())
+            restxml.rest_xml_scalar(root, "Inverted", t3)
+        if input.Disabled.is_some():
+            auto t4 = route53_xml_bool(input.Disabled.unwrap())
+            restxml.rest_xml_scalar(root, "Disabled", t4)
+        if input.HealthThreshold.is_some():
+            auto t5 = str(input.HealthThreshold.unwrap())
+            restxml.rest_xml_scalar(root, "HealthThreshold", t5)
+        if input.ChildHealthChecks.is_some():
+            auto t6 = input.ChildHealthChecks.unwrap()
+            auto t7 = t6
+            restxml.rest_xml_wrapped_list(root, "ChildHealthChecks", "ChildHealthCheck", t7)
+        if input.EnableSNI.is_some():
+            auto t8 = route53_xml_bool(input.EnableSNI.unwrap())
+            restxml.rest_xml_scalar(root, "EnableSNI", t8)
+        if input.Regions.is_some():
+            auto t9 = input.Regions.unwrap()
+            restxml.rest_xml_wrapped_list(root, "Regions", "Region", t9)
+        if input.AlarmIdentifier.is_some():
+            auto n10 = restxml.rest_xml_struct(root, "AlarmIdentifier")
+            auto t11 = input.AlarmIdentifier.unwrap().Region
+            restxml.rest_xml_scalar(n10, "Region", t11)
+            restxml.rest_xml_scalar(n10, "Name", input.AlarmIdentifier.unwrap().Name)
+        if input.InsufficientDataHealthStatus.is_some():
+            auto t12 = input.InsufficientDataHealthStatus.unwrap()
+            restxml.rest_xml_scalar(root, "InsufficientDataHealthStatus", t12)
+        if input.ResetElements.is_some():
+            auto t13 = input.ResetElements.unwrap()
+            auto t14 = t13
+            restxml.rest_xml_wrapped_list(root, "ResetElements", "ResettableElementName", t14)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # UpdateHostedZoneComment  POST /2013-04-01/hostedzone/{Id}
+    # errors: InvalidInput, NoSuchHostedZone, PriorRequestNotComplete
+    def update_hosted_zone_comment(self, UpdateHostedZoneCommentRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("UpdateHostedZoneCommentRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        if input.Comment.is_some():
+            restxml.rest_xml_scalar(root, "Comment", input.Comment.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # UpdateHostedZoneFeatures  POST /2013-04-01/hostedzone/{Id}/features
+    # errors: InvalidInput, LimitsExceeded, NoSuchHostedZone, PriorRequestNotComplete
+    def update_hosted_zone_features(self, UpdateHostedZoneFeaturesRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.HostedZoneId
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/hostedzone/{Id}/features", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("UpdateHostedZoneFeaturesRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        if input.EnableAcceleratedRecovery.is_some():
+            auto t0 = route53_xml_bool(input.EnableAcceleratedRecovery.unwrap())
+            restxml.rest_xml_scalar(root, "EnableAcceleratedRecovery", t0)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # UpdateTrafficPolicyComment  POST /2013-04-01/trafficpolicy/{Id}/{Version}
+    # errors: ConcurrentModification, InvalidInput, NoSuchTrafficPolicy
+    def update_traffic_policy_comment(self, UpdateTrafficPolicyCommentRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        labels["Version"] = str(input.Version)
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicy/{Id}/{Version}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("UpdateTrafficPolicyCommentRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "Comment", input.Comment)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
+
+    # UpdateTrafficPolicyInstance  POST /2013-04-01/trafficpolicyinstance/{Id}
+    # errors: ConflictingTypes, InvalidInput, NoSuchTrafficPolicy, NoSuchTrafficPolicyInstance, PriorRequestNotComplete
+    def update_traffic_policy_instance(self, UpdateTrafficPolicyInstanceRequest input) -> str:
+        auto host = endpoints.regional_host(route53_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Id"] = input.Id
+        auto b = binding.HttpBinding(method="POST", path_template="/2013-04-01/trafficpolicyinstance/{Id}", labels=labels, greedy_labels={}, query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("UpdateTrafficPolicyInstanceRequest", "https://route53.amazonaws.com/doc/2013-04-01/")
+        restxml.rest_xml_scalar(root, "TTL", str(input.TTL))
+        restxml.rest_xml_scalar(root, "TrafficPolicyId", input.TrafficPolicyId)
+        auto t0 = str(input.TrafficPolicyVersion)
+        restxml.rest_xml_scalar(root, "TrafficPolicyVersion", t0)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, route53_service(), self.region, host)
 
 # Construct a Route_53Client bound to credentials + region.
 def route53_client(core.Credentials creds, str region) -> Route_53Client:

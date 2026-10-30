@@ -14,8 +14,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (query): 10 operations — 6 with a generated method,
-#   4 skipped (a member type is not yet serializable (nesting/map)).
+# Coverage (query): 10 operations — 10 with a generated method,
+#   0 skipped (a member type is not yet serializable (nesting/map)).
 #   37 structs (plain carriers), 0 enums, 17 error variants.
 #   0 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -245,28 +245,111 @@ def sdb_error_from_code(str code) -> SimpleDBError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet serializable by the query
-# emitter — a nested structure, a map, or a list of non-scalars):
-#   BatchDeleteAttributes (member `Items` is a list of DeletableItem (only scalar lists in v0))
-#   BatchPutAttributes (member `Items` is a list of ReplaceableItem (only scalar lists in v0))
-#   DeleteAttributes (member `Attributes` is a list of Attribute (only scalar lists in v0))
-#   PutAttributes (member `Attributes` is a list of ReplaceableAttribute (only scalar lists in v0))
-
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
 #   ListDomains
 #   Select
+
+# Serializers for nested structures reached from a request body (#426): each
+# appends its members to the form parameter list under the caller's key prefix.
+
+# Serialize Attribute into the query form parameters under `prefix`.
+def attribute_to_query(list[query.QueryPair] p, str prefix, Attribute v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    if v.AlternateNameEncoding.is_some():
+        auto t0 = v.AlternateNameEncoding.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AlternateNameEncoding"), t0)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    if v.AlternateValueEncoding.is_some():
+        auto t1 = v.AlternateValueEncoding.unwrap()
+        p = query.query_scalar(p, query.query_key(prefix, "AlternateValueEncoding"), t1)
+    return p
+
+# Serialize DeletableItem into the query form parameters under `prefix`.
+def deletable_item_to_query(list[query.QueryPair] p, str prefix, DeletableItem v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ItemName"), v.Name)
+    auto qi0 = 1
+    for qe1 in v.Attributes.unwrap_or([]):
+        auto t2 = qe1
+        p = attribute_to_query(p, query.query_key(prefix, "Attributes") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize ReplaceableAttribute into the query form parameters under `prefix`.
+def replaceable_attribute_to_query(list[query.QueryPair] p, str prefix, ReplaceableAttribute v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name)
+    p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value)
+    if v.Replace.is_some():
+        auto t0 = query.query_bool(v.Replace.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Replace"), t0)
+    return p
+
+# Serialize ReplaceableItem into the query form parameters under `prefix`.
+def replaceable_item_to_query(list[query.QueryPair] p, str prefix, ReplaceableItem v) -> list[query.QueryPair]:
+    p = query.query_scalar(p, query.query_key(prefix, "ItemName"), v.Name)
+    auto qi0 = 1
+    for qe1 in v.Attributes:
+        auto t2 = qe1
+        p = replaceable_attribute_to_query(p, query.query_key(prefix, "Attributes") + "." + str(qi0), t2)
+        qi0 = qi0 + 1
+    return p
+
+# Serialize UpdateCondition into the query form parameters under `prefix`.
+def update_condition_to_query(list[query.QueryPair] p, str prefix, UpdateCondition v) -> list[query.QueryPair]:
+    if v.Name.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Name"), v.Name.unwrap())
+    if v.Value.is_some():
+        p = query.query_scalar(p, query.query_key(prefix, "Value"), v.Value.unwrap())
+    if v.Exists.is_some():
+        auto t0 = query.query_bool(v.Exists.unwrap())
+        p = query.query_scalar(p, query.query_key(prefix, "Exists"), t0)
+    return p
 
 # A bound SimpleDB client: credentials + region, threaded into every operation.
 struct SimpleDBClient:
     core.Credentials creds
     str region
 
+    # BatchDeleteAttributes
+    def batch_delete_attributes(self, BatchDeleteAttributesRequest input) -> str:
+        auto p = query.query_params("BatchDeleteAttributes", "2009-04-15")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        auto qi0 = 1
+        for qe1 in input.Items:
+            p = deletable_item_to_query(p, "Item." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, sdb_service(), self.region, p)
+
+    # BatchPutAttributes
+    # errors: DuplicateItemName, InvalidParameterValue, MissingParameter, NoSuchDomain, NumberDomainAttributesExceeded, NumberDomainBytesExceeded, NumberItemAttributesExceeded, NumberSubmittedAttributesExceeded, NumberSubmittedItemsExceeded
+    def batch_put_attributes(self, BatchPutAttributesRequest input) -> str:
+        auto p = query.query_params("BatchPutAttributes", "2009-04-15")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        auto qi0 = 1
+        for qe1 in input.Items:
+            p = replaceable_item_to_query(p, "Item." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        return query.query_request(self.creds, sdb_service(), self.region, p)
+
     # CreateDomain
     # errors: InvalidParameterValue, MissingParameter, NumberDomainsExceeded
     def create_domain(self, CreateDomainRequest input) -> str:
         auto p = query.query_params("CreateDomain", "2009-04-15")
         p = query.query_scalar(p, "DomainName", input.DomainName)
+        return query.query_request(self.creds, sdb_service(), self.region, p)
+
+    # DeleteAttributes
+    # errors: AttributeDoesNotExist, InvalidParameterValue, MissingParameter, NoSuchDomain
+    def delete_attributes(self, DeleteAttributesRequest input) -> str:
+        auto p = query.query_params("DeleteAttributes", "2009-04-15")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        p = query.query_scalar(p, "ItemName", input.ItemName)
+        auto qi0 = 1
+        for qe1 in input.Attributes.unwrap_or([]):
+            p = attribute_to_query(p, "Attribute." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Expected.is_some():
+            p = update_condition_to_query(p, "Expected", input.Expected.unwrap())
         return query.query_request(self.creds, sdb_service(), self.region, p)
 
     # DeleteDomain
@@ -305,6 +388,20 @@ struct SimpleDBClient:
             p = query.query_scalar(p, "MaxNumberOfDomains", t0)
         if input.NextToken.is_some():
             p = query.query_scalar(p, "NextToken", input.NextToken.unwrap())
+        return query.query_request(self.creds, sdb_service(), self.region, p)
+
+    # PutAttributes
+    # errors: AttributeDoesNotExist, InvalidParameterValue, MissingParameter, NoSuchDomain, NumberDomainAttributesExceeded, NumberDomainBytesExceeded, NumberItemAttributesExceeded
+    def put_attributes(self, PutAttributesRequest input) -> str:
+        auto p = query.query_params("PutAttributes", "2009-04-15")
+        p = query.query_scalar(p, "DomainName", input.DomainName)
+        p = query.query_scalar(p, "ItemName", input.ItemName)
+        auto qi0 = 1
+        for qe1 in input.Attributes:
+            p = replaceable_attribute_to_query(p, "Attribute." + str(qi0), qe1)
+            qi0 = qi0 + 1
+        if input.Expected.is_some():
+            p = update_condition_to_query(p, "Expected", input.Expected.unwrap())
         return query.query_request(self.creds, sdb_service(), self.region, p)
 
     # Select

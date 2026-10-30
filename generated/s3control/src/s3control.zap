@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 97 operations — 65 with a generated method,
-#   32 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 97 operations — 91 with a generated method,
+#   6 skipped (a body member is not yet serializable by the XML emitter).
 #   319 structs (plain carriers), 49 enums, 12 error variants.
 #   0 paginators generated (3 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -2059,41 +2059,16 @@ def s3_control_error_from_code(str code) -> S3_ControlError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a body member is not yet serializable by the XML
-# emitter — a bool, a map, a list/map of non-scalars, or an XML document body
-# with no httpPayload):
-#   AssociateAccessGrantsIdentityCenter (rest-xml document body without httpPayload (members IdentityCenterArn) is a v0 follow-up)
-#   CreateAccessGrant (rest-xml document body without httpPayload (members AccessGrantsLocationId, AccessGrantsLocationConfiguration, Grantee, Permission, ApplicationArn, S3PrefixType, Tags) is a v0 follow-up)
-#   CreateAccessGrantsInstance (rest-xml document body without httpPayload (members IdentityCenterArn, Tags) is a v0 follow-up)
-#   CreateAccessGrantsLocation (rest-xml document body without httpPayload (members LocationScope, IAMRoleArn, Tags) is a v0 follow-up)
-#   CreateAccessPoint (rest-xml document body without httpPayload (members Bucket, VpcConfiguration, PublicAccessBlockConfiguration, BucketAccountId, Scope, Tags) is a v0 follow-up)
-#   CreateAccessPointForObjectLambda (rest-xml document body without httpPayload (members Configuration) is a v0 follow-up)
+# Operations skipped (a bound uri/query/header member of an unsupported type
+# (bool/timestamp/list, #425), an optional or non-derivable httpPayload (#427),
+# or a residual XML-body limit — a scalar carrying its own xmlNamespace, a
+# list/map of lists/maps, or a recursive shape graph):
 #   CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional (v0 needs a required body))
-#   CreateJob (rest-xml document body without httpPayload (members ConfirmationRequired, Operation, Report, ClientRequestToken, Manifest, Description, Priority, RoleArn, Tags, ManifestGenerator) is a v0 follow-up)
-#   CreateMultiRegionAccessPoint (rest-xml document body without httpPayload (members ClientToken, Details) is a v0 follow-up)
-#   CreateStorageLensGroup (rest-xml document body without httpPayload (members StorageLensGroup, Tags) is a v0 follow-up)
-#   DeleteMultiRegionAccessPoint (rest-xml document body without httpPayload (members ClientToken, Details) is a v0 follow-up)
 #   ListCallerAccessGrants (httpQuery `AllowedByApplication` has unsupported type bool)
 #   ListJobs (httpQuery `JobStatuses` has unsupported type list[JobStatus])
-#   PutAccessGrantsInstanceResourcePolicy (rest-xml document body without httpPayload (members Policy, Organization) is a v0 follow-up)
-#   PutAccessPointConfigurationForObjectLambda (rest-xml document body without httpPayload (members Configuration) is a v0 follow-up)
-#   PutAccessPointPolicy (rest-xml document body without httpPayload (members Policy) is a v0 follow-up)
-#   PutAccessPointPolicyForObjectLambda (rest-xml document body without httpPayload (members Policy) is a v0 follow-up)
-#   PutAccessPointScope (rest-xml document body without httpPayload (members Scope) is a v0 follow-up)
 #   PutBucketLifecycleConfiguration (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
 #   PutBucketPolicy (httpHeader `ConfirmRemoveSelfBucketAccess` has unsupported type bool)
-#   PutBucketReplication (member `Rules` is a list of ReplicationRule (only string lists in v0))
-#   PutBucketTagging (member `TagSet` is a list of S3Tag (only string lists in v0))
-#   PutJobTagging (rest-xml document body without httpPayload (members Tags) is a v0 follow-up)
-#   PutMultiRegionAccessPointPolicy (rest-xml document body without httpPayload (members ClientToken, Details) is a v0 follow-up)
-#   PutPublicAccessBlock (member `BlockPublicAcls` is a bool (the codec has no xml_bool yet))
-#   PutStorageLensConfiguration (rest-xml document body without httpPayload (members StorageLensConfiguration, Tags) is a v0 follow-up)
-#   PutStorageLensConfigurationTagging (rest-xml document body without httpPayload (members Tags) is a v0 follow-up)
-#   SubmitMultiRegionAccessPointRoutes (rest-xml document body without httpPayload (members RouteUpdates) is a v0 follow-up)
-#   TagResource (rest-xml document body without httpPayload (members Tags) is a v0 follow-up)
 #   UntagResource (httpQuery `TagKeys` has unsupported type list[str])
-#   UpdateAccessGrantsLocation (rest-xml document body without httpPayload (members IAMRoleArn) is a v0 follow-up)
-#   UpdateStorageLensGroup (rest-xml document body without httpPayload (members StorageLensGroup) is a v0 follow-up)
 
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
@@ -2101,10 +2076,735 @@ def s3_control_error_from_code(str code) -> S3_ControlError:
 #   ListAccessPointsForObjectLambda
 #   ListCallerAccessGrants
 
+# Render a boolean as its XML text (the rest-xml codec has no bool helper).
+def s3_control_xml_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
+
 # A bound S3_Control client: credentials + region, threaded into every operation.
 struct S3_ControlClient:
     core.Credentials creds
     str region
+
+    # AssociateAccessGrantsIdentityCenter  POST /v20180820/accessgrantsinstance/identitycenter
+    def associate_access_grants_identity_center(self, AssociateAccessGrantsIdentityCenterRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/identitycenter", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("AssociateAccessGrantsIdentityCenterRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "IdentityCenterArn", input.IdentityCenterArn)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateAccessGrant  POST /v20180820/accessgrantsinstance/grant
+    def create_access_grant(self, CreateAccessGrantRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/grant", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateAccessGrantRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto t0 = input.AccessGrantsLocationId
+        restxml.rest_xml_scalar(root, "AccessGrantsLocationId", t0)
+        if input.AccessGrantsLocationConfiguration.is_some():
+            auto n1 = restxml.rest_xml_struct(root, "AccessGrantsLocationConfiguration")
+            if input.AccessGrantsLocationConfiguration.unwrap().S3SubPrefix.is_some():
+                auto t2 = input.AccessGrantsLocationConfiguration.unwrap().S3SubPrefix.unwrap()
+                restxml.rest_xml_scalar(n1, "S3SubPrefix", t2)
+        auto n3 = restxml.rest_xml_struct(root, "Grantee")
+        if input.Grantee.GranteeType.is_some():
+            auto t4 = input.Grantee.GranteeType.unwrap()
+            restxml.rest_xml_scalar(n3, "GranteeType", t4)
+        if input.Grantee.GranteeIdentifier.is_some():
+            auto t5 = input.Grantee.GranteeIdentifier.unwrap()
+            restxml.rest_xml_scalar(n3, "GranteeIdentifier", t5)
+        restxml.rest_xml_scalar(root, "Permission", input.Permission)
+        if input.ApplicationArn.is_some():
+            auto t6 = input.ApplicationArn.unwrap()
+            restxml.rest_xml_scalar(root, "ApplicationArn", t6)
+        if input.S3PrefixType.is_some():
+            restxml.rest_xml_scalar(root, "S3PrefixType", input.S3PrefixType.unwrap())
+        if input.Tags.is_some():
+            auto t7 = input.Tags.unwrap()
+            auto n8 = restxml.rest_xml_struct(root, "Tags")
+            for t9 in t7:
+                auto n10 = restxml.rest_xml_struct(n8, "Tag")
+                restxml.rest_xml_scalar(n10, "Key", t9.Key)
+                restxml.rest_xml_scalar(n10, "Value", t9.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateAccessGrantsInstance  POST /v20180820/accessgrantsinstance
+    def create_access_grants_instance(self, CreateAccessGrantsInstanceRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateAccessGrantsInstanceRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        if input.IdentityCenterArn.is_some():
+            auto t0 = input.IdentityCenterArn.unwrap()
+            restxml.rest_xml_scalar(root, "IdentityCenterArn", t0)
+        if input.Tags.is_some():
+            auto t1 = input.Tags.unwrap()
+            auto n2 = restxml.rest_xml_struct(root, "Tags")
+            for t3 in t1:
+                auto n4 = restxml.rest_xml_struct(n2, "Tag")
+                restxml.rest_xml_scalar(n4, "Key", t3.Key)
+                restxml.rest_xml_scalar(n4, "Value", t3.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateAccessGrantsLocation  POST /v20180820/accessgrantsinstance/location
+    def create_access_grants_location(self, CreateAccessGrantsLocationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/accessgrantsinstance/location", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateAccessGrantsLocationRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "LocationScope", input.LocationScope)
+        restxml.rest_xml_scalar(root, "IAMRoleArn", input.IAMRoleArn)
+        if input.Tags.is_some():
+            auto t0 = input.Tags.unwrap()
+            auto n1 = restxml.rest_xml_struct(root, "Tags")
+            for t2 in t0:
+                auto n3 = restxml.rest_xml_struct(n1, "Tag")
+                restxml.rest_xml_scalar(n3, "Key", t2.Key)
+                restxml.rest_xml_scalar(n3, "Value", t2.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateAccessPoint  PUT /v20180820/accesspoint/{name}
+    def create_access_point(self, CreateAccessPointRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateAccessPointRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "Bucket", input.Bucket)
+        if input.VpcConfiguration.is_some():
+            auto n0 = restxml.rest_xml_struct(root, "VpcConfiguration")
+            restxml.rest_xml_scalar(n0, "VpcId", input.VpcConfiguration.unwrap().VpcId)
+        if input.PublicAccessBlockConfiguration.is_some():
+            auto n1 = restxml.rest_xml_struct(root, "PublicAccessBlockConfiguration")
+            if input.PublicAccessBlockConfiguration.unwrap().BlockPublicAcls.is_some():
+                auto t2 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.unwrap().BlockPublicAcls.unwrap())
+                restxml.rest_xml_scalar(n1, "BlockPublicAcls", t2)
+            if input.PublicAccessBlockConfiguration.unwrap().IgnorePublicAcls.is_some():
+                auto t3 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.unwrap().IgnorePublicAcls.unwrap())
+                restxml.rest_xml_scalar(n1, "IgnorePublicAcls", t3)
+            if input.PublicAccessBlockConfiguration.unwrap().BlockPublicPolicy.is_some():
+                auto t4 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.unwrap().BlockPublicPolicy.unwrap())
+                restxml.rest_xml_scalar(n1, "BlockPublicPolicy", t4)
+            if input.PublicAccessBlockConfiguration.unwrap().RestrictPublicBuckets.is_some():
+                auto t5 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.unwrap().RestrictPublicBuckets.unwrap())
+                restxml.rest_xml_scalar(n1, "RestrictPublicBuckets", t5)
+        if input.BucketAccountId.is_some():
+            auto t6 = input.BucketAccountId.unwrap()
+            restxml.rest_xml_scalar(root, "BucketAccountId", t6)
+        if input.Scope.is_some():
+            auto n7 = restxml.rest_xml_struct(root, "Scope")
+            if input.Scope.unwrap().Prefixes.is_some():
+                auto t8 = input.Scope.unwrap().Prefixes.unwrap()
+                restxml.rest_xml_wrapped_list(n7, "Prefixes", "Prefix", t8)
+            if input.Scope.unwrap().Permissions.is_some():
+                auto t9 = input.Scope.unwrap().Permissions.unwrap()
+                restxml.rest_xml_wrapped_list(n7, "Permissions", "Permission", t9)
+        if input.Tags.is_some():
+            auto t10 = input.Tags.unwrap()
+            auto n11 = restxml.rest_xml_struct(root, "Tags")
+            for t12 in t10:
+                auto n13 = restxml.rest_xml_struct(n11, "Tag")
+                restxml.rest_xml_scalar(n13, "Key", t12.Key)
+                restxml.rest_xml_scalar(n13, "Value", t12.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateAccessPointForObjectLambda  PUT /v20180820/accesspointforobjectlambda/{name}
+    def create_access_point_for_object_lambda(self, CreateAccessPointForObjectLambdaRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateAccessPointForObjectLambdaRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "Configuration")
+        auto t1 = input.Configuration.SupportingAccessPoint
+        restxml.rest_xml_scalar(n0, "SupportingAccessPoint", t1)
+        if input.Configuration.CloudWatchMetricsEnabled.is_some():
+            auto t2 = s3_control_xml_bool(input.Configuration.CloudWatchMetricsEnabled.unwrap())
+            restxml.rest_xml_scalar(n0, "CloudWatchMetricsEnabled", t2)
+        if input.Configuration.AllowedFeatures.is_some():
+            auto t3 = input.Configuration.AllowedFeatures.unwrap()
+            restxml.rest_xml_wrapped_list(n0, "AllowedFeatures", "AllowedFeature", t3)
+        auto n4 = restxml.rest_xml_struct(n0, "TransformationConfigurations")
+        for t5 in input.Configuration.TransformationConfigurations:
+            auto n6 = restxml.rest_xml_struct(n4, "TransformationConfiguration")
+            restxml.rest_xml_wrapped_list(n6, "Actions", "Action", t5.Actions)
+            auto n7 = restxml.rest_xml_struct(n6, "ContentTransformation")
+            if t5.ContentTransformation.AwsLambda.is_some():
+                auto n8 = restxml.rest_xml_struct(n7, "AwsLambda")
+                auto t9 = t5.ContentTransformation.AwsLambda.unwrap().FunctionArn
+                restxml.rest_xml_scalar(n8, "FunctionArn", t9)
+                if t5.ContentTransformation.AwsLambda.unwrap().FunctionPayload.is_some():
+                    auto t10 = t5.ContentTransformation.AwsLambda.unwrap().FunctionPayload.unwrap()
+                    restxml.rest_xml_scalar(n8, "FunctionPayload", t10)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateJob  POST /v20180820/jobs
+    # errors: BadRequestException, IdempotencyException, InternalServiceException, TooManyRequestsException
+    def create_job(self, CreateJobRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateJobRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        if input.ConfirmationRequired.is_some():
+            auto t0 = s3_control_xml_bool(input.ConfirmationRequired.unwrap())
+            restxml.rest_xml_scalar(root, "ConfirmationRequired", t0)
+        auto n1 = restxml.rest_xml_struct(root, "Operation")
+        if input.Operation.LambdaInvoke.is_some():
+            auto n2 = restxml.rest_xml_struct(n1, "LambdaInvoke")
+            if input.Operation.LambdaInvoke.unwrap().FunctionArn.is_some():
+                auto t3 = input.Operation.LambdaInvoke.unwrap().FunctionArn.unwrap()
+                restxml.rest_xml_scalar(n2, "FunctionArn", t3)
+            if input.Operation.LambdaInvoke.unwrap().InvocationSchemaVersion.is_some():
+                auto t4 = input.Operation.LambdaInvoke.unwrap().InvocationSchemaVersion.unwrap()
+                restxml.rest_xml_scalar(n2, "InvocationSchemaVersion", t4)
+            if input.Operation.LambdaInvoke.unwrap().UserArguments.is_some():
+                auto t5 = input.Operation.LambdaInvoke.unwrap().UserArguments.unwrap()
+                auto n6 = restxml.rest_xml_struct(n2, "UserArguments")
+                for t7 in sorted(t5.keys()):
+                    auto n8 = restxml.rest_xml_struct(n6, "entry")
+                    restxml.rest_xml_scalar(n8, "key", t7)
+                    restxml.rest_xml_scalar(n8, "value", t5[t7])
+        if input.Operation.S3PutObjectCopy.is_some():
+            auto n9 = restxml.rest_xml_struct(n1, "S3PutObjectCopy")
+            if input.Operation.S3PutObjectCopy.unwrap().TargetResource.is_some():
+                auto t10 = input.Operation.S3PutObjectCopy.unwrap().TargetResource.unwrap()
+                restxml.rest_xml_scalar(n9, "TargetResource", t10)
+            if input.Operation.S3PutObjectCopy.unwrap().CannedAccessControlList.is_some():
+                auto t11 = input.Operation.S3PutObjectCopy.unwrap().CannedAccessControlList.unwrap()
+                restxml.rest_xml_scalar(n9, "CannedAccessControlList", t11)
+            if input.Operation.S3PutObjectCopy.unwrap().AccessControlGrants.is_some():
+                auto t12 = input.Operation.S3PutObjectCopy.unwrap().AccessControlGrants.unwrap()
+                auto n13 = restxml.rest_xml_struct(n9, "AccessControlGrants")
+                for t14 in t12:
+                    auto n15 = restxml.rest_xml_struct(n13, "member")
+                    if t14.Grantee.is_some():
+                        auto n16 = restxml.rest_xml_struct(n15, "Grantee")
+                        if t14.Grantee.unwrap().TypeIdentifier.is_some():
+                            auto t17 = t14.Grantee.unwrap().TypeIdentifier.unwrap()
+                            restxml.rest_xml_scalar(n16, "TypeIdentifier", t17)
+                        if t14.Grantee.unwrap().Identifier.is_some():
+                            auto t18 = t14.Grantee.unwrap().Identifier.unwrap()
+                            restxml.rest_xml_scalar(n16, "Identifier", t18)
+                        if t14.Grantee.unwrap().DisplayName.is_some():
+                            auto t19 = t14.Grantee.unwrap().DisplayName.unwrap()
+                            restxml.rest_xml_scalar(n16, "DisplayName", t19)
+                    if t14.Permission.is_some():
+                        auto t20 = t14.Permission.unwrap()
+                        restxml.rest_xml_scalar(n15, "Permission", t20)
+            if input.Operation.S3PutObjectCopy.unwrap().MetadataDirective.is_some():
+                auto t21 = input.Operation.S3PutObjectCopy.unwrap().MetadataDirective.unwrap()
+                restxml.rest_xml_scalar(n9, "MetadataDirective", t21)
+            if input.Operation.S3PutObjectCopy.unwrap().AnnotationDirective.is_some():
+                auto t22 = input.Operation.S3PutObjectCopy.unwrap().AnnotationDirective.unwrap()
+                restxml.rest_xml_scalar(n9, "AnnotationDirective", t22)
+            if input.Operation.S3PutObjectCopy.unwrap().ModifiedSinceConstraint.is_some():
+                auto t23 = restxml.xml_timestamp_iso8601(input.Operation.S3PutObjectCopy.unwrap().ModifiedSinceConstraint.unwrap())
+                restxml.rest_xml_scalar(n9, "ModifiedSinceConstraint", t23)
+            if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.is_some():
+                auto n24 = restxml.rest_xml_struct(n9, "NewObjectMetadata")
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().CacheControl.is_some():
+                    auto t25 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().CacheControl.unwrap()
+                    restxml.rest_xml_scalar(n24, "CacheControl", t25)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentDisposition.is_some():
+                    auto t26 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentDisposition.unwrap()
+                    restxml.rest_xml_scalar(n24, "ContentDisposition", t26)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentEncoding.is_some():
+                    auto t27 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentEncoding.unwrap()
+                    restxml.rest_xml_scalar(n24, "ContentEncoding", t27)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentLanguage.is_some():
+                    auto t28 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentLanguage.unwrap()
+                    restxml.rest_xml_scalar(n24, "ContentLanguage", t28)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().UserMetadata.is_some():
+                    auto t29 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().UserMetadata.unwrap()
+                    auto n30 = restxml.rest_xml_struct(n24, "UserMetadata")
+                    for t31 in sorted(t29.keys()):
+                        auto n32 = restxml.rest_xml_struct(n30, "entry")
+                        restxml.rest_xml_scalar(n32, "key", t31)
+                        restxml.rest_xml_scalar(n32, "value", t29[t31])
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentLength.is_some():
+                    auto t33 = str(input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentLength.unwrap())
+                    restxml.rest_xml_scalar(n24, "ContentLength", t33)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentMD5.is_some():
+                    auto t34 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentMD5.unwrap()
+                    restxml.rest_xml_scalar(n24, "ContentMD5", t34)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentType.is_some():
+                    auto t35 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().ContentType.unwrap()
+                    restxml.rest_xml_scalar(n24, "ContentType", t35)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().HttpExpiresDate.is_some():
+                    auto t36 = restxml.xml_timestamp_iso8601(input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().HttpExpiresDate.unwrap())
+                    restxml.rest_xml_scalar(n24, "HttpExpiresDate", t36)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().RequesterCharged.is_some():
+                    auto t37 = s3_control_xml_bool(input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().RequesterCharged.unwrap())
+                    restxml.rest_xml_scalar(n24, "RequesterCharged", t37)
+                if input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().SSEAlgorithm.is_some():
+                    auto t38 = input.Operation.S3PutObjectCopy.unwrap().NewObjectMetadata.unwrap().SSEAlgorithm.unwrap()
+                    restxml.rest_xml_scalar(n24, "SSEAlgorithm", t38)
+            if input.Operation.S3PutObjectCopy.unwrap().NewObjectTagging.is_some():
+                auto t39 = input.Operation.S3PutObjectCopy.unwrap().NewObjectTagging.unwrap()
+                auto n40 = restxml.rest_xml_struct(n9, "NewObjectTagging")
+                for t41 in t39:
+                    auto n42 = restxml.rest_xml_struct(n40, "member")
+                    restxml.rest_xml_scalar(n42, "Key", t41.Key)
+                    restxml.rest_xml_scalar(n42, "Value", t41.Value)
+            if input.Operation.S3PutObjectCopy.unwrap().RedirectLocation.is_some():
+                auto t43 = input.Operation.S3PutObjectCopy.unwrap().RedirectLocation.unwrap()
+                restxml.rest_xml_scalar(n9, "RedirectLocation", t43)
+            if input.Operation.S3PutObjectCopy.unwrap().RequesterPays.is_some():
+                auto t44 = s3_control_xml_bool(input.Operation.S3PutObjectCopy.unwrap().RequesterPays.unwrap())
+                restxml.rest_xml_scalar(n9, "RequesterPays", t44)
+            if input.Operation.S3PutObjectCopy.unwrap().StorageClass.is_some():
+                auto t45 = input.Operation.S3PutObjectCopy.unwrap().StorageClass.unwrap()
+                restxml.rest_xml_scalar(n9, "StorageClass", t45)
+            if input.Operation.S3PutObjectCopy.unwrap().UnModifiedSinceConstraint.is_some():
+                auto t46 = restxml.xml_timestamp_iso8601(input.Operation.S3PutObjectCopy.unwrap().UnModifiedSinceConstraint.unwrap())
+                restxml.rest_xml_scalar(n9, "UnModifiedSinceConstraint", t46)
+            if input.Operation.S3PutObjectCopy.unwrap().SSEAwsKmsKeyId.is_some():
+                auto t47 = input.Operation.S3PutObjectCopy.unwrap().SSEAwsKmsKeyId.unwrap()
+                restxml.rest_xml_scalar(n9, "SSEAwsKmsKeyId", t47)
+            if input.Operation.S3PutObjectCopy.unwrap().TargetKeyPrefix.is_some():
+                auto t48 = input.Operation.S3PutObjectCopy.unwrap().TargetKeyPrefix.unwrap()
+                restxml.rest_xml_scalar(n9, "TargetKeyPrefix", t48)
+            if input.Operation.S3PutObjectCopy.unwrap().ObjectLockLegalHoldStatus.is_some():
+                auto t49 = input.Operation.S3PutObjectCopy.unwrap().ObjectLockLegalHoldStatus.unwrap()
+                restxml.rest_xml_scalar(n9, "ObjectLockLegalHoldStatus", t49)
+            if input.Operation.S3PutObjectCopy.unwrap().ObjectLockMode.is_some():
+                auto t50 = input.Operation.S3PutObjectCopy.unwrap().ObjectLockMode.unwrap()
+                restxml.rest_xml_scalar(n9, "ObjectLockMode", t50)
+            if input.Operation.S3PutObjectCopy.unwrap().ObjectLockRetainUntilDate.is_some():
+                auto t51 = restxml.xml_timestamp_iso8601(input.Operation.S3PutObjectCopy.unwrap().ObjectLockRetainUntilDate.unwrap())
+                restxml.rest_xml_scalar(n9, "ObjectLockRetainUntilDate", t51)
+            if input.Operation.S3PutObjectCopy.unwrap().BucketKeyEnabled.is_some():
+                auto t52 = s3_control_xml_bool(input.Operation.S3PutObjectCopy.unwrap().BucketKeyEnabled.unwrap())
+                restxml.rest_xml_scalar(n9, "BucketKeyEnabled", t52)
+            if input.Operation.S3PutObjectCopy.unwrap().ChecksumAlgorithm.is_some():
+                auto t53 = input.Operation.S3PutObjectCopy.unwrap().ChecksumAlgorithm.unwrap()
+                restxml.rest_xml_scalar(n9, "ChecksumAlgorithm", t53)
+            if input.Operation.S3PutObjectCopy.unwrap().ObjectLockEventHold.is_some():
+                auto t54 = input.Operation.S3PutObjectCopy.unwrap().ObjectLockEventHold.unwrap()
+                restxml.rest_xml_scalar(n9, "ObjectLockEventHold", t54)
+            if input.Operation.S3PutObjectCopy.unwrap().ObjectLockEventHoldDuration.is_some():
+                auto n55 = restxml.rest_xml_struct(n9, "ObjectLockEventHoldDuration")
+                if input.Operation.S3PutObjectCopy.unwrap().ObjectLockEventHoldDuration.unwrap().Days.is_some():
+                    auto t56 = str(input.Operation.S3PutObjectCopy.unwrap().ObjectLockEventHoldDuration.unwrap().Days.unwrap())
+                    restxml.rest_xml_scalar(n55, "Days", t56)
+                if input.Operation.S3PutObjectCopy.unwrap().ObjectLockEventHoldDuration.unwrap().Years.is_some():
+                    auto t57 = str(input.Operation.S3PutObjectCopy.unwrap().ObjectLockEventHoldDuration.unwrap().Years.unwrap())
+                    restxml.rest_xml_scalar(n55, "Years", t57)
+        if input.Operation.S3PutObjectAcl.is_some():
+            auto n58 = restxml.rest_xml_struct(n1, "S3PutObjectAcl")
+            if input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.is_some():
+                auto n59 = restxml.rest_xml_struct(n58, "AccessControlPolicy")
+                if input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().AccessControlList.is_some():
+                    auto n60 = restxml.rest_xml_struct(n59, "AccessControlList")
+                    auto n61 = restxml.rest_xml_struct(n60, "Owner")
+                    if input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().AccessControlList.unwrap().Owner.ID.is_some():
+                        auto t62 = input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().AccessControlList.unwrap().Owner.ID.unwrap()
+                        restxml.rest_xml_scalar(n61, "ID", t62)
+                    if input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().AccessControlList.unwrap().Owner.DisplayName.is_some():
+                        auto t63 = input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().AccessControlList.unwrap().Owner.DisplayName.unwrap()
+                        restxml.rest_xml_scalar(n61, "DisplayName", t63)
+                    if input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().AccessControlList.unwrap().Grants.is_some():
+                        auto t64 = input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().AccessControlList.unwrap().Grants.unwrap()
+                        auto n65 = restxml.rest_xml_struct(n60, "Grants")
+                        for t66 in t64:
+                            auto n67 = restxml.rest_xml_struct(n65, "member")
+                            if t66.Grantee.is_some():
+                                auto n68 = restxml.rest_xml_struct(n67, "Grantee")
+                                if t66.Grantee.unwrap().TypeIdentifier.is_some():
+                                    auto t69 = t66.Grantee.unwrap().TypeIdentifier.unwrap()
+                                    restxml.rest_xml_scalar(n68, "TypeIdentifier", t69)
+                                if t66.Grantee.unwrap().Identifier.is_some():
+                                    auto t70 = t66.Grantee.unwrap().Identifier.unwrap()
+                                    restxml.rest_xml_scalar(n68, "Identifier", t70)
+                                if t66.Grantee.unwrap().DisplayName.is_some():
+                                    auto t71 = t66.Grantee.unwrap().DisplayName.unwrap()
+                                    restxml.rest_xml_scalar(n68, "DisplayName", t71)
+                            if t66.Permission.is_some():
+                                auto t72 = t66.Permission.unwrap()
+                                restxml.rest_xml_scalar(n67, "Permission", t72)
+                if input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().CannedAccessControlList.is_some():
+                    auto t73 = input.Operation.S3PutObjectAcl.unwrap().AccessControlPolicy.unwrap().CannedAccessControlList.unwrap()
+                    restxml.rest_xml_scalar(n59, "CannedAccessControlList", t73)
+        if input.Operation.S3PutObjectTagging.is_some():
+            auto n74 = restxml.rest_xml_struct(n1, "S3PutObjectTagging")
+            if input.Operation.S3PutObjectTagging.unwrap().TagSet.is_some():
+                auto t75 = input.Operation.S3PutObjectTagging.unwrap().TagSet.unwrap()
+                auto n76 = restxml.rest_xml_struct(n74, "TagSet")
+                for t77 in t75:
+                    auto n78 = restxml.rest_xml_struct(n76, "member")
+                    restxml.rest_xml_scalar(n78, "Key", t77.Key)
+                    restxml.rest_xml_scalar(n78, "Value", t77.Value)
+        if input.Operation.S3DeleteObjectTagging.is_some():
+            auto n79 = restxml.rest_xml_struct(n1, "S3DeleteObjectTagging")
+        if input.Operation.S3InitiateRestoreObject.is_some():
+            auto n80 = restxml.rest_xml_struct(n1, "S3InitiateRestoreObject")
+            if input.Operation.S3InitiateRestoreObject.unwrap().ExpirationInDays.is_some():
+                auto t81 = str(input.Operation.S3InitiateRestoreObject.unwrap().ExpirationInDays.unwrap())
+                restxml.rest_xml_scalar(n80, "ExpirationInDays", t81)
+            if input.Operation.S3InitiateRestoreObject.unwrap().GlacierJobTier.is_some():
+                auto t82 = input.Operation.S3InitiateRestoreObject.unwrap().GlacierJobTier.unwrap()
+                restxml.rest_xml_scalar(n80, "GlacierJobTier", t82)
+        if input.Operation.S3PutObjectLegalHold.is_some():
+            auto n83 = restxml.rest_xml_struct(n1, "S3PutObjectLegalHold")
+            auto n84 = restxml.rest_xml_struct(n83, "LegalHold")
+            auto t85 = input.Operation.S3PutObjectLegalHold.unwrap().LegalHold.Status
+            restxml.rest_xml_scalar(n84, "Status", t85)
+        if input.Operation.S3PutObjectRetention.is_some():
+            auto n86 = restxml.rest_xml_struct(n1, "S3PutObjectRetention")
+            if input.Operation.S3PutObjectRetention.unwrap().BypassGovernanceRetention.is_some():
+                auto t87 = s3_control_xml_bool(input.Operation.S3PutObjectRetention.unwrap().BypassGovernanceRetention.unwrap())
+                restxml.rest_xml_scalar(n86, "BypassGovernanceRetention", t87)
+            auto n88 = restxml.rest_xml_struct(n86, "Retention")
+            if input.Operation.S3PutObjectRetention.unwrap().Retention.RetainUntilDate.is_some():
+                auto t89 = restxml.xml_timestamp_iso8601(input.Operation.S3PutObjectRetention.unwrap().Retention.RetainUntilDate.unwrap())
+                restxml.rest_xml_scalar(n88, "RetainUntilDate", t89)
+            if input.Operation.S3PutObjectRetention.unwrap().Retention.Mode.is_some():
+                auto t90 = input.Operation.S3PutObjectRetention.unwrap().Retention.Mode.unwrap()
+                restxml.rest_xml_scalar(n88, "Mode", t90)
+            if input.Operation.S3PutObjectRetention.unwrap().Retention.EventHold.is_some():
+                auto t91 = input.Operation.S3PutObjectRetention.unwrap().Retention.EventHold.unwrap()
+                restxml.rest_xml_scalar(n88, "EventHold", t91)
+            if input.Operation.S3PutObjectRetention.unwrap().Retention.EventHoldDuration.is_some():
+                auto n92 = restxml.rest_xml_struct(n88, "EventHoldDuration")
+                if input.Operation.S3PutObjectRetention.unwrap().Retention.EventHoldDuration.unwrap().Days.is_some():
+                    auto t93 = str(input.Operation.S3PutObjectRetention.unwrap().Retention.EventHoldDuration.unwrap().Days.unwrap())
+                    restxml.rest_xml_scalar(n92, "Days", t93)
+                if input.Operation.S3PutObjectRetention.unwrap().Retention.EventHoldDuration.unwrap().Years.is_some():
+                    auto t94 = str(input.Operation.S3PutObjectRetention.unwrap().Retention.EventHoldDuration.unwrap().Years.unwrap())
+                    restxml.rest_xml_scalar(n92, "Years", t94)
+        if input.Operation.S3ReplicateObject.is_some():
+            auto n95 = restxml.rest_xml_struct(n1, "S3ReplicateObject")
+        if input.Operation.S3ComputeObjectChecksum.is_some():
+            auto n96 = restxml.rest_xml_struct(n1, "S3ComputeObjectChecksum")
+            if input.Operation.S3ComputeObjectChecksum.unwrap().ChecksumAlgorithm.is_some():
+                auto t97 = input.Operation.S3ComputeObjectChecksum.unwrap().ChecksumAlgorithm.unwrap()
+                restxml.rest_xml_scalar(n96, "ChecksumAlgorithm", t97)
+            if input.Operation.S3ComputeObjectChecksum.unwrap().ChecksumType.is_some():
+                auto t98 = input.Operation.S3ComputeObjectChecksum.unwrap().ChecksumType.unwrap()
+                restxml.rest_xml_scalar(n96, "ChecksumType", t98)
+        if input.Operation.S3UpdateObjectEncryption.is_some():
+            auto n99 = restxml.rest_xml_struct(n1, "S3UpdateObjectEncryption")
+            if input.Operation.S3UpdateObjectEncryption.unwrap().ObjectEncryption.is_some():
+                auto n100 = restxml.rest_xml_struct(n99, "ObjectEncryption")
+                if input.Operation.S3UpdateObjectEncryption.unwrap().ObjectEncryption.unwrap().SSEKMS.is_some():
+                    auto n101 = restxml.rest_xml_struct(n100, "SSE-KMS")
+                    auto t102 = input.Operation.S3UpdateObjectEncryption.unwrap().ObjectEncryption.unwrap().SSEKMS.unwrap().KMSKeyArn
+                    restxml.rest_xml_scalar(n101, "KMSKeyArn", t102)
+                    if input.Operation.S3UpdateObjectEncryption.unwrap().ObjectEncryption.unwrap().SSEKMS.unwrap().BucketKeyEnabled.is_some():
+                        auto t103 = s3_control_xml_bool(input.Operation.S3UpdateObjectEncryption.unwrap().ObjectEncryption.unwrap().SSEKMS.unwrap().BucketKeyEnabled.unwrap())
+                        restxml.rest_xml_scalar(n101, "BucketKeyEnabled", t103)
+        auto n104 = restxml.rest_xml_struct(root, "Report")
+        if input.Report.Bucket.is_some():
+            restxml.rest_xml_scalar(n104, "Bucket", input.Report.Bucket.unwrap())
+        if input.Report.Format.is_some():
+            restxml.rest_xml_scalar(n104, "Format", input.Report.Format.unwrap())
+        auto t105 = s3_control_xml_bool(input.Report.Enabled)
+        restxml.rest_xml_scalar(n104, "Enabled", t105)
+        if input.Report.Prefix.is_some():
+            restxml.rest_xml_scalar(n104, "Prefix", input.Report.Prefix.unwrap())
+        if input.Report.ReportScope.is_some():
+            auto t106 = input.Report.ReportScope.unwrap()
+            restxml.rest_xml_scalar(n104, "ReportScope", t106)
+        if input.Report.ExpectedBucketOwner.is_some():
+            auto t107 = input.Report.ExpectedBucketOwner.unwrap()
+            restxml.rest_xml_scalar(n104, "ExpectedBucketOwner", t107)
+        restxml.rest_xml_scalar(root, "ClientRequestToken", input.ClientRequestToken)
+        if input.Manifest.is_some():
+            auto n108 = restxml.rest_xml_struct(root, "Manifest")
+            auto n109 = restxml.rest_xml_struct(n108, "Spec")
+            restxml.rest_xml_scalar(n109, "Format", input.Manifest.unwrap().Spec.Format)
+            if input.Manifest.unwrap().Spec.Fields.is_some():
+                auto t110 = input.Manifest.unwrap().Spec.Fields.unwrap()
+                restxml.rest_xml_wrapped_list(n109, "Fields", "member", t110)
+            auto n111 = restxml.rest_xml_struct(n108, "Location")
+            auto t112 = input.Manifest.unwrap().Location.ObjectArn
+            restxml.rest_xml_scalar(n111, "ObjectArn", t112)
+            if input.Manifest.unwrap().Location.ObjectVersionId.is_some():
+                auto t113 = input.Manifest.unwrap().Location.ObjectVersionId.unwrap()
+                restxml.rest_xml_scalar(n111, "ObjectVersionId", t113)
+            restxml.rest_xml_scalar(n111, "ETag", input.Manifest.unwrap().Location.ETag)
+        if input.Description.is_some():
+            restxml.rest_xml_scalar(root, "Description", input.Description.unwrap())
+        restxml.rest_xml_scalar(root, "Priority", str(input.Priority))
+        restxml.rest_xml_scalar(root, "RoleArn", input.RoleArn)
+        if input.Tags.is_some():
+            auto t114 = input.Tags.unwrap()
+            auto n115 = restxml.rest_xml_struct(root, "Tags")
+            for t116 in t114:
+                auto n117 = restxml.rest_xml_struct(n115, "member")
+                restxml.rest_xml_scalar(n117, "Key", t116.Key)
+                restxml.rest_xml_scalar(n117, "Value", t116.Value)
+        if input.ManifestGenerator.is_some():
+            auto n118 = restxml.rest_xml_struct(root, "ManifestGenerator")
+            if input.ManifestGenerator.unwrap().S3JobManifestGenerator.is_some():
+                auto n119 = restxml.rest_xml_struct(n118, "S3JobManifestGenerator")
+                if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ExpectedBucketOwner.is_some():
+                    auto t120 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ExpectedBucketOwner.unwrap()
+                    restxml.rest_xml_scalar(n119, "ExpectedBucketOwner", t120)
+                auto t121 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().SourceBucket
+                restxml.rest_xml_scalar(n119, "SourceBucket", t121)
+                if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.is_some():
+                    auto n122 = restxml.rest_xml_struct(n119, "ManifestOutputLocation")
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ExpectedManifestBucketOwner.is_some():
+                        auto t123 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ExpectedManifestBucketOwner.unwrap()
+                        restxml.rest_xml_scalar(n122, "ExpectedManifestBucketOwner", t123)
+                    auto t124 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().Bucket
+                    restxml.rest_xml_scalar(n122, "Bucket", t124)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ManifestPrefix.is_some():
+                        auto t125 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ManifestPrefix.unwrap()
+                        restxml.rest_xml_scalar(n122, "ManifestPrefix", t125)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ManifestEncryption.is_some():
+                        auto n126 = restxml.rest_xml_struct(n122, "ManifestEncryption")
+                        if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ManifestEncryption.unwrap().SSES3.is_some():
+                            auto n127 = restxml.rest_xml_struct(n126, "SSE-S3")
+                        if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ManifestEncryption.unwrap().SSEKMS.is_some():
+                            auto n128 = restxml.rest_xml_struct(n126, "SSE-KMS")
+                            auto t129 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ManifestEncryption.unwrap().SSEKMS.unwrap().KeyId
+                            restxml.rest_xml_scalar(n128, "KeyId", t129)
+                    auto t130 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().ManifestOutputLocation.unwrap().ManifestFormat
+                    restxml.rest_xml_scalar(n122, "ManifestFormat", t130)
+                if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.is_some():
+                    auto n131 = restxml.rest_xml_struct(n119, "Filter")
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().EligibleForReplication.is_some():
+                        auto t132 = s3_control_xml_bool(input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().EligibleForReplication.unwrap())
+                        restxml.rest_xml_scalar(n131, "EligibleForReplication", t132)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().CreatedAfter.is_some():
+                        auto t133 = restxml.xml_timestamp_iso8601(input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().CreatedAfter.unwrap())
+                        restxml.rest_xml_scalar(n131, "CreatedAfter", t133)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().CreatedBefore.is_some():
+                        auto t134 = restxml.xml_timestamp_iso8601(input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().CreatedBefore.unwrap())
+                        restxml.rest_xml_scalar(n131, "CreatedBefore", t134)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().ObjectReplicationStatuses.is_some():
+                        auto t135 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().ObjectReplicationStatuses.unwrap()
+                        auto t136 = t135
+                        restxml.rest_xml_wrapped_list(n131, "ObjectReplicationStatuses", "member", t136)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().KeyNameConstraint.is_some():
+                        auto n137 = restxml.rest_xml_struct(n131, "KeyNameConstraint")
+                        if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().KeyNameConstraint.unwrap().MatchAnyPrefix.is_some():
+                            auto t138 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().KeyNameConstraint.unwrap().MatchAnyPrefix.unwrap()
+                            auto t139 = t138
+                            restxml.rest_xml_wrapped_list(n137, "MatchAnyPrefix", "member", t139)
+                        if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().KeyNameConstraint.unwrap().MatchAnySuffix.is_some():
+                            auto t140 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().KeyNameConstraint.unwrap().MatchAnySuffix.unwrap()
+                            auto t141 = t140
+                            restxml.rest_xml_wrapped_list(n137, "MatchAnySuffix", "member", t141)
+                        if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().KeyNameConstraint.unwrap().MatchAnySubstring.is_some():
+                            auto t142 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().KeyNameConstraint.unwrap().MatchAnySubstring.unwrap()
+                            auto t143 = t142
+                            restxml.rest_xml_wrapped_list(n137, "MatchAnySubstring", "member", t143)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().ObjectSizeGreaterThanBytes.is_some():
+                        auto t144 = str(input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().ObjectSizeGreaterThanBytes.unwrap())
+                        restxml.rest_xml_scalar(n131, "ObjectSizeGreaterThanBytes", t144)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().ObjectSizeLessThanBytes.is_some():
+                        auto t145 = str(input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().ObjectSizeLessThanBytes.unwrap())
+                        restxml.rest_xml_scalar(n131, "ObjectSizeLessThanBytes", t145)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().MatchAnyStorageClass.is_some():
+                        auto t146 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().MatchAnyStorageClass.unwrap()
+                        auto t147 = t146
+                        restxml.rest_xml_wrapped_list(n131, "MatchAnyStorageClass", "member", t147)
+                    if input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().MatchAnyObjectEncryption.is_some():
+                        auto t148 = input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().Filter.unwrap().MatchAnyObjectEncryption.unwrap()
+                        auto n149 = restxml.rest_xml_struct(n131, "MatchAnyObjectEncryption")
+                        for t150 in t148:
+                            auto n151 = restxml.rest_xml_struct(n149, "ObjectEncryption")
+                            if t150.SSES3.is_some():
+                                auto n152 = restxml.rest_xml_struct(n151, "SSE-S3")
+                            if t150.SSEKMS.is_some():
+                                auto n153 = restxml.rest_xml_struct(n151, "SSE-KMS")
+                                if t150.SSEKMS.unwrap().KmsKeyArn.is_some():
+                                    auto t154 = t150.SSEKMS.unwrap().KmsKeyArn.unwrap()
+                                    restxml.rest_xml_scalar(n153, "KmsKeyArn", t154)
+                                if t150.SSEKMS.unwrap().BucketKeyEnabled.is_some():
+                                    auto t155 = s3_control_xml_bool(t150.SSEKMS.unwrap().BucketKeyEnabled.unwrap())
+                                    restxml.rest_xml_scalar(n153, "BucketKeyEnabled", t155)
+                            if t150.DSSEKMS.is_some():
+                                auto n156 = restxml.rest_xml_struct(n151, "DSSE-KMS")
+                                if t150.DSSEKMS.unwrap().KmsKeyArn.is_some():
+                                    auto t157 = t150.DSSEKMS.unwrap().KmsKeyArn.unwrap()
+                                    restxml.rest_xml_scalar(n156, "KmsKeyArn", t157)
+                            if t150.SSEC.is_some():
+                                auto n158 = restxml.rest_xml_struct(n151, "SSE-C")
+                            if t150.NOTSSE.is_some():
+                                auto n159 = restxml.rest_xml_struct(n151, "NOT-SSE")
+                auto t160 = s3_control_xml_bool(input.ManifestGenerator.unwrap().S3JobManifestGenerator.unwrap().EnableManifestOutput)
+                restxml.rest_xml_scalar(n119, "EnableManifestOutput", t160)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateMultiRegionAccessPoint  POST /v20180820/async-requests/mrap/create
+    def create_multi_region_access_point(self, CreateMultiRegionAccessPointRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/create", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateMultiRegionAccessPointRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "ClientToken", input.ClientToken)
+        auto n0 = restxml.rest_xml_struct(root, "Details")
+        restxml.rest_xml_scalar(n0, "Name", input.Details.Name)
+        if input.Details.PublicAccessBlock.is_some():
+            auto n1 = restxml.rest_xml_struct(n0, "PublicAccessBlock")
+            if input.Details.PublicAccessBlock.unwrap().BlockPublicAcls.is_some():
+                auto t2 = s3_control_xml_bool(input.Details.PublicAccessBlock.unwrap().BlockPublicAcls.unwrap())
+                restxml.rest_xml_scalar(n1, "BlockPublicAcls", t2)
+            if input.Details.PublicAccessBlock.unwrap().IgnorePublicAcls.is_some():
+                auto t3 = s3_control_xml_bool(input.Details.PublicAccessBlock.unwrap().IgnorePublicAcls.unwrap())
+                restxml.rest_xml_scalar(n1, "IgnorePublicAcls", t3)
+            if input.Details.PublicAccessBlock.unwrap().BlockPublicPolicy.is_some():
+                auto t4 = s3_control_xml_bool(input.Details.PublicAccessBlock.unwrap().BlockPublicPolicy.unwrap())
+                restxml.rest_xml_scalar(n1, "BlockPublicPolicy", t4)
+            if input.Details.PublicAccessBlock.unwrap().RestrictPublicBuckets.is_some():
+                auto t5 = s3_control_xml_bool(input.Details.PublicAccessBlock.unwrap().RestrictPublicBuckets.unwrap())
+                restxml.rest_xml_scalar(n1, "RestrictPublicBuckets", t5)
+        auto n6 = restxml.rest_xml_struct(n0, "Regions")
+        for t7 in input.Details.Regions:
+            auto n8 = restxml.rest_xml_struct(n6, "Region")
+            restxml.rest_xml_scalar(n8, "Bucket", t7.Bucket)
+            if t7.BucketAccountId.is_some():
+                auto t9 = t7.BucketAccountId.unwrap()
+                restxml.rest_xml_scalar(n8, "BucketAccountId", t9)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # CreateStorageLensGroup  POST /v20180820/storagelensgroup
+    def create_storage_lens_group(self, CreateStorageLensGroupRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/storagelensgroup", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("CreateStorageLensGroupRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "StorageLensGroup")
+        restxml.rest_xml_scalar(n0, "Name", input.StorageLensGroup.Name)
+        auto n1 = restxml.rest_xml_struct(n0, "Filter")
+        if input.StorageLensGroup.Filter.MatchAnyPrefix.is_some():
+            auto t2 = input.StorageLensGroup.Filter.MatchAnyPrefix.unwrap()
+            restxml.rest_xml_wrapped_list(n1, "MatchAnyPrefix", "Prefix", t2)
+        if input.StorageLensGroup.Filter.MatchAnySuffix.is_some():
+            auto t3 = input.StorageLensGroup.Filter.MatchAnySuffix.unwrap()
+            restxml.rest_xml_wrapped_list(n1, "MatchAnySuffix", "Suffix", t3)
+        if input.StorageLensGroup.Filter.MatchAnyTag.is_some():
+            auto t4 = input.StorageLensGroup.Filter.MatchAnyTag.unwrap()
+            auto n5 = restxml.rest_xml_struct(n1, "MatchAnyTag")
+            for t6 in t4:
+                auto n7 = restxml.rest_xml_struct(n5, "Tag")
+                restxml.rest_xml_scalar(n7, "Key", t6.Key)
+                restxml.rest_xml_scalar(n7, "Value", t6.Value)
+        if input.StorageLensGroup.Filter.MatchObjectAge.is_some():
+            auto n8 = restxml.rest_xml_struct(n1, "MatchObjectAge")
+            if input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysGreaterThan.is_some():
+                auto t9 = str(input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysGreaterThan.unwrap())
+                restxml.rest_xml_scalar(n8, "DaysGreaterThan", t9)
+            if input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysLessThan.is_some():
+                auto t10 = str(input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysLessThan.unwrap())
+                restxml.rest_xml_scalar(n8, "DaysLessThan", t10)
+        if input.StorageLensGroup.Filter.MatchObjectSize.is_some():
+            auto n11 = restxml.rest_xml_struct(n1, "MatchObjectSize")
+            if input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesGreaterThan.is_some():
+                auto t12 = str(input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesGreaterThan.unwrap())
+                restxml.rest_xml_scalar(n11, "BytesGreaterThan", t12)
+            if input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesLessThan.is_some():
+                auto t13 = str(input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesLessThan.unwrap())
+                restxml.rest_xml_scalar(n11, "BytesLessThan", t13)
+        if input.StorageLensGroup.Filter.And.is_some():
+            auto n14 = restxml.rest_xml_struct(n1, "And")
+            if input.StorageLensGroup.Filter.And.unwrap().MatchAnyPrefix.is_some():
+                auto t15 = input.StorageLensGroup.Filter.And.unwrap().MatchAnyPrefix.unwrap()
+                restxml.rest_xml_wrapped_list(n14, "MatchAnyPrefix", "Prefix", t15)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchAnySuffix.is_some():
+                auto t16 = input.StorageLensGroup.Filter.And.unwrap().MatchAnySuffix.unwrap()
+                restxml.rest_xml_wrapped_list(n14, "MatchAnySuffix", "Suffix", t16)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchAnyTag.is_some():
+                auto t17 = input.StorageLensGroup.Filter.And.unwrap().MatchAnyTag.unwrap()
+                auto n18 = restxml.rest_xml_struct(n14, "MatchAnyTag")
+                for t19 in t17:
+                    auto n20 = restxml.rest_xml_struct(n18, "Tag")
+                    restxml.rest_xml_scalar(n20, "Key", t19.Key)
+                    restxml.rest_xml_scalar(n20, "Value", t19.Value)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.is_some():
+                auto n21 = restxml.rest_xml_struct(n14, "MatchObjectAge")
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.is_some():
+                    auto t22 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n21, "DaysGreaterThan", t22)
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysLessThan.is_some():
+                    auto t23 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysLessThan.unwrap())
+                    restxml.rest_xml_scalar(n21, "DaysLessThan", t23)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.is_some():
+                auto n24 = restxml.rest_xml_struct(n14, "MatchObjectSize")
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.is_some():
+                    auto t25 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n24, "BytesGreaterThan", t25)
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesLessThan.is_some():
+                    auto t26 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesLessThan.unwrap())
+                    restxml.rest_xml_scalar(n24, "BytesLessThan", t26)
+        if input.StorageLensGroup.Filter.Or.is_some():
+            auto n27 = restxml.rest_xml_struct(n1, "Or")
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchAnyPrefix.is_some():
+                auto t28 = input.StorageLensGroup.Filter.Or.unwrap().MatchAnyPrefix.unwrap()
+                restxml.rest_xml_wrapped_list(n27, "MatchAnyPrefix", "Prefix", t28)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchAnySuffix.is_some():
+                auto t29 = input.StorageLensGroup.Filter.Or.unwrap().MatchAnySuffix.unwrap()
+                restxml.rest_xml_wrapped_list(n27, "MatchAnySuffix", "Suffix", t29)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchAnyTag.is_some():
+                auto t30 = input.StorageLensGroup.Filter.Or.unwrap().MatchAnyTag.unwrap()
+                auto n31 = restxml.rest_xml_struct(n27, "MatchAnyTag")
+                for t32 in t30:
+                    auto n33 = restxml.rest_xml_struct(n31, "Tag")
+                    restxml.rest_xml_scalar(n33, "Key", t32.Key)
+                    restxml.rest_xml_scalar(n33, "Value", t32.Value)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.is_some():
+                auto n34 = restxml.rest_xml_struct(n27, "MatchObjectAge")
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.is_some():
+                    auto t35 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n34, "DaysGreaterThan", t35)
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysLessThan.is_some():
+                    auto t36 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysLessThan.unwrap())
+                    restxml.rest_xml_scalar(n34, "DaysLessThan", t36)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.is_some():
+                auto n37 = restxml.rest_xml_struct(n27, "MatchObjectSize")
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.is_some():
+                    auto t38 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n37, "BytesGreaterThan", t38)
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesLessThan.is_some():
+                    auto t39 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesLessThan.unwrap())
+                    restxml.rest_xml_scalar(n37, "BytesLessThan", t39)
+        if input.StorageLensGroup.StorageLensGroupArn.is_some():
+            auto t40 = input.StorageLensGroup.StorageLensGroupArn.unwrap()
+            restxml.rest_xml_scalar(n0, "StorageLensGroupArn", t40)
+        if input.Tags.is_some():
+            auto t41 = input.Tags.unwrap()
+            auto n42 = restxml.rest_xml_struct(root, "Tags")
+            for t43 in t41:
+                auto n44 = restxml.rest_xml_struct(n42, "Tag")
+                restxml.rest_xml_scalar(n44, "Key", t43.Key)
+                restxml.rest_xml_scalar(n44, "Value", t43.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
 
     # DeleteAccessGrant  DELETE /v20180820/accessgrantsinstance/grant/{id}
     def delete_access_grant(self, DeleteAccessGrantRequest input) -> str:
@@ -2252,6 +2952,20 @@ struct S3_ControlClient:
         headers["x-amz-account-id"] = input.AccountId
         auto b = binding.HttpBinding(method="DELETE", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
+
+    # DeleteMultiRegionAccessPoint  POST /v20180820/async-requests/mrap/delete
+    def delete_multi_region_access_point(self, DeleteMultiRegionAccessPointRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/delete", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("DeleteMultiRegionAccessPointRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "ClientToken", input.ClientToken)
+        auto n0 = restxml.rest_xml_struct(root, "Details")
+        restxml.rest_xml_scalar(n0, "Name", input.Details.Name)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
 
     # DeletePublicAccessBlock  DELETE /v20180820/configuration/publicAccessBlock
     def delete_public_access_block(self, DeletePublicAccessBlockRequest input) -> str:
@@ -2773,6 +3487,219 @@ struct S3_ControlClient:
         auto b = binding.HttpBinding(method="GET", path_template="/v20180820/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
 
+    # PutAccessGrantsInstanceResourcePolicy  PUT /v20180820/accessgrantsinstance/resourcepolicy
+    def put_access_grants_instance_resource_policy(self, PutAccessGrantsInstanceResourcePolicyRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accessgrantsinstance/resourcepolicy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutAccessGrantsInstanceResourcePolicyRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "Policy", input.Policy)
+        if input.Organization.is_some():
+            restxml.rest_xml_scalar(root, "Organization", input.Organization.unwrap())
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutAccessPointConfigurationForObjectLambda  PUT /v20180820/accesspointforobjectlambda/{name}/configuration
+    def put_access_point_configuration_for_object_lambda(self, PutAccessPointConfigurationForObjectLambdaRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}/configuration", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutAccessPointConfigurationForObjectLambdaRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "Configuration")
+        auto t1 = input.Configuration.SupportingAccessPoint
+        restxml.rest_xml_scalar(n0, "SupportingAccessPoint", t1)
+        if input.Configuration.CloudWatchMetricsEnabled.is_some():
+            auto t2 = s3_control_xml_bool(input.Configuration.CloudWatchMetricsEnabled.unwrap())
+            restxml.rest_xml_scalar(n0, "CloudWatchMetricsEnabled", t2)
+        if input.Configuration.AllowedFeatures.is_some():
+            auto t3 = input.Configuration.AllowedFeatures.unwrap()
+            restxml.rest_xml_wrapped_list(n0, "AllowedFeatures", "AllowedFeature", t3)
+        auto n4 = restxml.rest_xml_struct(n0, "TransformationConfigurations")
+        for t5 in input.Configuration.TransformationConfigurations:
+            auto n6 = restxml.rest_xml_struct(n4, "TransformationConfiguration")
+            restxml.rest_xml_wrapped_list(n6, "Actions", "Action", t5.Actions)
+            auto n7 = restxml.rest_xml_struct(n6, "ContentTransformation")
+            if t5.ContentTransformation.AwsLambda.is_some():
+                auto n8 = restxml.rest_xml_struct(n7, "AwsLambda")
+                auto t9 = t5.ContentTransformation.AwsLambda.unwrap().FunctionArn
+                restxml.rest_xml_scalar(n8, "FunctionArn", t9)
+                if t5.ContentTransformation.AwsLambda.unwrap().FunctionPayload.is_some():
+                    auto t10 = t5.ContentTransformation.AwsLambda.unwrap().FunctionPayload.unwrap()
+                    restxml.rest_xml_scalar(n8, "FunctionPayload", t10)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutAccessPointPolicy  PUT /v20180820/accesspoint/{name}/policy
+    def put_access_point_policy(self, PutAccessPointPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutAccessPointPolicyRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "Policy", input.Policy)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutAccessPointPolicyForObjectLambda  PUT /v20180820/accesspointforobjectlambda/{name}/policy
+    def put_access_point_policy_for_object_lambda(self, PutAccessPointPolicyForObjectLambdaRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspointforobjectlambda/{name}/policy", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutAccessPointPolicyForObjectLambdaRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "Policy", input.Policy)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutAccessPointScope  PUT /v20180820/accesspoint/{name}/scope
+    def put_access_point_scope(self, PutAccessPointScopeRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accesspoint/{name}/scope", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutAccessPointScopeRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "Scope")
+        if input.Scope.Prefixes.is_some():
+            auto t1 = input.Scope.Prefixes.unwrap()
+            restxml.rest_xml_wrapped_list(n0, "Prefixes", "Prefix", t1)
+        if input.Scope.Permissions.is_some():
+            auto t2 = input.Scope.Permissions.unwrap()
+            restxml.rest_xml_wrapped_list(n0, "Permissions", "Permission", t2)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutBucketReplication  PUT /v20180820/bucket/{name}/replication
+    def put_bucket_replication(self, PutBucketReplicationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Bucket
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/replication", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("ReplicationConfiguration", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "Role", input.ReplicationConfiguration.Role)
+        auto n0 = restxml.rest_xml_struct(root, "Rules")
+        for t1 in input.ReplicationConfiguration.Rules:
+            auto n2 = restxml.rest_xml_struct(n0, "Rule")
+            if t1.ID.is_some():
+                restxml.rest_xml_scalar(n2, "ID", t1.ID.unwrap())
+            if t1.Priority.is_some():
+                restxml.rest_xml_scalar(n2, "Priority", str(t1.Priority.unwrap()))
+            if t1.Prefix.is_some():
+                restxml.rest_xml_scalar(n2, "Prefix", t1.Prefix.unwrap())
+            if t1.Filter.is_some():
+                auto n3 = restxml.rest_xml_struct(n2, "Filter")
+                if t1.Filter.unwrap().Prefix.is_some():
+                    auto t4 = t1.Filter.unwrap().Prefix.unwrap()
+                    restxml.rest_xml_scalar(n3, "Prefix", t4)
+                if t1.Filter.unwrap().Tag.is_some():
+                    auto n5 = restxml.rest_xml_struct(n3, "Tag")
+                    auto t6 = t1.Filter.unwrap().Tag.unwrap().Key
+                    restxml.rest_xml_scalar(n5, "Key", t6)
+                    auto t7 = t1.Filter.unwrap().Tag.unwrap().Value
+                    restxml.rest_xml_scalar(n5, "Value", t7)
+                if t1.Filter.unwrap().And.is_some():
+                    auto n8 = restxml.rest_xml_struct(n3, "And")
+                    if t1.Filter.unwrap().And.unwrap().Prefix.is_some():
+                        auto t9 = t1.Filter.unwrap().And.unwrap().Prefix.unwrap()
+                        restxml.rest_xml_scalar(n8, "Prefix", t9)
+                    if t1.Filter.unwrap().And.unwrap().Tags.is_some():
+                        auto t10 = t1.Filter.unwrap().And.unwrap().Tags.unwrap()
+                        auto n11 = restxml.rest_xml_struct(n8, "Tags")
+                        for t12 in t10:
+                            auto n13 = restxml.rest_xml_struct(n11, "member")
+                            restxml.rest_xml_scalar(n13, "Key", t12.Key)
+                            restxml.rest_xml_scalar(n13, "Value", t12.Value)
+            restxml.rest_xml_scalar(n2, "Status", t1.Status)
+            if t1.SourceSelectionCriteria.is_some():
+                auto n14 = restxml.rest_xml_struct(n2, "SourceSelectionCriteria")
+                if t1.SourceSelectionCriteria.unwrap().SseKmsEncryptedObjects.is_some():
+                    auto n15 = restxml.rest_xml_struct(n14, "SseKmsEncryptedObjects")
+                    auto t16 = t1.SourceSelectionCriteria.unwrap().SseKmsEncryptedObjects.unwrap().Status
+                    restxml.rest_xml_scalar(n15, "Status", t16)
+                if t1.SourceSelectionCriteria.unwrap().ReplicaModifications.is_some():
+                    auto n17 = restxml.rest_xml_struct(n14, "ReplicaModifications")
+                    auto t18 = t1.SourceSelectionCriteria.unwrap().ReplicaModifications.unwrap().Status
+                    restxml.rest_xml_scalar(n17, "Status", t18)
+            if t1.ExistingObjectReplication.is_some():
+                auto n19 = restxml.rest_xml_struct(n2, "ExistingObjectReplication")
+                auto t20 = t1.ExistingObjectReplication.unwrap().Status
+                restxml.rest_xml_scalar(n19, "Status", t20)
+            auto n21 = restxml.rest_xml_struct(n2, "Destination")
+            if t1.Destination.Account.is_some():
+                restxml.rest_xml_scalar(n21, "Account", t1.Destination.Account.unwrap())
+            restxml.rest_xml_scalar(n21, "Bucket", t1.Destination.Bucket)
+            if t1.Destination.ReplicationTime.is_some():
+                auto n22 = restxml.rest_xml_struct(n21, "ReplicationTime")
+                auto t23 = t1.Destination.ReplicationTime.unwrap().Status
+                restxml.rest_xml_scalar(n22, "Status", t23)
+                auto n24 = restxml.rest_xml_struct(n22, "Time")
+                if t1.Destination.ReplicationTime.unwrap().Time.Minutes.is_some():
+                    auto t25 = str(t1.Destination.ReplicationTime.unwrap().Time.Minutes.unwrap())
+                    restxml.rest_xml_scalar(n24, "Minutes", t25)
+            if t1.Destination.AccessControlTranslation.is_some():
+                auto n26 = restxml.rest_xml_struct(n21, "AccessControlTranslation")
+                auto t27 = t1.Destination.AccessControlTranslation.unwrap().Owner
+                restxml.rest_xml_scalar(n26, "Owner", t27)
+            if t1.Destination.EncryptionConfiguration.is_some():
+                auto n28 = restxml.rest_xml_struct(n21, "EncryptionConfiguration")
+                if t1.Destination.EncryptionConfiguration.unwrap().ReplicaKmsKeyID.is_some():
+                    auto t29 = t1.Destination.EncryptionConfiguration.unwrap().ReplicaKmsKeyID.unwrap()
+                    restxml.rest_xml_scalar(n28, "ReplicaKmsKeyID", t29)
+            if t1.Destination.Metrics.is_some():
+                auto n30 = restxml.rest_xml_struct(n21, "Metrics")
+                auto t31 = t1.Destination.Metrics.unwrap().Status
+                restxml.rest_xml_scalar(n30, "Status", t31)
+                if t1.Destination.Metrics.unwrap().EventThreshold.is_some():
+                    auto n32 = restxml.rest_xml_struct(n30, "EventThreshold")
+                    if t1.Destination.Metrics.unwrap().EventThreshold.unwrap().Minutes.is_some():
+                        auto t33 = str(t1.Destination.Metrics.unwrap().EventThreshold.unwrap().Minutes.unwrap())
+                        restxml.rest_xml_scalar(n32, "Minutes", t33)
+            if t1.Destination.StorageClass.is_some():
+                auto t34 = t1.Destination.StorageClass.unwrap()
+                restxml.rest_xml_scalar(n21, "StorageClass", t34)
+            if t1.DeleteMarkerReplication.is_some():
+                auto n35 = restxml.rest_xml_struct(n2, "DeleteMarkerReplication")
+                auto t36 = t1.DeleteMarkerReplication.unwrap().Status
+                restxml.rest_xml_scalar(n35, "Status", t36)
+            restxml.rest_xml_scalar(n2, "Bucket", t1.Bucket)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutBucketTagging  PUT /v20180820/bucket/{name}/tagging
+    def put_bucket_tagging(self, PutBucketTaggingRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Bucket
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/bucket/{name}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("Tagging", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "TagSet")
+        for t1 in input.Tagging.TagSet:
+            auto n2 = restxml.rest_xml_struct(n0, "member")
+            restxml.rest_xml_scalar(n2, "Key", t1.Key)
+            restxml.rest_xml_scalar(n2, "Value", t1.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
     # PutBucketVersioning  PUT /v20180820/bucket/{name}/versioning
     def put_bucket_versioning(self, PutBucketVersioningRequest input) -> str:
         auto host = endpoints.regional_host(s3_control_service(), self.region)
@@ -2790,6 +3717,338 @@ struct S3_ControlClient:
         if input.VersioningConfiguration.Status.is_some():
             auto t1 = input.VersioningConfiguration.Status.unwrap()
             restxml.rest_xml_scalar(root, "Status", t1)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutJobTagging  PUT /v20180820/jobs/{id}/tagging
+    # errors: InternalServiceException, NotFoundException, TooManyRequestsException, TooManyTagsException
+    def put_job_tagging(self, PutJobTaggingRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.JobId
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/jobs/{id}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutJobTaggingRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "Tags")
+        for t1 in input.Tags:
+            auto n2 = restxml.rest_xml_struct(n0, "member")
+            restxml.rest_xml_scalar(n2, "Key", t1.Key)
+            restxml.rest_xml_scalar(n2, "Value", t1.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutMultiRegionAccessPointPolicy  POST /v20180820/async-requests/mrap/put-policy
+    def put_multi_region_access_point_policy(self, PutMultiRegionAccessPointPolicyRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/async-requests/mrap/put-policy", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutMultiRegionAccessPointPolicyRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "ClientToken", input.ClientToken)
+        auto n0 = restxml.rest_xml_struct(root, "Details")
+        restxml.rest_xml_scalar(n0, "Name", input.Details.Name)
+        restxml.rest_xml_scalar(n0, "Policy", input.Details.Policy)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutPublicAccessBlock  PUT /v20180820/configuration/publicAccessBlock
+    def put_public_access_block(self, PutPublicAccessBlockRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/configuration/publicAccessBlock", labels={}, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PublicAccessBlockConfiguration", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        if input.PublicAccessBlockConfiguration.BlockPublicAcls.is_some():
+            auto t0 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.BlockPublicAcls.unwrap())
+            restxml.rest_xml_scalar(root, "BlockPublicAcls", t0)
+        if input.PublicAccessBlockConfiguration.IgnorePublicAcls.is_some():
+            auto t1 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.IgnorePublicAcls.unwrap())
+            restxml.rest_xml_scalar(root, "IgnorePublicAcls", t1)
+        if input.PublicAccessBlockConfiguration.BlockPublicPolicy.is_some():
+            auto t2 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.BlockPublicPolicy.unwrap())
+            restxml.rest_xml_scalar(root, "BlockPublicPolicy", t2)
+        if input.PublicAccessBlockConfiguration.RestrictPublicBuckets.is_some():
+            auto t3 = s3_control_xml_bool(input.PublicAccessBlockConfiguration.RestrictPublicBuckets.unwrap())
+            restxml.rest_xml_scalar(root, "RestrictPublicBuckets", t3)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutStorageLensConfiguration  PUT /v20180820/storagelens/{storagelensid}
+    def put_storage_lens_configuration(self, PutStorageLensConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["storagelensid"] = input.ConfigId
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelens/{storagelensid}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutStorageLensConfigurationRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "StorageLensConfiguration")
+        restxml.rest_xml_scalar(n0, "Id", input.StorageLensConfiguration.Id)
+        auto n1 = restxml.rest_xml_struct(n0, "AccountLevel")
+        if input.StorageLensConfiguration.AccountLevel.ActivityMetrics.is_some():
+            auto n2 = restxml.rest_xml_struct(n1, "ActivityMetrics")
+            if input.StorageLensConfiguration.AccountLevel.ActivityMetrics.unwrap().IsEnabled.is_some():
+                auto t3 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.ActivityMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n2, "IsEnabled", t3)
+        auto n4 = restxml.rest_xml_struct(n1, "BucketLevel")
+        if input.StorageLensConfiguration.AccountLevel.BucketLevel.ActivityMetrics.is_some():
+            auto n5 = restxml.rest_xml_struct(n4, "ActivityMetrics")
+            if input.StorageLensConfiguration.AccountLevel.BucketLevel.ActivityMetrics.unwrap().IsEnabled.is_some():
+                auto t6 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.BucketLevel.ActivityMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n5, "IsEnabled", t6)
+        if input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.is_some():
+            auto n7 = restxml.rest_xml_struct(n4, "PrefixLevel")
+            auto n8 = restxml.rest_xml_struct(n7, "StorageMetrics")
+            if input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.IsEnabled.is_some():
+                auto t9 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n8, "IsEnabled", t9)
+            if input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.SelectionCriteria.is_some():
+                auto n10 = restxml.rest_xml_struct(n8, "SelectionCriteria")
+                if input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.SelectionCriteria.unwrap().Delimiter.is_some():
+                    auto t11 = input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.SelectionCriteria.unwrap().Delimiter.unwrap()
+                    restxml.rest_xml_scalar(n10, "Delimiter", t11)
+                if input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.SelectionCriteria.unwrap().MaxDepth.is_some():
+                    auto t12 = str(input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.SelectionCriteria.unwrap().MaxDepth.unwrap())
+                    restxml.rest_xml_scalar(n10, "MaxDepth", t12)
+                if input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.SelectionCriteria.unwrap().MinStorageBytesPercentage.is_some():
+                    auto t13 = str(input.StorageLensConfiguration.AccountLevel.BucketLevel.PrefixLevel.unwrap().StorageMetrics.SelectionCriteria.unwrap().MinStorageBytesPercentage.unwrap())
+                    restxml.rest_xml_scalar(n10, "MinStorageBytesPercentage", t13)
+        if input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedCostOptimizationMetrics.is_some():
+            auto n14 = restxml.rest_xml_struct(n4, "AdvancedCostOptimizationMetrics")
+            if input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedCostOptimizationMetrics.unwrap().IsEnabled.is_some():
+                auto t15 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedCostOptimizationMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n14, "IsEnabled", t15)
+        if input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedDataProtectionMetrics.is_some():
+            auto n16 = restxml.rest_xml_struct(n4, "AdvancedDataProtectionMetrics")
+            if input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedDataProtectionMetrics.unwrap().IsEnabled.is_some():
+                auto t17 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedDataProtectionMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n16, "IsEnabled", t17)
+        if input.StorageLensConfiguration.AccountLevel.BucketLevel.DetailedStatusCodesMetrics.is_some():
+            auto n18 = restxml.rest_xml_struct(n4, "DetailedStatusCodesMetrics")
+            if input.StorageLensConfiguration.AccountLevel.BucketLevel.DetailedStatusCodesMetrics.unwrap().IsEnabled.is_some():
+                auto t19 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.BucketLevel.DetailedStatusCodesMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n18, "IsEnabled", t19)
+        if input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedPerformanceMetrics.is_some():
+            auto n20 = restxml.rest_xml_struct(n4, "AdvancedPerformanceMetrics")
+            if input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedPerformanceMetrics.unwrap().IsEnabled.is_some():
+                auto t21 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.BucketLevel.AdvancedPerformanceMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n20, "IsEnabled", t21)
+        if input.StorageLensConfiguration.AccountLevel.AdvancedCostOptimizationMetrics.is_some():
+            auto n22 = restxml.rest_xml_struct(n1, "AdvancedCostOptimizationMetrics")
+            if input.StorageLensConfiguration.AccountLevel.AdvancedCostOptimizationMetrics.unwrap().IsEnabled.is_some():
+                auto t23 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.AdvancedCostOptimizationMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n22, "IsEnabled", t23)
+        if input.StorageLensConfiguration.AccountLevel.AdvancedDataProtectionMetrics.is_some():
+            auto n24 = restxml.rest_xml_struct(n1, "AdvancedDataProtectionMetrics")
+            if input.StorageLensConfiguration.AccountLevel.AdvancedDataProtectionMetrics.unwrap().IsEnabled.is_some():
+                auto t25 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.AdvancedDataProtectionMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n24, "IsEnabled", t25)
+        if input.StorageLensConfiguration.AccountLevel.DetailedStatusCodesMetrics.is_some():
+            auto n26 = restxml.rest_xml_struct(n1, "DetailedStatusCodesMetrics")
+            if input.StorageLensConfiguration.AccountLevel.DetailedStatusCodesMetrics.unwrap().IsEnabled.is_some():
+                auto t27 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.DetailedStatusCodesMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n26, "IsEnabled", t27)
+        if input.StorageLensConfiguration.AccountLevel.AdvancedPerformanceMetrics.is_some():
+            auto n28 = restxml.rest_xml_struct(n1, "AdvancedPerformanceMetrics")
+            if input.StorageLensConfiguration.AccountLevel.AdvancedPerformanceMetrics.unwrap().IsEnabled.is_some():
+                auto t29 = s3_control_xml_bool(input.StorageLensConfiguration.AccountLevel.AdvancedPerformanceMetrics.unwrap().IsEnabled.unwrap())
+                restxml.rest_xml_scalar(n28, "IsEnabled", t29)
+        if input.StorageLensConfiguration.AccountLevel.StorageLensGroupLevel.is_some():
+            auto n30 = restxml.rest_xml_struct(n1, "StorageLensGroupLevel")
+            if input.StorageLensConfiguration.AccountLevel.StorageLensGroupLevel.unwrap().SelectionCriteria.is_some():
+                auto n31 = restxml.rest_xml_struct(n30, "SelectionCriteria")
+                if input.StorageLensConfiguration.AccountLevel.StorageLensGroupLevel.unwrap().SelectionCriteria.unwrap().Include.is_some():
+                    auto t32 = input.StorageLensConfiguration.AccountLevel.StorageLensGroupLevel.unwrap().SelectionCriteria.unwrap().Include.unwrap()
+                    restxml.rest_xml_wrapped_list(n31, "Include", "Arn", t32)
+                if input.StorageLensConfiguration.AccountLevel.StorageLensGroupLevel.unwrap().SelectionCriteria.unwrap().Exclude.is_some():
+                    auto t33 = input.StorageLensConfiguration.AccountLevel.StorageLensGroupLevel.unwrap().SelectionCriteria.unwrap().Exclude.unwrap()
+                    restxml.rest_xml_wrapped_list(n31, "Exclude", "Arn", t33)
+        if input.StorageLensConfiguration.Include.is_some():
+            auto n34 = restxml.rest_xml_struct(n0, "Include")
+            if input.StorageLensConfiguration.Include.unwrap().Buckets.is_some():
+                auto t35 = input.StorageLensConfiguration.Include.unwrap().Buckets.unwrap()
+                restxml.rest_xml_wrapped_list(n34, "Buckets", "Arn", t35)
+            if input.StorageLensConfiguration.Include.unwrap().Regions.is_some():
+                auto t36 = input.StorageLensConfiguration.Include.unwrap().Regions.unwrap()
+                restxml.rest_xml_wrapped_list(n34, "Regions", "Region", t36)
+        if input.StorageLensConfiguration.Exclude.is_some():
+            auto n37 = restxml.rest_xml_struct(n0, "Exclude")
+            if input.StorageLensConfiguration.Exclude.unwrap().Buckets.is_some():
+                auto t38 = input.StorageLensConfiguration.Exclude.unwrap().Buckets.unwrap()
+                restxml.rest_xml_wrapped_list(n37, "Buckets", "Arn", t38)
+            if input.StorageLensConfiguration.Exclude.unwrap().Regions.is_some():
+                auto t39 = input.StorageLensConfiguration.Exclude.unwrap().Regions.unwrap()
+                restxml.rest_xml_wrapped_list(n37, "Regions", "Region", t39)
+        if input.StorageLensConfiguration.DataExport.is_some():
+            auto n40 = restxml.rest_xml_struct(n0, "DataExport")
+            if input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.is_some():
+                auto n41 = restxml.rest_xml_struct(n40, "S3BucketDestination")
+                auto t42 = input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Format
+                restxml.rest_xml_scalar(n41, "Format", t42)
+                auto t43 = input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().OutputSchemaVersion
+                restxml.rest_xml_scalar(n41, "OutputSchemaVersion", t43)
+                auto t44 = input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().AccountId
+                restxml.rest_xml_scalar(n41, "AccountId", t44)
+                auto t45 = input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Arn
+                restxml.rest_xml_scalar(n41, "Arn", t45)
+                if input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Prefix.is_some():
+                    auto t46 = input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Prefix.unwrap()
+                    restxml.rest_xml_scalar(n41, "Prefix", t46)
+                if input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Encryption.is_some():
+                    auto n47 = restxml.rest_xml_struct(n41, "Encryption")
+                    if input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Encryption.unwrap().SSES3.is_some():
+                        auto n48 = restxml.rest_xml_struct(n47, "SSE-S3")
+                    if input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Encryption.unwrap().SSEKMS.is_some():
+                        auto n49 = restxml.rest_xml_struct(n47, "SSE-KMS")
+                        auto t50 = input.StorageLensConfiguration.DataExport.unwrap().S3BucketDestination.unwrap().Encryption.unwrap().SSEKMS.unwrap().KeyId
+                        restxml.rest_xml_scalar(n49, "KeyId", t50)
+            if input.StorageLensConfiguration.DataExport.unwrap().CloudWatchMetrics.is_some():
+                auto n51 = restxml.rest_xml_struct(n40, "CloudWatchMetrics")
+                auto t52 = s3_control_xml_bool(input.StorageLensConfiguration.DataExport.unwrap().CloudWatchMetrics.unwrap().IsEnabled)
+                restxml.rest_xml_scalar(n51, "IsEnabled", t52)
+            if input.StorageLensConfiguration.DataExport.unwrap().StorageLensTableDestination.is_some():
+                auto n53 = restxml.rest_xml_struct(n40, "StorageLensTableDestination")
+                auto t54 = s3_control_xml_bool(input.StorageLensConfiguration.DataExport.unwrap().StorageLensTableDestination.unwrap().IsEnabled)
+                restxml.rest_xml_scalar(n53, "IsEnabled", t54)
+                if input.StorageLensConfiguration.DataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.is_some():
+                    auto n55 = restxml.rest_xml_struct(n53, "Encryption")
+                    if input.StorageLensConfiguration.DataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.unwrap().SSES3.is_some():
+                        auto n56 = restxml.rest_xml_struct(n55, "SSE-S3")
+                    if input.StorageLensConfiguration.DataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.unwrap().SSEKMS.is_some():
+                        auto n57 = restxml.rest_xml_struct(n55, "SSE-KMS")
+                        auto t58 = input.StorageLensConfiguration.DataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.unwrap().SSEKMS.unwrap().KeyId
+                        restxml.rest_xml_scalar(n57, "KeyId", t58)
+        if input.StorageLensConfiguration.ExpandedPrefixesDataExport.is_some():
+            auto n59 = restxml.rest_xml_struct(n0, "ExpandedPrefixesDataExport")
+            if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.is_some():
+                auto n60 = restxml.rest_xml_struct(n59, "S3BucketDestination")
+                auto t61 = input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Format
+                restxml.rest_xml_scalar(n60, "Format", t61)
+                auto t62 = input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().OutputSchemaVersion
+                restxml.rest_xml_scalar(n60, "OutputSchemaVersion", t62)
+                auto t63 = input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().AccountId
+                restxml.rest_xml_scalar(n60, "AccountId", t63)
+                auto t64 = input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Arn
+                restxml.rest_xml_scalar(n60, "Arn", t64)
+                if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Prefix.is_some():
+                    auto t65 = input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Prefix.unwrap()
+                    restxml.rest_xml_scalar(n60, "Prefix", t65)
+                if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Encryption.is_some():
+                    auto n66 = restxml.rest_xml_struct(n60, "Encryption")
+                    if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Encryption.unwrap().SSES3.is_some():
+                        auto n67 = restxml.rest_xml_struct(n66, "SSE-S3")
+                    if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Encryption.unwrap().SSEKMS.is_some():
+                        auto n68 = restxml.rest_xml_struct(n66, "SSE-KMS")
+                        auto t69 = input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().S3BucketDestination.unwrap().Encryption.unwrap().SSEKMS.unwrap().KeyId
+                        restxml.rest_xml_scalar(n68, "KeyId", t69)
+            if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().StorageLensTableDestination.is_some():
+                auto n70 = restxml.rest_xml_struct(n59, "StorageLensTableDestination")
+                auto t71 = s3_control_xml_bool(input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().StorageLensTableDestination.unwrap().IsEnabled)
+                restxml.rest_xml_scalar(n70, "IsEnabled", t71)
+                if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.is_some():
+                    auto n72 = restxml.rest_xml_struct(n70, "Encryption")
+                    if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.unwrap().SSES3.is_some():
+                        auto n73 = restxml.rest_xml_struct(n72, "SSE-S3")
+                    if input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.unwrap().SSEKMS.is_some():
+                        auto n74 = restxml.rest_xml_struct(n72, "SSE-KMS")
+                        auto t75 = input.StorageLensConfiguration.ExpandedPrefixesDataExport.unwrap().StorageLensTableDestination.unwrap().Encryption.unwrap().SSEKMS.unwrap().KeyId
+                        restxml.rest_xml_scalar(n74, "KeyId", t75)
+        auto t76 = s3_control_xml_bool(input.StorageLensConfiguration.IsEnabled)
+        restxml.rest_xml_scalar(n0, "IsEnabled", t76)
+        if input.StorageLensConfiguration.AwsOrg.is_some():
+            auto n77 = restxml.rest_xml_struct(n0, "AwsOrg")
+            auto t78 = input.StorageLensConfiguration.AwsOrg.unwrap().Arn
+            restxml.rest_xml_scalar(n77, "Arn", t78)
+        if input.StorageLensConfiguration.StorageLensArn.is_some():
+            auto t79 = input.StorageLensConfiguration.StorageLensArn.unwrap()
+            restxml.rest_xml_scalar(n0, "StorageLensArn", t79)
+        if input.StorageLensConfiguration.PrefixDelimiter.is_some():
+            auto t80 = input.StorageLensConfiguration.PrefixDelimiter.unwrap()
+            restxml.rest_xml_scalar(n0, "PrefixDelimiter", t80)
+        if input.Tags.is_some():
+            auto t81 = input.Tags.unwrap()
+            auto n82 = restxml.rest_xml_struct(root, "Tags")
+            for t83 in t81:
+                auto n84 = restxml.rest_xml_struct(n82, "Tag")
+                restxml.rest_xml_scalar(n84, "Key", t83.Key)
+                restxml.rest_xml_scalar(n84, "Value", t83.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # PutStorageLensConfigurationTagging  PUT /v20180820/storagelens/{storagelensid}/tagging
+    def put_storage_lens_configuration_tagging(self, PutStorageLensConfigurationTaggingRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["storagelensid"] = input.ConfigId
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelens/{storagelensid}/tagging", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("PutStorageLensConfigurationTaggingRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "Tags")
+        for t1 in input.Tags:
+            auto n2 = restxml.rest_xml_struct(n0, "Tag")
+            restxml.rest_xml_scalar(n2, "Key", t1.Key)
+            restxml.rest_xml_scalar(n2, "Value", t1.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # SubmitMultiRegionAccessPointRoutes  PATCH /v20180820/mrap/instances/{mrap+}/routes
+    def submit_multi_region_access_point_routes(self, SubmitMultiRegionAccessPointRoutesRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["mrap"] = input.Mrap
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PATCH", path_template="/v20180820/mrap/instances/{mrap+}/routes", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("SubmitMultiRegionAccessPointRoutesRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "RouteUpdates")
+        for t1 in input.RouteUpdates:
+            auto n2 = restxml.rest_xml_struct(n0, "Route")
+            if t1.Bucket.is_some():
+                restxml.rest_xml_scalar(n2, "Bucket", t1.Bucket.unwrap())
+            if t1.Region.is_some():
+                restxml.rest_xml_scalar(n2, "Region", t1.Region.unwrap())
+            auto t3 = str(t1.TrafficDialPercentage)
+            restxml.rest_xml_scalar(n2, "TrafficDialPercentage", t3)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # TagResource  POST /v20180820/tags/{resourceArn+}
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] greedy_labels = {}
+        greedy_labels["resourceArn"] = input.ResourceArn
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="POST", path_template="/v20180820/tags/{resourceArn+}", labels={}, greedy_labels=greedy_labels, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("TagResourceRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "Tags")
+        for t1 in input.Tags:
+            auto n2 = restxml.rest_xml_struct(n0, "Tag")
+            restxml.rest_xml_scalar(n2, "Key", t1.Key)
+            restxml.rest_xml_scalar(n2, "Value", t1.Value)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
+
+    # UpdateAccessGrantsLocation  PUT /v20180820/accessgrantsinstance/location/{id}
+    def update_access_grants_location(self, UpdateAccessGrantsLocationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["id"] = input.AccessGrantsLocationId
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/accessgrantsinstance/location/{id}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("UpdateAccessGrantsLocationRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        restxml.rest_xml_scalar(root, "IAMRoleArn", input.IAMRoleArn)
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
@@ -2821,6 +4080,116 @@ struct S3_ControlClient:
         headers["x-amz-account-id"] = input.AccountId
         auto b = binding.HttpBinding(method="POST", path_template="/v20180820/jobs/{id}/status", labels=labels, greedy_labels={}, query=query, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restxml.rest_xml_request(self.creds, b, s3_control_service(), self.region, host)
+
+    # UpdateStorageLensGroup  PUT /v20180820/storagelensgroup/{name}
+    def update_storage_lens_group(self, UpdateStorageLensGroupRequest input) -> str:
+        auto host = endpoints.regional_host(s3_control_service(), self.region)
+        dict[str, str] labels = {}
+        labels["name"] = input.Name
+        dict[str, str] headers = {}
+        headers["x-amz-account-id"] = input.AccountId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v20180820/storagelensgroup/{name}", labels=labels, greedy_labels={}, query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto root = restxml.rest_xml_root_ns("UpdateStorageLensGroupRequest", "http://awss3control.amazonaws.com/doc/2018-08-20/")
+        auto n0 = restxml.rest_xml_struct(root, "StorageLensGroup")
+        restxml.rest_xml_scalar(n0, "Name", input.StorageLensGroup.Name)
+        auto n1 = restxml.rest_xml_struct(n0, "Filter")
+        if input.StorageLensGroup.Filter.MatchAnyPrefix.is_some():
+            auto t2 = input.StorageLensGroup.Filter.MatchAnyPrefix.unwrap()
+            restxml.rest_xml_wrapped_list(n1, "MatchAnyPrefix", "Prefix", t2)
+        if input.StorageLensGroup.Filter.MatchAnySuffix.is_some():
+            auto t3 = input.StorageLensGroup.Filter.MatchAnySuffix.unwrap()
+            restxml.rest_xml_wrapped_list(n1, "MatchAnySuffix", "Suffix", t3)
+        if input.StorageLensGroup.Filter.MatchAnyTag.is_some():
+            auto t4 = input.StorageLensGroup.Filter.MatchAnyTag.unwrap()
+            auto n5 = restxml.rest_xml_struct(n1, "MatchAnyTag")
+            for t6 in t4:
+                auto n7 = restxml.rest_xml_struct(n5, "Tag")
+                restxml.rest_xml_scalar(n7, "Key", t6.Key)
+                restxml.rest_xml_scalar(n7, "Value", t6.Value)
+        if input.StorageLensGroup.Filter.MatchObjectAge.is_some():
+            auto n8 = restxml.rest_xml_struct(n1, "MatchObjectAge")
+            if input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysGreaterThan.is_some():
+                auto t9 = str(input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysGreaterThan.unwrap())
+                restxml.rest_xml_scalar(n8, "DaysGreaterThan", t9)
+            if input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysLessThan.is_some():
+                auto t10 = str(input.StorageLensGroup.Filter.MatchObjectAge.unwrap().DaysLessThan.unwrap())
+                restxml.rest_xml_scalar(n8, "DaysLessThan", t10)
+        if input.StorageLensGroup.Filter.MatchObjectSize.is_some():
+            auto n11 = restxml.rest_xml_struct(n1, "MatchObjectSize")
+            if input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesGreaterThan.is_some():
+                auto t12 = str(input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesGreaterThan.unwrap())
+                restxml.rest_xml_scalar(n11, "BytesGreaterThan", t12)
+            if input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesLessThan.is_some():
+                auto t13 = str(input.StorageLensGroup.Filter.MatchObjectSize.unwrap().BytesLessThan.unwrap())
+                restxml.rest_xml_scalar(n11, "BytesLessThan", t13)
+        if input.StorageLensGroup.Filter.And.is_some():
+            auto n14 = restxml.rest_xml_struct(n1, "And")
+            if input.StorageLensGroup.Filter.And.unwrap().MatchAnyPrefix.is_some():
+                auto t15 = input.StorageLensGroup.Filter.And.unwrap().MatchAnyPrefix.unwrap()
+                restxml.rest_xml_wrapped_list(n14, "MatchAnyPrefix", "Prefix", t15)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchAnySuffix.is_some():
+                auto t16 = input.StorageLensGroup.Filter.And.unwrap().MatchAnySuffix.unwrap()
+                restxml.rest_xml_wrapped_list(n14, "MatchAnySuffix", "Suffix", t16)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchAnyTag.is_some():
+                auto t17 = input.StorageLensGroup.Filter.And.unwrap().MatchAnyTag.unwrap()
+                auto n18 = restxml.rest_xml_struct(n14, "MatchAnyTag")
+                for t19 in t17:
+                    auto n20 = restxml.rest_xml_struct(n18, "Tag")
+                    restxml.rest_xml_scalar(n20, "Key", t19.Key)
+                    restxml.rest_xml_scalar(n20, "Value", t19.Value)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.is_some():
+                auto n21 = restxml.rest_xml_struct(n14, "MatchObjectAge")
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.is_some():
+                    auto t22 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n21, "DaysGreaterThan", t22)
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysLessThan.is_some():
+                    auto t23 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectAge.unwrap().DaysLessThan.unwrap())
+                    restxml.rest_xml_scalar(n21, "DaysLessThan", t23)
+            if input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.is_some():
+                auto n24 = restxml.rest_xml_struct(n14, "MatchObjectSize")
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.is_some():
+                    auto t25 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n24, "BytesGreaterThan", t25)
+                if input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesLessThan.is_some():
+                    auto t26 = str(input.StorageLensGroup.Filter.And.unwrap().MatchObjectSize.unwrap().BytesLessThan.unwrap())
+                    restxml.rest_xml_scalar(n24, "BytesLessThan", t26)
+        if input.StorageLensGroup.Filter.Or.is_some():
+            auto n27 = restxml.rest_xml_struct(n1, "Or")
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchAnyPrefix.is_some():
+                auto t28 = input.StorageLensGroup.Filter.Or.unwrap().MatchAnyPrefix.unwrap()
+                restxml.rest_xml_wrapped_list(n27, "MatchAnyPrefix", "Prefix", t28)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchAnySuffix.is_some():
+                auto t29 = input.StorageLensGroup.Filter.Or.unwrap().MatchAnySuffix.unwrap()
+                restxml.rest_xml_wrapped_list(n27, "MatchAnySuffix", "Suffix", t29)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchAnyTag.is_some():
+                auto t30 = input.StorageLensGroup.Filter.Or.unwrap().MatchAnyTag.unwrap()
+                auto n31 = restxml.rest_xml_struct(n27, "MatchAnyTag")
+                for t32 in t30:
+                    auto n33 = restxml.rest_xml_struct(n31, "Tag")
+                    restxml.rest_xml_scalar(n33, "Key", t32.Key)
+                    restxml.rest_xml_scalar(n33, "Value", t32.Value)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.is_some():
+                auto n34 = restxml.rest_xml_struct(n27, "MatchObjectAge")
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.is_some():
+                    auto t35 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n34, "DaysGreaterThan", t35)
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysLessThan.is_some():
+                    auto t36 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectAge.unwrap().DaysLessThan.unwrap())
+                    restxml.rest_xml_scalar(n34, "DaysLessThan", t36)
+            if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.is_some():
+                auto n37 = restxml.rest_xml_struct(n27, "MatchObjectSize")
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.is_some():
+                    auto t38 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesGreaterThan.unwrap())
+                    restxml.rest_xml_scalar(n37, "BytesGreaterThan", t38)
+                if input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesLessThan.is_some():
+                    auto t39 = str(input.StorageLensGroup.Filter.Or.unwrap().MatchObjectSize.unwrap().BytesLessThan.unwrap())
+                    restxml.rest_xml_scalar(n37, "BytesLessThan", t39)
+        if input.StorageLensGroup.StorageLensGroupArn.is_some():
+            auto t40 = input.StorageLensGroup.StorageLensGroupArn.unwrap()
+            restxml.rest_xml_scalar(n0, "StorageLensGroupArn", t40)
+        auto body = restxml.rest_xml_serialize(root)
+        auto bp = restxml.rest_xml_document(b, body)
+        return restxml.rest_xml_request(self.creds, bp, s3_control_service(), self.region, host)
 
 # Construct a S3_ControlClient bound to credentials + region.
 def s3_control_client(core.Credentials creds, str region) -> S3_ControlClient:

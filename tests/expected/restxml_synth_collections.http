@@ -1,0 +1,10 @@
+PUT /thing/t%201 HTTP/1.1
+content-type: application/xml
+host: svc.us-east-1.amazonaws.com
+x-amz-content-sha256: 370e6a38d2d0fe5c0257d9b52836ee1a4d5d999915aba0dd738ed1f666a9ece4
+x-amz-date: 20150830T123600Z
+content-length: 301
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/svc/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=22462396a5a40bcd6a40fcf08c6b30e8da816bc8fa8cb9ced62653f7f2251401
+Connection: close
+
+<Config xmlns="urn:xsynth"><Enabled>true</Enabled><Owner><Id>o1</Id></Owner><Items><Item><Name>a</Name></Item><Item><Name>b</Name></Item></Items><Tags><entry><key>k1</key><value>v1</value></entry><entry><key>k2</key><value>v2</value></entry></Tags><Flat><V>f1</V></Flat><Flat><V>f2</V></Flat></Config>
